@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+
+<head profile="http://www.w3.org/2005/10/profile">
+    <link rel="icon" type="image/ico" href="files/favicon.ico">
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <title>Bezier networks</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <!-- CSS -->
+    <style>
+        p {
+            font-size: 11px;
+        }
+        
+        label {
+            font-size: 10px;
+            padding: 0px;
+            margin: 0px
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+
+    <!-- Control -->
+
+
+    <script src="src/main.js"></script>
+    <script src="src/addClusterModalForm.js"></script>
+    <script src="src/addCategoryModalForm.js"></script>
+    <script src="src/exportModalForm.js"></script>
+    <script src="src/importModalForm.js"></script>
+
+    <!-- Model -->
+    <script src="src/model/node.js"></script>
+    <script src="src/model/connector.js"></script>
+    <script src="src/model/edge.js"></script>
+    <script src="src/model/cluster.js"></script>
+    <script src="src/model/edgeFactory.js"></script>
+    <script src="src/model/clusterFactory.js"></script>
+    <script src="src/model/colorFactory.js"></script>
+
+    <!-- View -->
+    <script src="src/view/button.js"></script>
+    <script src="src/view/vNode.js"></script>
+    <script src="src/view/vConnector.js"></script>
+    <script src="src/view/vEdge.js"></script>
+    <script src="src/view/vCluster.js"></script>
+
+    <!-- Utils-->
+    <script src="src/utilities/utilities.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="container-fluid" style="position: sticky; margin: 10px; background-color: rgba(255, 255, 255, 0.247); top: 0px; z-index: 100">
+        <div class="row">
+            <div class="col-sm-1">
+                <h4>Bezier networks</h4>
+            </div>
+            <!-- File -->
+            <div class="col-sm-1">
+                <div>
+                    <p>FILE</p>
+                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#exportNetworkModal">Export
+            network</button>
+                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#importNetworkModal">Import
+            network</button>
+                </div>
+                <hr style="margin: 3px;">
+                <div>
+                    <p>Network library
+                        <select id="modelChoice" style="font-size:10px; color:grey;">
+                             <option value="0" selected>0</option>
+                             <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="5">6</option>
+                            <option value="6">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                        </select>
+                    </p>
+                </div>
+            </div>
+            <!-- Edit -->
+            <div class="col-sm-1">
+                <div>
+                    <p>EDIT</p>
+                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addClusterModal">Add cluster</button>
+                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addCategoryModal">Add node</button>
+                    <button class="btn btn-default btn-xs" id="clearEdges" name="clearEdgs">Clear edges</button>
+
+                    <hr style="margin: 3px;">
+                    <input type="checkbox" id="edit" checked>
+                    <label for="edit" style="font-size:10px">Edit enabled</label><br>
+                </div>
+            </div>
+            <!-- Propagation -->
+            <div class="col-sm-1">
+                <div>
+                    <p>PROPAGATION</p>
+                    <div>
+                        <input type="checkbox" id="forward" name="fwd" style="padding: 0px; margin: 0px;">
+                        <label for="forward">Succesors</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="backward" name="bws" style="padding: 0px; margin: 0px;">
+                        <label for="backward">Predecesors</label>
+                    </div>
+                </div>
+            </div>
+            <!-- Filters -->
+            <div class="col-sm-1">
+                <div>
+                    <p> FILTERS </p>
+                    <div>
+                        <input type="checkbox" id="filterLinked">
+                        <label for="filterLinked" style="font-size:10px">Linked only</label>
+                    </div>
+                </div>
+            </div>
+            <!-- View -->
+            <div class="col-sm-1">
+                <p> VIEW </p>
+                <div>
+                    <input type="checkbox" id="backgroundContrast">
+                    <label for="backgroundContrast" style="font-size:10px">Background</label><br>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <p style="font-size: xx-small;">Juan Salamanca | School of Art and Design | University of Illinois, 2019</p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row jjustify-content-center align-items-center" style="margin-left:15px;">
+            <script>
+                // category size parametrization
+                ClusterFactory.setParameters(30, 20, 110);
+            </script>
+            <!-- Model goes here -->
+            <div id="model"></div>
+
+            <p style="margin-left:20px; font-size:xx-small;"> Using bipartite networks tool | University of Illinois at Urbana-Champaign | 2019 | Made with p5.js | Juan Salamanca, Contact: jsal@illinois.edu </p>
+
+        </div>
+    </div>
+
+
+    <!-- ADD CLUSTER MODAL FORM -->
+    <div class="modal fade" id="addClusterModal" tabindex="-1" role="dialog" aria-labelledby="addClusterModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Add a Cluster to network</h3>
+                </div>
+                <div class="modal-body">
+
+                    <h4>Cluster name</h4>
+                    <p>Clusters are hyper-edges because they encompass nodes</b>. Be sure no other culster has the same name</p>
+                    <input id="clusterName" value="Cluster name"></input>
+                    <hr>
+
+                    <h4>Cluster Subtitle</h4>
+                    <textarea class="form-control" rows="1" id="clusterDescription">...</textarea>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="SubmitAddClusterModal">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD NODE MODAL FORM -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Add a node to clusters</h3>
+                </div>
+                <div class="modal-body">
+
+                    <h4>Choose the cluster you want to add a node</h4>
+                    <form action="" id="clusterChoice">
+
+                        <input type="radio" id="cluster1" name="cluster" value="0">
+                        <label for="cluster1">Cluster 1</label>
+                        <input type="radio" id="cluster2" name="cluster" value="1">
+                        <label for="cluster2">Cluster 2</label>
+                        <input type="radio" id="cluster3" name="cluster" value="2">
+                        <label for="cluster3">Cluster 3</label>
+                        <input type="radio" id="cluster4" name="cluster" value="3">
+                        <label for="cluster4">Cluster 4</label>
+
+                    </form>
+                    <hr>
+                    <h4>Node name</h4>
+                    <p>The nodes in each cluster are <b> mutually exlusive</b>. Verify that none of the current nodes encompasses the node you inted to add </p>
+                    <input id="catName" value="Node name"></input>
+                    <hr>
+
+                    <h4>Node description</h4>
+                    <p>Describe briefly the content of the new node. Give credits to third parties if any. </p>
+                    <textarea class="form-control" rows="5" id="catDescription">Node description</textarea>
+                    <hr>
+                    <h4>Polarity</h4>
+                    <p>The polarity of a node enables it to connect with nodes from the adjacent clusters. The boxes below create connectors on either the left, right or on both sides of the node.</p>
+                    <input type='checkbox' id="negative" checked> negative (enable left connectors)</input> <br>
+                    <input type='checkbox' id="positive" checked> positive (enable right connectors)</input>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="SubmitAddCategoryModal">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPORT NETWORK MODAL FORM -->
+    <div class="modal fade" id="exportNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exportNetworkModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Export network</h3>
+                </div>
+                <div class="modal-body">
+                    <!--<p>Export the current network in json format</p>
+            <input type='checkbox' id="includeNodes" checked> Include nodes</input>
+            &nbsp;
+            <input type='checkbox' id="includeEdges" checked> Include edges</input>
+            <hr>-->
+                    <input id="exportFileSuffix" value="File name"></input>
+                    <p>This is the sufix of two separate files, one for nodes and one for edges</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportNetwork">Export
+              Network</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMPORT NETWORK MODAL FORM -->
+    <div class="modal fade" id="importNetworkModal" tabindex="-1" role="dialog" aria-labelledby="importNetworkModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Import network</h3>
+                </div>
+                <div class="modal-body">
+                    <style>
+                        .droppable {
+                            background: #08c;
+                            color: #fff;
+                            padding: 50px 0;
+                            text-align: center;
+                        }
+                        
+                        .droppable.dragover {
+                            background: #00CC71;
+                        }
+                    </style>
+
+                    <div class="droppable" id="dragDropNetwork">Drag and drop the <b>NETWORK</b> file here.
+                        <p id="networkFileName">No file yet.</p>
+                    </div>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="importNetwork">Import
+              network</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

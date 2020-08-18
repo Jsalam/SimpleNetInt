@@ -1,0 +1,113 @@
+{
+  "nodes": [
+    {
+      "clusterID": "Innovation_Type",
+      "clusterLabel": "Innovation_Type",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "Technology",
+          "nodeDescription": "Category description",
+          "polarity": "RIGHT",
+          "pajekIndex": 1
+        },
+        {
+          "id": 1,
+          "nodeLabel": "Methodology",
+          "nodeDescription": "Category description",
+          "polarity": "RIGHT",
+          "pajekIndex": 2
+        },
+        {
+          "id": 2,
+          "nodeLabel": "Process",
+          "nodeDescription": "Category description",
+          "polarity": "RIGHT",
+          "pajekIndex": 3
+        },
+        {
+          "id": 3,
+          "nodeLabel": "Knowledge framework",
+          "nodeDescription": "Category description",
+          "polarity": "RIGHT",
+          "pajekIndex": 4
+        }
+      ]
+    },
+    {
+      "clusterID": "Theme_A",
+      "clusterLabel": "Theme_A",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "Node name",
+          "nodeDescription": "Node description",
+          "polarity": "BOTH",
+          "pajekIndex": 5
+        }
+      ]
+    },
+    {
+      "clusterID": "Theme_B",
+      "clusterLabel": "Theme_B",
+      "clusterDescription": "...",
+      "nodes": []
+    },
+    {
+      "clusterID": "Theme_C",
+      "clusterLabel": "Theme_C",
+      "clusterDescription": "...",
+      "nodes": []
+    },
+    {
+      "clusterID": "Theme_D",
+      "clusterLabel": "Theme_D",
+      "clusterDescription": "...",
+      "nodes": []
+    },
+    {
+      "clusterID": "Theme_E",
+      "clusterLabel": "Theme_E",
+      "clusterDescription": "...",
+      "nodes": []
+    }
+  ],
+  "edges": [
+    {
+      "source": {
+        "cluster": "Innovation_Type",
+        "cat": 2,
+        "index": 0,
+        "polarity": true,
+        "pajekIndex": 3
+      },
+      "target": {
+        "cluster": "Theme_A",
+        "cat": 0,
+        "index": 0,
+        "polarity": false,
+        "pajekIndex": 5
+      },
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "Innovation_Type",
+        "cat": 1,
+        "index": 0,
+        "polarity": true,
+        "pajekIndex": 2
+      },
+      "target": {
+        "cluster": "Theme_A",
+        "cat": 0,
+        "index": 1,
+        "polarity": false,
+        "pajekIndex": 5
+      },
+      "weight": 1
+    }
+  ]
+}

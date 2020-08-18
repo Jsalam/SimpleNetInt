@@ -1,0 +1,30 @@
+{
+    "nodes": [{
+            "clusterID": "1",
+            "clusterLabel": "Cluster_1",
+            "clusterDescription": "Subtitle",
+            "nodes": []
+        },
+        {
+            "clusterID": "2",
+            "clusterLabel": "Cluster_2",
+            "clusterDescription": "Subtitle",
+            "nodes": []
+        },
+        {
+            "clusterID": "3",
+            "clusterLabel": "Cluster_3",
+            "clusterDescription": "Subtitle",
+            "nodes": []
+        },
+        {
+            "clusterID": "4",
+            "clusterLabel": "Cluster_4",
+            "clusterDescription": "Subtitle",
+            "nodes": []
+        }
+    ],
+    "edges": [
+
+    ]
+}
