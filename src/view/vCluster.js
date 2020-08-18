@@ -3,45 +3,53 @@ class VCluster {
         this.pos = globalP5.createVector(x, y);
         this.width = width;
         this.height = height;
-        this.vCategories = [];
+        this.vNodes = [];
         this.cluster = cluster;
         this.palette = palette;
-        this.populateVCategories(cluster);
+        this.populateVNodes(cluster);
         //   this.setPalette();
     }
 
-    populateVCategories(cluster) {
-        for (let index = 0; index < cluster.categories.length; index++) {
+    populateVNodes(cluster) {
+        for (let index = 0; index < cluster.nodes.length; index++) {
 
-            // Create vCategory
-            let vCatTemp = new VNode(cluster.categories[index], this.width, this.height);
+            const node = cluster.nodes[index]
 
-            for (const connector of vCatTemp.node.positives) {
-                vCatTemp.addPositiveVConnector(connector);
+            // Create vNode
+            let vNodeTemp = new VNode(node, this.width, this.height);
+
+            for (const connector of vNodeTemp.node.positives) {
+                vNodeTemp.addPositiveVConnector(connector);
             }
 
-            for (const connector of vCatTemp.node.negatives) {
-                vCatTemp.addNegativeVConnector(connector);
+            for (const connector of vNodeTemp.node.negatives) {
+                vNodeTemp.addNegativeVConnector(connector);
             }
 
             // set color
             if (!this.palette) {
-                vCatTemp.setColor("#adadad");
+                vNodeTemp.setColor("#adadad");
             } else if (this.palette.length < 1) {
-                vCatTemp.setColor(this.palette[0])
+                vNodeTemp.setColor(this.palette[0])
             } else {
                 let tmpIndex = index % this.palette.length;
-                vCatTemp.setColor(this.palette[tmpIndex]);
+                vNodeTemp.setColor(this.palette[tmpIndex]);
             }
 
             // add to colecction
-            this.addVCategory(vCatTemp);
+            this.addVNode(vNodeTemp, node.importedVNodeData);
         }
     }
 
-    addVCategory(vCat) {
-        vCat.updateCoords(this.pos, this.vCategories.length + 1, this.width);
-        this.vCategories.push(vCat);
+    addVNode(vNode, data) {
+        if (data) {
+            const pos = globalP5.createVector(data.posX, data.posY, data.posZ);
+            vNode.updateCoords(pos, 0);
+            vNode.setColor(data.color);
+        } else {
+            vNode.updateCoords(this.pos, this.vNodes.length + 1);
+        }
+        this.vNodes.push(vNode);
     }
 
     setPalette(palette) {
@@ -52,11 +60,11 @@ class VCluster {
         let counter = 0;
         if (this.palette) {
 
-            for (let i = 0; i < this.vCategories.length; i++) {
+            for (let i = 0; i < this.vNodes.length; i++) {
                 if (counter >= this.palette.length) {
                     counter = 0;
                 }
-                this.vCategories[i].setColor(this.palette[counter]);
+                this.vNodes[i].setColor(this.palette[counter]);
                 counter++;
             }
         }
@@ -73,14 +81,29 @@ class VCluster {
             builder.text(this.cluster.description, this.pos.x, this.pos.y + 15, this.width, 30);
         }
 
-        this.vCategories.forEach(cat => {
+        this.vNodes.forEach(cat => {
             cat.show(builder);
         });
     }
 
+    getJSON() {
+        let rtn = {
+            clusterID: this.cluster.id,
+            clusterLabel: this.cluster.label,
+            clusterDescription: this.cluster.description,
+            nodes: []
+        }
+
+        this.vNodes.forEach(vNode => {
+            let tmpN = vNode.getJSON();
+            rtn.nodes.push(tmpN);
+        });
+        return rtn;
+    }
+
     //**** EVENTS ******/
     mouseOverEvents() {
-        this.vCategories.forEach(cat => {
+        this.vNodes.forEach(cat => {
             cat.mouseOver();
             cat.mouseOverEvents();
             cat.mouseMovedEvents();
@@ -94,13 +117,13 @@ class VCluster {
     }
 
     mouseClickedEvents() {
-        this.vCategories.forEach(cat => {
+        this.vNodes.forEach(cat => {
             cat.mouseClickedEvents();
         });
     }
 
     mouseDraggedEvents() {
-        this.vCategories.forEach(cat => {
+        this.vNodes.forEach(cat => {
             cat.mouseDraggedEvents();
         });
     }

@@ -1,4 +1,3 @@
-
 class EdgeFactory {
 
     static buildEdges(edgs, clusters) {
@@ -30,9 +29,9 @@ class EdgeFactory {
                 }
             }
 
-            // look for the category in the X' categories
+            // look for the category in the X' nodes
             let sourceCtgTemp;
-            for (const ctgr of sourceTemp.categories) {
+            for (const ctgr of sourceTemp.nodes) {
                 if (ctgr.idCat.index == e.source.cat) {
                     sourceCtgTemp = ctgr;
                     break;
@@ -44,7 +43,7 @@ class EdgeFactory {
                 console.log(sourceTemp);
             }
 
-            // get categories connector generator
+            // get nodes connector generator
             let connSource;
             if (e.source.polarity == true) {
                 connSource = sourceCtgTemp.positives[sourceCtgTemp.positives.length - 1];
@@ -58,9 +57,9 @@ class EdgeFactory {
             connSource.vConnectorObserver.workOnLastVEdge(edge);
 
 
-            // look for the category in the X' categories
+            // look for the category in the X' nodes
             let targetCtgTemp;
-            for (const ctgr of targetTemp.categories) {
+            for (const ctgr of targetTemp.nodes) {
                 if (ctgr.idCat.index == e.target.cat) {
                     targetCtgTemp = ctgr;
                     break;
@@ -72,7 +71,7 @@ class EdgeFactory {
                 console.log(targetTemp);
             }
 
-            // get categories connector generator
+            // get nodes connector generator
             let connTarget;
             if (e.target.polarity == true) {
                 connTarget = targetCtgTemp.positives[targetCtgTemp.positives.length - 1];
@@ -114,11 +113,11 @@ class EdgeFactory {
         lastEdge.source.popThisConnector();
         lastEdge.target.popThisConnector();
         EdgeFactory.vEdges.pop();
-        console.log(" Edge deleted linking category: "
-            + lastEdge.source.nodeObserver.label + ", in cluster: "
-            + lastEdge.id.source.cluster + " with category: "
-            + lastEdge.target.nodeObserver.label + ", in cluster: "
-            + lastEdge.id.target.cluster);
+        console.log(" Edge deleted linking category: " +
+            lastEdge.source.nodeObserver.label + ", in cluster: " +
+            lastEdge.id.source.cluster + " with category: " +
+            lastEdge.target.nodeObserver.label + ", in cluster: " +
+            lastEdge.id.target.cluster);
     }
 }
 

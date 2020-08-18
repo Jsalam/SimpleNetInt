@@ -44,19 +44,12 @@ var main = function(p5) {
         p5.createCanvas(window.innerWidth - 60, 740);
         graphics = p5.createGraphics(p5.width * p5.pixelDensity(), p5.height * p5.pixelDensity());
 
-        // // Enable the model dropdown selector
-        // model = document.getElementById("modelChoice");
-        // preload(model.value);
-        // model.addEventListener('change', () => {
-        // 	switchModel(model.value);
-        // })
-
         // Connect with HTML GUI
         document.getElementById("clearEdges").onclick = clearEdges;
 
-        // Add elements form
+        // Add GUI FORMS
         addClusterModalForm();
-        addCategoryModalForm();
+        addNodeModalForm();
         exportNetworkModalForm();
         importNetworkModalForm();
     }

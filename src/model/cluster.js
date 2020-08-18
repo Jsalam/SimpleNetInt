@@ -2,29 +2,30 @@ class Cluster {
     constructor(id) {
         this.label;
         this.description;
-        this.categories = [];
+        this.nodes = [];
         this.id = id;
     }
 
-    addCategory(cat) {
-        this.categories.push(cat);
+    addNode(cat) {
+        this.nodes.push(cat);
     }
 
-    setLabel(label){
+    setLabel(label) {
         this.label = label;
     }
 
-    setDescription(text){
+    setDescription(text) {
         this.description = text;
     }
 
-    getJSON(){
-        let rtn = {clusterID:this.id, 
+    getJSON() {
+        let rtn = {
+            clusterID: this.id,
             clusterLabel: this.label,
             clusterDescription: this.description,
-            nodes:[]
+            nodes: []
         }
-        this.categories.forEach(element => {
+        this.nodes.forEach(element => {
             let tmpN = element.getJSON();
             rtn.nodes.push(tmpN);
         });

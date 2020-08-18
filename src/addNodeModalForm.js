@@ -1,4 +1,4 @@
-addCategoryModalForm = function() {
+addNodeModalForm = function() {
 
     document.getElementById("SubmitAddCategoryModal").onclick = getData
 }
@@ -21,26 +21,26 @@ getData = function() {
             polarityTmp = 'BOTH'
         }
         let dataTmp = {
-            id: clusterTmp.categories.length,
+            id: clusterTmp.nodes.length,
             nodeLabel: name,
             nodeDescription: description,
             polarity: polarityTmp
         }
-        let categoryTmp = ClusterFactory.makeCategory(clusterTmp, dataTmp)
+        let nodeTmp = ClusterFactory.makeNode(clusterTmp, dataTmp)
 
         // visual representation of the new category
         let vClustTmp = ClusterFactory.getVClusterOf(clusterTmp);
-        let vCategoryTmp = new VNode(categoryTmp, vClustTmp.width, vClustTmp.height);
+        let vNodeTmp = new VNode(nodeTmp, vClustTmp.width, vClustTmp.height);
         if (positive) {
-            vCategoryTmp.addPositiveVConnector(categoryTmp.positives[0]);
+            vNodeTmp.addPositiveVConnector(nodeTmp.positives[0]);
         }
         if (negative) {
-            vCategoryTmp.addNegativeVConnector(categoryTmp.negatives[0]);
+            vNodeTmp.addNegativeVConnector(nodeTmp.negatives[0]);
         }
 
         // add to collections
-        clusterTmp.addCategory(categoryTmp);
-        vClustTmp.addVCategory(vCategoryTmp);
+        clusterTmp.addNode(nodeTmp);
+        vClustTmp.addVNode(vNodeTmp);
 
         ClusterFactory.refreshColors(1, ColorFactory.palettes[0]);
         ClusterFactory.refreshColors(2, ColorFactory.palettes[1]);

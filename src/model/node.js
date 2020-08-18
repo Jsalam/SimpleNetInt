@@ -1,6 +1,6 @@
 class Node {
     constructor(clusterID, _index, _count) {
-        this.idCat = { cluster: clusterID, index: _index, pajekIndex: _count}
+        this.idCat = { cluster: clusterID, index: _index, pajekIndex: _count }
         this.positives = [];
         this.negatives = [];
         this.label = "void";
@@ -9,6 +9,7 @@ class Node {
         this.inBkwPropagation = false;
         this.vNodeObserver;
         this.polarity;
+        this.importedVNodeData;
     }
 
     subscribe(vNode) {
@@ -49,6 +50,10 @@ class Node {
 
     setDescription(description) {
         this.description = description;
+    }
+
+    setImportedVNodeData(obj) {
+        this.importedVNodeData = obj;
     }
 
     getConnectors(polarity) {
@@ -176,8 +181,7 @@ class Node {
                         }
                     });
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 if (error.name == "Recursion") {
                     alert("** RECURSIVE PROPAGATION **\nThere is a closed loop of successors that might crash the application. Successors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)");
                     document.getElementById('forward').checked = "";
@@ -188,8 +192,7 @@ class Node {
                     console.log(error.name + " Warning: error catched in forward propagation")
                 }
             }
-        }
-        else if (cat.inFwdPropagation) {
+        } else if (cat.inFwdPropagation) {
             //** RESET CURRENT and ALL SUCCESSORS **
             cat.inFwdPropagation = false;
             try {
@@ -245,8 +248,7 @@ class Node {
                         }
                     });
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 if (error.name == "Recursion") {
                     alert("** RECURSIVE PROPAGATION **\nThere is a closed loop of predecessors that might crash the application. Predecessors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)");
                     document.getElementById('backward').checked = "";
@@ -257,8 +259,7 @@ class Node {
                     console.log(error.name + " Warning: error catched in backward propagation")
                 }
             }
-        }
-        else if (cat.inBkwPropagation) {
+        } else if (cat.inBkwPropagation) {
             //** RESET CURRENT and ALL SUCCESSORS **
             cat.inBkwPropagation = false;
             try {
@@ -302,8 +303,7 @@ class Node {
                             obs.propagateForward(obs, clicked);
                         }
                     });
-                }
-                catch (error) {
+                } catch (error) {
                     if (error.name == "Recursion") {
                         alert("INFINTE RECURSION. \n The path of successors from " + error.message + " draws a closed loop. Propagation will be dissabled");
                         document.getElementById('forward').checked = "";
@@ -324,7 +324,7 @@ class Node {
             }
         } else {
             console.log(" ** RESET ALL SUCCESSORS **")
-            //** RESET CURRENT and ALL SUCCESSORS **
+                //** RESET CURRENT and ALL SUCCESSORS **
             cat.inFwdPropagation = false;
             let edgesTmp = this.getForwardEdges(cat);
             edgesTmp.forEach(edg => {
@@ -370,8 +370,7 @@ class Node {
                     console.log(error)
                 }
             }
-        }
-        else {
+        } else {
             console.log("Blocked predecessor propagation from " + cat.label + ". ** Recursion Error thrown **")
             let nError = new Error(cat.label);
             nError.name = "Recursion"

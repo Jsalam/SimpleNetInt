@@ -3,12 +3,8 @@ let edgesImported;
 
 importNetworkModalForm = function() {
 
-    // var nodesFile = document.getElementById('dragDropNodes');
-    // var edgesFile = document.getElementById('dragDropEdges');
     var networkFile = document.getElementById('dragDropNetwork');
 
-    //  makeDroppable(nodesFile, callbackNodes);
-    //  makeDroppable(edgesFile, callbackEdges);
     makeDroppable(networkFile, callbackNetwork);
 
     // Get user click button
@@ -46,11 +42,11 @@ callbackNetwork = function(files) {
         document.getElementById('networkFileName').innerHTML = files[0].name
         loadFile(files[0], 'network');
         // add file name to dropdown menu of models
-        let dropdown = document.getElementById('modelChoice');
-        let option = document.createElement("option");
-        option.value = 100;
-        option.text = files[0].name;
-        dropdown.appendChild(option);
+        // let dropdown = document.getElementById('modelChoice');
+        // let option = document.createElement("option");
+        // option.value = 100;
+        // option.text = files[0].name;
+        // dropdown.appendChild(option);
     } else {
         alert("Wrong file format. Must be a JSON file")
     }

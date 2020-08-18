@@ -62,7 +62,7 @@ class VNode extends Button {
     }
 
     updateCoords(pos, sequence) {
-        this.setPos(globalP5.createVector(pos.x, pos.y + this.height + (sequence * this.height) + (sequence * this.categoryGap)));
+        this.setPos(globalP5.createVector(pos.x, pos.y + (sequence * this.height) + (sequence * this.categoryGap)));
         this.updateConnectorsCoords();
     }
 
@@ -241,6 +241,23 @@ class VNode extends Button {
         builder.textSize(11);
         builder.text(this.node.description, 100, globalP5.height - 62, globalP5.width - 200, 97);
 
+    }
+
+    getJSON() {
+        let rtn = {
+            id: this.node.idCat.index,
+            nodeLabel: this.node.label,
+            nodeDescription: this.node.description,
+            polarity: this.node.polarity,
+            pajekIndex: this.node.idCat.pajekIndex,
+            vNode: {
+                posX: this.pos.x,
+                posY: this.pos.y,
+                posZ: this.pos.z,
+                color: this.color
+            }
+        }
+        return rtn;
     }
 
     // **** EVENTS *****
