@@ -20,7 +20,9 @@ class ColorFactory {
                                 ColorFactory.palettes.push(data);
                                 console.log(4 + ", :" + ColorFactory.palettes.length);
                                 // Call the "then" function once all the palettes are completed
-                                thenFunction();
+                                if (thenFunction) {
+                                    thenFunction();
+                                }
                             });
                         });
                     });

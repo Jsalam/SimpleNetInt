@@ -8,8 +8,9 @@ class Canvas {
     constructor(graphics) {
         // graphics
         this.graphics = graphics;
-        this.rendered = false;
+        this.graphicsRendered = false;
         this.renderGate = true;
+        this.currentBackground = 230;
         // The scale of our world
         this._zoom = 1;
         // A vector to store the offset
@@ -35,13 +36,14 @@ class Canvas {
      * produce changes on the visual output. When the gate is closed, the render is done on a graphics object only once, 
      * preventing the draw to keep on computing operations that do not yield a different visual output than the one currently
      * being displayed. When the gate is open, the render is done on the regular p5 canvas
-     * @param {color} backgroundColor 
      */
-    render(backgroundColor) {
+    render() {
+        gp5.background(this.currentBackground);
         if (this.renderGate) {
             this.renderOnP5();
         } else {
-            this.renderOnGraphics(backgroundColor);
+            //this.graphicsRendered = false;
+            this.renderOnGraphics();
             gp5.image(this.graphics, -this.graphics.width / 2, -this.graphics.height / 2);
         }
         this.renderGate = false;
@@ -62,21 +64,21 @@ class Canvas {
         gp5.rect(0, gp5.height - 15, gp5.width, 15)
         gp5.fill(210);
         // show clusters
-        //ClusterFactory.vClusters.forEach(element => { element.show(gp5) });
+        ClusterFactory.vClusters.forEach(element => { element.show(gp5) });
 
         // show edges
-        //EdgeFactory.vEdges.forEach(element => { element.show(gp5) });
-        gp5.ellipse(0, 0, 100);
-        this.rendered = false;
+        EdgeFactory.vEdges.forEach(element => { element.show(gp5) });
+        gp5.ellipse(0, 0, 10);
+        this.graphicsRendered = false;
     }
 
     /**
      *  render on custom p5.Renderer
      */
-    renderOnGraphics(backgroundColor) {
+    renderOnGraphics() {
 
-        if (!this.rendered) {
-            this.graphics.background(backgroundColor);
+        if (!this.graphicsRendered) {
+            this.graphics.background(this.currentBackground);
 
             // draw description box
             this.graphics.fill(250, 150);
@@ -90,12 +92,12 @@ class Canvas {
             this.graphics.fill(200);
 
             // show clusters
-            //ClusterFactory.vClusters.forEach(element => { element.show(graphics) });
+            ClusterFactory.vClusters.forEach(element => { element.show(this.graphics) });
 
             // show edges
-            //EdgeFactory.vEdges.forEach(element => { element.show(graphics) });
-            this.graphics.ellipse(0, 0, 100);
-            this.rendered = true;
+            EdgeFactory.vEdges.forEach(element => { element.show(this.graphics) });
+            this.graphics.ellipse(0, 0, 10);
+            this.graphicsRendered = true;
         }
     }
 
@@ -112,12 +114,18 @@ class Canvas {
         Canvas._canvasMouse.div(this._zoom);
         // Pan
         Canvas._canvasMouse.sub(this._offset);
-
         // **** Transformation of canvas
         // Use scale for 2D "zoom"
         gp5.scale(this._zoom);
         // The offset
         gp5.translate(this._offset.x, this._offset.y);
+    }
+
+    /**
+     * Updated canvas */
+    update() {
+        this.renderGate = true;
+        this.render();
     }
 
     /**
@@ -134,8 +142,6 @@ class Canvas {
      */
     zoomIn(val) {
         this._zoom += val;
-        // The values of this substraction factor need to be revised
-        // this._offset.sub(gp5.createVector(100, 80, 0));
     }
 
     /**
@@ -147,8 +153,6 @@ class Canvas {
         if (this._zoom < 0.1) {
             this._zoom = 0.1;
         }
-        // The values of this addition factor need to be revised
-        // this._offset.add(gp5.createVector(100, 80, 0));
     }
 
     /**
@@ -181,11 +185,6 @@ class Canvas {
         renderer.textAlign(gp5.RIGHT);
         renderer.text("Mouse on canvas: x: " + Canvas._canvasMouse.x.toFixed(1) + ", y: " + Canvas._canvasMouse.y.toFixed(2) + "' z:" + Canvas._canvasMouse.z.toFixed(2), pos.x, pos.y + 25);
         renderer.text("Zoom: " + this._zoom.toFixed(1), pos.x, pos.y + 35);
-        // if (UserSettings.getInstance().getAdaptivePerformance()) {
-        //     gp5.fill(255, 0, 0);
-        //     gp5.text("Adaptive Performance Enabled", pos.x, pos.y + 45);
-        //     gp5.fill(255, 90);
-        // }
         renderer.text("Offset: " + this._offset, pos.x, pos.y + 45);
         renderer.text("startOffset: " + this._startOffset, pos.x, pos.y + 55);
         renderer.text("endOffset: " + this._endOffset, pos.x, pos.y + 65);
@@ -212,41 +211,6 @@ class Canvas {
         gp5.line(-gp5.width, 0, gp5.width, 0);
     }
 
-    /**
-     * Adjusts the global node relevance threshold that allows its edges to be
-     * displayed. The node relevance is determined by its degree.
-     * 
-     * In other words, it shows the edges connecting a given percentage of
-     * highly connected nodes
-     */
-    adjustThresholdAdaptivePerformance() {
-
-        this._isAdapting = false;
-        if (gp5.frameRate > 15) {
-            if (gp5.frameRate < 17) {
-                this._adaptiveDegreeThresholdPercentage -= 0.05;
-            } else {
-                // The lower the parameter the faster the edge visualization
-                this._adaptiveDegreeThresholdPercentage -= 0.2;
-            }
-            if (this._adaptiveDegreeThresholdPercentage < 1) {
-                this._adaptiveDegreeThresholdPercentage = 1;
-            }
-            this._isAdapting = true;
-
-        } else if (gp5.frameRate < 13) {
-            if (gp5.frameRate > 11) {
-                this._adaptiveDegreeThresholdPercentage += 0.02;
-            } else {
-                this._adaptiveDegreeThresholdPercentage += 0.08;
-            }
-            if (this._adaptiveDegreeThresholdPercentage > 100) {
-                this._adaptiveDegreeThresholdPercentage = 100;
-            }
-            this._isAdapting = true;
-        }
-    }
-
     // *** Events registration 
 
     mouseEvents() {
@@ -266,12 +230,12 @@ class Canvas {
     mPressed(evt) {
         this._startOffset.set(gp5.mouseX, gp5.mouseY, 0);
         Canvas.mouseDown = true;
-        this.renderGate = true
+        this.renderGate = true;
+        console.log("pressed");
     }
 
     /** Mouse left button released */
     mReleased(evt) {
-        this.canvasBeingTransformed = false;
         Canvas.mouseDown = false;
         this.renderGate = false
     }
@@ -316,47 +280,10 @@ class Canvas {
         this.renderGate = true;
         if (k.key == "Shift") {
             Canvas.shiftDown = false;
-            Canvas.canvasBeingTransformed = false;
             this._adaptiveDegreeThresholdPercentage = 100;
-            //resetKeyEventsOnCanvas();
         }
     }
 
-
-    // // Move events
-    // p5.mouseMoved = function() {
-    //     renderGate = true;
-
-    //     ClusterFactory.vClusters.forEach(element => {
-    //         element.mouseOverEvents();
-    //     });
-    // }
-
-    // // click events
-    // p5.mouseClicked = function() {
-    //     renderGate = true;
-
-    //     ClusterFactory.vClusters.forEach(element => {
-    //         element.mouseClickedEvents();
-    //     });
-    // }
-
-    // // drag events
-    // p5.mouseDragged = function() {
-    //     renderGate = true;
-
-    //     ClusterFactory.vClusters.forEach(element => {
-    //         element.mouseDraggedEvents();
-    //     })
-    // }
-
 }
-// An Event to inform if there was an event on the canvas. This is used to
-// control the visibility of visual elements while the mouse is acting over
-// them
 Canvas.shiftDown = false;
 Canvas.mouseDown = false;
-Canvas.mouseEventOnCanvas = false;
-Canvas.keyEventOnCanvas = false;
-Canvas.canvasBeingTransformed = false;
-Canvas.canvasBeingZoomed = false;

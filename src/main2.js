@@ -18,30 +18,17 @@ var main = function(p5) {
     let model;
     let canvas;
 
-    // current background
-    let backColor = 100;
-
     // Preload
     p5.preload = function() {
+        // get font
         myFont = gp5.loadFont("../fonts/Roboto-Light.ttf");
-        // Enable the model dropdown selector
-        model = document.getElementById("modelChoice");
-        //preload(model.value);
-        model.addEventListener('change', () => {
-            switchModel(model.value);
-        })
-
+        // get color palette
         let paletteNames = ["palette1.txt", "palette2.txt", "palette3.txt", "palette4.txt"]
-        ColorFactory.loadPalettes(pathPalettes, paletteNames, callBackColors);
-
-    }
-
-    function callBackColors() {
-        gp5.loadJSON(pathNetworks + model.value + '_network.json', onLoadNetwork)
+        ColorFactory.loadPalettes(pathPalettes, paletteNames);
     }
 
 
-    // Does this only once
+    // Setup variables
     p5.setup = function() {
         // Create canvas
         gp5.createCanvas(window.innerWidth - 60, 740, gp5.WEBGL);
@@ -49,54 +36,74 @@ var main = function(p5) {
         gp5.textFont(myFont);
         graphics.textFont(myFont);
         canvas = new Canvas(graphics);
-
         // Connect with HTML GUI
         document.getElementById("clearEdges").onclick = clearEdges;
-
+        document.getElementById("backgroundContrast").onclick = switchBackground;
         // Add GUI FORMS
         addClusterModalForm();
         addNodeModalForm();
         exportNetworkModalForm();
         importNetworkModalForm();
-
-
-
-        // canvas refresh
-        //animate();
+        // Enable the model dropdown selector
+        model = document.getElementById("modelChoice");
+        model.addEventListener('change', () => {
+            switchModel(model.value);
+        });
     }
 
     // In a loop
     p5.draw = function() {
-        gp5.background(backColor);
-
-        if (document.getElementById("backgroundContrast").checked) {
-            backColor = 150;
-        } else {
-            backColor = 230;
-        }
         // draw elements
         gp5.push();
         canvas.transform()
+        canvas.render();
         canvas.originCrossHair();
-        canvas.render(backColor);
         gp5.pop();
-
         // draw canvas status
         canvas.displayValues(gp5.createVector((gp5.width / 2) - 10, (-gp5.height / 2) + 5), gp5)
         canvas.showLegend(gp5.createVector((gp5.width / 2) - 10, (gp5.height / 2) - 40), gp5)
     }
 
-    onLoadNetwork = function(data) {
-        console.log("Ready for drawing");
+    /*** GUI CALLBACKS */
+    switchModel = function(value) {
+        console.log("Switching to " + value + " network");
+        p5.loadJSON(pathNetworks + value + '_network.json', onLoadNetwork);
     }
 
+    onLoadNetwork = function(data) {
+        nodesTemp = data.nodes;
+        buildClusters(nodesTemp);
+        edgesTemp = data.edges;
+        buildEdges(edgesTemp);
+        canvas.update();
+    }
 
+    buildClusters = function(result) {
+        ClusterFactory.reset();
+        ClusterFactory.makeClusters(result);
+    }
+
+    buildEdges = function(result) {
+        EdgeFactory.reset();
+        EdgeFactory.buildEdges(result, ClusterFactory.clusters)
+    }
+
+    /** Delete edges and re-initialize nodes */
+    clearEdges = function() {
+        EdgeFactory.reset();
+        ClusterFactory.resetAllConnectors();
+    }
+
+    switchBackground = function(evt) {
+        if (document.getElementById("backgroundContrast").checked) {
+            canvas.currentBackground = 150;
+        } else {
+            canvas.currentBackground = 230;
+        }
+        canvas.update();
+    }
 }
 
-function animate() {
-    requestAnimationFrame(animate)
-    canvas.transform()
-}
 
 
 

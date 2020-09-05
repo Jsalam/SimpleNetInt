@@ -195,4 +195,4 @@ var main = function(p5) {
         }
     }
 }
-var gp5 = new p5(main, "model");
+var globalP5 = new p5(main, "model");
