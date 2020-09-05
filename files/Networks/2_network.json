@@ -1,113 +1,108 @@
 {
-  "nodes": [
-    {
-      "clusterID": "Innovation_Type",
-      "clusterLabel": "Innovation_Type",
-      "clusterDescription": "...",
-      "nodes": [
-        {
-          "id": 0,
-          "nodeLabel": "Technology",
-          "nodeDescription": "Category description",
-          "polarity": "RIGHT",
-          "pajekIndex": 1
+    "nodes": [{
+            "clusterID": "1",
+            "clusterLabel": "Innovation_Type",
+            "clusterDescription": "...",
+            "nodes": [{
+                    "id": 0,
+                    "nodeLabel": "Technology",
+                    "nodeDescription": "Category description",
+                    "polarity": "RIGHT",
+                    "pajekIndex": 1
+                },
+                {
+                    "id": 1,
+                    "nodeLabel": "Methodology",
+                    "nodeDescription": "Category description",
+                    "polarity": "RIGHT",
+                    "pajekIndex": 2
+                },
+                {
+                    "id": 2,
+                    "nodeLabel": "Process",
+                    "nodeDescription": "Category description",
+                    "polarity": "RIGHT",
+                    "pajekIndex": 3
+                },
+                {
+                    "id": 3,
+                    "nodeLabel": "Knowledge framework",
+                    "nodeDescription": "Category description",
+                    "polarity": "RIGHT",
+                    "pajekIndex": 4
+                }
+            ]
         },
         {
-          "id": 1,
-          "nodeLabel": "Methodology",
-          "nodeDescription": "Category description",
-          "polarity": "RIGHT",
-          "pajekIndex": 2
+            "clusterID": "2",
+            "clusterLabel": "Theme_A",
+            "clusterDescription": "...",
+            "nodes": [{
+                "id": 0,
+                "nodeLabel": "3",
+                "nodeDescription": "Node description",
+                "polarity": "BOTH",
+                "pajekIndex": 5
+            }]
         },
         {
-          "id": 2,
-          "nodeLabel": "Process",
-          "nodeDescription": "Category description",
-          "polarity": "RIGHT",
-          "pajekIndex": 3
+            "clusterID": "3",
+            "clusterLabel": "Theme_B",
+            "clusterDescription": "...",
+            "nodes": []
         },
         {
-          "id": 3,
-          "nodeLabel": "Knowledge framework",
-          "nodeDescription": "Category description",
-          "polarity": "RIGHT",
-          "pajekIndex": 4
+            "clusterID": "4",
+            "clusterLabel": "Theme_C",
+            "clusterDescription": "...",
+            "nodes": []
+        },
+        {
+            "clusterID": "5",
+            "clusterLabel": "Theme_D",
+            "clusterDescription": "...",
+            "nodes": []
+        },
+        {
+            "clusterID": "6",
+            "clusterLabel": "Theme_E",
+            "clusterDescription": "...",
+            "nodes": []
         }
-      ]
-    },
-    {
-      "clusterID": "Theme_A",
-      "clusterLabel": "Theme_A",
-      "clusterDescription": "...",
-      "nodes": [
+    ],
+    "edges": [{
+            "source": {
+                "cluster": "1",
+                "cat": 2,
+                "index": 0,
+                "polarity": true,
+                "pajekIndex": 3
+            },
+            "target": {
+                "cluster": "2",
+                "cat": 0,
+                "index": 0,
+                "polarity": false,
+                "pajekIndex": 5
+            },
+            "weight": 1
+        },
         {
-          "id": 0,
-          "nodeLabel": "Node name",
-          "nodeDescription": "Node description",
-          "polarity": "BOTH",
-          "pajekIndex": 5
+            "source": {
+                "cluster": "1",
+                "cat": 1,
+                "index": 0,
+                "polarity": true,
+                "pajekIndex": 2
+            },
+            "target": {
+                "cluster": "2",
+                "cat": 0,
+                "index": 1,
+                "polarity": false,
+                "pajekIndex": 5
+            },
+            "weight": 1
         }
-      ]
-    },
-    {
-      "clusterID": "Theme_B",
-      "clusterLabel": "Theme_B",
-      "clusterDescription": "...",
-      "nodes": []
-    },
-    {
-      "clusterID": "Theme_C",
-      "clusterLabel": "Theme_C",
-      "clusterDescription": "...",
-      "nodes": []
-    },
-    {
-      "clusterID": "Theme_D",
-      "clusterLabel": "Theme_D",
-      "clusterDescription": "...",
-      "nodes": []
-    },
-    {
-      "clusterID": "Theme_E",
-      "clusterLabel": "Theme_E",
-      "clusterDescription": "...",
-      "nodes": []
-    }
-  ],
-  "edges": [
-    {
-      "source": {
-        "cluster": "Innovation_Type",
-        "cat": 2,
-        "index": 0,
-        "polarity": true,
-        "pajekIndex": 3
-      },
-      "target": {
-        "cluster": "Theme_A",
-        "cat": 0,
-        "index": 0,
-        "polarity": false,
-        "pajekIndex": 5
-      },
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "Innovation_Type",
-        "cat": 1,
-        "index": 0,
-        "polarity": true,
-        "pajekIndex": 2
-      },
-      "target": {
-        "cluster": "Theme_A",
-        "cat": 0,
-        "index": 1,
-        "polarity": false,
-        "pajekIndex": 5
-      },
-      "weight": 1
-    }
-  ]
+    ]
 }

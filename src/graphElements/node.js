@@ -162,7 +162,7 @@ class Node {
                         } else {
                             let obs = edg.target.nodeObserver;
                             // for each of those categories, repeat i), ii)
-                            console.log("__ To " + obs.label)
+                            // console.log("__ To " + obs.label)
                             if (!obs.inFwdPropagation) {
                                 obs.propagateForward2(obs, clicked);
                             } else {

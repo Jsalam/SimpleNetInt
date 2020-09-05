@@ -36,7 +36,7 @@ class Utilities {
 
         let pajekOutput = pajekNodes.concat(pajekEdges)
 
-        globalP5.saveStrings(pajekOutput, name + "_pajekNetwork", "net")
+        gp5.saveStrings(pajekOutput, name + "_pajekNetwork", "net")
         console.log("saved pajek for " + name)
     }
 
@@ -149,11 +149,11 @@ class Utilities {
     static loadJsonNetworks(path, fileNames) {
         let temp = { n: fileNames.length, weighted: true }
         for (let i = 0; i < fileNames.length; i++) {
-            globalP5.loadJSON(path + fileNames[i] + "_network.json", function (cb) {
+            gp5.loadJSON(path + fileNames[i] + "_network.json", function(cb) {
                 temp.network = cb;
                 Utilities.mergeJSON(temp)
             });
         }
     }
 }
-Utilities.mergedJSON = {nodes:[], edges:[]};
+Utilities.mergedJSON = { nodes: [], edges: [] };

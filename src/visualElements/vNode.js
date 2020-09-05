@@ -62,7 +62,7 @@ class VNode extends Button {
     }
 
     updateCoords(pos, sequence) {
-        this.setPos(globalP5.createVector(pos.x, pos.y + (sequence * this.height) + (sequence * this.categoryGap)));
+        this.setPos(gp5.createVector(pos.x, pos.y + (sequence * this.height) + (sequence * this.categoryGap)));
         this.updateConnectorsCoords();
     }
 
@@ -85,6 +85,8 @@ class VNode extends Button {
 
     show(builder) {
         builder.strokeWeight(1);
+        builder.fill(0, 255, 0)
+        builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, 2);
         // in case the color palette runs out of colors
         if (!this.color) {
             this.color = '#d4d4d4';
@@ -124,6 +126,8 @@ class VNode extends Button {
             builder.stroke(250);
         }
 
+
+
         // Show linked only
         if (document.getElementById('filterLinked').checked) {
             // filter by edge number
@@ -134,12 +138,12 @@ class VNode extends Button {
                 builder.strokeWeight(2);
                 builder.stroke(this.color);
                 //builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-                builder.ellipseMode(globalP5.CENTER)
+                builder.ellipseMode(gp5.CENTER)
                 builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
                 // draw the label
                 builder.fill("#000000");
-                builder.textAlign(globalP5.CENTER, globalP5.CENTER);
+                builder.textAlign(gp5.CENTER, gp5.CENTER);
                 builder.noStroke();
                 builder.textSize(10);
                 if (this.clicked) {
@@ -174,12 +178,12 @@ class VNode extends Button {
                 // draw the rect
                 builder.fill(this.color.concat(dimmed));
                 //builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-                builder.ellipseMode(globalP5.CENTER)
+                builder.ellipseMode(gp5.CENTER)
                 builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
                 // draw the label
                 builder.fill("#00000070");
-                builder.textAlign(globalP5.CENTER, globalP5.CENTER);
+                builder.textAlign(gp5.CENTER, gp5.CENTER);
                 builder.noStroke();
                 builder.textSize(10);
                 builder.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
@@ -191,12 +195,12 @@ class VNode extends Button {
         } else {
             // draw the rect
             // builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-            builder.ellipseMode(globalP5.CENTER)
+            builder.ellipseMode(gp5.CENTER)
             builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
             // draw the label
             builder.fill("#000000");
-            builder.textAlign(globalP5.CENTER, globalP5.CENTER);
+            builder.textAlign(gp5.CENTER, gp5.CENTER);
             builder.noStroke();
             builder.textSize(10);
             if (this.clicked) {
@@ -233,13 +237,13 @@ class VNode extends Button {
 
     showDescription(builder) {
         builder.fill("#000000");
-        builder.textAlign(globalP5.LEFT, globalP5.TOP);
+        builder.textAlign(gp5.LEFT, gp5.TOP);
         builder.strokeWeight(0.5);
         builder.textSize(12);
-        builder.text(this.node.label, 95, globalP5.height - 80, globalP5.width - 200, 97);
+        builder.text(this.node.label, 95, gp5.height - 80, gp5.width - 200, 97);
         builder.noStroke();
         builder.textSize(11);
-        builder.text(this.node.description, 100, globalP5.height - 62, globalP5.width - 200, 97);
+        builder.text(this.node.description, 100, gp5.height - 62, gp5.width - 200, 97);
 
     }
 
@@ -278,8 +282,8 @@ class VNode extends Button {
         }
         if (this.mouseIsOver) {
             this.dragged = true;
-            this.pos.x = globalP5.mouseX - this.delta.x;
-            this.pos.y = globalP5.mouseY - this.delta.y;
+            this.pos.x = gp5.mouseX - this.delta.x;
+            this.pos.y = gp5.mouseY - this.delta.y;
             this.updateConnectorsCoords()
         }
     }
@@ -290,7 +294,7 @@ class VNode extends Button {
             this.node.propagate(this.node, this.clicked);
         }
         this.dragged = false;
-        this.deltaMouse == undefined;
+        this.delta = undefined;
         this.vPositives.forEach(connector => {
             connector.mouseClickedEvents();
         });

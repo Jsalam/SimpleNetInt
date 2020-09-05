@@ -23,7 +23,7 @@ saveJSON = function() {
         if (fileSuffix) {
             filename = fileSuffix + "_" + filename;
         }
-        globalP5.saveJSON(output, filename);
+        gp5.saveJSON(output, filename);
     } else {
         alert("Missing file name");
     }

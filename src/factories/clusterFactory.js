@@ -3,6 +3,8 @@ class ClusterFactory {
     static makeClusters(data) {
         ClusterFactory.clusters = [];
         this.vClusters = [];
+        // global function from addClusterModalForm.js
+        clearClusterModalFormList();
         for (let index = 0; index < Object.keys(data).length; index++) {
             this.instantiateCluster(data[index]);
         }
@@ -43,6 +45,8 @@ class ClusterFactory {
         cluster.setDescription(data.clusterDescription);
         this.makeNodes(cluster, data);
         ClusterFactory.clusters.push(cluster);
+        // global function from addClusterModalForm.js
+        addClusterToModalFormList(data.clusterID, data.clusterLabel);
         console.log("Cluster added. Total: " + ClusterFactory.clusters.length)
     }
 
@@ -87,7 +91,7 @@ class ClusterFactory {
         for (let index = 0; index < ClusterFactory.clusters.length; index++) {
             output.push(ClusterFactory.clusters[index].getJSON());
         }
-        globalP5.saveJSON(output, filename);
+        gp5.saveJSON(output, filename);
     }
 
     static reset() {
@@ -102,10 +106,6 @@ class ClusterFactory {
             if (vClust.cluster.id == cluster.id)
                 return vClust;
         }
-    }
-
-    static refreshColors(clusterIndex, palette) {
-        ClusterFactory.vClusters[clusterIndex].setPalette(palette);
     }
 
     static resetAllConnectors() {

@@ -1,6 +1,6 @@
 addNodeModalForm = function() {
 
-    document.getElementById("SubmitAddCategoryModal").onclick = getData
+    document.getElementById("SubmitAddNodeModal").onclick = getData
 }
 
 getData = function() {
@@ -9,6 +9,7 @@ getData = function() {
     let description = document.getElementById("catDescription").value
     let positive = document.getElementById("positive").checked
     let negative = document.getElementById("negative").checked
+    console.log(cluster)
 
     if (cluster) {
         let clusterTmp = ClusterFactory.clusters[cluster.value];

@@ -13,10 +13,10 @@ class VConnector extends Button {
     updateCoords(pos, catWidth, sequence, height) {
         if (this.connector.polarity == true) {
             // right
-            this.setPos(globalP5.createVector(pos.x + catWidth, pos.y + (sequence * height)));
+            this.setPos(gp5.createVector(pos.x + catWidth, pos.y + (sequence * height)));
         } else {
             // left
-            this.setPos(globalP5.createVector(pos.x - this.width, pos.y + (sequence * height)));
+            this.setPos(gp5.createVector(pos.x - this.width, pos.y + (sequence * height)));
         }
         this.setHeight(height);
     }
@@ -42,12 +42,10 @@ class VConnector extends Button {
         }
         // builder.rect(this.pos.x, this.pos.y, this.width, this.height);
         builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width)
-        builder.textAlign(globalP5.CENTER, globalP5.CENTER);
+        builder.textAlign(gp5.CENTER, gp5.CENTER);
         builder.fill('#000000');
         builder.stroke('#000000');
-        builder.blendMode(globalP5.SOFT_LIGHT);
         builder.text('+', this.pos.x + this.width / 2, this.pos.y + this.height / 2);
-        builder.blendMode(globalP5.BLEND);
     }
 
 

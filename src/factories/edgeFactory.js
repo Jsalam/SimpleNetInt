@@ -99,7 +99,7 @@ class EdgeFactory {
         for (let index = 0; index < EdgeFactory.edges.length; index++) {
             output.push(EdgeFactory.edges[index].id);
         }
-        globalP5.saveJSON(output, filename);
+        gp5.saveJSON(output, filename);
     }
 
     static reset() {

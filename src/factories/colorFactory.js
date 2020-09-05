@@ -4,19 +4,19 @@ class ColorFactory {
         return new Promise(resolve => {
             resolve(
                 // First palette
-                globalP5.loadStrings(path + names[0], data => {
+                gp5.loadStrings(path + names[0], data => {
                     ColorFactory.palettes.push(data);
                     console.log(0 + ", :" + ColorFactory.palettes.length);
                     // Second palette
-                    globalP5.loadStrings(path + names[1], data => {
+                    gp5.loadStrings(path + names[1], data => {
                         ColorFactory.palettes.push(data);
                         console.log(1 + ", :" + ColorFactory.palettes.length);
                         // Third palette
-                        globalP5.loadStrings(path + names[2], data => {
+                        gp5.loadStrings(path + names[2], data => {
                             ColorFactory.palettes.push(data);
                             console.log(3 + ", :" + ColorFactory.palettes.length);
                             // Fourth palette
-                            globalP5.loadStrings(path + names[3], data => {
+                            gp5.loadStrings(path + names[3], data => {
                                 ColorFactory.palettes.push(data);
                                 console.log(4 + ", :" + ColorFactory.palettes.length);
                                 // Call the "then" function once all the palettes are completed

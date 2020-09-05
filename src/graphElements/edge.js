@@ -8,18 +8,18 @@ class Edge {
         //console.log("new edge from " + this.source.id);
     }
 
-    setWeight(val){
+    setWeight(val) {
         this.weight = val;
     }
 
-    increaseWeight(){
+    increaseWeight() {
         this.weight++;
     }
 
     setTarget(target) {
         if (target.polarity != this.source.polarity) {
             this.target = target;
-            this.id = { 'source': this.source.id, 'target': this.target.id, 'weight':this.weight };
+            this.id = { 'source': this.source.id, 'target': this.target.id, 'weight': this.weight };
             return true;
         } else {
             console.log("Impossible edge. Connectors with same polarity");

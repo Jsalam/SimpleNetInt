@@ -68,9 +68,9 @@ class VEdge {
         // If the edge does not have target yet
         if (!this.vTarget) {
             builder.stroke(this.vSource.color.concat(this.alpha));
-            let org = globalP5.createVector(this.vSource.pos.x + (this.vSource.width / 2), this.vSource.pos.y + (this.vSource.height / 2));
-            let end = globalP5.createVector(globalP5.mouseX, globalP5.mouseY);
-            let arm = globalP5.dist(org.x, org.y, end.x, org.y) / 5;
+            let org = gp5.createVector(this.vSource.pos.x + (this.vSource.width / 2), this.vSource.pos.y + (this.vSource.height / 2));
+            let end = gp5.createVector(gp5.mouseX, gp5.mouseY);
+            let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;
             builder.noFill();
             if (end.x <= org.x) {
                 builder.beginShape();
@@ -89,9 +89,9 @@ class VEdge {
             }
         } else {
             builder.stroke(this.vSource.color.concat(this.alpha));
-            let org = globalP5.createVector(this.vSource.pos.x + (this.vSource.width / 2), this.vSource.pos.y + (this.vSource.height / 2));
-            let end = globalP5.createVector(this.vTarget.pos.x + (this.vTarget.width / 2), this.vTarget.pos.y + (this.vTarget.height / 2));
-            let arm = globalP5.dist(org.x, org.y, end.x, org.y) / 5;
+            let org = gp5.createVector(this.vSource.pos.x + (this.vSource.width / 2), this.vSource.pos.y + (this.vSource.height / 2));
+            let end = gp5.createVector(this.vTarget.pos.x + (this.vTarget.width / 2), this.vTarget.pos.y + (this.vTarget.height / 2));
+            let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;
             builder.noFill();
             if (end.x <= org.x) {
                 builder.beginShape();

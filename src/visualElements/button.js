@@ -1,6 +1,6 @@
 class Button {
     constructor(posX, posY, width, height) {
-        this.pos = globalP5.createVector(posX, posY);
+        this.pos = gp5.createVector(posX, posY);
         this.width = width;
         this.height = height;
         this.mouseIsOver = false;
@@ -11,12 +11,12 @@ class Button {
 
     show() {
         if (!this.mouseIsOver) {
-            globalP5.noFill();
+            gp5.noFill();
         } else {
-            globalP5.fill("#F0F0F080");
+            gp5.fill("#F0F0F080");
         }
 
-        globalP5.rect(this.pos.x, this.pos.y, this.width, this.height);
+        gp5.rect(this.pos.x, this.pos.y, this.width, this.height);
     }
 
     setPos(pos) {
@@ -40,10 +40,10 @@ class Button {
     }
 
     mouseOver() {
-        if (globalP5.mouseX > this.pos.x &&
-            globalP5.mouseX < this.pos.x + this.width &&
-            globalP5.mouseY > this.pos.y &&
-            globalP5.mouseY < this.pos.y + this.height) {
+        if (gp5.mouseX > this.pos.x &&
+            gp5.mouseX < this.pos.x + this.width &&
+            gp5.mouseY > this.pos.y &&
+            gp5.mouseY < this.pos.y + this.height) {
             this.mouseIsOver = true;
         } else {
             this.mouseIsOver = false;
@@ -51,10 +51,11 @@ class Button {
     }
 
     getDeltaMouse() {
-        let rtn = globalP5.createVector(0, 0);
+        let rtn = gp5.createVector(0, 0);
         if (this.mouseIsOver) {
-            rtn.x = globalP5.mouseX - this.pos.x;
-            rtn.y = globalP5.mouseY - this.pos.y;
+            rtn.x = gp5.mouseX - this.pos.x;
+            rtn.y = gp5.mouseY - this.pos.y;
+            console.log(rtn);
         }
         return rtn;
     }

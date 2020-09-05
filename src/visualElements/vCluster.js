@@ -1,6 +1,6 @@
 class VCluster {
     constructor(cluster, x, y, width, height, palette) {
-        this.pos = globalP5.createVector(x, y);
+        this.pos = gp5.createVector(x, y);
         this.width = width;
         this.height = height;
         this.vNodes = [];
@@ -43,7 +43,7 @@ class VCluster {
 
     addVNode(vNode, data) {
         if (data) {
-            const pos = globalP5.createVector(data.posX, data.posY, data.posZ);
+            const pos = gp5.createVector(data.posX, data.posY, data.posZ);
             vNode.updateCoords(pos, 0);
             vNode.setColor(data.color);
         } else {
@@ -71,7 +71,7 @@ class VCluster {
     }
 
     show(builder) {
-        builder.textAlign(globalP5.LEFT, globalP5.TOP);
+        builder.textAlign(gp5.LEFT, gp5.TOP);
         if (this.cluster.label) {
             builder.textSize(12);
             builder.fill(0);

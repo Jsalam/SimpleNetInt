@@ -16,31 +16,11 @@ getDataImport = function() {
     buildEdgesImport(edgesImported);
 }
 
-callbackNodes = function(files) {
-    //Only process json files.
-    if (files[0].type.endsWith('/json')) {
-        document.getElementById('nodesFileName').innerHTML = files[0].name
-        loadFile(files[0], 'nodes');
-    } else {
-        alert("Wrong file format. Must be a JSON file")
-    }
-}
-
-callbackEdges = function(files) {
-    //Only process json files.
-    if (files[0].type.endsWith('json')) {
-        document.getElementById('edgesFileName').innerHTML = files[0].name
-        loadFile(files[0], 'edges');
-    } else {
-        alert("Wrong file format. Must be a JSON file")
-    }
-}
-
 callbackNetwork = function(files) {
     //Only process json files.
     if (files[0].type.endsWith('json')) {
         document.getElementById('networkFileName').innerHTML = files[0].name
-        loadFile(files[0], 'network');
+        loadFile(files[0]);
         // add file name to dropdown menu of models
         // let dropdown = document.getElementById('modelChoice');
         // let option = document.createElement("option");
@@ -52,21 +32,15 @@ callbackNetwork = function(files) {
     }
 }
 
-loadFile = function(file, kind) {
+loadFile = function(file) {
     let reader = new FileReader();
     // Closure to capture the file information.
     reader.onload = (function(theFile) {
         return function(e) {
             // Read text data and parse to JSON.
             let data = JSON.parse(e.target.result)
-            if (kind == 'nodes') {
-                nodesImported = data;
-            } else if (kind == 'edges') {
-                edgesImported = data;
-            } else if (kind == 'network') {
-                nodesImported = data.nodes;
-                edgesImported = data.edges;
-            }
+            nodesImported = data.nodes;
+            edgesImported = data.edges;
         };
     })(file);
     // Read in the file as text.
@@ -127,10 +101,6 @@ makeDroppable = function(element, callback) {
 buildClustersImport = function(result) {
     ClusterFactory.reset();
     ClusterFactory.makeClusters(result);
-    ClusterFactory.refreshColors(0, ColorFactory.palettes[0]);
-    ClusterFactory.refreshColors(1, ColorFactory.palettes[1]);
-    ClusterFactory.refreshColors(2, ColorFactory.palettes[2]);
-    ClusterFactory.refreshColors(3, ColorFactory.palettes[3]);
 }
 
 buildEdgesImport = function(result) {

@@ -6,6 +6,9 @@ var main = function(p5) {
     let nodesTemp;
     let graphics;
 
+    // font
+    let myFont;
+
     // Control rendering loop
     let renderGate;
     let rendered;
@@ -22,6 +25,7 @@ var main = function(p5) {
 
     // Preload
     p5.preload = function() {
+        myFont = p5.loadFont("../fonts/Roboto-Medium.ttf");
         // Enable the model dropdown selector
         model = document.getElementById("modelChoice");
         //preload(model.value);
@@ -30,22 +34,27 @@ var main = function(p5) {
         })
 
         let paletteNames = ["palette1.txt", "palette2.txt", "palette3.txt", "palette4.txt"]
-        ColorFactory.loadPalettes(pathPalettes, paletteNames, loadAfter)
+        ColorFactory.loadPalettes(pathPalettes, paletteNames, callBackColors);
+
     }
 
-    function loadAfter() {
+    function callBackColors() {
         p5.loadJSON(pathNetworks + model.value + '_network.json', onLoadNetwork)
     }
 
 
-    // Only once
+    // Does this only once
     p5.setup = function() {
         // Create cavas
-        p5.createCanvas(window.innerWidth - 60, 740);
-        graphics = p5.createGraphics(p5.width * p5.pixelDensity(), p5.height * p5.pixelDensity());
+        p5.createCanvas(window.innerWidth - 60, 740, p5.WEBGL);
+        graphics = p5.createGraphics(p5.width * p5.pixelDensity(), p5.height * p5.pixelDensity(), p5.WEBGL);
+        p5.textFont(myFont);
+        graphics.textFont(myFont);
 
         // Connect with HTML GUI
         document.getElementById("clearEdges").onclick = clearEdges;
+
+
 
         // Add GUI FORMS
         addClusterModalForm();
@@ -186,4 +195,4 @@ var main = function(p5) {
         }
     }
 }
-var globalP5 = new p5(main, "model");
+var gp5 = new p5(main, "model");

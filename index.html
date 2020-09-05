@@ -31,27 +31,28 @@
     <!-- Control -->
 
 
-    <script src="src/main.js"></script>
-    <script src="src/addClusterModalForm.js"></script>
-    <script src="src/addNodeModalForm.js"></script>
-    <script src="src/exportModalForm.js"></script>
-    <script src="src/importModalForm.js"></script>
+    <script src="src/main2.js"></script>
+    <script src="src/canvas/canvas.js"></script>
+    <script src="src/GUI/forms/addClusterModalForm.js"></script>
+    <script src="src/GUI/forms/addNodeModalForm.js"></script>
+    <script src="src/GUI/forms/exportModalForm.js"></script>
+    <script src="src/GUI/forms/importModalForm.js"></script>
 
     <!-- Model -->
-    <script src="src/model/node.js"></script>
-    <script src="src/model/connector.js"></script>
-    <script src="src/model/edge.js"></script>
-    <script src="src/model/cluster.js"></script>
-    <script src="src/model/edgeFactory.js"></script>
-    <script src="src/model/clusterFactory.js"></script>
-    <script src="src/model/colorFactory.js"></script>
+    <script src="src/graphElements/node.js"></script>
+    <script src="src/graphElements/connector.js"></script>
+    <script src="src/graphElements/edge.js"></script>
+    <script src="src/graphElements/cluster.js"></script>
+    <script src="src/factories/edgeFactory.js"></script>
+    <script src="src/factories/clusterFactory.js"></script>
+    <script src="src/factories/colorFactory.js"></script>
 
     <!-- View -->
-    <script src="src/view/button.js"></script>
-    <script src="src/view/vNode.js"></script>
-    <script src="src/view/vConnector.js"></script>
-    <script src="src/view/vEdge.js"></script>
-    <script src="src/view/vCluster.js"></script>
+    <script src="src/visualElements/button.js"></script>
+    <script src="src/visualElements/vNode.js"></script>
+    <script src="src/visualElements/vConnector.js"></script>
+    <script src="src/visualElements/vEdge.js"></script>
+    <script src="src/visualElements/vCluster.js"></script>
 
     <!-- Utils-->
     <script src="src/utilities/utilities.js"></script>
@@ -64,7 +65,7 @@
     <div class="container-fluid" style="position: sticky; margin: 10px; background-color: rgba(255, 255, 255, 0.247); top: 0px; z-index: 100">
         <div class="row">
             <div class="col-sm-1">
-                <h4>Bezier networks</h4>
+                <h4>Simple networks</h4>
             </div>
             <!-- File -->
             <div class="col-sm-1">
@@ -98,7 +99,7 @@
                 <div>
                     <p>EDIT</p>
                     <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addClusterModal">Add cluster</button>
-                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addCategoryModal">Add node</button>
+                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addNodeModal">Add node</button>
                     <button class="btn btn-default btn-xs" id="clearEdges" name="clearEdgs">Clear edges</button>
 
                     <hr style="margin: 3px;">
@@ -152,7 +153,7 @@
             <!-- Model goes here -->
             <div id="model"></div>
 
-            <p style="margin-left:20px; font-size:xx-small;"> Using bipartite networks tool | University of Illinois at Urbana-Champaign | 2019 | Made with p5.js | Juan Salamanca, Contact: jsal@illinois.edu </p>
+            <p style="margin-left:20px; font-size:xx-small;"> Using Simple Networks library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js </p>
 
         </div>
     </div>
@@ -184,7 +185,7 @@
     </div>
 
     <!-- ADD NODE MODAL FORM -->
-    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModal" aria-hidden="true">
+    <div class="modal fade" id="addNodeModal" tabindex="-1" role="dialog" aria-labelledby="addNodeModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -193,18 +194,8 @@
                 <div class="modal-body">
 
                     <h4>Choose the cluster you want to add a node</h4>
-                    <form action="" id="clusterChoice">
-
-                        <input type="radio" id="cluster1" name="cluster" value="0">
-                        <label for="cluster1">Cluster 1</label>
-                        <input type="radio" id="cluster2" name="cluster" value="1">
-                        <label for="cluster2">Cluster 2</label>
-                        <input type="radio" id="cluster3" name="cluster" value="2">
-                        <label for="cluster3">Cluster 3</label>
-                        <input type="radio" id="cluster4" name="cluster" value="3">
-                        <label for="cluster4">Cluster 4</label>
-
-                    </form>
+                    <!-- This form is populated with global method addClusterToModalFormList() in addClusterModalForm.js -->
+                    <form action="" id="clusterChoice"></form>
                     <hr>
                     <h4>Node name</h4>
                     <p>The nodes in each cluster are <b> mutually exlusive</b>. Verify that none of the current nodes encompasses the node you inted to add </p>
@@ -222,7 +213,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="SubmitAddCategoryModal">Submit</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="SubmitAddNodeModal">Submit</button>
                 </div>
             </div>
         </div>
