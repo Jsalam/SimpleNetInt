@@ -5,11 +5,10 @@ addNodeModalForm = function() {
 
 getData = function() {
     let cluster = document.querySelector('input[name="cluster"]:checked');
-    let name = document.getElementById("catName").value
-    let description = document.getElementById("catDescription").value
-    let positive = document.getElementById("positive").checked
-    let negative = document.getElementById("negative").checked
-    console.log(cluster)
+    let name = document.getElementById("catName").value;
+    let description = document.getElementById("catDescription").value;
+    let positive = document.getElementById("positive").checked;
+    let negative = document.getElementById("negative").checked;
 
     if (cluster) {
         let clusterTmp = ClusterFactory.clusters[cluster.value];

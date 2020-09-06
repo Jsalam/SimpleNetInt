@@ -13,6 +13,17 @@ class VEdge {
         this.alpha = 50
     }
 
+    // Observing to Canvas
+    fromCanvas(data) {
+        if (data instanceof MouseEvent) {
+            // do something
+        } else if (data instanceof KeyboardEvent) {
+            // do something
+        } else {
+            // do something
+        }
+    }
+
     setVSource(vConctr) {
         this.vSource = vConctr;
         this.setColor(vConctr.color);

@@ -9,10 +9,38 @@ class VNode extends Button {
         this.node.subscribe(this);
     }
 
+    // Observing to Canvas
+    fromCanvas(data) {
+
+        if (data.event instanceof MouseEvent) {
+            if (data.type == "mouseclick") {
+                this.mouseClickedEvents();
+            }
+            if (data.type == "mouseup") {
+
+            }
+            if (data.type == "mousedown") {
+
+            }
+            if (data.type == "mousedrag") {
+                this.mouseDraggedEvents();
+            }
+            if (data.type == "mousemove") {
+                this.mouseOver();
+            }
+            // do something
+        } else if (data.event instanceof KeyboardEvent) {
+            // do something
+        } else {
+            // do something
+        }
+    }
+
     addPositiveVConnector(connector) {
         let tmpVConnector = new VConnector(connector);
         tmpVConnector.setColor(this.color);
         this.vPositives.push(tmpVConnector);
+        Canvas.subscribe(tmpVConnector);
         this.updateConnectorsCoords();
     }
 
@@ -20,6 +48,7 @@ class VNode extends Button {
         let tmpVConnector = new VConnector(connector);
         tmpVConnector.setColor(this.color);
         this.vNegatives.push(tmpVConnector);
+        Canvas.subscribe(tmpVConnector);
         this.updateConnectorsCoords();
     }
 
@@ -40,8 +69,10 @@ class VNode extends Button {
 
     popLastVConnector(polarity) {
         if (polarity == true) {
+            Canvas.unsubscribe(this.vPositives[this.vPositives.length - 1]);
             this.vPositives.shift();
         } else {
+            Canvas.unsubscribe(this.vNegatives[this.vNegatives.length - 1]);
             this.vNegatives.shift();
         }
         this.updateConnectorsCoords();
@@ -83,10 +114,10 @@ class VNode extends Button {
         });
     }
 
-    show(builder) {
-        builder.strokeWeight(1);
-        builder.fill(0, 255, 0)
-        builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, 2);
+    show(renderer) {
+        renderer.strokeWeight(1);
+        renderer.fill(0, 255, 0)
+        renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, 2);
         // in case the color palette runs out of colors
         if (!this.color) {
             this.color = '#d4d4d4';
@@ -101,29 +132,29 @@ class VNode extends Button {
         // if (this.node.inFwdPropagation && document.getElementById("forward").checked &&
         //     this.node.inBkwPropagation && document.getElementById("backward").checked) {
         //     // console.log("here 1 " + this.node.label);
-        //     builder.fill(this.color.concat(accent));
+        //     renderer.fill(this.color.concat(accent));
         // } else if (this.node.inFwdPropagation && document.getElementById("forward").checked) {
         //     // console.log("here 2 " + this.node.label);
-        //     builder.fill(this.color.concat(accent));
+        //     renderer.fill(this.color.concat(accent));
         // } else if (this.node.inBkwPropagation && document.getElementById("backward").checked) {
         //     // console.log("here 3 " + this.node.label);
-        //     builder.fill(this.color.concat(accent));
+        //     renderer.fill(this.color.concat(accent));
         //     // if it has no linked edges
         // } else if (this.vPositives.length + this.vNegatives.length <= 2) {
         //     // console.log("here 4 " + this.node.label);
-        //     builder.fill(this.color.concat(normal));
+        //     renderer.fill(this.color.concat(normal));
         // } else {
         // console.log("here last " + this.node.label);
-        builder.fill(this.color.concat(normal));
+        renderer.fill(this.color.concat(normal));
         // }
 
         // Highlight rect
         if (this.clicked) {
-            builder.strokeWeight(2);
-            builder.stroke(200, 0, 0);
+            renderer.strokeWeight(2);
+            renderer.stroke(200, 0, 0);
         } else {
-            builder.strokeWeight(1);
-            builder.stroke(250);
+            renderer.strokeWeight(1);
+            renderer.stroke(250);
         }
 
 
@@ -135,115 +166,115 @@ class VNode extends Button {
                 (this.node.polarity != "BOTH" && this.vPositives.length + this.vNegatives.length > 1) &&
                 document.getElementById('filterLinked').checked) {
                 // draw the rect
-                builder.strokeWeight(2);
-                builder.stroke(this.color);
-                //builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-                builder.ellipseMode(gp5.CENTER)
-                builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
+                renderer.strokeWeight(2);
+                renderer.stroke(this.color);
+                //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
+                renderer.ellipseMode(gp5.CENTER)
+                renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
                 // draw the label
-                builder.fill("#000000");
-                builder.textAlign(gp5.CENTER, gp5.CENTER);
-                builder.noStroke();
-                builder.textSize(10);
+                renderer.fill("#000000");
+                renderer.textAlign(gp5.CENTER, gp5.CENTER);
+                renderer.noStroke();
+                renderer.textSize(10);
                 if (this.clicked) {
-                    builder.textStyle(builder.BOLD);
+                    renderer.textStyle(renderer.BOLD);
                 }
-                builder.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
-                builder.textStyle(builder.NORMAL);
+                renderer.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
+                renderer.textStyle(renderer.NORMAL);
 
                 //let positives = this.getConnectors(true);
                 for (let index = 0; index < this.vPositives.length; index++) {
                     const element = this.vPositives[index];
                     if (index == this.vPositives.length - 1) {
-                        element.showAsButton(builder);
+                        element.showAsButton(renderer);
                     } else {
-                        element.show(builder)
+                        element.show(renderer)
                     }
                 }
                 //let negatives = this.getConnectors(false);
                 for (let index = 0; index < this.vNegatives.length; index++) {
                     const element = this.vNegatives[index];
                     if (index == this.vNegatives.length - 1) {
-                        element.showAsButton(builder);
+                        element.showAsButton(renderer);
                     } else {
-                        element.show(builder)
+                        element.show(renderer)
                     }
                 }
 
                 if (this.mouseIsOver) {
-                    this.showDescription(builder);
+                    this.showDescription(renderer);
                 }
             } else {
                 // draw the rect
-                builder.fill(this.color.concat(dimmed));
-                //builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-                builder.ellipseMode(gp5.CENTER)
-                builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
+                renderer.fill(this.color.concat(dimmed));
+                //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
+                renderer.ellipseMode(gp5.CENTER)
+                renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
                 // draw the label
-                builder.fill("#00000070");
-                builder.textAlign(gp5.CENTER, gp5.CENTER);
-                builder.noStroke();
-                builder.textSize(10);
-                builder.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
-                builder.textStyle(builder.NORMAL);
+                renderer.fill("#00000070");
+                renderer.textAlign(gp5.CENTER, gp5.CENTER);
+                renderer.noStroke();
+                renderer.textSize(10);
+                renderer.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
+                renderer.textStyle(renderer.NORMAL);
                 if (this.mouseIsOver) {
-                    this.showDescription(builder);
+                    this.showDescription(renderer);
                 }
             }
         } else {
             // draw the rect
-            // builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-            builder.ellipseMode(gp5.CENTER)
-            builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
+            // renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
+            renderer.ellipseMode(gp5.CENTER)
+            renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
             // draw the label
-            builder.fill("#000000");
-            builder.textAlign(gp5.CENTER, gp5.CENTER);
-            builder.noStroke();
-            builder.textSize(10);
+            renderer.fill("#000000");
+            renderer.textAlign(gp5.CENTER, gp5.CENTER);
+            renderer.noStroke();
+            renderer.textSize(10);
             if (this.clicked) {
-                builder.textStyle(builder.BOLD);
+                renderer.textStyle(renderer.BOLD);
             }
-            builder.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
-            builder.textStyle(builder.NORMAL);
+            renderer.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
+            renderer.textStyle(renderer.NORMAL);
 
             //let positives = this.getConnectors(true);
             for (let index = 0; index < this.vPositives.length; index++) {
                 const element = this.vPositives[index];
                 if (index == this.vPositives.length - 1) {
-                    element.showAsButton(builder);
+                    element.showAsButton(renderer);
                 } else {
-                    element.show(builder)
+                    element.show(renderer)
                 }
             }
             //let negatives = this.getConnectors(false);
             for (let index = 0; index < this.vNegatives.length; index++) {
                 const element = this.vNegatives[index];
                 if (index == this.vNegatives.length - 1) {
-                    element.showAsButton(builder);
+                    element.showAsButton(renderer);
                 } else {
-                    element.show(builder)
+                    element.show(renderer)
                 }
             }
 
             if (this.mouseIsOver) {
-                this.showDescription(builder);
+                this.showDescription(renderer);
             }
 
         }
     }
 
-    showDescription(builder) {
-        builder.fill("#000000");
-        builder.textAlign(gp5.LEFT, gp5.TOP);
-        builder.strokeWeight(0.5);
-        builder.textSize(12);
-        builder.text(this.node.label, 95, gp5.height - 80, gp5.width - 200, 97);
-        builder.noStroke();
-        builder.textSize(11);
-        builder.text(this.node.description, 100, gp5.height - 62, gp5.width - 200, 97);
+    showDescription(renderer) {
+        renderer.fill("#000000");
+        renderer.textAlign(gp5.LEFT, gp5.TOP);
+        renderer.strokeWeight(0.5);
+        renderer.textSize(12);
+        renderer.text(this.node.label, 95, gp5.height - 80, gp5.width - 200, 97);
+        renderer.noStroke();
+        renderer.textSize(11);
+        renderer.text(this.node.description, 100, gp5.height - 62, gp5.width - 200, 97);
 
     }
 
@@ -266,41 +297,35 @@ class VNode extends Button {
 
     // **** EVENTS *****
 
-    mouseMovedEvents() {
-        // if (this.clicked) {
-        //     this.node.propagate(this.node, this.clicked);
-        // }
-    }
-
-    mouseOverEvents() {
-
-    }
-
     mouseDraggedEvents() {
         if (this.delta == undefined) {
             this.delta = this.getDeltaMouse();
         }
         if (this.mouseIsOver) {
             this.dragged = true;
-            this.pos.x = gp5.mouseX - this.delta.x;
-            this.pos.y = gp5.mouseY - this.delta.y;
+            this.pos.x = Canvas._mouse.x - this.delta.x;
+            this.pos.y = Canvas._mouse.y - this.delta.y;
             this.updateConnectorsCoords()
         }
     }
 
     mouseClickedEvents() {
+        /** Note: this.dragged is true at the slightest drag motion. Sometimes 
+         * this is imperceptible thus the behavior is not as responsive as it should 
+         */
         if (this.mouseIsOver && !this.dragged) {
             this.clicked = !this.clicked;
             this.node.propagate(this.node, this.clicked);
         }
         this.dragged = false;
         this.delta = undefined;
-        this.vPositives.forEach(connector => {
-            connector.mouseClickedEvents();
-        });
-        this.vNegatives.forEach(connector => {
-            connector.mouseClickedEvents();
-        });
+
+        // this.vPositives.forEach(connector => {
+        //     connector.mouseClickedEvents();
+        // });
+        // this.vNegatives.forEach(connector => {
+        //     connector.mouseClickedEvents();
+        // });
     }
 
 }

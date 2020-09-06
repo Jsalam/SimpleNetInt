@@ -1,4 +1,3 @@
-//let canvas;
 // main function
 var main = function(p5) {
 
@@ -16,7 +15,6 @@ var main = function(p5) {
 
     // current model
     let model;
-    let canvas;
 
     // Preload
     p5.preload = function() {
@@ -35,8 +33,9 @@ var main = function(p5) {
         graphics = gp5.createGraphics(gp5.width * gp5.pixelDensity(), gp5.height * gp5.pixelDensity(), gp5.WEBGL);
         gp5.textFont(myFont);
         graphics.textFont(myFont);
-        canvas = new Canvas(graphics);
-        // Connect with HTML GUI
+        // Global static canvas
+        Canvas.makeCanvas(graphics)
+            // Connect with HTML GUI
         document.getElementById("clearEdges").onclick = clearEdges;
         document.getElementById("backgroundContrast").onclick = switchBackground;
         // Add GUI FORMS
@@ -49,24 +48,29 @@ var main = function(p5) {
         model.addEventListener('change', () => {
             switchModel(model.value);
         });
+        // load the first selected model by default
+        switchModel(model.value);
     }
 
     // In a loop
     p5.draw = function() {
-        // draw elements
         gp5.push();
-        canvas.transform()
-        canvas.render();
-        canvas.originCrossHair();
+        // translating to upper left corner
+        gp5.translate(-gp5.width / 2, -gp5.height / 2);
+        // Canvas own transformations
+        Canvas.transform()
+        Canvas.render();
+        Canvas.originCrossHair();
         gp5.pop();
         // draw canvas status
-        canvas.displayValues(gp5.createVector((gp5.width / 2) - 10, (-gp5.height / 2) + 5), gp5)
-        canvas.showLegend(gp5.createVector((gp5.width / 2) - 10, (gp5.height / 2) - 40), gp5)
+        Canvas.displayValues(gp5.createVector((gp5.width / 2) - 10, (-gp5.height / 2) + 5), gp5)
+        Canvas.showLegend(gp5.createVector((gp5.width / 2) - 10, (gp5.height / 2) - 50), gp5)
     }
 
     /*** GUI CALLBACKS */
     switchModel = function(value) {
         console.log("Switching to " + value + " network");
+        Canvas.resetObservers();
         p5.loadJSON(pathNetworks + value + '_network.json', onLoadNetwork);
     }
 
@@ -75,7 +79,7 @@ var main = function(p5) {
         buildClusters(nodesTemp);
         edgesTemp = data.edges;
         buildEdges(edgesTemp);
-        canvas.update();
+        Canvas.update();
     }
 
     buildClusters = function(result) {
@@ -96,11 +100,11 @@ var main = function(p5) {
 
     switchBackground = function(evt) {
         if (document.getElementById("backgroundContrast").checked) {
-            canvas.currentBackground = 150;
+            Canvas.currentBackground = 150;
         } else {
-            canvas.currentBackground = 230;
+            Canvas.currentBackground = 230;
         }
-        canvas.update();
+        Canvas.update();
     }
 }
 

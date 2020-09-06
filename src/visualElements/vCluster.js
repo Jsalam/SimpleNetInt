@@ -10,6 +10,17 @@ class VCluster {
         //   this.setPalette();
     }
 
+    // Observing to Canvas
+    fromCanvas(data) {
+        if (data instanceof MouseEvent) {
+            // do something
+        } else if (data instanceof KeyboardEvent) {
+            // do something
+        } else {
+            // do something
+        }
+    }
+
     populateVNodes(cluster) {
         for (let index = 0; index < cluster.nodes.length; index++) {
 
@@ -35,7 +46,6 @@ class VCluster {
                 let tmpIndex = index % this.palette.length;
                 vNodeTemp.setColor(this.palette[tmpIndex]);
             }
-
             // add to colecction
             this.addVNode(vNodeTemp, node.importedVNodeData);
         }
@@ -49,6 +59,9 @@ class VCluster {
         } else {
             vNode.updateCoords(this.pos, this.vNodes.length + 1);
         }
+        // subscribe to canvas
+        Canvas.subscribe(vNode);
+        // add to collection
         this.vNodes.push(vNode);
     }
 
@@ -80,10 +93,6 @@ class VCluster {
             builder.textSize(9);
             builder.text(this.cluster.description, this.pos.x, this.pos.y + 15, this.width, 30);
         }
-
-        this.vNodes.forEach(cat => {
-            cat.show(builder);
-        });
     }
 
     getJSON() {
@@ -99,32 +108,5 @@ class VCluster {
             rtn.nodes.push(tmpN);
         });
         return rtn;
-    }
-
-    //**** EVENTS ******/
-    mouseOverEvents() {
-        this.vNodes.forEach(cat => {
-            cat.mouseOver();
-            cat.mouseOverEvents();
-            cat.mouseMovedEvents();
-            cat.vPositives.forEach(connector => {
-                connector.mouseOver();
-            });
-            cat.vNegatives.forEach(connector => {
-                connector.mouseOver();
-            });
-        });
-    }
-
-    mouseClickedEvents() {
-        this.vNodes.forEach(cat => {
-            cat.mouseClickedEvents();
-        });
-    }
-
-    mouseDraggedEvents() {
-        this.vNodes.forEach(cat => {
-            cat.mouseDraggedEvents();
-        });
     }
 }

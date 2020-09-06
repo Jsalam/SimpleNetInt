@@ -6,6 +6,30 @@ class VConnector extends Button {
         connector.subscribeVConnector(this);
     }
 
+    // Observing to Canvas
+    fromCanvas(data) {
+
+        if (data.event instanceof MouseEvent) {
+            if (data.type == "mouseup") {
+                // do something
+            }
+            if (data.type == "mousedown") {
+                this.mouseClickedEvents();
+            }
+            if (data.type == "mousedrag") {
+                // do something
+            }
+            if (data.type == "mousemove") {
+                this.mouseOver();
+            }
+            // do something
+        } else if (data.event instanceof KeyboardEvent) {
+            // do something
+        } else {
+            // do something
+        }
+    }
+
     setColor(color) {
         this.color = color;
     }
@@ -80,6 +104,7 @@ class VConnector extends Button {
                     lastVEdge = new VEdge(edge);
                     lastVEdge.setVSource(this);
                     lastVEdge.open = true;
+                    Canvas.subscribe(lastVEdge);
                     EdgeFactory.vEdges.push(lastVEdge);
 
                 }
@@ -88,6 +113,7 @@ class VConnector extends Button {
                 lastVEdge = new VEdge(edge);
                 lastVEdge.setVSource(this);
                 lastVEdge.open = true;
+                Canvas.subscribe(lastVEdge);
                 EdgeFactory.vEdges.push(lastVEdge);
             }
         }
@@ -95,6 +121,7 @@ class VConnector extends Button {
 
     mouseClickedEvents() {
         if (this.mouseIsOver) {
+            console.log("on connector");
             let edge = this.connector.workOnLastEdge();
             this.connector.notifyObserver(edge);
             this.workOnLastVEdge(edge);

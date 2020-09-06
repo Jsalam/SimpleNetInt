@@ -5,7 +5,7 @@
  */
 class Canvas {
 
-    constructor(graphics) {
+    static makeCanvas(graphics) {
         // graphics
         this.graphics = graphics;
         this.graphicsRendered = false;
@@ -20,14 +20,30 @@ class Canvas {
         // The previous offset
         this._endOffset = gp5.createVector(0, 0, 0);
         // A vector for the mouse position
-        Canvas._canvasMouse = gp5.createVector(0, 0, 0);
+        Canvas._mouse = gp5.createVector(0, 0, 0);
         // A Vector for the canvas origin
         this._newOrigin = gp5.createVector(0, 0, 0);
         // Transformation control
         this._shiftDown;
+        // Observers
+        this.observers = [];
         // Events
-        this.mouseEvents();
-        this.keyEvents();
+        Canvas.mouseEvents();
+        Canvas.keyEvents();
+    }
+
+    static subscribe(obj) {
+        if (!this.observers.includes(obj)) this.observers.push(obj);
+        Canvas.update();
+    }
+    static unsubscribe(obj) {
+        this.observers = this.observers.filter(subscriber => subscriber !== obj)
+    }
+    static notifyObservers(data) {
+        this.observers.forEach(observer => observer.fromCanvas(data))
+    }
+    static resetObservers() {
+        this.observers = [];
     }
 
     /**
@@ -37,13 +53,13 @@ class Canvas {
      * preventing the draw to keep on computing operations that do not yield a different visual output than the one currently
      * being displayed. When the gate is open, the render is done on the regular p5 canvas
      */
-    render() {
+    static render() {
         gp5.background(this.currentBackground);
         if (this.renderGate) {
-            this.renderOnP5();
+            Canvas.renderOnP5();
         } else {
             //this.graphicsRendered = false;
-            this.renderOnGraphics();
+            Canvas.renderOnGraphics();
             gp5.image(this.graphics, -this.graphics.width / 2, -this.graphics.height / 2);
         }
         this.renderGate = false;
@@ -52,7 +68,7 @@ class Canvas {
     /**
      * render on original p5.Renderer
      */
-    renderOnP5() {
+    static renderOnP5() {
         // draw description box
         gp5.fill(250, 150);
         gp5.noStroke();
@@ -63,19 +79,19 @@ class Canvas {
         gp5.noStroke();
         gp5.rect(0, gp5.height - 15, gp5.width, 15)
         gp5.fill(210);
-        // show clusters
-        ClusterFactory.vClusters.forEach(element => { element.show(gp5) });
-
-        // show edges
-        EdgeFactory.vEdges.forEach(element => { element.show(gp5) });
-        gp5.ellipse(0, 0, 10);
+        // show observers
+        this.observers.forEach(element => {
+            if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+                element.show(gp5)
+            }
+        });
         this.graphicsRendered = false;
     }
 
     /**
      *  render on custom p5.Renderer
      */
-    renderOnGraphics() {
+    static renderOnGraphics() {
 
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
@@ -91,12 +107,12 @@ class Canvas {
             this.graphics.rect(0, gp5.height - 15, gp5.width, 15)
             this.graphics.fill(200);
 
-            // show clusters
-            ClusterFactory.vClusters.forEach(element => { element.show(this.graphics) });
-
-            // show edges
-            EdgeFactory.vEdges.forEach(element => { element.show(this.graphics) });
-            this.graphics.ellipse(0, 0, 10);
+            // show observers
+            this.observers.forEach(element => {
+                if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+                    element.show(this.graphics)
+                }
+            });
             this.graphicsRendered = true;
         }
     }
@@ -105,15 +121,15 @@ class Canvas {
      * This method MUST be invoked iteratively to get a fresh mouseCoordinate.
      * Ideally within browser window loop requestAnimationFrame()
      */
-    transform() {
+    static transform() {
         // **** Convert screenMouse into canvasMouse
-        Canvas._canvasMouse = gp5.createVector(gp5.mouseX, gp5.mouseY);
+        Canvas._mouse = gp5.createVector(gp5.mouseX, gp5.mouseY);
         // translate canvasMouse
-        Canvas._canvasMouse.sub(this._newOrigin);
+        Canvas._mouse.sub(this._newOrigin);
         // Zoom
-        Canvas._canvasMouse.div(this._zoom);
+        Canvas._mouse.div(this._zoom);
         // Pan
-        Canvas._canvasMouse.sub(this._offset);
+        Canvas._mouse.sub(this._offset);
         // **** Transformation of canvas
         // Use scale for 2D "zoom"
         gp5.scale(this._zoom);
@@ -123,15 +139,15 @@ class Canvas {
 
     /**
      * Updated canvas */
-    update() {
+    static update() {
         this.renderGate = true;
-        this.render();
+        Canvas.render();
     }
 
     /**
      * Reset zoom and pan to original values
      */
-    reset() {
+    static reset() {
         this._zoom = 1;
         this._offset.set(0, 0, 0);
     }
@@ -140,7 +156,7 @@ class Canvas {
      * Zoom_in keyboard
      * @param val
      */
-    zoomIn(val) {
+    static zoomIn(val) {
         this._zoom += val;
     }
 
@@ -148,7 +164,7 @@ class Canvas {
      * Zoom out keyboard
      * @param val
      */
-    zoomOut(val) {
+    static zoomOut(val) {
         this._zoom -= val;
         if (this._zoom < 0.1) {
             this._zoom = 0.1;
@@ -159,7 +175,7 @@ class Canvas {
      * Returns the current zoom value
      * @return current zoom value
      */
-    getZoomValue() {
+    static getZoomValue() {
         return this._zoom;
     }
 
@@ -167,11 +183,11 @@ class Canvas {
      * Returns the current mouse coordinates in the transformed canvas
      * @return current mouse coordinates in the transformed canvas
      */
-    getCanvasMouse() {
-        return Canvas._canvasMouse;
+    static getCanvasMouse() {
+        return Canvas._mouse;
     }
 
-    translateOrigin(x, y) {
+    static translateOrigin(x, y) {
         this.newOrigin = gp5.createVector(x, y);
     }
 
@@ -179,11 +195,11 @@ class Canvas {
      * Show canvas values on screen
      * @param {Vector} pos 
      */
-    displayValues(pos, renderer) {
+    static displayValues(pos, renderer) {
         // **** Legends
         renderer.fill(90, 200);
         renderer.textAlign(gp5.RIGHT);
-        renderer.text("Mouse on canvas: x: " + Canvas._canvasMouse.x.toFixed(1) + ", y: " + Canvas._canvasMouse.y.toFixed(2) + "' z:" + Canvas._canvasMouse.z.toFixed(2), pos.x, pos.y + 25);
+        renderer.text("Mouse on canvas: x: " + Canvas._mouse.x.toFixed(1) + ", y: " + Canvas._mouse.y.toFixed(2) + "' z:" + Canvas._mouse.z.toFixed(2), pos.x, pos.y + 25);
         renderer.text("Zoom: " + this._zoom.toFixed(1), pos.x, pos.y + 35);
         renderer.text("Offset: " + this._offset, pos.x, pos.y + 45);
         renderer.text("startOffset: " + this._startOffset, pos.x, pos.y + 55);
@@ -195,7 +211,7 @@ class Canvas {
      * Show GUI instructions on screen
      * @param {Vector} pos 
      */
-    showLegend(pos) {
+    static showLegend(pos) {
         gp5.fill(90, 200);
         gp5.textAlign(gp5.RIGHT);
         gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
@@ -204,7 +220,7 @@ class Canvas {
         gp5.textAlign(gp5.CENTER);
     }
 
-    originCrossHair() {
+    static originCrossHair() {
         gp5.stroke(255);
         gp5.strokeWeight(0.5);
         gp5.line(0, -gp5.height, 0, gp5.height);
@@ -213,37 +229,42 @@ class Canvas {
 
     // *** Events registration 
 
-    mouseEvents() {
-        document.addEventListener('mousedown', this.mPressed.bind(this))
-        document.addEventListener('mouseup', this.mReleased.bind(this))
-        document.addEventListener('mousemove', this.mDragged.bind(this))
+    static mouseEvents() {
+        let htmlCanvas = document.getElementById('model');
+        htmlCanvas.addEventListener('mousedown', Canvas.mPressed.bind(this))
+        htmlCanvas.addEventListener('mouseup', Canvas.mReleased.bind(this))
+        htmlCanvas.addEventListener('mousemove', Canvas.mDragged.bind(this))
+        htmlCanvas.addEventListener('click', Canvas.mClicked.bind(this))
     }
 
-    keyEvents() {
-        document.addEventListener('keydown', this.kPressed.bind(this))
-        document.addEventListener('keyup', this.kReleased.bind(this))
+    static keyEvents() {
+        document.addEventListener('keydown', Canvas.kPressed.bind(this))
+        document.addEventListener('keyup', Canvas.kReleased.bind(this))
     }
 
     // *** Event related methods
 
     /** Mouse left button pressed */
-    mPressed(evt) {
+    static mPressed(evt) {
         this._startOffset.set(gp5.mouseX, gp5.mouseY, 0);
         Canvas.mouseDown = true;
         this.renderGate = true;
-        console.log("pressed");
+        Canvas.notifyObservers({ event: evt, type: "mousedown", pos: Canvas._mouse });
     }
 
     /** Mouse left button released */
-    mReleased(evt) {
+    static mReleased(evt) {
         Canvas.mouseDown = false;
         this.renderGate = false
+        Canvas.notifyObservers({ event: evt, type: "mouseup", pos: Canvas._mouse });
     }
 
     /** Mouse dragged */
-    mDragged(event) {
+    static mDragged(evt) {
+
         if (Canvas.mouseDown) {
-            this.renderGate = true
+            this.renderGate = true;
+            // if mouse move & down & key shift
             if (Canvas.shiftDown) {
                 // set end for current drag iteration
                 this._endOffset.set(gp5.mouseX, gp5.mouseY, 0);
@@ -255,10 +276,21 @@ class Canvas {
             } else {
                 this._canvasBeingTransformed = false;
             }
+            // if mouse move & down
+            Canvas.notifyObservers({ event: evt, type: "mousedrag", pos: Canvas._mouse });
+        } else {
+            // if mouse move
+            Canvas.notifyObservers({ event: evt, type: "mousemove", pos: Canvas._mouse });
         }
     }
 
-    kPressed(k) {
+    /** Mouse clicked */
+    static mClicked(evt) {
+        Canvas.notifyObservers({ event: evt, type: "mouseclick", pos: Canvas._mouse });
+        this.renderGate = true;
+    }
+
+    static kPressed(k) {
         // open the gate to refresh graphics
         this.renderGate = true;
         // evaluate 
@@ -275,7 +307,7 @@ class Canvas {
         }
     }
 
-    kReleased(k) {
+    static kReleased(k) {
         // open the gate to refresh graphics
         this.renderGate = true;
         if (k.key == "Shift") {

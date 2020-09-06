@@ -11,6 +11,7 @@ class ClusterFactory {
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         for (let index = 0; index < ClusterFactory.clusters.length; index++) {
             let tmp = new VCluster(ClusterFactory.clusters[index], 15 + x * index, 20, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
+            Canvas.subscribe(tmp);
             ClusterFactory.vClusters.push(tmp);
         }
     }
@@ -24,6 +25,7 @@ class ClusterFactory {
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         let index = ClusterFactory.clusters.length - 1;
         let tmp = new VCluster(ClusterFactory.clusters[index], 15 + x * index, 20, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
+        Canvas.subscribe(tmp);
         ClusterFactory.vClusters.push(tmp);
     }
 

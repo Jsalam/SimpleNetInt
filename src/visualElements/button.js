@@ -40,22 +40,23 @@ class Button {
     }
 
     mouseOver() {
-        if (gp5.mouseX > this.pos.x &&
-            gp5.mouseX < this.pos.x + this.width &&
-            gp5.mouseY > this.pos.y &&
-            gp5.mouseY < this.pos.y + this.height) {
+        if (Canvas._mouse.x > this.pos.x &&
+            Canvas._mouse.x < this.pos.x + this.width &&
+            Canvas._mouse.y > this.pos.y &&
+            Canvas._mouse.y < this.pos.y + this.height) {
             this.mouseIsOver = true;
         } else {
             this.mouseIsOver = false;
         }
     }
 
+
+
     getDeltaMouse() {
         let rtn = gp5.createVector(0, 0);
         if (this.mouseIsOver) {
-            rtn.x = gp5.mouseX - this.pos.x;
-            rtn.y = gp5.mouseY - this.pos.y;
-            console.log(rtn);
+            rtn.x = Canvas._mouse.x - this.pos.x;
+            rtn.y = Canvas._mouse.y - this.pos.y;
         }
         return rtn;
     }
