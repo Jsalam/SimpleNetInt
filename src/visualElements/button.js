@@ -40,10 +40,10 @@ class Button {
     }
 
     mouseOver() {
-        if (Canvas._mouse.x > this.pos.x &&
-            Canvas._mouse.x < this.pos.x + this.width &&
-            Canvas._mouse.y > this.pos.y &&
-            Canvas._mouse.y < this.pos.y + this.height) {
+        if (Canvas._mouse.x > this.pos.x - this.width / 2 &&
+            Canvas._mouse.x < this.pos.x + this.width / 2 &&
+            Canvas._mouse.y > this.pos.y - this.height / 2 &&
+            Canvas._mouse.y < this.pos.y + this.height / 2) {
             this.mouseIsOver = true;
         } else {
             this.mouseIsOver = false;

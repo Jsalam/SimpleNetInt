@@ -1,8 +1,3 @@
-exportNetworkModalForm = function() {
-
-    document.getElementById("exportNetwork").onclick = saveJSON;
-}
-
 saveJSON = function() {
 
     let fileSuffix = document.getElementById("exportFileSuffix").value;

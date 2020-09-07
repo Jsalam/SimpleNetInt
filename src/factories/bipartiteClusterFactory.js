@@ -1,31 +1,16 @@
-class ClusterFactory {
+class BipartiteClusterFactory {
 
     static makeClusters(data) {
-        ClusterFactory.initParameters();
         ClusterFactory.clusters = [];
         this.vClusters = [];
-
-
         // global function from addClusterModalForm.js
         clearClusterModalFormList();
         for (let index = 0; index < Object.keys(data).length; index++) {
             this.instantiateCluster(data[index]);
         }
-
-        //** Visual cluster section
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         for (let index = 0; index < ClusterFactory.clusters.length; index++) {
-
-            //  vCluster parameters
-            let cluster = ClusterFactory.clusters[index];
-            let posX = 15 + x * index;
-            let posY = 20;
-            let width = ClusterFactory.width;
-            let height = ClusterFactory.height;
-            let palette = ColorFactory.getPalette(index);
-
-            // vCluster instantiation
-            let tmp = new VCluster(cluster, posX, posY, width, height, palette);
+            let tmp = new VCluster(ClusterFactory.clusters[index], 15 + x * index, 20, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
             Canvas.subscribe(tmp);
             ClusterFactory.vClusters.push(tmp);
         }
@@ -50,10 +35,10 @@ class ClusterFactory {
      * @param {number} hght node height. only used whith rectangular node shape
      * @param {number} gutter gap between columns of clusters
      */
-    static initParameters() {
-        ClusterFactory.wdth = 30;
-        ClusterFactory.hght = 30;
-        ClusterFactory.gutter = 110;
+    static setParameters(wdth, hght, gutter) {
+        ClusterFactory.wdth = wdth;
+        ClusterFactory.hght = hght;
+        ClusterFactory.gutter = gutter;
     }
 
     static instantiateCluster(data) {
@@ -76,17 +61,25 @@ class ClusterFactory {
     }
 
     static makeNode(cluster, data) {
-        let node = new Node(cluster.id, data.id, ClusterFactory.countCat);
+
+        let node = new BipartiteNode(cluster.id, data.id, ClusterFactory.countCat);
         node.setLabel(data.nodeLabel);
         node.setDescription(data.nodeDescription);
+        node.setPolarity(data.polarity);
         node.setImportedVNodeData(data.vNode);
         ClusterFactory.countCat++;
-        // create connectors if data comes with that info. Data usually comes from 
-        // the JSON file or the node created by user input 
-        if (data.connectors) {
-            for (const connector of data.connectors) {
-                node.addConnector(connector, node.connectors.length);
-            }
+
+        // create connectors
+        switch (data.polarity) {
+            case 'LEFT':
+                node.addNegativeConnector(node.negatives.length);
+                break;;
+            case 'RIGHT':
+                node.addPositiveConnector(node.positives.length);
+                break;;
+            default:
+                node.addNegativeConnector(node.negatives.length);
+                node.addPositiveConnector(node.positives.length);
         }
         return node;
     }

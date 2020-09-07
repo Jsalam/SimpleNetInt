@@ -1,7 +1,7 @@
-addClusterModalForm = function() {
+// addClusterModalForm = function() {
 
-    document.getElementById("SubmitAddClusterModal").onclick = getDataCluster
-}
+//     document.getElementById("SubmitAddClusterModal").onclick = getDataCluster
+// }
 
 getDataCluster = function() {
     let name = document.getElementById("clusterName").value

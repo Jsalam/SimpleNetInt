@@ -1,45 +1,46 @@
 {
-  "nodes": [
-    {
-      "clusterID": "1",
-      "clusterLabel": "A",
-      "clusterDescription": "...",
-      "nodes": [
+    "nodes": [{
+            "clusterID": "1",
+            "clusterLabel": "Looking to the sky",
+            "clusterDescription": "Lenses, gyroscopes and stuff",
+            "nodes": [{
+                "id": 0,
+                "nodeLabel": "Node A",
+                "nodeDescription": "Node description",
+                "polarity": "BOTH",
+                "connectors": [
+                    "technology", "methodology"
+                ],
+                "pajekIndex": 1,
+                "vNode": {
+                    "posX": 15,
+                    "posY": 45,
+                    "posZ": 0,
+                    "color": "#adadad"
+                }
+            }]
+        },
         {
-          "id": 0,
-          "nodeLabel": "Node A",
-          "nodeDescription": "Node description",
-          "polarity": "BOTH",
-          "pajekIndex": 1,
-          "vNode": {
-            "posX": 15,
-            "posY": 45,
-            "posZ": 0,
-            "color": "#adadad"
-          }
+            "clusterID": "2",
+            "clusterLabel": "Changing climate changing lives",
+            "clusterDescription": "Climate change",
+            "nodes": [{
+                "id": 0,
+                "nodeLabel": "Node B",
+                "nodeDescription": "Node description",
+                "polarity": "BOTH",
+                "connectors": [
+                    "technology", "methodology", "knowledge framework", "process"
+                ],
+                "pajekIndex": 2,
+                "vNode": {
+                    "posX": 178.66666666666669,
+                    "posY": 147.1527777777778,
+                    "posZ": 0,
+                    "color": "#adadad"
+                }
+            }]
         }
-      ]
-    },
-    {
-      "clusterID": "2",
-      "clusterLabel": "B",
-      "clusterDescription": "Theme B",
-      "nodes": [
-        {
-          "id": 0,
-          "nodeLabel": "Node B",
-          "nodeDescription": "Node description",
-          "polarity": "BOTH",
-          "pajekIndex": 2,
-          "vNode": {
-            "posX": 178.66666666666669,
-            "posY": 147.1527777777778,
-            "posZ": 0,
-            "color": "#adadad"
-          }
-        }
-      ]
-    }
-  ],
-  "edges": []
+    ],
+    "edges": []
 }

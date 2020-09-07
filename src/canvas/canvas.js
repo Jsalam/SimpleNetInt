@@ -216,7 +216,8 @@ class Canvas {
         gp5.textAlign(gp5.RIGHT);
         gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
         gp5.text("use 'i' to zoom in, 'o' to zoom  out", pos.x, pos.y + 10);
-        gp5.text("Press r to restore zoom and pan to default values", pos.x, pos.y + 20);
+        gp5.text("Press 'r' to restore zoom and pan to default values", pos.x, pos.y + 20);
+        gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 30);
         gp5.textAlign(gp5.CENTER);
     }
 
@@ -305,6 +306,7 @@ class Canvas {
         } else if (k.key == 'r' || k.key == 'R') {
             this.reset();
         }
+        Canvas.notifyObservers({ event: k, type: "keydown" });
     }
 
     static kReleased(k) {
@@ -314,6 +316,7 @@ class Canvas {
             Canvas.shiftDown = false;
             this._adaptiveDegreeThresholdPercentage = 100;
         }
+        Canvas.notifyObservers({ event: k, type: "keyup" });
     }
 
 }

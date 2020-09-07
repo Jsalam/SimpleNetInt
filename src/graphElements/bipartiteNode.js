@@ -1,20 +1,22 @@
 /**
- * The node has connectors. each connector is of a different type, so each kind of connectors have its own collection, 
- * grouped in a single collection
+ * Bipartite nodes are nodes with polarity, they can be connected to nodes with oposite polarity. There are three polarity cases: Left, Right and Both
  * @param clusterID: the cluster to which this node belongs to
- * @param _index: the index in this cluster
- * @param _count: the pajeckIndex
- * @param _data: data about connectors or any other kind of data
+ * @param _data: data about id and other stuff comming from json file
+ * @param _count: the pajekIndex
+
  */
-class Node {
+class BipartiteNode {
     constructor(clusterID, _data, _count) {
         this.idCat = { cluster: clusterID, index: _data.id, pajekIndex: _count }
+        this.positives = [];
+        this.negatives = [];
         this.connectors = []
         this.label = "void";
         this.description = "No description yet";
         this.inFwdPropagation = false;
         this.inBkwPropagation = false;
         this.vNodeObserver;
+        this.polarity;
         this.importedVNodeData;
     }
 
@@ -22,11 +24,32 @@ class Node {
         this.vNodeObserver = vNode;
     }
 
-    addConnector(kind, index) {
-        let tmpConnector = new Connector(this.idCat, kind, index);
+
+    addPositiveConnector(index) {
+        let tmpConnector = new Connector(this.idCat, index, true, this.idCat.pajekIndex);
         tmpConnector.subscribeNode(this);
-        this.connectors.push(tmpConnector);
+        this.positives.push(tmpConnector);
         return tmpConnector;
+    }
+
+    addNegativeConnector(index) {
+        let tmpConnector = new Connector(this.idCat, index, false, this.idCat.pajekIndex);
+        tmpConnector.subscribeNode(this);
+        this.negatives.push(tmpConnector);
+        return tmpConnector;
+    }
+
+    popLastConnector(polarity) {
+        if (polarity == true) {
+            this.positives.pop();
+        } else {
+            this.negatives.pop();
+        }
+        this.vNodeObserver.popLastVConnector(polarity)
+    }
+
+    setPolarity(polarity) {
+        this.polarity = polarity;
     }
 
     setLabel(label) {
@@ -41,14 +64,73 @@ class Node {
         this.importedVNodeData = obj;
     }
 
-    getConnectors() {
-        return this.connectors;
+    getConnectors(polarity) {
+        if (polarity) {
+            return this.positives;
+        } else {
+            return this.negatives;
+        }
+    }
+
+    splitConnectors(edge) {
+        let connSource = edge.source;
+        let connTarget = edge.target; // might be undefined
+        if (!connSource.taken) {
+            this.recallConnectors(connSource);
+        } else {
+
+            if (edge.open) {
+                if (connSource.polarity == true) {
+                    let conctr = connSource.nodeObserver.addPositiveConnector(this.positives.length);
+                    this.vNodeObserver.addPositiveVConnector(conctr);
+                } else {
+                    let conctr = connSource.nodeObserver.addNegativeConnector(this.negatives.length);
+                    this.vNodeObserver.addNegativeVConnector(conctr);
+                }
+
+            } else {
+                if (connTarget) {
+                    if (connTarget.nodeObserver.idCat == this.idCat) {
+                        if (connTarget.polarity == true) {
+                            let conctr = this.addPositiveConnector(this.positives.length);
+                            this.vNodeObserver.addPositiveVConnector(conctr);
+                        } else {
+                            let conctr = this.addNegativeConnector(this.negatives.length);
+                            this.vNodeObserver.addNegativeVConnector(conctr);
+                        }
+                    }
+                }
+            }
+        }
+        this.updatePropagation2()
     }
 
     resetConnectors() {
-        this.connectors = [];
-        this.addConnector(0);
+        this.positives = [];
+        this.negatives = [];
+
+        if (this.polarity == "RIGHT") {
+            this.addPositiveConnector(0);
+        }
+        if (this.polarity == "LEFT") {
+            this.addNegativeConnector(0);
+        }
+        if (this.polarity == "BOTH") {
+            this.addPositiveConnector(0);
+            this.addNegativeConnector(0);
+        }
         this.vNodeObserver.resetVConnectors();
+    }
+
+    recallConnectors(connSource) {
+        if (connSource.polarity) {
+            this.positives.pop();
+            connSource.nodeObserver.vNodeObserver.vPositives.pop();
+        } else {
+            this.negatives.pop();
+            connSource.nodeObserver.vNodeObserver.vNegatives.pop();
+        }
+        connSource.nodeObserver.vNodeObserver.updateConnectorsCoords();
     }
 
     propagate(node, clicked) {
@@ -262,6 +344,61 @@ class Node {
         }
     }
 
+    /**  @deprecated */
+    propagateBackward(cat, clicked) {
+        let warningAt;
+        if (!cat.inBkwPropagation || !clicked) {
+            try {
+                // i) retrive a subset of edges whose TARGET is this category
+                cat.inBkwPropagation = clicked;
+                let edgesTmp = this.getBackwardEdges(cat)
+
+                // ii) retrieve the list of source categories linked to this category
+                edgesTmp.forEach(edg => {
+                    if (edg.target == undefined) {
+                        return false;
+                    } else {
+                        let obs = edg.source.nodeObserver;
+                        warningAt = obs.label;
+
+                        // for each of those categories, repeat i), ii)
+                        obs.propagateBackward(obs, clicked);
+                    }
+                });
+            } catch (error) {
+                if (error.name == "Recursion") {
+                    alert("INFINTE RECURSION. \n The path of predecessors from " + error.message + " draws a closed loop. Propagation will be dissabled");
+                    document.getElementById('forward').checked = "";
+                } else if (error instanceof RangeError) {
+                    document.getElementById('warning').innerHTML = "WARNING: Infinite Recursion. Propagation dissabled";
+                    console.log("WARNING: INFINTE RECURSION. The path draws a closed loop. Check: " + cat.label);
+                    alert("Backward infinite recursion. \nThe path of predecessors from " + cat.label + " draws a closed loop. Propagation will be dissabled");
+                    document.getElementById('forward').checked = "";
+                } else {
+                    console.log(error)
+                }
+            }
+        } else {
+            console.log("Blocked predecessor propagation from " + cat.label + ". ** Recursion Error thrown **")
+            let nError = new Error(cat.label);
+            nError.name = "Recursion"
+            throw (nError);
+        }
+    }
+
+    /**  @deprecated */
+    updatePropagation() {
+        if (this.inFwdPropagation && document.getElementById('forward').checked) {
+            this.inFwdPropagation = false;
+            console.log("______ Updated From __ " + this.label);
+            this.propagateForward(this, true);
+        }
+        if (this.inBkwPropagation && document.getElementById('backward').checked) {
+            this.inBkwPropagation = false;
+            console.log("______ Updated From __ " + this.label);
+            this.propagateBackward(this, true);
+        }
+    }
 
     getForwardEdges(cat) {
         let edgesTmp = [];
@@ -288,16 +425,11 @@ class Node {
     }
 
     getJSON() {
-        let cnctrs = [];
-        for (const connector of this.connectors) {
-            cnctrs.push(connector.getJSON())
-        }
-
         let rtn = {
             id: this.idCat.index,
             nodeLabel: this.label,
             nodeDescription: this.description,
-            connectors: JSON.stringify(cnctrs),
+            polarity: this.polarity,
             pajekIndex: this.idCat.pajekIndex
         }
         return rtn;

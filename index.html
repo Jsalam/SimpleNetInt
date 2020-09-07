@@ -6,7 +6,7 @@
     <!-- Enable responsiveness on mobile devices-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-    <title>Bezier networks</title>
+    <title>Simple networks</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -28,9 +28,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
 
+    <!-- GUI -->
+    <script src="src/GUI/DOM/DOMManager.js"></script>
+
     <!-- Control -->
-
-
     <script src="src/main2.js"></script>
     <script src="src/canvas/canvas.js"></script>
     <script src="src/GUI/forms/addClusterModalForm.js"></script>
@@ -56,6 +57,7 @@
 
     <!-- Utils-->
     <script src="src/utilities/utilities.js"></script>
+
 
 
 </head>
@@ -145,11 +147,7 @@
         </div>
     </div>
     <div class="container-fluid">
-        <div class="row jjustify-content-center align-items-center" style="margin-left:15px;">
-            <script>
-                // category size parametrization
-                ClusterFactory.setParameters(30, 20, 110);
-            </script>
+        <div class="row justify-content-center align-items-center" style="margin-left:15px;">
             <!-- Model goes here -->
             <div id="model"></div>
 

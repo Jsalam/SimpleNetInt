@@ -1,8 +1,3 @@
-addNodeModalForm = function() {
-
-    document.getElementById("SubmitAddNodeModal").onclick = getData
-}
-
 getData = function() {
     let cluster = document.querySelector('input[name="cluster"]:checked');
     let name = document.getElementById("catName").value;
@@ -30,24 +25,26 @@ getData = function() {
 
         // visual representation of the new category
         let vClustTmp = ClusterFactory.getVClusterOf(clusterTmp);
-        let vNodeTmp = new VNode(nodeTmp, vClustTmp.width, vClustTmp.height);
-        if (positive) {
-            vNodeTmp.addPositiveVConnector(nodeTmp.positives[0]);
-        }
-        if (negative) {
-            vNodeTmp.addNegativeVConnector(nodeTmp.negatives[0]);
+        let vNodeTmp = new VNode(nodeTmp, ClusterFactory.wdth, ClusterFactory.hght);
+        if (nodeTmp instanceof Node) {
+            if (nodeTmp.connectors.length > 0) {
+                vNodeTmp.addVConnector(nodeTmp.connectors[0]);
+            }
+        } else if (nodeTmp instanceof BipartiteNode) {
+            if (positive) {
+                vNodeTmp.addPositiveVConnector(nodeTmp.positives[0]);
+            }
+            if (negative) {
+                vNodeTmp.addNegativeVConnector(nodeTmp.negatives[0]);
+            }
         }
 
         // add to collections
         clusterTmp.addNode(nodeTmp);
         vClustTmp.addVNode(vNodeTmp);
 
-        ClusterFactory.refreshColors(1, ColorFactory.palettes[0]);
-        ClusterFactory.refreshColors(2, ColorFactory.palettes[1]);
-        console.log("Node added");
-
     } else {
-        alert("You forgot to choose a cluster. Please try again, your data is not lost.")
+        alert("You forgot to choose a cluster. Please try again, your data isn't lost.")
     }
 
 }

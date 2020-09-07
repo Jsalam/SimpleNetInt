@@ -6,9 +6,6 @@ importNetworkModalForm = function() {
     var networkFile = document.getElementById('dragDropNetwork');
 
     makeDroppable(networkFile, callbackNetwork);
-
-    // Get user click button
-    document.getElementById("importNetwork").onclick = getDataImport;
 }
 
 getDataImport = function() {

@@ -1,15 +1,13 @@
-/** The connector is an anchor within the node that allows connecting edges to this node. 
- * There might be diverse kinds of connectors in a node, thus there are diverse kind of edges. 
- * The Edges kind is the same as the source connector's kind*/
-
-class Connector {
-    constructor(id, _kind, _index) {
-        this.id = { cluster: id.cluster, cat: id.index, index: _index, pajekIndex: id.pajekIndex }
-        this.kind = _kind;
+/** These are connectors with different a polarity either true or false. These connectors can only take edges coming from connectors with opposite polarity
+ */
+class PolarityConnector {
+    constructor(id, _index, polarity, _count) {
+        this.polarity = polarity;
+        this.id = { cluster: id.cluster, cat: id.index, index: _index, polarity: this.polarity, pajekIndex: _count }
         this.taken = false;
         // observer pattern
-        this.nodeObserver; // the subscribed node
-        this.vConnectorObserver; // the subscribed vNode
+        this.nodeObserver; // the collection of subscribed nodes
+        this.vConnectorObserver;
     }
 
     subscribeNode(observer) {
@@ -97,6 +95,11 @@ class Connector {
     }
 
     getJSON() {
-        return this.kind;
+        let rtn = {
+            id: {
+                index: this.id.index,
+            },
+        }
+        return rtn;
     }
 }

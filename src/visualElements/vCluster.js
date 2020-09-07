@@ -3,6 +3,7 @@ class VCluster {
         this.pos = gp5.createVector(x, y);
         this.width = width;
         this.height = height;
+        // collection of either BipartiteVNode or VNode
         this.vNodes = [];
         this.cluster = cluster;
         this.palette = palette;
@@ -23,18 +24,31 @@ class VCluster {
 
     populateVNodes(cluster) {
         for (let index = 0; index < cluster.nodes.length; index++) {
-
-            const node = cluster.nodes[index]
-
+            const node = cluster.nodes[index];
             // Create vNode
-            let vNodeTemp = new VNode(node, this.width, this.height);
+            let vNodeTemp;
+            if (node instanceof Node) {
+                // node size
+                let vNodeW = 30;
+                let vNodeH = 30;
+                // instantiation
+                vNodeTemp = new VNode(node, vNodeW, vNodeH);
+                console.log("Working on vConnectors")
+                for (const connector of vNodeTemp.node.connectors) {
+                    vNodeTemp.addVConnector(connector);
+                }
 
-            for (const connector of vNodeTemp.node.positives) {
-                vNodeTemp.addPositiveVConnector(connector);
-            }
+            } else if (node instanceof BipartiteNode) {
+                vNodeTemp = new BipartiteVNode(node, this.width, this.height);
+                // this is for the case of bipartitte nodes
+                for (const connector of vNodeTemp.node.positives) {
+                    vNodeTemp.addPositiveVConnector(connector);
+                }
 
-            for (const connector of vNodeTemp.node.negatives) {
-                vNodeTemp.addNegativeVConnector(connector);
+                for (const connector of vNodeTemp.node.negatives) {
+                    vNodeTemp.addNegativeVConnector(connector);
+                }
+
             }
 
             // set color
@@ -89,9 +103,9 @@ class VCluster {
             builder.textSize(12);
             builder.fill(0);
             builder.noStroke();
-            builder.text(this.cluster.label, this.pos.x, this.pos.y, this.width, 35);
+            builder.text(this.cluster.label, this.pos.x, this.pos.y, 150);
             builder.textSize(9);
-            builder.text(this.cluster.description, this.pos.x, this.pos.y + 15, this.width, 30);
+            builder.text(this.cluster.description, this.pos.x, this.pos.y + 25, 100);
         }
     }
 

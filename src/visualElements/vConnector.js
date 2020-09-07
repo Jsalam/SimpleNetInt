@@ -46,10 +46,15 @@ class VConnector extends Button {
     }
 
     show(builder) {
-        builder.fill(this.color);
+        builder.noFill();
         builder.stroke(this.color);
         //builder.rect(this.pos.x, this.pos.y, this.width, this.height);
         builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width)
+            // label
+        builder.textAlign(gp5.RIGHT, gp5.CENTER);
+        builder.fill('#000000');
+        builder.stroke('#000000');
+        builder.text(this.connector.kind, this.pos.x - 2, this.pos.y + this.height / 2);
     }
 
     showAsButton(builder) {

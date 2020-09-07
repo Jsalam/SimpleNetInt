@@ -14,11 +14,11 @@ class ColorFactory {
                         // Third palette
                         gp5.loadStrings(path + names[2], data => {
                             ColorFactory.palettes.push(data);
-                            console.log(3 + ", :" + ColorFactory.palettes.length);
+                            console.log(2 + ", :" + ColorFactory.palettes.length);
                             // Fourth palette
                             gp5.loadStrings(path + names[3], data => {
                                 ColorFactory.palettes.push(data);
-                                console.log(4 + ", :" + ColorFactory.palettes.length);
+                                console.log(3 + ", :" + ColorFactory.palettes.length);
                                 // Call the "then" function once all the palettes are completed
                                 if (thenFunction) {
                                     thenFunction();

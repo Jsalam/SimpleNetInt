@@ -1,14 +1,12 @@
-class VNode extends Button {
+class BipartiteVNode extends Button {
     constructor(node, width, height) {
         super(0, 0, width, height);
         this.node = node;
         this.color = '#adadad';
-        this.paddingTop = 3;
-        this.vConnectors = [];
-        this.vConnectorsGap = 13;
+        this.categoryGap = 5;
+        this.vPositives = [];
+        this.vNegatives = [];
         this.node.subscribe(this);
-        // events
-        this.keyP_Down = false;
     }
 
     // Observing to Canvas
@@ -32,37 +30,51 @@ class VNode extends Button {
             }
             // do something
         } else if (data.event instanceof KeyboardEvent) {
-            if (data.type == "keydown") {
-                if (data.event.key == 'p' || data.event.key == 'P') {
-                    this.keyP_Down = true;
-                }
-            }
-            if (data.type == "keyup") {
-                if (data.event.key == 'p' || data.event.key == 'P') {
-                    this.keyP_Down = false;
-                }
-            }
+            // do something
         } else {
             // do something
         }
     }
 
-    addVConnector(connector) {
+    addPositiveVConnector(connector) {
         let tmpVConnector = new VConnector(connector);
         tmpVConnector.setColor(this.color);
-        this.vConnectors.push(tmpVConnector);
+        this.vPositives.push(tmpVConnector);
+        Canvas.subscribe(tmpVConnector);
+        this.updateConnectorsCoords();
+    }
+
+    addNegativeVConnector(connector) {
+        let tmpVConnector = new VConnector(connector);
+        tmpVConnector.setColor(this.color);
+        this.vNegatives.push(tmpVConnector);
         Canvas.subscribe(tmpVConnector);
         this.updateConnectorsCoords();
     }
 
     resetVConnectors() {
-        this.vConnectors = [];
-        this.addVConnector(this.node.connectors[0]);
+        this.vPositives = [];
+        this.vNegatives = [];
+        if (this.node.polarity == "RIGHT") {
+            this.addPositiveVConnector(this.node.positives[0]);
+        }
+        if (this.node.polarity == "LEFT") {
+            this.addNegativeVConnector(this.node.negatives[0]);
+        }
+        if (this.node.polarity == "BOTH") {
+            this.addPositiveVConnector(this.node.positives[0]);
+            this.addNegativeVConnector(this.node.negatives[0]);
+        }
     }
 
-    popLastVConnector() {
-        Canvas.unsubscribe(this.vConnectors[this.vConnectors.length - 1]);
-        this.vConnectors.shift();
+    popLastVConnector(polarity) {
+        if (polarity == true) {
+            Canvas.unsubscribe(this.vPositives[this.vPositives.length - 1]);
+            this.vPositives.shift();
+        } else {
+            Canvas.unsubscribe(this.vNegatives[this.vNegatives.length - 1]);
+            this.vNegatives.shift();
+        }
         this.updateConnectorsCoords();
     }
 
@@ -72,26 +84,40 @@ class VNode extends Button {
     }
 
     setColorConnectors(color) {
-        this.vConnectors.forEach(connector => {
+        this.vPositives.forEach(connector => {
+            connector.setColor(color);
+        });
+        this.vNegatives.forEach(connector => {
             connector.setColor(color);
         });
     }
 
     updateCoords(pos, sequence) {
-        this.setPos(gp5.createVector(pos.x, pos.y + (sequence * this.height) + (sequence * this.paddingTop)));
+        this.setPos(gp5.createVector(pos.x, pos.y + (sequence * this.height) + (sequence * this.categoryGap)));
         this.updateConnectorsCoords();
     }
 
     updateConnectorsCoords() {
+        // right
         let counter = 0;
         //let positives = this.getConnectors(true);
-        this.vConnectors.forEach(vConnector => {
-            vConnector.updateCoords(this.pos, 0, counter, this.vConnectorsGap);
+        this.vPositives.forEach(connector => {
+            connector.updateCoords(this.pos, this.width, counter, this.height / this.vPositives.length);
+            counter++;
+        });
+        // left
+        counter = 0;
+        //let negatives = this.getConnectors(false);
+        this.vNegatives.forEach(connector => {
+            connector.updateCoords(this.pos, this.width, counter, this.height / this.vNegatives.length);
             counter++;
         });
     }
 
     show(renderer) {
+        renderer.strokeWeight(1);
+        renderer.fill(0, 255, 0)
+        renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, 2);
         // in case the color palette runs out of colors
         if (!this.color) {
             this.color = '#d4d4d4';
@@ -123,38 +149,57 @@ class VNode extends Button {
         // }
 
         // Highlight rect
-        if (this.propagated) {
+        if (this.clicked) {
             renderer.strokeWeight(2);
             renderer.stroke(200, 0, 0);
         } else {
             renderer.strokeWeight(1);
             renderer.stroke(250);
         }
+
+
+
         // Show linked only
-        if (DOM.boxChecked("filterLinked")) {
+        if (document.getElementById('filterLinked').checked) {
             // filter by edge number
-            if ((this.vConnectors.length > 0) && DOM.boxChecked("filterLinked")) {
+            if ((this.node.polarity == "BOTH" && this.vPositives.length + this.vNegatives.length > 2) |
+                (this.node.polarity != "BOTH" && this.vPositives.length + this.vNegatives.length > 1) &&
+                document.getElementById('filterLinked').checked) {
                 // draw the rect
                 renderer.strokeWeight(2);
                 renderer.stroke(this.color);
                 //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
                 renderer.ellipseMode(gp5.CENTER)
-                renderer.ellipse(this.pos.x, this.pos.y, this.width);
+                renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
                 // draw the label
                 renderer.fill("#000000");
+                renderer.textAlign(gp5.CENTER, gp5.CENTER);
                 renderer.noStroke();
                 renderer.textSize(10);
-                if (this.propagated) {
+                if (this.clicked) {
                     renderer.textStyle(renderer.BOLD);
                 }
-                renderer.textAlign(gp5.CENTER, gp5.CENTER);
-                renderer.text(this.node.label, this.pos.x, this.pos.y);
+                renderer.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
                 renderer.textStyle(renderer.NORMAL);
 
-                //connectors
-                for (let index = 0; index < this.vConnectors.length; index++) {
-                    this.vConnectors[index].show(renderer)
+                //let positives = this.getConnectors(true);
+                for (let index = 0; index < this.vPositives.length; index++) {
+                    const element = this.vPositives[index];
+                    if (index == this.vPositives.length - 1) {
+                        element.showAsButton(renderer);
+                    } else {
+                        element.show(renderer)
+                    }
+                }
+                //let negatives = this.getConnectors(false);
+                for (let index = 0; index < this.vNegatives.length; index++) {
+                    const element = this.vNegatives[index];
+                    if (index == this.vNegatives.length - 1) {
+                        element.showAsButton(renderer);
+                    } else {
+                        element.show(renderer)
+                    }
                 }
 
                 if (this.mouseIsOver) {
@@ -165,14 +210,14 @@ class VNode extends Button {
                 renderer.fill(this.color.concat(dimmed));
                 //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
                 renderer.ellipseMode(gp5.CENTER)
-                renderer.ellipse(this.pos.x, this.pos.y, this.width);
+                renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
                 // draw the label
                 renderer.fill("#00000070");
+                renderer.textAlign(gp5.CENTER, gp5.CENTER);
                 renderer.noStroke();
                 renderer.textSize(10);
-                renderer.textAlign(gp5.CENTER, gp5.CENTER);
-                renderer.text(this.node.label, this.pos.x, this.pos.y);
+                renderer.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
                 renderer.textStyle(renderer.NORMAL);
                 if (this.mouseIsOver) {
                     this.showDescription(renderer);
@@ -182,22 +227,36 @@ class VNode extends Button {
             // draw the rect
             // renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
             renderer.ellipseMode(gp5.CENTER)
-            renderer.ellipse(this.pos.x, this.pos.y, this.width);
+            renderer.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width);
 
             // draw the label
             renderer.fill("#000000");
+            renderer.textAlign(gp5.CENTER, gp5.CENTER);
             renderer.noStroke();
             renderer.textSize(10);
-            if (this.propagated) {
+            if (this.clicked) {
                 renderer.textStyle(renderer.BOLD);
             }
-            renderer.textAlign(gp5.CENTER, gp5.CENTER);
-            renderer.text(this.node.label, this.pos.x, this.pos.y);
+            renderer.text(this.node.label, this.pos.x, this.pos.y, this.width, this.height);
             renderer.textStyle(renderer.NORMAL);
 
-            //connectors
-            for (let index = 0; index < this.vConnectors.length; index++) {
-                this.vConnectors[index].show(renderer)
+            //let positives = this.getConnectors(true);
+            for (let index = 0; index < this.vPositives.length; index++) {
+                const element = this.vPositives[index];
+                if (index == this.vPositives.length - 1) {
+                    element.showAsButton(renderer);
+                } else {
+                    element.show(renderer)
+                }
+            }
+            //let negatives = this.getConnectors(false);
+            for (let index = 0; index < this.vNegatives.length; index++) {
+                const element = this.vNegatives[index];
+                if (index == this.vNegatives.length - 1) {
+                    element.showAsButton(renderer);
+                } else {
+                    element.show(renderer)
+                }
             }
 
             if (this.mouseIsOver) {
@@ -216,6 +275,7 @@ class VNode extends Button {
         renderer.noStroke();
         renderer.textSize(11);
         renderer.text(this.node.description, 100, gp5.height - 62, gp5.width - 200, 97);
+
     }
 
     getJSON() {
@@ -256,35 +316,21 @@ class VNode extends Button {
 
     mouseClickedEvents() {
         /** Note: this.dragged is true at the slightest drag motion. Sometimes 
-         * this is imperceptible thus the click behavior of vNodes is not as 
-         * responsive as it should, but it is highly accurate ;-)
+         * this is imperceptible thus the behavior is not as responsive as it should 
          */
         if (this.mouseIsOver && !this.dragged) {
-
-            if (this.keyP_Down) {
-                this.propagated = !this.propagated;
-                this.node.propagate(this.node, this.propagated);
-            } else {
-                this.sproutEdge();
-            }
+            this.clicked = !this.clicked;
+            this.node.propagate(this.node, this.clicked);
         }
         this.dragged = false;
         this.delta = undefined;
-    }
 
-    sproutEdge() {
-        console.log("sprout edge");
-        // evaluate if this node will be a target for an ongoing edge or the source of a new edge
-        // if target
-        // get the kind of connector needed
-        // instantiate the connector
-        // instantiate the vConnector
-        // close the edge
-        // if source
-        // ask for the kind of connector on a pop-up window
-        // instantiate the connector
-        // instantiate the vConnector
-        // create the edge
+        // this.vPositives.forEach(connector => {
+        //     connector.mouseClickedEvents();
+        // });
+        // this.vNegatives.forEach(connector => {
+        //     connector.mouseClickedEvents();
+        // });
     }
 
 }
