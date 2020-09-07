@@ -47,6 +47,13 @@ class VNode extends Button {
         }
     }
 
+    // Observer node
+    fromNode(data) {
+        if (data instanceof Connector) {
+            this.addVConnector(data);
+        }
+    }
+
     addVConnector(connector) {
         let tmpVConnector = new VConnector(connector);
         tmpVConnector.setColor(this.color);
@@ -265,26 +272,52 @@ class VNode extends Button {
                 this.propagated = !this.propagated;
                 this.node.propagate(this.node, this.propagated);
             } else {
-                this.sproutEdge();
+                let lastEdge = this.node.workOnLastEdge();
+                this.workOnLastVEdge(lastEdge);
             }
         }
         this.dragged = false;
         this.delta = undefined;
     }
 
-    sproutEdge() {
-        console.log("sprout edge");
-        // evaluate if this node will be a target for an ongoing edge or the source of a new edge
-        // if target
-        // get the kind of connector needed
-        // instantiate the connector
-        // instantiate the vConnector
-        // close the edge
-        // if source
-        // ask for the kind of connector on a pop-up window
-        // instantiate the connector
-        // instantiate the vConnector
-        // create the edge
+
+    workOnLastVEdge(edge) {
+
+        if (DOM.boxChecked("edit")) {
+            // get the last edge in edges collection.
+            let lastVEdge = EdgeFactory.vEdges.slice(-1)[0];
+
+            // If there is at least one edge
+            if (lastVEdge) {
+
+                // if the edge does not have a target
+                if (edge.open) {
+                    // if edge is the last edge in factory
+                    if (EdgeFactory.edges.slice(-1)[0] == edge) {
+                        // *** link to connector here *******************
+                        // set the target
+                        lastVEdge.setVTarget(this);
+                    } else {
+                        // remove the last edge in factory because ...?
+                        EdgeFactory.vEdges.pop();
+                    }
+
+                } else {
+                    // If the edge is closed generate a new vEdge
+                    this.sproutVEdge(edge);
+                }
+            } else {
+                // create the first vEdge
+                this.sproutVEdge(edge);
+            }
+        }
+    }
+
+    sproutVEdge(edge) {
+        let lastVEdge = new VEdge(edge);
+        lastVEdge.setVSource(this);
+        Canvas.subscribe(lastVEdge);
+        EdgeFactory.vEdges.push(lastVEdge);
     }
 
 }

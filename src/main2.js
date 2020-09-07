@@ -41,8 +41,10 @@ var main = function(p5) {
         DOM.switchModel(DOM.dropdowns.modelChoice.value);
     }
 
-    // In a loop
+    // Everyting drawn on p5 canvas is comming from Canvas class. In Canvas, it shows all the subscribed visual elements.
     p5.draw = function() {
+
+        // push transformation matrix
         gp5.push();
 
         // DOM event
@@ -58,11 +60,15 @@ var main = function(p5) {
         Canvas.transform();
         Canvas.render();
         Canvas.originCrossHair();
+        Canvas.showOnPointer();
+
+        // pop transformation matrix
         gp5.pop();
 
         // draw canvas status
         Canvas.displayValues(gp5.createVector((gp5.width / 2) - 10, (-gp5.height / 2) + 5), gp5);
         Canvas.showLegend(gp5.createVector((gp5.width / 2) - 10, (gp5.height / 2) - 65), gp5);
+
 
 
     }

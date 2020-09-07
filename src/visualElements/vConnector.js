@@ -6,6 +6,11 @@ class VConnector extends Button {
         connector.subscribeVConnector(this);
     }
 
+    // Observing connector
+    getData(data) {
+        // do domething
+    }
+
     // Observing to Canvas
     fromCanvas(data) {
 
@@ -14,7 +19,7 @@ class VConnector extends Button {
                 // do something
             }
             if (data.type == "mousedown") {
-                this.mouseClickedEvents();
+                // do something
             }
             if (data.type == "mousedrag") {
                 // do something
@@ -75,61 +80,5 @@ class VConnector extends Button {
         builder.fill('#000000');
         builder.stroke('#000000');
         builder.text('+', this.pos.x + this.width / 2, this.pos.y + this.height / 2);
-    }
-
-
-    workOnLastVEdge(edge) {
-
-        let lastVEdge;
-        if (document.getElementById("edit").checked) {
-
-            // get the last edge in edges collection.
-            lastVEdge = EdgeFactory.vEdges.slice(-1)[0];
-
-            // If there is at least one edge
-            if (lastVEdge) {
-                if (lastVEdge.open) {
-
-                    if (EdgeFactory.edges[EdgeFactory.edges.length - 1] == edge) {
-                        lastVEdge.setVTarget(this);
-                        lastVEdge.open = false;
-                    } else {
-                        EdgeFactory.vEdges.pop();
-                    }
-                    // if edge does not link nodes in the same cluster
-                    if (edge.source.id.cluster != this.connector.id.cluster) {
-                        // check connectors polarity
-                        if (this.connector.polarity != edge.source.polarity) {
-                            lastVEdge.setVTarget(this);
-                            lastVEdge.open = false;
-                        }
-                    }
-
-                } else {
-                    lastVEdge = new VEdge(edge);
-                    lastVEdge.setVSource(this);
-                    lastVEdge.open = true;
-                    Canvas.subscribe(lastVEdge);
-                    EdgeFactory.vEdges.push(lastVEdge);
-
-                }
-            } else {
-                // create the first edge
-                lastVEdge = new VEdge(edge);
-                lastVEdge.setVSource(this);
-                lastVEdge.open = true;
-                Canvas.subscribe(lastVEdge);
-                EdgeFactory.vEdges.push(lastVEdge);
-            }
-        }
-    }
-
-    mouseClickedEvents() {
-        if (this.mouseIsOver) {
-            console.log("on connector");
-            let edge = this.connector.workOnLastEdge();
-            this.connector.notifyObserver(edge);
-            this.workOnLastVEdge(edge);
-        }
     }
 }

@@ -103,7 +103,6 @@ class EdgeFactory {
     }
 
     static reset() {
-        console.log('Edges re-initialized');
         EdgeFactory.edges = [];
         EdgeFactory.vEdges = [];
     }
@@ -118,6 +117,16 @@ class EdgeFactory {
             lastEdge.id.source.cluster + " with category: " +
             lastEdge.target.nodeObserver.label + ", in cluster: " +
             lastEdge.id.target.cluster);
+    }
+
+    static isThereOpenEdge() {
+        let rtn = false;
+        // get the last element
+        let lastEdge = EdgeFactory.edges.slice(-1)[0];
+        if (lastEdge) {
+            rtn = lastEdge.open;
+        }
+        return rtn;
     }
 }
 

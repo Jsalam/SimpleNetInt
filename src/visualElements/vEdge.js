@@ -9,7 +9,6 @@ class VEdge {
         this.vSource;
         this.vTarget;
         this.color;
-        this.open = false;
         this.alpha = 50
     }
 
@@ -24,14 +23,14 @@ class VEdge {
         }
     }
 
-    setVSource(vConctr) {
-        this.vSource = vConctr;
-        this.setColor(vConctr.color);
+    setVSource(vNode) {
+        this.vSource = vNode;
+        // this.setColor(vNode..color);
     }
 
-    setVTarget(vConctr) {
-        this.vTarget = vConctr;
-        vConctr.setColor(this.color);
+    setVTarget(vNode) {
+        this.vTarget = vNode;
+        // vConctr.setColor(this.color);
     }
 
     setColor(color) {

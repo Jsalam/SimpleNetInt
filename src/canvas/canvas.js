@@ -55,7 +55,7 @@ class Canvas {
      */
     static render() {
         gp5.background(this.currentBackground);
-        if (this.renderGate) {
+        if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
             Canvas.renderOnP5();
         } else {
             //this.graphicsRendered = false;
@@ -228,8 +228,15 @@ class Canvas {
         gp5.line(-gp5.width, 0, gp5.width, 0);
     }
 
-    // *** Events registration 
+    static showOnPointer() {
+        if (EdgeFactory.isThereOpenEdge()) {
+            gp5.fill(90, 200);
+            gp5.textAlign(gp5.LEFT);
+            gp5.text("open edge", Canvas._mouse.x, Canvas._mouse.y - 10);
+        }
+    }
 
+    // *** Events registration 
     static mouseEvents() {
         let htmlCanvas = document.getElementById('model');
         htmlCanvas.addEventListener('mousedown', Canvas.mPressed.bind(this))

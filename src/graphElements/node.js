@@ -24,7 +24,6 @@ class Node {
 
     addConnector(kind, index) {
         let tmpConnector = new Connector(this.idCat, kind, index);
-        tmpConnector.subscribeNode(this);
         this.connectors.push(tmpConnector);
         return tmpConnector;
     }
@@ -47,7 +46,6 @@ class Node {
 
     resetConnectors() {
         this.connectors = [];
-        this.addConnector(0);
         this.vNodeObserver.resetVConnectors();
     }
 
@@ -262,6 +260,87 @@ class Node {
         }
     }
 
+
+    ////******** BUILD EDGE ******** */
+
+    /** Work in the last edge if any. If there is a last edge, and it is open, then close it. 
+     * If there is no edge, or the edge is closed, create a new one. 
+     * */
+    workOnLastEdge() {
+        let lastEdge;
+        if (DOM.boxChecked("edit")) {
+
+            // get the last edge in edges collection.
+            lastEdge = EdgeFactory.EDGES.slice(-1)[0];
+
+            // If there is at least one edge
+            if (lastEdge) {
+                if (lastEdge.open) {
+                    alert("Closing edge of type " + lastEdge.kind);
+                    this.closeEdge(lastEdge);
+                } else {
+                    // choose connector type
+                    alert("New connector type PROVISIONAL");
+                    let kind = "Provisional";
+                    lastEdge = this.sproutEdge(kind);
+                }
+            } else {
+                // create the first edge
+                // choose connector type
+                alert("New connector type PROVISIONAL");
+                let kind = "Provisional";
+                lastEdge = this.sproutEdge(kind);
+            }
+        }
+        return lastEdge;
+    }
+
+    sproutEdge(kind) {
+        // create a new one
+        let lastEdge = new Edge(this);
+        EdgeFactory.edges.push(lastEdge);
+
+        // link edge to connector and set edge's kind
+        let connector = this.sproutConnector(kind);
+        connector.subscribeEdgeObserver(lastEdge);
+        return lastEdge;
+    }
+
+    sproutConnector(kind) {
+        // look if there is a connector of this kind
+        let connector = this.connectors.filter(cnctr => cnctr._kind === kind);
+
+        // if this is a new kind of connector
+        if (connector.length < 1) {
+            // instantiate the connector and add it to this node
+            let index = this.connectors.length;
+            connector = this.addConnector(kind, index);
+        }
+        // Notifu vNode to create vConnector (and vEdge?)
+        this.vNodeObserver.fromNode(connector);
+        return connector;
+    }
+
+    closeEdge(lastEdge) {
+        // set target
+        if (lastEdge.setTarget(this)) {
+            this.sproutConnector(lastEdge.kind);
+
+            // close edge
+            lastEdge.open = false;
+        } else {
+            console.log("Issues clossing edge");
+            this.recallEdge(lastEdge);
+        }
+    }
+
+    recallEdge(lastEdge) {
+        // remove temporary edge
+        EdgeFactory.edges.pop();
+
+        //vEdges.pop();
+        this.taken = false;
+    }
 
     getForwardEdges(cat) {
         let edgesTmp = [];
