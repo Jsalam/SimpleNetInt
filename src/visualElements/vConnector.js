@@ -1,6 +1,6 @@
 class VConnector extends Button {
     constructor(connector) {
-        super(0, 0, 10, 0);
+        super(0, 0, 10, 10);
         this.connector = connector;
         this.color = '#d4d4d4';
         connector.subscribeVConnector(this);
@@ -50,35 +50,37 @@ class VConnector extends Button {
         this.setHeight(height);
     }
 
-    show(builder) {
-        builder.noFill();
-        builder.stroke(this.color);
-        //builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-        builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width)
+    show(renderer) {
+        renderer.ellipseMode(gp5.CENTER);
+        renderer.noFill();
+        renderer.stroke(this.color);
+        //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
+        renderer.ellipse(this.pos.x, this.pos.y, this.width)
             // label
-        builder.textAlign(gp5.RIGHT, gp5.CENTER);
-        builder.fill('#000000');
-        builder.stroke('#000000');
-        builder.text(this.connector.kind, this.pos.x - 2, this.pos.y + this.height / 2);
+        renderer.textAlign(gp5.RIGHT, gp5.CENTER);
+        renderer.fill('#000000');
+        renderer.stroke('#000000');
+        renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
     }
 
-    showAsButton(builder) {
+    showAsButton(renderer) {
+        renderer.ellipseMode(gp5.CENTER);
         // in case the color palette runs out of colors
         if (!this.color) {
             this.color = '#d4d4d4';
         }
-        builder.fill(this.color.concat('ff'));
-        builder.stroke(200);
+        renderer.fill(this.color.concat('ff'));
+        renderer.stroke(200);
         if (this.mouseIsOver) {
-            builder.stroke("#333333")
+            renderer.stroke("#333333")
         } else {
-            builder.stroke(this.color)
+            renderer.stroke(this.color)
         }
-        // builder.rect(this.pos.x, this.pos.y, this.width, this.height);
-        builder.ellipse(this.pos.x + this.width / 2, this.pos.y + this.height / 2, this.width)
-        builder.textAlign(gp5.CENTER, gp5.CENTER);
-        builder.fill('#000000');
-        builder.stroke('#000000');
-        builder.text('+', this.pos.x + this.width / 2, this.pos.y + this.height / 2);
+        // renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
+        renderer.ellipse(this.pos.x + this.width / 2, this.pos.y, this.width)
+        renderer.textAlign(gp5.CENTER, gp5.CENTER);
+        renderer.fill('#000000');
+        renderer.stroke('#000000');
+        renderer.text('+', this.pos.x, this.pos.y);
     }
 }

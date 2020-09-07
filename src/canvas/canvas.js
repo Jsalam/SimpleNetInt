@@ -46,6 +46,22 @@ class Canvas {
         this.observers = [];
     }
 
+    static resetVEdges() {
+        this.observers = this.observers.filter(function(obs) {
+            if (!(obs instanceof VEdge)) {
+                return obs;
+            }
+        });
+    }
+
+    static resetVConnectors() {
+        this.observers = this.observers.filter(function(obs) {
+            if (!(obs instanceof VConnector)) {
+                return obs;
+            }
+        });
+    }
+
     /**
      * Main render function. It switches between two renderers to speed up performance: the p5 canvas and a graphics canvas.
      * The central idea is to have a gate that is always closed except when the user performs actions on the canvas that
@@ -322,46 +338,19 @@ class Canvas {
         this.renderGate = true;
         if (k.key == "Shift") {
             Canvas.shiftDown = false;
-            this._adaptiveDegreeThresholdPercentage = 100;
         }
 
         // Escape key
-        if (data.event.keyCode == '27') {
-            Canvas.recallEdge();
+        if (k.key == 'Escape') {
+            EdgeFactory.recallEdge();
         }
 
         // Delete last edge Shift + 'e' || 'E'
+        if (k.key == "Shift" && (k.key == 'e' || k.key == 'E')) {
+            EdgeFactory.deleteLastEdge();
+        }
         Canvas.notifyObservers({ event: k, type: "keyup" });
     }
-
-    static recallEdge() {
-        if (EdgeFactory.isThereOpenEdge()) {
-            // recall vConnector at source
-            // recal connector
-            // recall vEdge
-            // recall Edge or decrease weight if greater than 1
-            // recall Edge form factory
-            // recall VEdge form factory
-            // close open edge in factory
-        }
-    }
-
-    static deleteEdge() {
-        if (data.event.key == "Shift" && (data.event.key == 'e' || data.event.key == 'E')) {
-            // recall vConnector at source and target
-            // recal connector at source and target
-            // recall vEdge
-            // recall Edge or decrease weight if greater than 1
-            // close open edge in factory
-        }
-    }
-
-    static deleteNode() {
-        // TBD
-    }
-
-
-
 }
 Canvas.shiftDown = false;
 Canvas.mouseDown = false;

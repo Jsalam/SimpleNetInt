@@ -64,7 +64,6 @@ class VNode extends Button {
 
     resetVConnectors() {
         this.vConnectors = [];
-        this.addVConnector(this.node.connectors[0]);
     }
 
     popLastVConnector() {
@@ -285,7 +284,6 @@ class VNode extends Button {
      */
 
     workOnLastVEdge(edge) {
-
         if (DOM.boxChecked("edit")) {
 
             // if the edge does not have a target
@@ -306,16 +304,19 @@ class VNode extends Button {
         // set the source
         lastVEdge.setVSource(this);
 
-        // add to the canvas elements to be rendered on screen
-        Canvas.subscribe(lastVEdge);
+        // set connector position
+        lastVEdge.pos =
+
+            // add to the canvas elements to be rendered on screen
+            Canvas.subscribe(lastVEdge);
 
         // add to the collections of vEdges in factory
-        EdgeFactory.vEdges.push(lastVEdge);
+        EdgeFactory.pushVEdge(lastVEdge);
     }
 
     closeLastVEdge(edge) {
         // take the current VEdge
-        let currentVEdge = EdgeFactory.vEdges.slice(-1)[0];
+        let currentVEdge = EdgeFactory.getLastVEdge();
 
         //validate it is the same edge
         if (currentVEdge.edge == edge) {

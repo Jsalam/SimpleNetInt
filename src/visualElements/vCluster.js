@@ -3,7 +3,6 @@ class VCluster {
         this.pos = gp5.createVector(x, y);
         this.width = width;
         this.height = height;
-        // collection of either BipartiteVNode or VNode
         this.vNodes = [];
         this.cluster = cluster;
         this.palette = palette;
@@ -25,21 +24,24 @@ class VCluster {
     populateVNodes(cluster) {
         for (let index = 0; index < cluster.nodes.length; index++) {
             const node = cluster.nodes[index];
+
             // Create vNode
             let vNodeTemp;
             if (node instanceof Node) {
+
                 // node size
                 let vNodeW = 30;
                 let vNodeH = 30;
+
                 // instantiation
                 vNodeTemp = new VNode(node, vNodeW, vNodeH);
-                console.log("Working on vConnectors")
                 for (const connector of vNodeTemp.node.connectors) {
                     vNodeTemp.addVConnector(connector);
                 }
 
             } else if (node instanceof BipartiteNode) {
                 vNodeTemp = new BipartiteVNode(node, this.width, this.height);
+
                 // this is for the case of bipartitte nodes
                 for (const connector of vNodeTemp.node.positives) {
                     vNodeTemp.addPositiveVConnector(connector);
@@ -75,6 +77,7 @@ class VCluster {
         }
         // subscribe to canvas
         Canvas.subscribe(vNode);
+
         // add to collection
         this.vNodes.push(vNode);
     }

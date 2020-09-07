@@ -79,7 +79,11 @@ class DOM {
      */
     static clearEdges = function() {
         EdgeFactory.reset();
+        Canvas.resetVEdges();
+        Canvas.resetVConnectors();
         ClusterFactory.resetAllConnectors();
+
+        DOM.event = true;
     }
 
     /**

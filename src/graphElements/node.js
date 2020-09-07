@@ -271,7 +271,7 @@ class Node {
         if (DOM.boxChecked("edit")) {
 
             // get the last edge in edges collection.
-            lastEdge = EdgeFactory.EDGES.slice(-1)[0];
+            lastEdge = EdgeFactory.getLastEdge();
 
             // If there is at least one edge
             if (lastEdge) {
@@ -281,15 +281,15 @@ class Node {
                     this.closeEdge(lastEdge);
                 } else {
                     // choose connector type
-                    alert("New connector type PROVISIONAL");
-                    let kind = "Provisional";
+                    alert("New connector type DEFAULT");
+                    let kind = "default";
                     lastEdge = this.sproutEdge(kind);
                 }
             } else {
                 // create the first edge
                 // choose connector type
-                alert("New connector type PROVISIONAL");
-                let kind = "Provisional";
+                alert("New connector type DEFAULT");
+                let kind = "default";
                 lastEdge = this.sproutEdge(kind);
             }
         }
@@ -299,7 +299,7 @@ class Node {
     sproutEdge(kind) {
         // create a new one
         let lastEdge = new Edge(this);
-        EdgeFactory.edges.push(lastEdge);
+        EdgeFactory.pushEdge(lastEdge);
 
         // link edge to connector and set edge's kind
         let connector = this.sproutConnector(kind);
@@ -337,7 +337,7 @@ class Node {
 
     recallEdge() {
         // remove temporary edge
-        EdgeFactory.edges.pop();
+        EdgeFactory._edges.pop();
 
         //vEdges.pop();
         this.taken = false;
@@ -345,7 +345,7 @@ class Node {
 
     getForwardEdges(cat) {
         let edgesTmp = [];
-        EdgeFactory.edges.forEach(edg => {
+        EdgeFactory._edges.forEach(edg => {
             let obs = edg.source.nodeObserver;
             if (obs.idCat === cat.idCat) {
                 // console.log(obs.label);
@@ -357,7 +357,7 @@ class Node {
 
     getBackwardEdges(cat) {
         let edgesTmp = [];
-        EdgeFactory.edges.forEach(edg => {
+        EdgeFactory._edges.forEach(edg => {
             let obs = edg.target.nodeObserver;
             if (obs.idCat === cat.idCat) {
                 // console.log(obs.label);

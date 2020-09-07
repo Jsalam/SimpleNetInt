@@ -17,6 +17,12 @@ class Edge {
         this.weight++;
     }
 
+    decreaseWeight() {
+        if (this.weight > 1) {
+            this.weight--;
+        }
+    }
+
     setTarget(target) {
         this.target = target;
         this.id = { 'source': this.source.idCat, 'target': this.target.idCat, 'weight': this.weight };

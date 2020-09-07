@@ -73,12 +73,24 @@ class VEdge {
 
     }
 
+    getOrgCoords(vNode, _kind) {
+        let pos, kind;
+
+        if (!_kind) {
+            kind = this.edge.kind;
+        }
+
+        let vConnector = vNode.vConnectors.filter(vCnctr => vCnctr.connector.kind == kind)[0];
+        pos = gp5.createVector(vConnector.pos.x, vConnector.pos.y);
+        return pos;
+    }
+
     showBeziers(renderer) {
 
         // If the edge does not have target yet
         if (!this.vTarget) {
             renderer.stroke(this.vSource.color.concat(this.alpha));
-            let org = gp5.createVector(this.vSource.pos.x + (this.vSource.width / 2), this.vSource.pos.y + (this.vSource.height / 2));
+            let org = this.getOrgCoords(this.vSource);
             let end = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y);
             let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;
             renderer.noFill();
@@ -99,8 +111,8 @@ class VEdge {
             }
         } else {
             renderer.stroke(this.vSource.color.concat(this.alpha));
-            let org = gp5.createVector(this.vSource.pos.x + (this.vSource.width / 2), this.vSource.pos.y + (this.vSource.height / 2));
-            let end = gp5.createVector(this.vTarget.pos.x + (this.vTarget.width / 2), this.vTarget.pos.y + (this.vTarget.height / 2));
+            let org = this.getOrgCoords(this.vSource);
+            let end = this.getOrgCoords(this.vTarget);;
             let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;
             renderer.noFill();
             if (end.x <= org.x) {

@@ -87,7 +87,7 @@ class EdgeFactory {
     }
 
     static get EDGES() {
-        return EdgeFactory.edges;
+        return EdgeFactory._edges;
     }
 
     static recordJSON(suffix) {
@@ -96,22 +96,22 @@ class EdgeFactory {
             filename = suffix + "_" + filename;
         }
         let output = [];
-        for (let index = 0; index < EdgeFactory.edges.length; index++) {
-            output.push(EdgeFactory.edges[index].id);
+        for (let index = 0; index < EdgeFactory._edges.length; index++) {
+            output.push(EdgeFactory._edges[index].id);
         }
         gp5.saveJSON(output, filename);
     }
 
     static reset() {
-        EdgeFactory.edges = [];
-        EdgeFactory.vEdges = [];
+        EdgeFactory._edges = [];
+        EdgeFactory._vEdges = [];
     }
 
     static deleteLastEdge() {
-        let lastEdge = EdgeFactory.edges.pop();
+        let lastEdge = EdgeFactory._edges.pop();
         lastEdge.source.popThisConnector();
         lastEdge.target.popThisConnector();
-        EdgeFactory.vEdges.pop();
+        EdgeFactory._vEdges.pop();
         console.log(" Edge deleted linking category: " +
             lastEdge.source.nodeObserver.label + ", in cluster: " +
             lastEdge.id.source.cluster + " with category: " +
@@ -119,16 +119,62 @@ class EdgeFactory {
             lastEdge.id.target.cluster);
     }
 
+    static recallEdge() {
+        if (EdgeFactory.isThereOpenEdge()) {
+            console.log("function to be defined");
+            // recall vConnector at source
+            // recal connector
+            // recall vEdge
+            // recall Edge or decrease weight if greater than 1
+            // recall Edge form factory
+            // recall VEdge form factory
+            // close open edge in factory
+        }
+    }
+
     static isThereOpenEdge() {
         let rtn = false;
         // get the last element
-        let lastEdge = EdgeFactory.edges.slice(-1)[0];
+        let lastEdge = EdgeFactory._edges.slice(-1)[0];
         if (lastEdge) {
             rtn = lastEdge.open;
         }
         return rtn;
     }
+
+    static pushEdge(edge) {
+        if (edge instanceof Edge) {
+            if (!EdgeFactory._edges.includes(edge)) {
+                EdgeFactory._edges.push(edge);
+            } else {
+                edge.increaseWeight();
+                alert("Duplicated edge. Weight increased by 1")
+                EdgeFactory._edges.push(edge);
+            }
+        } else {
+            console.log("edge rejected")
+        }
+    }
+
+    static pushVEdge(vEdge) {
+        if (vEdge instanceof VEdge) {
+            if (!EdgeFactory._vEdges.includes(vEdge)) {
+                EdgeFactory._vEdges.push(vEdge);
+            }
+        } else {
+            console.log("vEdge rejected")
+        }
+    }
+
+    static getLastEdge() {
+        return EdgeFactory._edges.slice(-1)[0];
+    }
+
+    static getLastVEdge() {
+        return EdgeFactory._vEdges.slice(-1)[0];
+    }
+
 }
 
-EdgeFactory.edges = [];
-EdgeFactory.vEdges = [];
+EdgeFactory._edges = [];
+EdgeFactory._vEdges = [];
