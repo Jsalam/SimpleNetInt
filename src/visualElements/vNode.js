@@ -280,44 +280,48 @@ class VNode extends Button {
         this.delta = undefined;
     }
 
+    /** If you get an open edge it is becuse it does not have a target yet. 
+     * @param edge might come open or closed  
+     */
 
     workOnLastVEdge(edge) {
 
         if (DOM.boxChecked("edit")) {
-            // get the last edge in edges collection.
-            let lastVEdge = EdgeFactory.vEdges.slice(-1)[0];
 
-            // If there is at least one edge
-            if (lastVEdge) {
-
-                // if the edge does not have a target
-                if (edge.open) {
-                    // if edge is the last edge in factory
-                    if (EdgeFactory.edges.slice(-1)[0] == edge) {
-                        // *** link to connector here *******************
-                        // set the target
-                        lastVEdge.setVTarget(this);
-                    } else {
-                        // remove the last edge in factory because ...?
-                        EdgeFactory.vEdges.pop();
-                    }
-
-                } else {
-                    // If the edge is closed generate a new vEdge
-                    this.sproutVEdge(edge);
-                }
-            } else {
-                // create the first vEdge
+            // if the edge does not have a target
+            if (edge.open) {
                 this.sproutVEdge(edge);
+
+            } else {
+                // If the edge is closed, close the current VEdge
+                this.closeLastVEdge(edge);
             }
         }
     }
 
     sproutVEdge(edge) {
+        // generate a new vEdge
         let lastVEdge = new VEdge(edge);
+
+        // set the source
         lastVEdge.setVSource(this);
+
+        // add to the canvas elements to be rendered on screen
         Canvas.subscribe(lastVEdge);
+
+        // add to the collections of vEdges in factory
         EdgeFactory.vEdges.push(lastVEdge);
     }
 
+    closeLastVEdge(edge) {
+        // take the current VEdge
+        let currentVEdge = EdgeFactory.vEdges.slice(-1)[0];
+
+        //validate it is the same edge
+        if (currentVEdge.edge == edge) {
+
+            // set the target
+            currentVEdge.setVTarget(this);
+        }
+    }
 }

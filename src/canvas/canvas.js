@@ -313,6 +313,7 @@ class Canvas {
         } else if (k.key == 'r' || k.key == 'R') {
             this.reset();
         }
+
         Canvas.notifyObservers({ event: k, type: "keydown" });
     }
 
@@ -323,8 +324,43 @@ class Canvas {
             Canvas.shiftDown = false;
             this._adaptiveDegreeThresholdPercentage = 100;
         }
+
+        // Escape key
+        if (data.event.keyCode == '27') {
+            Canvas.recallEdge();
+        }
+
+        // Delete last edge Shift + 'e' || 'E'
         Canvas.notifyObservers({ event: k, type: "keyup" });
     }
+
+    static recallEdge() {
+        if (EdgeFactory.isThereOpenEdge()) {
+            // recall vConnector at source
+            // recal connector
+            // recall vEdge
+            // recall Edge or decrease weight if greater than 1
+            // recall Edge form factory
+            // recall VEdge form factory
+            // close open edge in factory
+        }
+    }
+
+    static deleteEdge() {
+        if (data.event.key == "Shift" && (data.event.key == 'e' || data.event.key == 'E')) {
+            // recall vConnector at source and target
+            // recal connector at source and target
+            // recall vEdge
+            // recall Edge or decrease weight if greater than 1
+            // close open edge in factory
+        }
+    }
+
+    static deleteNode() {
+        // TBD
+    }
+
+
 
 }
 Canvas.shiftDown = false;

@@ -275,6 +275,7 @@ class Node {
 
             // If there is at least one edge
             if (lastEdge) {
+                // if the edge is open
                 if (lastEdge.open) {
                     alert("Closing edge of type " + lastEdge.kind);
                     this.closeEdge(lastEdge);
@@ -308,16 +309,17 @@ class Node {
 
     sproutConnector(kind) {
         // look if there is a connector of this kind
-        let connector = this.connectors.filter(cnctr => cnctr._kind === kind);
+        let connectorList = this.connectors.filter(cnctr => cnctr.kind === kind);
+        let connector = connectorList[0];
 
         // if this is a new kind of connector
-        if (connector.length < 1) {
+        if (!connector) {
             // instantiate the connector and add it to this node
             let index = this.connectors.length;
             connector = this.addConnector(kind, index);
+            // Notify vNode to create vConnector (and vEdge?)
+            this.vNodeObserver.fromNode(connector);
         }
-        // Notifu vNode to create vConnector (and vEdge?)
-        this.vNodeObserver.fromNode(connector);
         return connector;
     }
 
@@ -325,16 +327,15 @@ class Node {
         // set target
         if (lastEdge.setTarget(this)) {
             this.sproutConnector(lastEdge.kind);
-
             // close edge
             lastEdge.open = false;
         } else {
-            console.log("Issues clossing edge");
+            console.log("Issues closing edge");
             this.recallEdge(lastEdge);
         }
     }
 
-    recallEdge(lastEdge) {
+    recallEdge() {
         // remove temporary edge
         EdgeFactory.edges.pop();
 
