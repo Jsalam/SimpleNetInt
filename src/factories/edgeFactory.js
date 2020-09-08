@@ -119,19 +119,6 @@ class EdgeFactory {
             lastEdge.id.target.cluster);
     }
 
-    static recallEdge() {
-        if (EdgeFactory.isThereOpenEdge()) {
-            console.log("function to be defined");
-            // recall vConnector at source
-            // recal connector
-            // recall vEdge
-            // recall Edge or decrease weight if greater than 1
-            // recall Edge form factory
-            // recall VEdge form factory
-            // close open edge in factory
-        }
-    }
-
     static isThereOpenEdge() {
         let rtn = false;
         // get the last element
@@ -144,25 +131,26 @@ class EdgeFactory {
 
     static pushEdge(edge) {
         if (edge instanceof Edge) {
-            if (EdgeFactory.contains(EdgeFactory._edges, edge)) {
-                edge.increaseWeight();
-                alert("Duplicated edge. Weight increased by 1")
-            } else {
-                console.log("not in Factory");
-                EdgeFactory._edges.push(edge);
-            }
-        } else {
-            console.log("edge rejected")
+            // let edgeInList = EdgeFactory.contains(EdgeFactory._edges, edge);
+            // if (edgeInList) {
+            //     console.log("Duplicated edge. Weight increased by 1")
+            //     edgeInList.increaseWeight();
+
+            // } else {
+            // console.log("not in Factory");
+            EdgeFactory._edges.push(edge);
+            // }
         }
     }
 
     static pushVEdge(vEdge) {
         if (vEdge instanceof VEdge) {
-            if (!EdgeFactory.contains(EdgeFactory._vEdges, vEdge)) {
+            let vEdgeInList = !EdgeFactory.contains(EdgeFactory._vEdges, vEdge)
+            if (vEdgeInList) {
                 EdgeFactory._vEdges.push(vEdge);
             }
         } else {
-            console.log("vEdge rejected")
+            console.log("vEdge duplicated")
         }
     }
 
@@ -175,8 +163,7 @@ class EdgeFactory {
     }
 
     static contains(list, edgeA) {
-        let rtn = false;
-        rtn = list.filter(edgeB => {
+        let rtn = list.filter(edgeB => {
             if (EdgeFactory.compareEdges(edgeA, edgeB)) {
                 return edgeB;
             }
@@ -186,23 +173,18 @@ class EdgeFactory {
 
     //** Serves to evaluate if two edges are equal by comparing their source and target pajekIndexes. */
     static compareEdges(edgeA, edgeB) {
-        console.log(edgeA);
-        console.log(edgeB);
-        let A;
+        let A, B;
         if (edgeA.target) {
             A = [edgeA.source.idCat.pajekIndex, edgeA.target.idCat.pajekIndex];
         } else {
             A = [edgeA.source.idCat.pajekIndex, undefined];
         }
-        let B;
         if (edgeB.target) {
             B = [edgeB.source.idCat.pajekIndex, edgeB.target.idCat.pajekIndex];
         } else {
             B = [edgeB.source.idCat.pajekIndex, undefined];
         }
-        console.log(A);
-        console.log(B);
-        return (A[0] == B[0] && A[1] == B[1]);
+        return (A[0] === B[0] && A[1] === B[1]);
     }
 
 }

@@ -68,7 +68,7 @@ class VEdge {
             renderer.strokeWeight(3);
             this.alpha = '50';
         }
-        renderer.strokeWeight(3);
+        renderer.strokeWeight(3 * this.edge.weight);
         this.showBeziers(renderer)
 
     }

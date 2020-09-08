@@ -301,11 +301,11 @@ class VNode extends Button {
         // set the source
         lastVEdge.setVSource(this);
 
-        // set connector position
-        lastVEdge.pos =
+        // set connector position 
+        //lastVEdge.pos =  mistery????
 
-            // add to the canvas elements to be rendered on screen
-            Canvas.subscribe(lastVEdge);
+        // add to the canvas elements to be rendered on screen
+        Canvas.subscribe(lastVEdge);
 
         // add to the collections of vEdges in factory
         EdgeFactory.pushVEdge(lastVEdge);

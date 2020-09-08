@@ -329,14 +329,11 @@ class Node {
             this.sproutConnector(lastEdge.kind);
             // close edge
             lastEdge.open = false;
-            //
-            // if (EdgeFactory.contains(EdgeFactory._edges, lastEdge)) {
-            //     lastEdge.increaseWeight();
-            // }
         } else {
             console.log("Issues closing edge");
             this.recallEdge(lastEdge);
         }
+
     }
 
     recallEdge() {
