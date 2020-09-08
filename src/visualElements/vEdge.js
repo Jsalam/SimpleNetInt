@@ -40,7 +40,7 @@ class VEdge {
     show(renderer) {
 
         if (DOM.boxChecked("forward") && DOM.boxChecked("backward")) {
-            if (this.source.nodeObserver.inFwdPropagation || this.edge.target && this.edge.target.nodeObserver.inBkwPropagation) {
+            if (this.source.inFwdPropagation || this.edge.target && this.edge.target.inBkwPropagation) {
                 renderer.strokeWeight(5);
                 this.alpha = '99';
             } else {
@@ -48,7 +48,7 @@ class VEdge {
                 this.alpha = '50';
             }
         } else if (DOM.boxChecked("forward")) {
-            if (this.source.nodeObserver.inFwdPropagation) {
+            if (this.source.inFwdPropagation) {
                 renderer.strokeWeight(5);
                 this.alpha = '99';
             } else {
@@ -56,7 +56,7 @@ class VEdge {
                 this.alpha = '50';
             }
         } else if (DOM.boxChecked("backward")) {
-            if (this.edge.target && this.edge.target.nodeObserver.inBkwPropagation) {
+            if (this.edge.target && this.edge.target.inBkwPropagation) {
                 renderer.strokeWeight(5);
                 this.alpha = '99';
             } else {

@@ -83,4 +83,8 @@ class VConnector extends Button {
         renderer.stroke('#000000');
         renderer.text('+', this.pos.x, this.pos.y);
     }
+
+    getJSON() {
+        return this.connector.kind;
+    }
 }

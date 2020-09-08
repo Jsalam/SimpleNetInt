@@ -144,11 +144,11 @@ class EdgeFactory {
 
     static pushEdge(edge) {
         if (edge instanceof Edge) {
-            if (!EdgeFactory._edges.includes(edge)) {
-                EdgeFactory._edges.push(edge);
-            } else {
+            if (EdgeFactory.contains(EdgeFactory._edges, edge)) {
                 edge.increaseWeight();
                 alert("Duplicated edge. Weight increased by 1")
+            } else {
+                console.log("not in Factory");
                 EdgeFactory._edges.push(edge);
             }
         } else {
@@ -158,7 +158,7 @@ class EdgeFactory {
 
     static pushVEdge(vEdge) {
         if (vEdge instanceof VEdge) {
-            if (!EdgeFactory._vEdges.includes(vEdge)) {
+            if (!EdgeFactory.contains(EdgeFactory._vEdges, vEdge)) {
                 EdgeFactory._vEdges.push(vEdge);
             }
         } else {
@@ -172,6 +172,37 @@ class EdgeFactory {
 
     static getLastVEdge() {
         return EdgeFactory._vEdges.slice(-1)[0];
+    }
+
+    static contains(list, edgeA) {
+        let rtn = false;
+        rtn = list.filter(edgeB => {
+            if (EdgeFactory.compareEdges(edgeA, edgeB)) {
+                return edgeB;
+            }
+        })[0];
+        return rtn;
+    }
+
+    //** Serves to evaluate if two edges are equal by comparing their source and target pajekIndexes. */
+    static compareEdges(edgeA, edgeB) {
+        console.log(edgeA);
+        console.log(edgeB);
+        let A;
+        if (edgeA.target) {
+            A = [edgeA.source.idCat.pajekIndex, edgeA.target.idCat.pajekIndex];
+        } else {
+            A = [edgeA.source.idCat.pajekIndex, undefined];
+        }
+        let B;
+        if (edgeB.target) {
+            B = [edgeB.source.idCat.pajekIndex, edgeB.target.idCat.pajekIndex];
+        } else {
+            B = [edgeB.source.idCat.pajekIndex, undefined];
+        }
+        console.log(A);
+        console.log(B);
+        return (A[0] == B[0] && A[1] == B[1]);
     }
 
 }

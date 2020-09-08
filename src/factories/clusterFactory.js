@@ -125,6 +125,17 @@ class ClusterFactory {
             }
         }
     }
+
+    static checkPropagation() {
+        for (const vCluster of ClusterFactory.vClusters) {
+            for (const vNode of vCluster.vNodes) {
+                if (vNode.propagated) {
+                    vNode.node.propagate(vNode.node, vNode.propagated);
+                };
+            }
+        }
+    }
+
 }
 
 ClusterFactory.clusters = [];

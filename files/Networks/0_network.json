@@ -8,13 +8,11 @@
                 "nodeLabel": "Node A",
                 "nodeDescription": "Node description",
                 "polarity": "BOTH",
-                "connectors": [
-                    "technology", "methodology"
-                ],
+                "connectors": [],
                 "pajekIndex": 1,
                 "vNode": {
-                    "posX": 15,
-                    "posY": 45,
+                    "posX": 35,
+                    "posY": 147,
                     "posZ": 0,
                     "color": "#adadad"
                 }
@@ -29,9 +27,7 @@
                 "nodeLabel": "Node B",
                 "nodeDescription": "Node description",
                 "polarity": "BOTH",
-                "connectors": [
-                    "technology", "methodology", "knowledge framework", "process"
-                ],
+                "connectors": [],
                 "pajekIndex": 2,
                 "vNode": {
                     "posX": 178.66666666666669,

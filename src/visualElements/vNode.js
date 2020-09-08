@@ -109,24 +109,21 @@ class VNode extends Button {
             accent += 19;
             normal += 19;
         }
-        // if (this.node.inFwdPropagation && document.getElementById("forward").checked &&
-        //     this.node.inBkwPropagation && document.getElementById("backward").checked) {
-        //     // console.log("here 1 " + this.node.label);
-        //     renderer.fill(this.color.concat(accent));
-        // } else if (this.node.inFwdPropagation && document.getElementById("forward").checked) {
-        //     // console.log("here 2 " + this.node.label);
-        //     renderer.fill(this.color.concat(accent));
-        // } else if (this.node.inBkwPropagation && document.getElementById("backward").checked) {
-        //     // console.log("here 3 " + this.node.label);
-        //     renderer.fill(this.color.concat(accent));
-        //     // if it has no linked edges
-        // } else if (this.vPositives.length + this.vNegatives.length <= 2) {
-        //     // console.log("here 4 " + this.node.label);
-        //     renderer.fill(this.color.concat(normal));
-        // } else {
-        // console.log("here last " + this.node.label);
-        renderer.fill(this.color.concat(normal));
-        // }
+        if (this.node.inFwdPropagation && DOM.boxChecked("forward") &&
+            this.node.inBkwPropagation && DOM.boxChecked("backward")) {
+            // console.log("here 1 " + this.node.label);
+            renderer.fill(this.color.concat(accent));
+        } else if (this.node.inFwdPropagation && DOM.boxChecked("forward")) {
+            // console.log("here 2 " + this.node.label);
+            renderer.fill(this.color.concat(accent));
+        } else if (this.node.inBkwPropagation && DOM.boxChecked("backward")) {
+            // console.log("here 3 " + this.node.label);
+            renderer.fill(this.color.concat(accent));
+            // if it has no linked edges
+        } else {
+            //console.log("last in prop " + this.node.label);
+            renderer.fill(this.color.concat(normal));
+        }
 
         // Highlight rect
         if (this.propagated) {

@@ -33,8 +33,11 @@ class DOM {
         DOM.checkboxes.filterLinked = document.getElementById('filterLinked');
         DOM.checkboxes.backgroundContrast = document.getElementById('backgroundContrast');
 
-        DOM.checkboxes.filterLinked.onclick = DOM.eventTriggered
-        DOM.checkboxes.backgroundContrast.onclick = DOM.switchBkgnd
+        DOM.checkboxes.edit.onclick = DOM.eventTriggered;
+        DOM.checkboxes.forward.onclick = DOM.checkPropagation;
+        DOM.checkboxes.backward.onclick = DOM.checkPropagation;
+        DOM.checkboxes.filterLinked.onclick = DOM.eventTriggered;
+        DOM.checkboxes.backgroundContrast.onclick = DOM.switchBkgnd;
 
         //Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
@@ -58,6 +61,16 @@ class DOM {
     /** Invoked everytime a DOM element changes to refresh the renderer in draw() */
     static eventTriggered() {
         console.log("event on checkbox");
+        DOM.event = true;
+    }
+
+    /** Invoked everytime a DOM element changes to refresh the renderer in draw() */
+    static checkPropagation = function() {
+
+        if (DOM.boxChecked("forward") || DOM.boxChecked("backward")) {
+            ClusterFactory.checkPropagation();
+        }
+
         DOM.event = true;
     }
 
