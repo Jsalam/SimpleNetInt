@@ -4,6 +4,7 @@ var main = function(p5) {
     // variables
     let graphics;
 
+
     // font
     let myFont;
 
@@ -34,8 +35,8 @@ var main = function(p5) {
         // Global static canvas
         Canvas.makeCanvas(graphics);
 
-        // Connect with HTML GUI
-        DOM.init()
+        // Connect with GUIs
+        DOM.init();
 
         // load the first selected model by default
         DOM.switchModel(DOM.dropdowns.modelChoice.value);

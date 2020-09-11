@@ -26,8 +26,7 @@ class DOM {
         DOM.buttons.submitAddNodeModal.onclick = getData;
         DOM.buttons.exportNetwork.onclick = saveJSON;
         DOM.buttons.importNetwork.onclick = getDataImport;
-        DOM.buttons.submitEdgeKinds.onclick = getEdgeKinds;
-
+        DOM.buttons.submitEdgeKinds.onclick = DOM.getTextBoxContent;
         // Checkboxes
         DOM.checkboxes.edit = document.getElementById('edit');
         DOM.checkboxes.forward = document.getElementById('forward');
@@ -41,11 +40,15 @@ class DOM {
         DOM.checkboxes.filterLinked.onclick = DOM.eventTriggered;
         DOM.checkboxes.backgroundContrast.onclick = DOM.switchBkgnd;
 
-        //Dropdowns
+        // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
         DOM.dropdowns.modelChoice.addEventListener('change', () => {
             DOM.switchModel(DOM.dropdowns.modelChoice.value);
         });
+
+        // TextBoxes
+        DOM.textboxes.edgeKinds = document.getElementById("edgeKinds");
+
 
     }
 
@@ -67,7 +70,7 @@ class DOM {
     }
 
     /** Invoked everytime a DOM element changes to refresh the renderer in draw() */
-    static checkPropagation = function() {
+    static checkPropagation() {
 
         if (DOM.boxChecked("forward") || DOM.boxChecked("backward")) {
             ClusterFactory.checkPropagation();
@@ -80,7 +83,7 @@ class DOM {
      * Changes the background color
      * @param {Event} evt 
      */
-    static switchBkgnd = function(evt) {
+    static switchBkgnd(evt) {
         if (DOM.boxChecked("backgroundContrast")) {
             Canvas.currentBackground = 150;
         } else {
@@ -92,7 +95,7 @@ class DOM {
     /** 
      * Delete edges and re-initialize nodes
      */
-    static clearEdges = function() {
+    static clearEdges() {
         EdgeFactory.reset();
         Canvas.resetVEdges();
         Canvas.resetVConnectors();
@@ -105,7 +108,7 @@ class DOM {
      * Loads the network file from the DOM.pathNetworks 
      * @param {String} value prefix of the file. Usually a digit. 
      */
-    static switchModel = function(value) {
+    static switchModel(value) {
         console.log("Switching to " + value + " network");
         Canvas.resetObservers();
         gp5.loadJSON(DOM.pathNetworks + value + '_network.json', DOM.onLoadNetwork);
@@ -115,7 +118,7 @@ class DOM {
      * Callback for loadJSON
      * @param {Object} data 
      */
-    static onLoadNetwork = function(data) {
+    static onLoadNetwork(data) {
         let nodesTemp = data.nodes;
         DOM.buildClusters(nodesTemp);
         let edgesTemp = data.edges;
@@ -127,7 +130,7 @@ class DOM {
      * Builds clusters with nodes data from JSON file
      * @param {Object} result 
      */
-    static buildClusters = function(result) {
+    static buildClusters(result) {
         ClusterFactory.reset();
         ClusterFactory.makeClusters(result);
     }
@@ -136,14 +139,20 @@ class DOM {
      * Builds edges with data from JSON file
      * @param {*} result 
      */
-    static buildEdges = function(result) {
+    static buildEdges(result) {
         EdgeFactory.reset();
         EdgeFactory.buildEdges(result, ClusterFactory.clusters);
+    }
+
+    static getTextBoxContent() {
+        // Initialize the gui with the text from the textbox on the DOM
+        ContextualGUI.init(DOM.textboxes.edgeKinds.value);
     }
 }
 DOM.event = false;
 DOM.buttons = {};
 DOM.checkboxes = {};
+DOM.textboxes = {};
 DOM.dropdowns = {};
 DOM.labels = {};
 DOM.sliders = {};

@@ -12,7 +12,7 @@
                 "pajekIndex": 1,
                 "vNode": {
                     "posX": 35,
-                    "posY": 147,
+                    "posY": 547,
                     "posZ": 0,
                     "color": "#adadad"
                 }
@@ -30,8 +30,8 @@
                 "connectors": [],
                 "pajekIndex": 2,
                 "vNode": {
-                    "posX": 178.66666666666669,
-                    "posY": 147.1527777777778,
+                    "posX": 178,
+                    "posY": 547,
                     "posZ": 0,
                     "color": "#adadad"
                 }

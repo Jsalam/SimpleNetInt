@@ -75,7 +75,7 @@ class ClusterFactory {
     }
 
     static makeNode(cluster, data) {
-        let node = new Node(cluster.id, data.id, ClusterFactory.countCat);
+        let node = new Node(cluster.id, data.id, this.countCat);
         node.setLabel(data.nodeLabel);
         node.setDescription(data.nodeDescription);
         node.setImportedVNodeData(data.vNode);
@@ -84,6 +84,13 @@ class ClusterFactory {
         // the JSON file or the node created by user input 
         if (data.connectors) {
             for (const connector of data.connectors) {
+                console.log(connector);
+                // add connector name to GUI
+                if (ContextualGUI.addEdgeCategory(connector)) {
+                    // renitialize contextual GUI
+                    ContextualGUI.init2(ContextualGUI.edgeCategories);
+                    DOM.textboxes.edgeKinds.textContent = ContextualGUI.edgeCategories.join();
+                }
                 node.addConnector(connector, node.connectors.length);
             }
         }

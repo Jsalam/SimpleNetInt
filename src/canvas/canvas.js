@@ -271,8 +271,8 @@ class Canvas {
         gp5.fill(90, 200);
         gp5.textAlign(gp5.RIGHT);
         gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
-        gp5.text("use 'i' to zoom in, 'o' to zoom  out", pos.x, pos.y + 10);
-        gp5.text("Press 'r' to restore zoom and pan to default values", pos.x, pos.y + 20);
+        gp5.text("use 'SHIFT + i' to zoom in, 'SHIFT + o' to zoom  out", pos.x, pos.y + 10);
+        gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 20);
         gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 30);
         gp5.textAlign(gp5.CENTER);
     }
@@ -362,13 +362,15 @@ class Canvas {
             Canvas.shiftDown = true;
         }
         // Control of zoom with keyboard
-        if (k.key == 'i' || k.key == 'I') {
+        if (k.shiftKey && (k.key == 'i' || k.key == 'I')) {
             this.zoomIn(0.1);
-        } else if (k.key == 'o' || k.key == 'O') {
+        } else if (k.shiftKey && (k.key == 'o' || k.key == 'O')) {
             this.zoomOut(0.1);
-        } else if (k.key == 'r' || k.key == 'R') {
+            // Restore initial values
+        } else if (k.shiftKey && (k.key == 'r' || k.key == 'R')) {
             this.reset();
         }
+
 
         Canvas.notifyObservers({ event: k, type: "keydown" });
     }

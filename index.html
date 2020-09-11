@@ -13,6 +13,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
+    <!-- GUI Quicksettings -->
+    <script src=https://cdn.jsdelivr.net/npm/quicksettings@latest/quicksettings.min.js></script>
+
     <!-- CSS -->
     <style>
         p {
@@ -30,6 +33,7 @@
 
     <!-- GUI -->
     <script src="src/GUI/DOM/DOMManager.js"></script>
+    <script src="src/GUI/ContextualGUIS/ContextualGUI.js"></script>
 
     <!-- Control -->
     <script src="src/main2.js"></script>
@@ -38,7 +42,6 @@
     <script src="src/GUI/forms/addNodeModalForm.js"></script>
     <script src="src/GUI/forms/exportModalForm.js"></script>
     <script src="src/GUI/forms/importModalForm.js"></script>
-    <script src="src/GUI/forms/addEdgeKinds.js"></script>
 
     <!-- Model -->
     <script src="src/graphElements/node.js"></script>
@@ -160,7 +163,7 @@
             <!-- Model goes here -->
             <div id="model"></div>
 
-            <p style="margin-left:20px; font-size:xx-small;"> Using Simple Networks library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js </p>
+            <p style="margin-left:20px; font-size:xx-small;"> Using Simple Networks library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js & Quicksettings.js</p>
 
         </div>
     </div>
@@ -273,8 +276,7 @@
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="importNetwork">Import
-              network</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="importNetwork">Import network</button>
                 </div>
             </div>
         </div>
@@ -293,12 +295,11 @@
                     <p>Categories are qualitative aspect that characterize links. Classes are also named kinds or classes. For instance the "friend" class represents the friendship between nodes A and B. Another link of the "classmates" class, can also connect
                         the same nodes. In Simple Networks there is a link for every kind of relationship between nodes. </p>
                     <p>Enter the categories you want to use in this network separate by comas. For example: <b>friend,classmate,partner,relative</b> </p>
-                    <textarea class="form-control" rows="1" id="edgeKinds"></textarea>
+                    <textarea class="form-control" rows="1" id="edgeKinds">default</textarea>
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="submitEdgeKinds">Import
-                  network</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="submitEdgeKinds">Generate categories</button>
                 </div>
             </div>
         </div>

@@ -1,68 +1,101 @@
 {
-    "nodes": [{
-            "clusterID": "1",
-            "clusterLabel": "Innovation_Type",
-            "clusterDescription": "...",
-            "nodes": [{
-                    "id": 0,
-                    "nodeLabel": "Technology",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 1
-                },
-                {
-                    "id": 1,
-                    "nodeLabel": "Methodology",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 2
-                },
-                {
-                    "id": 2,
-                    "nodeLabel": "Process",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 3
-                },
-                {
-                    "id": 3,
-                    "nodeLabel": "Knowledge framework",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 4
-                }
-            ]
-        },
+  "nodes": [
+    {
+      "clusterID": "1",
+      "clusterLabel": "Looking to the sky",
+      "clusterDescription": "Lenses, gyroscopes and stuff",
+      "nodes": [
         {
-            "clusterID": "2",
-            "clusterLabel": "Theme_A",
-            "clusterDescription": "...",
-            "nodes": []
-        },
-        {
-            "clusterID": "3",
-            "clusterLabel": "Theme_B",
-            "clusterDescription": "...",
-            "nodes": []
-        },
-        {
-            "clusterID": "Theme_C",
-            "clusterLabel": "Theme_C",
-            "clusterDescription": "...",
-            "nodes": []
-        },
-        {
-            "clusterID": "4",
-            "clusterLabel": "Theme_D",
-            "clusterDescription": "...",
-            "nodes": []
-        },
-        {
-            "clusterID": "5",
-            "clusterLabel": "Theme_E",
-            "clusterDescription": "...",
-            "nodes": []
+          "id": 0,
+          "nodeLabel": "Node A",
+          "nodeDescription": "Node description",
+          "connectors": [
+            "other"
+          ],
+          "pajekIndex": 1,
+          "vNode": {
+            "posX": 35,
+            "posY": 547,
+            "posZ": 0,
+            "color": "#adadad"
+          }
         }
-    ],
-    "edges": []
+      ]
+    },
+    {
+      "clusterID": "2",
+      "clusterLabel": "Changing climate changing lives",
+      "clusterDescription": "Climate change",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "Node B",
+          "nodeDescription": "Node description",
+          "connectors": [
+            "other",
+            "default"
+          ],
+          "pajekIndex": 2,
+          "vNode": {
+            "posX": 178,
+            "posY": 547,
+            "posZ": 0,
+            "color": "#adadad"
+          }
+        }
+      ]
+    },
+    {
+      "clusterID": "3",
+      "clusterLabel": "NewCluster",
+      "clusterDescription": "... aaa ....",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "ABC",
+          "nodeDescription": "Node description nothing new",
+          "connectors": [
+            "default"
+          ],
+          "pajekIndex": 3,
+          "vNode": {
+            "posX": 315,
+            "posY": 488,
+            "posZ": 0,
+            "color": "#adadad"
+          }
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": {
+        "cluster": "1",
+        "index": 0,
+        "pajekIndex": 1
+      },
+      "target": {
+        "cluster": "2",
+        "index": 0,
+        "pajekIndex": 2
+      },
+      "kind": "other",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "3",
+        "index": 0,
+        "pajekIndex": 3
+      },
+      "target": {
+        "cluster": "2",
+        "index": 0,
+        "pajekIndex": 2
+      },
+      "kind": "default",
+      "weight": 1
+    }
+  ]
 }

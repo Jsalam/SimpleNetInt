@@ -2,9 +2,8 @@
  * The node has connectors. each connector is of a different type, so each kind of connectors have its own collection, 
  * grouped in a single collection
  * @param clusterID: the cluster to which this node belongs to
- * @param _index: the index in this cluster
+ * @param _indexInCluster: the index in this cluster
  * @param _count: the pajeckIndex
- * @param _data: data about connectors or any other kind of data
  */
 class Node {
     constructor(clusterID, _indexInCluster, _count) {
@@ -16,7 +15,14 @@ class Node {
         this.inBkwPropagation = false;
         this.vNodeObserver;
         this.importedVNodeData;
+        ContextualGUI.subscribe(this);
+        this.dataFromContextualGUI;
     }
+
+    // data from the Centextual gui
+    getDataFromContextualGUI(data) {
+        this.dataFromContextualGUI = data;
+    };
 
     /**** OBSERVER ****/
     subscribe(vNode) {
@@ -156,10 +162,12 @@ class Node {
             } catch (error) {
                 if (error.name == "Recursion") {
                     alert("** RECURSIVE PROPAGATION **\nThere is a closed loop of successors that might crash the application. Successors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)");
-                    DOM.boxChecked('forward') = "";
+                    let box = DOM.boxChecked('forward');
+                    box = ""
                 } else if (error instanceof RangeError) {
                     alert("infinite forward propadation. \nThe path of successors from " + cat.label + " draws a closed loop. \nPropagation will be dissabled");
-                    DOM.boxChecked('forward') = "";
+                    let box = DOM.boxChecked('forward')
+                    box = "";
                 } else {
                     console.log(error.name + " Warning: error catched in forward propagation")
                 }
@@ -223,10 +231,12 @@ class Node {
             } catch (error) {
                 if (error.name == "Recursion") {
                     alert("** RECURSIVE PROPAGATION **\nThere is a closed loop of predecessors that might crash the application. Predecessors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)");
-                    DOM.boxChecked('backward') = "";
+                    let box = DOM.boxChecked('backward');
+                    box = "";
                 } else if (error instanceof RangeError) {
                     alert("infinite backward propadation. \nThe path of predecessors from " + cat.label + " draws a closed loop. \nPropagation will be dissabled");
-                    DOM.boxChecked('backward') = "";
+                    let box = DOM.boxChecked('backward');
+                    box = "";
                 } else {
                     console.log(error.name + " Warning: error catched in backward propagation")
                 }
@@ -269,18 +279,27 @@ class Node {
                     alert("Node | Closing edge of type " + buffEdge.kind);
                     this.closeEdge(buffEdge);
                 } else {
-
-                    // choose connector type
-                    alert("Node | New connector type DEFAULT");
-                    let kind = "default";
+                    // retrieve the connector type choosen value on the Contextual Menu
+                    let kind = this.dataFromContextualGUI.value;
+                    if (kind == undefined) {
+                        kind = "default";
+                    }
+                    alert("Node | New connector kind: " + kind);
                     buffEdge = this.sproutEdge(kind);
+
                 }
             } else {
-                // create the first edge
-                // choose connector type
-                alert("Node | New connector type DEFAULT");
-                let kind = "default";
+                // retrieve the connector type choosen value on the Contextual Menu
+                let kind;
+                if (this.dataFromContextualGUI) {
+                    kind = this.dataFromContextualGUI.value;
+                }
+                if (kind == undefined) {
+                    kind = "default";
+                }
+                alert("Node | New connector kind: " + kind);
                 buffEdge = this.sproutEdge(kind);
+
             }
         }
         return buffEdge;
