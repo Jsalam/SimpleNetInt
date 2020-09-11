@@ -5,7 +5,6 @@ class ClusterFactory {
         ClusterFactory.clusters = [];
         this.vClusters = [];
 
-
         // global function from addClusterModalForm.js
         clearClusterModalFormList();
         for (let index = 0; index < Object.keys(data).length; index++) {
@@ -64,7 +63,7 @@ class ClusterFactory {
         ClusterFactory.clusters.push(cluster);
         // global function from addClusterModalForm.js
         addClusterToModalFormList(data.clusterID, data.clusterLabel);
-        console.log("Cluster added. Total: " + ClusterFactory.clusters.length)
+        //console.log("Cluster added. Total: " + ClusterFactory.clusters.length)
     }
 
     static makeNodes(cluster, data) {
@@ -134,6 +133,10 @@ class ClusterFactory {
                 };
             }
         }
+    }
+
+    static getVNodeOf(node) {
+        return ClusterFactory.vClusters[node.idCat.cluster - 1].vNodes[node.idCat.index];
     }
 
 }

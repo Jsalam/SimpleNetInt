@@ -11,6 +11,16 @@ class Connector {
         this.edgeObservers = [];
     }
 
+    equals(conn) {
+        let rtn = false;
+        if (this.id.cluster == conn.id.cluster &&
+            this.id.cat == conn.id.cat &&
+            this.id.pajekIndex == conn.id.pajekIndex) {
+            rtn = true;
+        }
+        return rtn;
+    }
+
     subscribeEdgeObserver(edge) {
         edge.kind = this.kind;
         this.edgeObservers.push(edge);

@@ -26,8 +26,8 @@ var main = function(p5) {
     p5.setup = function() {
 
         // Create canvas
-        gp5.createCanvas(window.innerWidth - 60, 740, gp5.WEBGL);
-        graphics = gp5.createGraphics(gp5.width * gp5.pixelDensity(), gp5.height * gp5.pixelDensity(), gp5.WEBGL);
+        gp5.createCanvas(window.innerWidth - 60, 740);
+        graphics = gp5.createGraphics(gp5.width * gp5.pixelDensity(), gp5.height * gp5.pixelDensity());
         gp5.textFont(myFont);
         graphics.textFont(myFont);
 
@@ -41,8 +41,12 @@ var main = function(p5) {
         DOM.switchModel(DOM.dropdowns.modelChoice.value);
     }
 
-    // Everyting drawn on p5 canvas is comming from Canvas class. In Canvas, it shows all the subscribed visual elements.
+    // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
     p5.draw = function() {
+        // gp5.background(250)
+
+        let xOrg = 0 //-gp5.width / 2
+        let yOrg = 0 //  -gp5.height / 2
 
         // push transformation matrix
         gp5.push();
@@ -53,8 +57,8 @@ var main = function(p5) {
             DOM.event = false;
         }
 
-        // translating to upper left corner
-        gp5.translate(-gp5.width / 2, -gp5.height / 2);
+        // translating to upper left corner in WebGL mode
+        // gp5.translate(xOrg,yOrg );
 
         // Canvas own transformations
         Canvas.transform();
@@ -66,8 +70,8 @@ var main = function(p5) {
         gp5.pop();
 
         // draw canvas status
-        Canvas.displayValues(gp5.createVector((gp5.width / 2) - 10, (-gp5.height / 2) + 5), gp5);
-        Canvas.showLegend(gp5.createVector((gp5.width / 2) - 10, (gp5.height / 2) - 65), gp5);
+        Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5); //gp5.createVector((xOrg) , (yOrg) + 5)
+        Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 60), gp5);
 
 
 

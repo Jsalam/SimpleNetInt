@@ -7,100 +7,50 @@ class EdgeFactory {
             // take the source ID: cluster, cat and polarity
             let e = edgs[index];
 
-            // look for the  cluster X in the clusters collection
-            let sourceTemp;
-            let targetTemp;
-            for (const c of clusters) {
-                let foundST = { source: false, target: false };
-                try {
-                    if (c.id == e.source.cluster) {
-                        sourceTemp = c;
-                        foundST.source = true;
-                    }
-                } catch (error) {
-                    console.log(edgs)
-                }
-                if (c.id == e.target.cluster) {
-                    targetTemp = c;
-                    foundST.target = true;
-                }
-                if (foundST.source && foundST.target) {
-                    break;
-                }
-            }
+            // get source node
+            let clusterIndex = e.source.cluster - 1;
+            let nodeIndex = e.source.index;
+            let source = ClusterFactory.clusters[clusterIndex].nodes[nodeIndex];
+            let sourceConnector = source.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
-            // look for the category in the X' nodes
-            let sourceCtgTemp;
-            for (const ctgr of sourceTemp.nodes) {
-                if (ctgr.idCat.index == e.source.cat) {
-                    sourceCtgTemp = ctgr;
-                    break;
-                }
-            }
+            // get target node
+            clusterIndex = e.target.cluster - 1;
+            nodeIndex = e.target.index;
+            let target = ClusterFactory.clusters[clusterIndex].nodes[nodeIndex];
+            let targetConnector = target.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
-            if (!sourceCtgTemp) {
-                console.log("ERROR. trying to add an edge to missing source category");
-                console.log(sourceTemp);
-            }
+            // get vSource
+            let vSource = ClusterFactory.getVNodeOf(source)
 
-            // get nodes connector generator
-            let connSource;
-            if (e.source.polarity == true) {
-                connSource = sourceCtgTemp.positives[sourceCtgTemp.positives.length - 1];
-            } else {
-                connSource = sourceCtgTemp.negatives[sourceCtgTemp.negatives.length - 1];
-            }
+            // get vTarget
+            let vTarget = ClusterFactory.getVNodeOf(target)
 
-            // ask the connector to sproutEdge
-            let edge = connSource.workOnLastEdge();
-            connSource.notifyObserver(edge);
-            connSource.vConnectorObserver.workOnLastVEdge(edge);
+            // make Edge and set target and weight
+            let edge = new Edge(source);
+            edge.setTarget(target);
+            edge.weight = e.weight;
 
+            // subscribe to source and target's connector. This sets the edge kind
+            sourceConnector.subscribeEdgeObserver(edge);
+            targetConnector.subscribeEdgeObserver(edge);
 
-            // look for the category in the X' nodes
-            let targetCtgTemp;
-            for (const ctgr of targetTemp.nodes) {
-                if (ctgr.idCat.index == e.target.cat) {
-                    targetCtgTemp = ctgr;
-                    break;
-                }
-            }
+            // make VEdge
+            let vEdge = new VEdge(edge);
 
-            if (!targetCtgTemp) {
-                console.log("Error trying to add an edge to missing target category");
-                console.log(targetTemp);
-            }
+            // set VNodes
+            vEdge.setVSource(vSource);
+            vEdge.setVTarget(vTarget);
 
-            // get nodes connector generator
-            let connTarget;
-            if (e.target.polarity == true) {
-                connTarget = targetCtgTemp.positives[targetCtgTemp.positives.length - 1];
-            } else {
-                connTarget = targetCtgTemp.negatives[targetCtgTemp.negatives.length - 1];
-            }
-
-            // ask the connector to sproutEdge
-            edge = connTarget.workOnLastEdge();
-            connTarget.notifyObserver(edge);
-            connTarget.vConnectorObserver.workOnLastVEdge(edge);
+            // Push Edge
+            EdgeFactory.pushEdge(edge);
+            EdgeFactory.pushVEdge(vEdge);
+            Canvas.subscribe(vEdge);
         }
     }
 
-    static get EDGES() {
-        return EdgeFactory._edges;
-    }
-
-    static recordJSON(suffix) {
-        let filename = "edges.json";
-        if (suffix) {
-            filename = suffix + "_" + filename;
-        }
-        let output = [];
-        for (let index = 0; index < EdgeFactory._edges.length; index++) {
-            output.push(EdgeFactory._edges[index].id);
-        }
-        gp5.saveJSON(output, filename);
-    }
+    // static get EDGES() {
+    //     return EdgeFactory._edges;
+    // }
 
     static reset() {
         EdgeFactory._edges = [];
@@ -121,25 +71,22 @@ class EdgeFactory {
 
     static isThereOpenEdge() {
         let rtn = false;
-        // get the last element
-        let lastEdge = EdgeFactory._edges.slice(-1)[0];
-        if (lastEdge) {
-            rtn = lastEdge.open;
+        if (EdgeFactory._vEdgeBuffer) {
+            rtn = true;
         }
         return rtn;
     }
 
     static pushEdge(edge) {
         if (edge instanceof Edge) {
-            // let edgeInList = EdgeFactory.contains(EdgeFactory._edges, edge);
-            // if (edgeInList) {
-            //     console.log("Duplicated edge. Weight increased by 1")
-            //     edgeInList.increaseWeight();
+            let edgeInList = EdgeFactory.contains(EdgeFactory._edges, edge);
+            if (edgeInList) {
+                console.log("Duplicated edge. Weight increased by 1")
+                edgeInList.increaseWeight();
 
-            // } else {
-            // console.log("not in Factory");
-            EdgeFactory._edges.push(edge);
-            // }
+            } else {
+                EdgeFactory._edges.push(edge);
+            }
         }
     }
 
@@ -162,32 +109,94 @@ class EdgeFactory {
         return EdgeFactory._vEdges.slice(-1)[0];
     }
 
+    /** Returns the first element in the list equal to the one in the parameter, else returns false.  Equality determined by source-target pairs */
     static contains(list, edgeA) {
-        let rtn = list.filter(edgeB => {
-            if (EdgeFactory.compareEdges(edgeA, edgeB)) {
-                return edgeB;
-            }
-        })[0];
+        let rtn = false;
+        let element;
+        if (list.length > 0) {
+            element = list.filter(function(edgeB) {
+                if (EdgeFactory.compareEdges(edgeA, edgeB)) return true;
+            })[0];
+        }
+        if (element) rtn = element;
         return rtn;
     }
 
-    //** Serves to evaluate if two edges are equal by comparing their source and target pajekIndexes. */
+    /** Serves to evaluate if two edges are equal by comparing their source and target pajekIndexes.
+     * @param edgeA : either Edge or VEdge
+     * @param edgeB : either Edge or VEdge
+     */
     static compareEdges(edgeA, edgeB) {
-        let A, B;
-        if (edgeA.target) {
-            A = [edgeA.source.idCat.pajekIndex, edgeA.target.idCat.pajekIndex];
+        if (edgeA && edgeB) {
+            let A, B;
+            if (edgeA.target) {
+                A = [edgeA.source.idCat.pajekIndex, edgeA.target.idCat.pajekIndex];
+            } else {
+                A = [edgeA.source.idCat.pajekIndex, undefined];
+            }
+            if (edgeB.target) {
+                B = [edgeB.source.idCat.pajekIndex, edgeB.target.idCat.pajekIndex];
+            } else {
+                B = [edgeB.source.idCat.pajekIndex, undefined];
+            }
+            return (A[0] === B[0] && A[1] === B[1]);
         } else {
-            A = [edgeA.source.idCat.pajekIndex, undefined];
+            return undefined;
         }
-        if (edgeB.target) {
-            B = [edgeB.source.idCat.pajekIndex, edgeB.target.idCat.pajekIndex];
-        } else {
-            B = [edgeB.source.idCat.pajekIndex, undefined];
-        }
-        return (A[0] === B[0] && A[1] === B[1]);
     }
 
-}
 
+    static getBufferEdge() {
+        return EdgeFactory._edgeBuffer;
+    }
+
+    static getBufferVEdge() {
+        return EdgeFactory._vEdgeBuffer
+    }
+
+    static setBufferEdge(edge) {
+        if (edge instanceof Edge) EdgeFactory._edgeBuffer = edge;
+    }
+
+    static setBufferVEdge(vEdge) {
+        if (vEdge instanceof VEdge) EdgeFactory._vEdgeBuffer = vEdge;
+    }
+
+    static clearBuffer() {
+        // reset variables
+        EdgeFactory._edgeBuffer = undefined;
+        EdgeFactory._vEdgeBuffer = undefined;
+    }
+
+    /** The logic here is this: the user operates on the vEdge. The moment she presses the Escape button or call this function
+     * by any other mean, it is assumed that it is an user decision. So, the deletion trickels down from visual elements down
+     * to logic elements. 
+     */
+    static recallBuffer() {
+        if (EdgeFactory._vEdgeBuffer) {
+
+            // get the VNode for the source
+            let sourceVNode = EdgeFactory._vEdgeBuffer.source.vNodeObserver;
+
+            // get the connectors for the source
+            let sourceConnector = EdgeFactory._vEdgeBuffer.edge.getSourceConnector();
+
+            // delete the edge here otherwise connector won't be empty for deletion */
+            sourceVNode.node.disconnectEdge(EdgeFactory._vEdgeBuffer);
+
+            // remove visual connectors from VNode
+            sourceVNode.removeVConnector(sourceConnector);
+
+            // remove connector from Node
+            EdgeFactory._vEdgeBuffer.source.removeConnector(sourceConnector)
+
+            if (EdgeFactory._vEdgeBuffer.target) {
+                // the same process might need to be done with the target
+            }
+        }
+    }
+}
+EdgeFactory._edgeBuffer;
+EdgeFactory._vEdgeBuffer;
 EdgeFactory._edges = [];
 EdgeFactory._vEdges = [];

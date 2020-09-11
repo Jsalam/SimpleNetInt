@@ -4,6 +4,7 @@ class VNode extends Button {
         this.node = node;
         this.color = '#adadad';
         this.paddingTop = 3;
+        // observers are vConnectors
         this.vConnectors = [];
         this.vConnectorsGap = 13;
         this.node.subscribe(this);
@@ -11,9 +12,49 @@ class VNode extends Button {
         this.keyP_Down = false;
     }
 
+    subscribe(obj) {
+        if (obj instanceof VConnector) this.vConnectors.push(obj);
+    }
+
+    unsubscribe(obj) {
+        this.vConnectors = this.vConnectors.filter(function(subscriber) {
+            let rtn = true;
+            // Filter vConnectors
+            if (subscriber instanceof VConnector) {
+                if (subscriber.connector.id.pajekIndex == obj.connector.id.pajekIndex) {
+                    rtn = false;
+                }
+            }
+            return rtn;
+        });
+    }
+
+    notifyObservers(data) {
+        this.vConnectors.forEach(observer => observer.fromVNode(data))
+    }
+
+    removeVConnector(conn) {
+        this.vConnectors = this.vConnectors.filter(function(vCnctr) {
+            let rtn = true;
+            if (vCnctr.connector.equals(conn)) {
+                if (vCnctr.connector.edgeObservers.length < 1) {
+                    rtn = false
+                }
+            }
+            // removes connector if false
+            return rtn;
+        })
+    }
+
     // Observing to Canvas
     fromCanvas(data) {
 
+        // notify observers
+        for (const vConn of this.vConnectors) {
+            vConn.fromVNode(data);
+        }
+
+        // MouseEvents
         if (data.event instanceof MouseEvent) {
             if (data.type == "mouseclick") {
                 this.mouseClickedEvents();
@@ -30,7 +71,7 @@ class VNode extends Button {
             if (data.type == "mousemove") {
                 this.mouseOver();
             }
-            // do something
+            // Keyboard events
         } else if (data.event instanceof KeyboardEvent) {
             if (data.type == "keydown") {
                 if (data.event.key == 'p' || data.event.key == 'P') {
@@ -42,8 +83,6 @@ class VNode extends Button {
                     this.keyP_Down = false;
                 }
             }
-        } else {
-            // do something
         }
     }
 
@@ -57,17 +96,15 @@ class VNode extends Button {
     addVConnector(connector) {
         let tmpVConnector = new VConnector(connector);
         tmpVConnector.setColor(this.color);
-        this.vConnectors.push(tmpVConnector);
-        Canvas.subscribe(tmpVConnector);
+        this.subscribe(tmpVConnector);
         this.updateConnectorsCoords();
     }
 
-    resetVConnectors() {
-        this.vConnectors = [];
-    }
+    // resetVConnectors() {
+    //     this.vConnectors = [];
+    // }
 
     popLastVConnector() {
-        Canvas.unsubscribe(this.vConnectors[this.vConnectors.length - 1]);
         this.vConnectors.shift();
         this.updateConnectorsCoords();
     }
@@ -268,8 +305,23 @@ class VNode extends Button {
                 this.propagated = !this.propagated;
                 this.node.propagate(this.node, this.propagated);
             } else {
-                let lastEdge = this.node.workOnLastEdge();
-                this.workOnLastVEdge(lastEdge);
+                // *** BEGINIG OF EDGE CREATION ***
+                // instantiate edge from node 
+                let bufferEdge = this.node.workOnEdgeBuffer();
+
+                // make vEdge
+                let bufferVEdge = this.workOnVEdgeBuffer(bufferEdge);
+
+                //Add buffered elements to collections
+                if (!bufferEdge.open) {
+                    EdgeFactory.pushEdge(bufferEdge);
+                    EdgeFactory.pushVEdge(bufferVEdge);
+                    EdgeFactory.clearBuffer();
+                } else {
+                    // EdgeFactory.resetBuffer();
+                    // recall connectors
+                    // unsubscribe elements from Canvas
+                }
             }
         }
         this.dragged = false;
@@ -277,21 +329,27 @@ class VNode extends Button {
     }
 
     /** If you get an open edge it is becuse it does not have a target yet. 
-     * @param edge might come open or closed  
+     * @param {Edge} edge might come open or closed  
      */
 
-    workOnLastVEdge(edge) {
+    workOnVEdgeBuffer(edge) {
+        let vEdge;
         if (DOM.boxChecked("edit")) {
 
             // if the edge does not have a target
             if (edge.open) {
-                this.sproutVEdge(edge);
+                vEdge = this.sproutVEdge(edge);
+
+                // add to buffer
+                EdgeFactory.setBufferVEdge(vEdge);
 
             } else {
                 // If the edge is closed, close the current VEdge
-                this.closeLastVEdge(edge);
+                vEdge = this.closeBufferedVEdge();
             }
         }
+
+        return vEdge;
     }
 
     sproutVEdge(edge) {
@@ -301,25 +359,19 @@ class VNode extends Button {
         // set the source
         lastVEdge.setVSource(this);
 
-        // set connector position 
-        //lastVEdge.pos =  mistery????
-
-        // add to the canvas elements to be rendered on screen
-        Canvas.subscribe(lastVEdge);
-
-        // add to the collections of vEdges in factory
-        EdgeFactory.pushVEdge(lastVEdge);
+        return lastVEdge;
     }
 
-    closeLastVEdge(edge) {
+    closeBufferedVEdge() {
         // take the current VEdge
-        let currentVEdge = EdgeFactory.getLastVEdge();
+        let currentVEdge = EdgeFactory.getBufferVEdge();
 
-        //validate it is the same edge
-        if (currentVEdge.edge == edge) {
+        // set the target
+        currentVEdge.setVTarget(this);
 
-            // set the target
-            currentVEdge.setVTarget(this);
-        }
+        // add to the canvas elements to be rendered on screen
+        Canvas.subscribe(currentVEdge);
+
+        return currentVEdge;
     }
 }

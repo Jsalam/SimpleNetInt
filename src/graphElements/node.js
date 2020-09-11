@@ -7,8 +7,8 @@
  * @param _data: data about connectors or any other kind of data
  */
 class Node {
-    constructor(clusterID, _data, _count) {
-        this.idCat = { cluster: clusterID, index: _data.id, pajekIndex: _count }
+    constructor(clusterID, _indexInCluster, _count) {
+        this.idCat = { cluster: clusterID, index: _indexInCluster, pajekIndex: _count }
         this.connectors = []
         this.label = "void";
         this.description = "No description yet";
@@ -18,16 +18,72 @@ class Node {
         this.importedVNodeData;
     }
 
+    /**** OBSERVER ****/
     subscribe(vNode) {
         this.vNodeObserver = vNode;
     }
 
+    /**** CONNECTORS ****/
+    /** Adds a connector to the collection of this node
+     * @param {String} kind kind of connector
+     * @param {Number} index index for connector ID
+     */
     addConnector(kind, index) {
         let tmpConnector = new Connector(this.idCat, kind, index);
         this.connectors.push(tmpConnector);
         return tmpConnector;
     }
 
+    /** Finds an edge and removes it from the collection of connectors observers
+     * @param {Edge} edge the edge to be removed
+     */
+    disconnectEdge(edge) {
+        // for each connector
+        for (const conn of this.connectors) {
+            // go over the edgeObservers collection
+            for (let i = 0; i < conn.edgeObservers.length; i++) {
+                let obs = conn.edgeObservers[i];
+                // if one of the edges is equal to the edge of this vEdge
+                if (obs.equals(edge)) {
+                    // remove that element from the collection
+                    conn.edgeObservers.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    /** Removes a connector matching the given connector from the connectors observers
+     * @param {Connector} conn the connector to be removed
+     */
+    removeConnector(conn) {
+        this.connectors = this.connectors.filter(function(cnctr) {
+            let rtn = true;
+            if (cnctr.equals(conn)) {
+                if (cnctr.edgeObservers.length < 1) {
+                    rtn = false
+                }
+            }
+            // removes connector if false
+            return rtn;
+        })
+    }
+
+    /** gets all the connectors 
+     * 
+     */
+    getConnectors() {
+        return this.connectors;
+    }
+
+    /** resets this connectros and observer vNode vConnectors
+     * 
+     */
+    resetConnectors() {
+        this.connectors = [];
+        this.vNodeObserver.resetVConnectors();
+    }
+
+    /**** ATTRIBUTES ****/
     setLabel(label) {
         this.label = label;
     }
@@ -40,15 +96,7 @@ class Node {
         this.importedVNodeData = obj;
     }
 
-    getConnectors() {
-        return this.connectors;
-    }
-
-    resetConnectors() {
-        this.connectors = [];
-        this.vNodeObserver.resetVConnectors();
-    }
-
+    /**** PROPAGATION ****/
     propagate(node, clicked) {
         console.log("__ From __ " + this.label);
         this.propagateForward2(node, clicked);
@@ -201,110 +249,52 @@ class Node {
         }
     }
 
-
-    /**  @deprecated */
-    propagateForward(cat, clicked) {
-
-        console.log("____ cat: " + cat.label + " fwd_Prop: " + cat.inFwdPropagation + " clicked: " + clicked)
-
-        if (clicked) {
-            if (!cat.inFwdPropagation) {
-                // console.log("-> 1 In prop " + cat.label)
-                try {
-                    // i) retrive a subset of edges whose SOURCE is this category
-                    cat.inFwdPropagation = clicked;
-                    let edgesTmp = this.getForwardEdges(cat);
-
-                    // ii) retrieve the list of TARGET categories linked to this category
-                    edgesTmp.forEach(edg => {
-                        if (edg.target == undefined) {
-                            return false;
-                        } else {
-                            let obs = edg.target;
-
-                            // for each of those categories, repeat i), ii)
-                            console.log("__ To " + obs.label)
-                            obs.propagateForward(obs, clicked);
-                        }
-                    });
-                } catch (error) {
-                    if (error.name == "Recursion") {
-                        alert("INFINTE RECURSION. \n The path of successors from " + error.message + " draws a closed loop. Propagation will be dissabled");
-                        DOM.boxChecked('forward').checked = "";
-                    } else if (error instanceof RangeError) {
-                        document.getElementById('warning').innerHTML = "WARNING: Infinite Recursion. Propagation dissabled";
-                        console.log("WARNING: INFINTE RECURSION. The path draws a closed loop. Check: " + cat.label);
-                        alert("Forward infinite recursion. \nThe path of successors from " + cat.label + " draws a closed loop. Propagation will be dissabled");
-                        DOM.boxChecked('forward').checked = "";
-                    } else {
-                        console.log(error)
-                    }
-                }
-            } else {
-                console.log("Blocked successor propagation from " + cat.label + ". ** Recursion Error thrown **")
-                let nError = new Error(cat.label);
-                nError.name = "Recursion"
-                throw (nError);
-            }
-        } else {
-            console.log(" ** RESET ALL SUCCESSORS **")
-                //** RESET CURRENT and ALL SUCCESSORS **
-            cat.inFwdPropagation = false;
-            let edgesTmp = this.getForwardEdges(cat);
-            edgesTmp.forEach(edg => {
-                let obs = edg.target;
-                obs.propagateForward(obs, clicked);
-            });
-            console.log(" ** End of prop for cat: " + cat.label + " fwd_Prop: " + cat.inFwdPropagation + " clicked: " + clicked)
-
-        }
-    }
-
-
-    ////******** BUILD EDGE ******** */
+    /******** BUILD EDGE ******** */
 
     /** Work in the last edge if any. If there is a last edge, and it is open, then close it. 
      * If there is no edge, or the edge is closed, create a new one. 
      * */
-    workOnLastEdge() {
-        let lastEdge;
+    workOnEdgeBuffer() {
+        let buffEdge;
         if (DOM.boxChecked("edit")) {
 
-            // get the last edge in edges collection.
-            lastEdge = EdgeFactory.getLastEdge();
+            // get the edge un EdgeFactory buffer
+            buffEdge = EdgeFactory.getBufferEdge();
 
             // If there is at least one edge
-            if (lastEdge) {
+            if (buffEdge) {
+
                 // if the edge is open
-                if (lastEdge.open) {
-                    alert("Node | Closing edge of type " + lastEdge.kind);
-                    this.closeEdge(lastEdge);
+                if (buffEdge.open) {
+                    alert("Node | Closing edge of type " + buffEdge.kind);
+                    this.closeEdge(buffEdge);
                 } else {
+
                     // choose connector type
                     alert("Node | New connector type DEFAULT");
                     let kind = "default";
-                    lastEdge = this.sproutEdge(kind);
+                    buffEdge = this.sproutEdge(kind);
                 }
             } else {
                 // create the first edge
                 // choose connector type
                 alert("Node | New connector type DEFAULT");
                 let kind = "default";
-                lastEdge = this.sproutEdge(kind);
+                buffEdge = this.sproutEdge(kind);
             }
         }
-        return lastEdge;
+        return buffEdge;
     }
 
     sproutEdge(kind) {
         // create a new one
-        let lastEdge = new Edge(this);
-        EdgeFactory.pushEdge(lastEdge);
+        let buffEdge = new Edge(this);
+        EdgeFactory.setBufferEdge(buffEdge);
 
         // link edge to connector and set edge's kind
         let connector = this.sproutConnector(kind);
-        connector.subscribeEdgeObserver(lastEdge);
-        return lastEdge;
+        connector.subscribeEdgeObserver(buffEdge);
+        return buffEdge;
     }
 
     sproutConnector(kind) {
@@ -323,15 +313,14 @@ class Node {
         return connector;
     }
 
-    closeEdge(lastEdge) {
+    closeEdge(buffEdge) {
         // set target
-        if (lastEdge.setTarget(this)) {
-            this.sproutConnector(lastEdge.kind);
+        if (buffEdge.setTarget(this)) {
+            this.sproutConnector(buffEdge.kind);
             // close edge
-            lastEdge.open = false;
+            buffEdge.open = false;
         } else {
             console.log("Issues closing edge");
-            this.recallEdge(lastEdge);
         }
 
     }

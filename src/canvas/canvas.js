@@ -33,11 +33,42 @@ class Canvas {
     }
 
     static subscribe(obj) {
-        if (!this.observers.includes(obj)) this.observers.push(obj);
+
+
+        if (obj instanceof VEdge) {
+            // get VEdge instances only
+
+            let vEdges = this.observers.filter(function(entry) {
+                let rtn = false;
+                if (entry instanceof VEdge) {
+                    rtn = true;
+                }
+                return rtn;
+            });
+
+            // Get the first element if the reference is in the ist
+            let edgeInList = EdgeFactory.contains(vEdges, obj);
+
+            // add it if not present
+            if (edgeInList != undefined) {
+                this.observers.push(obj);
+            }
+        } else {
+            this.observers.push(obj);
+        }
         Canvas.update();
     }
     static unsubscribe(obj) {
-        this.observers = this.observers.filter(subscriber => subscriber !== obj)
+        this.observers = this.observers.filter(function(subscriber) {
+            let rtn = true;
+            // Filter edges
+            if (subscriber instanceof VEdge || subscriber instanceof Edge) {
+                if (EdgeFactory.compareEdges(subscriber, obj)) {
+                    rtn = false;
+                }
+            }
+            return rtn;
+        });
     }
     static notifyObservers(data) {
         this.observers.forEach(observer => observer.fromCanvas(data))
@@ -76,7 +107,7 @@ class Canvas {
         } else {
             //this.graphicsRendered = false;
             Canvas.renderOnGraphics();
-            gp5.image(this.graphics, -this.graphics.width / 2, -this.graphics.height / 2);
+            gp5.image(this.graphics, 0, 0);
         }
         this.renderGate = false;
     }
@@ -86,21 +117,27 @@ class Canvas {
      */
     static renderOnP5() {
         // draw description box
-        gp5.fill(250, 150);
-        gp5.noStroke();
-        gp5.rect(0, gp5.height - 90, gp5.width, 90)
+        // gp5.fill(250, 150);
+        // gp5.noStroke();
+        // gp5.rect(0, gp5.height - 90, gp5.width, 90)
 
         // draw hem
-        gp5.fill(150);
-        gp5.noStroke();
-        gp5.rect(0, gp5.height - 15, gp5.width, 15)
-        gp5.fill(210);
+        // gp5.fill(150);
+        // gp5.noStroke();
+        // gp5.rect(0, gp5.height - 15, gp5.width, 15)
+        // gp5.fill(210);
+
         // show observers
         this.observers.forEach(element => {
             if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
                 element.show(gp5)
             }
         });
+
+        // show EdgeFactory Buffer
+        if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(gp5);
+
+        // set condition for grahics renderer
         this.graphicsRendered = false;
     }
 
@@ -112,16 +149,16 @@ class Canvas {
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
 
-            // draw description box
-            this.graphics.fill(250, 150);
-            this.graphics.noStroke();
-            this.graphics.rect(0, gp5.height - 90, gp5.width, 90)
+            // // draw description box
+            // this.graphics.fill(250, 150);
+            // this.graphics.noStroke();
+            // this.graphics.rect(0, gp5.height - 90, gp5.width, 90)
 
             // draw hem
-            this.graphics.fill(150);
-            this.graphics.noStroke();
-            this.graphics.rect(0, gp5.height - 15, gp5.width, 15)
-            this.graphics.fill(200);
+            // this.graphics.fill(150);
+            // this.graphics.noStroke();
+            // this.graphics.rect(0, gp5.height - 15, gp5.width, 15)
+            // this.graphics.fill(200);
 
             // show observers
             this.observers.forEach(element => {
@@ -129,6 +166,9 @@ class Canvas {
                     element.show(this.graphics)
                 }
             });
+
+            // show EdgeFactory Buffer
+            if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);
             this.graphicsRendered = true;
         }
     }
@@ -157,7 +197,7 @@ class Canvas {
      * Updated canvas */
     static update() {
         this.renderGate = true;
-        Canvas.render();
+        // Canvas.render();
     }
 
     /**
@@ -342,7 +382,9 @@ class Canvas {
 
         // Escape key
         if (k.key == 'Escape') {
-            EdgeFactory.recallEdge();
+            Canvas.unsubscribe(EdgeFactory._vEdgeBuffer);
+            EdgeFactory.recallBuffer();
+            EdgeFactory.clearBuffer();
         }
 
         // Delete last edge Shift + 'e' || 'E'

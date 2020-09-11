@@ -96,6 +96,7 @@ makeDroppable = function(element, callback) {
 }
 
 buildClustersImport = function(result) {
+    Canvas.resetObservers();
     ClusterFactory.reset();
     ClusterFactory.makeClusters(result);
 }

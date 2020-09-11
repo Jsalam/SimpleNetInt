@@ -19,12 +19,14 @@ class DOM {
         DOM.buttons.submitAddNodeModal = document.getElementById("SubmitAddNodeModal");
         DOM.buttons.exportNetwork = document.getElementById("exportNetwork");
         DOM.buttons.importNetwork = document.getElementById("importNetwork");
+        DOM.buttons.submitEdgeKinds = document.getElementById("submitEdgeKinds");
 
         DOM.buttons.clearEdges.onclick = DOM.clearEdges;
         DOM.buttons.submitAddClusterModal.onclick = getDataCluster;
         DOM.buttons.submitAddNodeModal.onclick = getData;
         DOM.buttons.exportNetwork.onclick = saveJSON;
         DOM.buttons.importNetwork.onclick = getDataImport;
+        DOM.buttons.submitEdgeKinds.onclick = getEdgeKinds;
 
         // Checkboxes
         DOM.checkboxes.edit = document.getElementById('edit');

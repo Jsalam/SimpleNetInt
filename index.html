@@ -38,6 +38,7 @@
     <script src="src/GUI/forms/addNodeModalForm.js"></script>
     <script src="src/GUI/forms/exportModalForm.js"></script>
     <script src="src/GUI/forms/importModalForm.js"></script>
+    <script src="src/GUI/forms/addEdgeKinds.js"></script>
 
     <!-- Model -->
     <script src="src/graphElements/node.js"></script>
@@ -80,10 +81,10 @@
                 </div>
                 <hr style="margin: 3px;">
                 <div>
-                    <p>Network library
+                    <p>Network lib &nbsp
                         <select id="modelChoice" style="font-size:10px; color:grey;">
-                             <option value="0" selected>0</option>
-                             <option value="1">1</option>
+                            <option value="0" selected>0</option>
+                            <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">4</option>
@@ -97,16 +98,34 @@
                 </div>
             </div>
             <!-- Edit -->
-            <div class="col-sm-1">
-                <div>
-                    <p>EDIT</p>
-                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addClusterModal">Add cluster</button>
-                    <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addNodeModal">Add node</button>
-                    <button class="btn btn-default btn-xs" id="clearEdges" name="clearEdgs">Clear edges</button>
+            <div class="col-sm-2">
+                <p>EDIT &nbsp<input type="checkbox" id="edit" style="margin:0px" checked></p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addClusterModal">Add cluster</button>
+                        <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addNodeModal">Add node</button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addKindModal">Edge Categories</button>
+                        <button class="btn btn-default btn-xs" id="clearEdges" name="clearEdgs">Clear edges</button>
+                        <hr style="margin: 3px;">
 
-                    <hr style="margin: 3px;">
-                    <input type="checkbox" id="edit" checked>
-                    <label for="edit" style="font-size:10px">Edit enabled</label><br>
+                    </div>
+                </div>
+            </div>
+            <!-- Filters -->
+            <div class="col-sm-2">
+                <p> FILTERS </p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <input type="checkbox" id="filterLinked">
+                        <label for="filterLinked" style="font-size:10px">Linked only</label>
+                    </div>
+                    <div class="col-sm-6">
+
+                    </div>
+
+
                 </div>
             </div>
             <!-- Propagation -->
@@ -120,16 +139,6 @@
                     <div>
                         <input type="checkbox" id="backward" name="bws" style="padding: 0px; margin: 0px;">
                         <label for="backward">Predecesors</label>
-                    </div>
-                </div>
-            </div>
-            <!-- Filters -->
-            <div class="col-sm-1">
-                <div>
-                    <p> FILTERS </p>
-                    <div>
-                        <input type="checkbox" id="filterLinked">
-                        <label for="filterLinked" style="font-size:10px">Linked only</label>
                     </div>
                 </div>
             </div>
@@ -204,10 +213,6 @@
                     <p>Describe briefly the content of the new node. Give credits to third parties if any. </p>
                     <textarea class="form-control" rows="5" id="catDescription">Node description</textarea>
                     <hr>
-                    <h4>Polarity</h4>
-                    <p>The polarity of a node enables it to connect with nodes from the adjacent clusters. The boxes below create connectors on either the left, right or on both sides of the node.</p>
-                    <input type='checkbox' id="negative" checked> negative (enable left connectors)</input> <br>
-                    <input type='checkbox' id="positive" checked> positive (enable right connectors)</input>
 
                 </div>
                 <div class="modal-footer">
@@ -270,6 +275,30 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal" id="importNetwork">Import
               network</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD EDGE CATEGORIES / KIND -->
+    <div class="modal fade" id="addKindModal" tabindex="-1" role="dialog" aria-labelledby="addKindModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Add Categories of edges</h3>
+                </div>
+                <div class="modal-body">
+
+                    <h4>Description</h4>
+                    <p>Categories are qualitative aspect that characterize links. Classes are also named kinds or classes. For instance the "friend" class represents the friendship between nodes A and B. Another link of the "classmates" class, can also connect
+                        the same nodes. In Simple Networks there is a link for every kind of relationship between nodes. </p>
+                    <p>Enter the categories you want to use in this network separate by comas. For example: <b>friend,classmate,partner,relative</b> </p>
+                    <textarea class="form-control" rows="1" id="edgeKinds"></textarea>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="submitEdgeKinds">Import
+                  network</button>
                 </div>
             </div>
         </div>

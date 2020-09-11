@@ -39,18 +39,6 @@ class VCluster {
                     vNodeTemp.addVConnector(connector);
                 }
 
-            } else if (node instanceof BipartiteNode) {
-                vNodeTemp = new BipartiteVNode(node, this.width, this.height);
-
-                // this is for the case of bipartitte nodes
-                for (const connector of vNodeTemp.node.positives) {
-                    vNodeTemp.addPositiveVConnector(connector);
-                }
-
-                for (const connector of vNodeTemp.node.negatives) {
-                    vNodeTemp.addNegativeVConnector(connector);
-                }
-
             }
 
             // set color
@@ -106,9 +94,10 @@ class VCluster {
             builder.textSize(12);
             builder.fill(0);
             builder.noStroke();
-            builder.text(this.cluster.label, this.pos.x, this.pos.y, 150);
+            builder.textLeading(12);
+            builder.text(this.cluster.label, this.pos.x, this.pos.y, 140);
             builder.textSize(9);
-            builder.text(this.cluster.description, this.pos.x, this.pos.y + 25, 100);
+            builder.text(this.cluster.description, this.pos.x, this.pos.y + 30, 100);
         }
     }
 

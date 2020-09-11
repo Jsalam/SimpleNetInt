@@ -12,7 +12,7 @@ class VConnector extends Button {
     }
 
     // Observing to Canvas
-    fromCanvas(data) {
+    fromVNode(data) {
 
         if (data.event instanceof MouseEvent) {
             if (data.type == "mouseup") {
@@ -59,7 +59,7 @@ class VConnector extends Button {
             // label
         renderer.textAlign(gp5.RIGHT, gp5.CENTER);
         renderer.fill('#000000');
-        renderer.stroke('#000000');
+        renderer.noStroke();
         renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
     }
 

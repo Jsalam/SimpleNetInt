@@ -10,7 +10,7 @@ saveJSON = function() {
             nodes.push(ClusterFactory.vClusters[index].getJSON());
         }
         for (let index = 0; index < EdgeFactory._edges.length; index++) {
-            edges.push(EdgeFactory._edges[index].id);
+            edges.push(EdgeFactory._edges[index].getJSON());
         }
         output = { nodes: nodes, edges: edges }
 
