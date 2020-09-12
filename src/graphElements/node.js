@@ -29,6 +29,17 @@ class Node {
         this.vNodeObserver = vNode;
     }
 
+    /**** FILTERS *****/
+    filter() {
+        let filter;
+        // by connectors
+        // on a DOM Event (similar to contextualGUI)/ this should be handled by the VNode buscribed to this node
+        // check which checkboxes are checked and get the keys
+        // if any of the keys match the connectors of this node
+        // then the node , and the connector is selected else unselected
+        console.log('filtering');
+    }
+
     /**** CONNECTORS ****/
     /** Adds a connector to the collection of this node
      * @param {String} kind kind of connector

@@ -70,6 +70,10 @@ class VNode extends Button {
             }
             if (data.type == "mousemove") {
                 this.mouseOver();
+                // update the canvas if the mouse is over a vNode
+                if (this.mouseIsOver) {
+                    Canvas.update();
+                };
             }
             // Keyboard events
         } else if (data.event instanceof KeyboardEvent) {
@@ -134,6 +138,7 @@ class VNode extends Button {
         });
     }
 
+    /*** SHOW FUNCTIONS */
     show(renderer) {
         // in case the color palette runs out of colors
         if (!this.color) {
@@ -246,6 +251,19 @@ class VNode extends Button {
 
         }
     }
+
+    _setFill() {
+
+    }
+
+    _setStroke() {
+
+    }
+
+    _setStrokeWeight() {
+
+    }
+
 
     showDescription(renderer) {
         renderer.fill("#000000");

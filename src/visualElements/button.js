@@ -1,3 +1,6 @@
+/**
+ * Base class for nodes, connectors or any other visual element with an area. 
+ */
 class Button {
     constructor(posX, posY, width, height) {
         this.pos = gp5.createVector(posX, posY);
@@ -7,6 +10,7 @@ class Button {
         this.clicked = false;
         this.dragged = false;
         this.delta = undefined;
+        this.selected = false;
     }
 
     show() {

@@ -1,3 +1,6 @@
+/** 
+ * This class uses the library Quicksettings. See http://bit101.github.io/quicksettings/
+ */
 class ContextualGUI {
     // This constructor is not needed, but it is here because the documentation generatior requires it to format the documentation
     constructor() {}

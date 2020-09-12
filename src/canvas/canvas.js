@@ -116,16 +116,6 @@ class Canvas {
      * render on original p5.Renderer
      */
     static renderOnP5() {
-        // draw description box
-        // gp5.fill(250, 150);
-        // gp5.noStroke();
-        // gp5.rect(0, gp5.height - 90, gp5.width, 90)
-
-        // draw hem
-        // gp5.fill(150);
-        // gp5.noStroke();
-        // gp5.rect(0, gp5.height - 15, gp5.width, 15)
-        // gp5.fill(210);
 
         // show observers
         this.observers.forEach(element => {
@@ -148,17 +138,6 @@ class Canvas {
 
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
-
-            // // draw description box
-            // this.graphics.fill(250, 150);
-            // this.graphics.noStroke();
-            // this.graphics.rect(0, gp5.height - 90, gp5.width, 90)
-
-            // draw hem
-            // this.graphics.fill(150);
-            // this.graphics.noStroke();
-            // this.graphics.rect(0, gp5.height - 15, gp5.width, 15)
-            // this.graphics.fill(200);
 
             // show observers
             this.observers.forEach(element => {
