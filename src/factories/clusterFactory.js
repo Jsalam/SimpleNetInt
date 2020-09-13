@@ -84,7 +84,6 @@ class ClusterFactory {
         // the JSON file or the node created by user input 
         if (data.connectors) {
             for (const connector of data.connectors) {
-                console.log(connector);
                 // add connector name to GUI
                 if (ContextualGUI.addEdgeCategory(connector)) {
                     // renitialize contextual GUI

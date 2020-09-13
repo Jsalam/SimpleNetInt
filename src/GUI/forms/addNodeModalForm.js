@@ -5,16 +5,13 @@ getData = function() {
 
     if (cluster) {
         let clusterTmp = ClusterFactory.clusters[cluster.value];
-        console.log(clusterTmp);
 
         let dataTmp = {
             id: clusterTmp.nodes.length,
             nodeLabel: name,
             nodeDescription: description,
         }
-        console.log(dataTmp);
         let nodeTmp = ClusterFactory.makeNode(clusterTmp, dataTmp)
-        console.log(nodeTmp);
 
         // visual representation of the new category
         let vClustTmp = ClusterFactory.getVClusterOf(clusterTmp);

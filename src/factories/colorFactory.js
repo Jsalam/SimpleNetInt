@@ -38,5 +38,10 @@ class ColorFactory {
         }
     }
 
+    static getColor(palette, index) {
+        let tmpIndex = index % palette.length;
+        return palette[tmpIndex];
+    }
+
 }
 ColorFactory.palettes = [];

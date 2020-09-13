@@ -41,15 +41,18 @@ class VCluster {
 
             }
 
-            // set color
-            if (!this.palette) {
-                vNodeTemp.setColor("#adadad");
-            } else if (this.palette.length < 1) {
-                vNodeTemp.setColor(this.palette[0])
-            } else {
-                let tmpIndex = index % this.palette.length;
-                vNodeTemp.setColor(this.palette[tmpIndex]);
+            // set color if the data from JSPN does not have color info
+            if (!node.importedVNodeData.color) {
+
+                if (!this.palette) {
+                    vNodeTemp.setColor("#adadad");
+                } else if (this.palette.length < 1) {
+                    vNodeTemp.setColor(ColorFactory.getColor(this.palette, 0))
+                } else {
+                    vNodeTemp.setColor(ColorFactory.getColor(this.palette, index));
+                }
             }
+
             // add to colecction
             this.addVNode(vNodeTemp, node.importedVNodeData);
         }
@@ -62,6 +65,7 @@ class VCluster {
             vNode.setColor(data.color);
         } else {
             vNode.updateCoords(this.pos, this.vNodes.length + 1);
+            vNode.setColor(ColorFactory.getColor(this.palette, this.cluster.nodes.length));
         }
         // subscribe to canvas
         Canvas.subscribe(vNode);
@@ -88,16 +92,16 @@ class VCluster {
         }
     }
 
-    show(builder) {
-        builder.textAlign(gp5.LEFT, gp5.TOP);
+    show(renderer) {
+        renderer.textAlign(gp5.LEFT, gp5.TOP);
         if (this.cluster.label) {
-            builder.textSize(12);
-            builder.fill(0);
-            builder.noStroke();
-            builder.textLeading(12);
-            builder.text(this.cluster.label, this.pos.x, this.pos.y, 140);
-            builder.textSize(9);
-            builder.text(this.cluster.description, this.pos.x, this.pos.y + 30, 100);
+            renderer.textSize(12);
+            renderer.fill(0);
+            renderer.noStroke();
+            renderer.textLeading(12);
+            renderer.text(this.cluster.label, this.pos.x, this.pos.y, 140);
+            renderer.textSize(9);
+            renderer.text(this.cluster.description, this.pos.x, this.pos.y + 30, 100);
         }
     }
 

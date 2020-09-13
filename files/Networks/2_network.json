@@ -1,108 +1,160 @@
 {
-    "nodes": [{
-            "clusterID": "1",
-            "clusterLabel": "Innovation_Type",
-            "clusterDescription": "...",
-            "nodes": [{
-                    "id": 0,
-                    "nodeLabel": "Technology",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 1
-                },
-                {
-                    "id": 1,
-                    "nodeLabel": "Methodology",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 2
-                },
-                {
-                    "id": 2,
-                    "nodeLabel": "Process",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 3
-                },
-                {
-                    "id": 3,
-                    "nodeLabel": "Knowledge framework",
-                    "nodeDescription": "Category description",
-                    "polarity": "RIGHT",
-                    "pajekIndex": 4
-                }
-            ]
+  "nodes": [
+    {
+      "clusterID": "1",
+      "clusterLabel": "Cluster A",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "A1",
+          "nodeDescription": "Node description",
+          "connectors": [
+            "default"
+          ],
+          "pajekIndex": 1,
+          "vNode": {
+            "posX": 15,
+            "posY": 53,
+            "posZ": 0,
+            "color": "#253493"
+          }
         },
         {
-            "clusterID": "2",
-            "clusterLabel": "Theme_A",
-            "clusterDescription": "...",
-            "nodes": [{
-                "id": 0,
-                "nodeLabel": "3",
-                "nodeDescription": "Node description",
-                "polarity": "BOTH",
-                "pajekIndex": 5
-            }]
+          "id": 1,
+          "nodeLabel": "A2",
+          "nodeDescription": "Node description",
+          "connectors": [],
+          "pajekIndex": 2,
+          "vNode": {
+            "posX": 15,
+            "posY": 86,
+            "posZ": 0,
+            "color": "#09519c"
+          }
         },
         {
-            "clusterID": "3",
-            "clusterLabel": "Theme_B",
-            "clusterDescription": "...",
-            "nodes": []
+          "id": 2,
+          "nodeLabel": "A3",
+          "nodeDescription": "Node description",
+          "connectors": [],
+          "pajekIndex": 3,
+          "vNode": {
+            "posX": 15,
+            "posY": 119,
+            "posZ": 0,
+            "color": "#2270b5"
+          }
         },
         {
-            "clusterID": "4",
-            "clusterLabel": "Theme_C",
-            "clusterDescription": "...",
-            "nodes": []
-        },
-        {
-            "clusterID": "5",
-            "clusterLabel": "Theme_D",
-            "clusterDescription": "...",
-            "nodes": []
-        },
-        {
-            "clusterID": "6",
-            "clusterLabel": "Theme_E",
-            "clusterDescription": "...",
-            "nodes": []
+          "id": 3,
+          "nodeLabel": "B1",
+          "nodeDescription": "Node description",
+          "connectors": [
+            "primary"
+          ],
+          "pajekIndex": 4,
+          "vNode": {
+            "posX": 15,
+            "posY": 152,
+            "posZ": 0,
+            "color": "#1d91bf"
+          }
         }
-    ],
-    "edges": [{
-            "source": {
-                "cluster": "1",
-                "cat": 2,
-                "index": 0,
-                "polarity": true,
-                "pajekIndex": 3
-            },
-            "target": {
-                "cluster": "2",
-                "cat": 0,
-                "index": 0,
-                "polarity": false,
-                "pajekIndex": 5
-            },
-            "weight": 1
+      ]
+    },
+    {
+      "clusterID": "2",
+      "clusterLabel": "Cluster B",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "B1",
+          "nodeDescription": "Node description",
+          "connectors": [
+            "primary"
+          ],
+          "pajekIndex": 5,
+          "vNode": {
+            "posX": 155,
+            "posY": 53,
+            "posZ": 0,
+            "color": "#63eeff"
+          }
         },
         {
-            "source": {
-                "cluster": "1",
-                "cat": 1,
-                "index": 0,
-                "polarity": true,
-                "pajekIndex": 2
-            },
-            "target": {
-                "cluster": "2",
-                "cat": 0,
-                "index": 1,
-                "polarity": false,
-                "pajekIndex": 5
-            },
-            "weight": 1
+          "id": 1,
+          "nodeLabel": "B2",
+          "nodeDescription": "Node description",
+          "connectors": [],
+          "pajekIndex": 6,
+          "vNode": {
+            "posX": 155,
+            "posY": 86,
+            "posZ": 0,
+            "color": "#8aadb4"
+          }
+        },
+        {
+          "id": 2,
+          "nodeLabel": "B3",
+          "nodeDescription": "Node description",
+          "connectors": [],
+          "pajekIndex": 7,
+          "vNode": {
+            "posX": 155,
+            "posY": 119,
+            "posZ": 0,
+            "color": "#ffe05d"
+          }
+        },
+        {
+          "id": 3,
+          "nodeLabel": "B4",
+          "nodeDescription": "Node description",
+          "connectors": [
+            "default"
+          ],
+          "pajekIndex": 8,
+          "vNode": {
+            "posX": 275,
+            "posY": 255,
+            "posZ": 0,
+            "color": "#b01a15"
+          }
         }
-    ]
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": {
+        "cluster": "1",
+        "index": 0,
+        "pajekIndex": 1
+      },
+      "target": {
+        "cluster": "2",
+        "index": 3,
+        "pajekIndex": 8
+      },
+      "kind": "default",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 3,
+        "pajekIndex": 4
+      },
+      "target": {
+        "cluster": "2",
+        "index": 0,
+        "pajekIndex": 5
+      },
+      "kind": "primary",
+      "weight": 1
+    }
+  ]
 }

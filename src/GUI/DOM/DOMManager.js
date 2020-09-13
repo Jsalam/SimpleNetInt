@@ -50,7 +50,8 @@ class DOM {
         DOM.textboxes.edgeKinds = document.getElementById("edgeKinds");
 
         // lists
-        DOM.lists.filters = document.getElementById('filters');
+        DOM.lists.filtersA = document.getElementById('filtersA');
+        DOM.lists.filtersB = document.getElementById('filtersB');
 
         // Get the current status of checkboxes 
         DOM.updateCheckboxes();
@@ -139,10 +140,19 @@ class DOM {
      * @param {Object} data 
      */
     static onLoadNetwork(data) {
+        // get nodes and edges 
         let nodesTemp = data.nodes;
-        DOM.buildClusters(nodesTemp);
         let edgesTemp = data.edges;
+
+        // buld clusters and edges
+        DOM.buildClusters(nodesTemp);
         DOM.buildEdges(edgesTemp);
+
+        // add checkboxes to filters. It taked whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
+        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
+        DOM.updateCheckboxes();
+
+        // update canvas
         Canvas.update();
     }
 
@@ -167,8 +177,8 @@ class DOM {
     static getTextBoxContent() {
         // Initialize the gui with the text from the textbox on the DOM
         ContextualGUI.init(DOM.textboxes.edgeKinds.value);
-        // add checkboxes to filters
-        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filters)
+        // add checkboxes to filters list B
+        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
     }
 
     /**
@@ -190,11 +200,13 @@ class DOM {
             checkbox.name = name;
             checkbox.value = "value";
             checkbox.id = name;
+            checkbox.style["margin"] = "0px";
             checkbox.onclick = DOM.eventTriggered; // event listener
 
             // label
             var label = document.createElement('label')
             label.htmlFor = name;
+            label.style["font-weight"] = "400";
             label.appendChild(document.createTextNode("\u00A0")); // &nbsp
             label.appendChild(document.createTextNode(name));
 
@@ -221,7 +233,6 @@ class DOM {
             // get the input un the case of checkboxes
             const childInput = child.children[0]
             if (childInput.id === id) {
-                console.log(id);
                 return true;
             }
         }

@@ -18,12 +18,7 @@ callbackNetwork = function(files) {
     if (files[0].type.endsWith('json')) {
         document.getElementById('networkFileName').innerHTML = files[0].name
         loadFile(files[0]);
-        // add file name to dropdown menu of models
-        // let dropdown = document.getElementById('modelChoice');
-        // let option = document.createElement("option");
-        // option.value = 100;
-        // option.text = files[0].name;
-        // dropdown.appendChild(option);
+
     } else {
         alert("Wrong file format. Must be a JSON file")
     }

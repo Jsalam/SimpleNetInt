@@ -2,7 +2,8 @@ class VNode extends Button {
     constructor(node, width, height) {
         super(0, 0, width, height);
         this.node = node;
-        this.color = '#adadad';
+        this.color;
+        this.strokeColor;
         this.paddingTop = 3;
         // observers are vConnectors
         this.vConnectors = [];
@@ -140,132 +141,139 @@ class VNode extends Button {
 
     /*** SHOW FUNCTIONS */
     show(renderer) {
-        // in case the color palette runs out of colors
-        if (!this.color) {
-            this.color = '#d4d4d4';
-        }
-        let normal = 40;
-        let accent = 80;
-        let dimmed = 10;
+
+        // get the visual properties
+        let fillColors = this._getFillColor(this.color);
+        this.strokeColor = this._getStrokeColor(this.color);
+        let strokeWeight = this._getStrokeWeight();
+
+        // assign colors
+        renderer.fill(fillColors.fill);
+        renderer.stroke(this.strokeColor);
+        renderer.strokeWeight(strokeWeight);
+
+        // draw shape
+        renderer.ellipseMode(gp5.CENTER)
+        renderer.ellipse(this.pos.x, this.pos.y, this.width);
+
+        // draw label
+        this._showLabel(renderer, fillColors.label);
+
+        // show node description
         if (this.mouseIsOver) {
-            accent += 19;
-            normal += 19;
+            this._showDescription(renderer);
         }
-        if (this.node.inFwdPropagation && DOM.boxChecked("forward") &&
-            this.node.inBkwPropagation && DOM.boxChecked("backward")) {
-            // console.log("here 1 " + this.node.label);
-            renderer.fill(this.color.concat(accent));
-        } else if (this.node.inFwdPropagation && DOM.boxChecked("forward")) {
-            // console.log("here 2 " + this.node.label);
-            renderer.fill(this.color.concat(accent));
-        } else if (this.node.inBkwPropagation && DOM.boxChecked("backward")) {
-            // console.log("here 3 " + this.node.label);
-            renderer.fill(this.color.concat(accent));
-            // if it has no linked edges
-        } else {
-            //console.log("last in prop " + this.node.label);
-            renderer.fill(this.color.concat(normal));
-        }
-
-        // Highlight rect
-        if (this.propagated) {
-            renderer.strokeWeight(2);
-            renderer.stroke(200, 0, 0);
-        } else {
-            renderer.strokeWeight(1);
-            renderer.stroke(250);
-        }
-        // Show linked only
-        if (DOM.boxChecked("filterLinked")) {
-            // filter by edge number
-            if ((this.vConnectors.length > 0) && DOM.boxChecked("filterLinked")) {
-                // draw the rect
-                renderer.strokeWeight(2);
-                renderer.stroke(this.color);
-                //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
-                renderer.ellipseMode(gp5.CENTER)
-                renderer.ellipse(this.pos.x, this.pos.y, this.width);
-
-                // draw the label
-                renderer.fill("#000000");
-                renderer.noStroke();
-                renderer.textSize(10);
-                if (this.propagated) {
-                    renderer.textStyle(renderer.BOLD);
-                }
-                renderer.textAlign(gp5.CENTER, gp5.CENTER);
-                renderer.text(this.node.label, this.pos.x, this.pos.y);
-                renderer.textStyle(renderer.NORMAL);
-
-                //connectors
-                for (let index = 0; index < this.vConnectors.length; index++) {
-                    this.vConnectors[index].show(renderer)
-                }
-
-                if (this.mouseIsOver) {
-                    this.showDescription(renderer);
-                }
-            } else {
-                // draw the rect
-                renderer.fill(this.color.concat(dimmed));
-                //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
-                renderer.ellipseMode(gp5.CENTER)
-                renderer.ellipse(this.pos.x, this.pos.y, this.width);
-
-                // draw the label
-                renderer.fill("#00000070");
-                renderer.noStroke();
-                renderer.textSize(10);
-                renderer.textAlign(gp5.CENTER, gp5.CENTER);
-                renderer.text(this.node.label, this.pos.x, this.pos.y);
-                renderer.textStyle(renderer.NORMAL);
-                if (this.mouseIsOver) {
-                    this.showDescription(renderer);
-                }
-            }
-        } else {
-            // draw the rect
-            // renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
-            renderer.ellipseMode(gp5.CENTER)
-            renderer.ellipse(this.pos.x, this.pos.y, this.width);
-
-            // draw the label
-            renderer.fill("#000000");
-            renderer.noStroke();
-            renderer.textSize(10);
-            if (this.propagated) {
-                renderer.textStyle(renderer.BOLD);
-            }
-            renderer.textAlign(gp5.CENTER, gp5.CENTER);
-            renderer.text(this.node.label, this.pos.x, this.pos.y);
-            renderer.textStyle(renderer.NORMAL);
-
-            //connectors
+        // Show connectors 
+        if (this.vConnectors.length > 0) {
             for (let index = 0; index < this.vConnectors.length; index++) {
                 this.vConnectors[index].show(renderer)
             }
-
-            if (this.mouseIsOver) {
-                this.showDescription(renderer);
-            }
-
         }
     }
 
-    _setFill() {
+    _showLabel(renderer, color) {
+        // draw the label
+        renderer.fill(color);
+        renderer.noStroke();
+        renderer.textSize(10);
+        if (this.propagated) {
+            renderer.textStyle(renderer.BOLD);
+        }
+        renderer.textAlign(gp5.CENTER, gp5.CENTER);
+        renderer.text(this.node.label, this.pos.x, this.pos.y);
+        renderer.textStyle(renderer.NORMAL);
 
     }
 
-    _setStroke() {
+    _getFillColor(baseColor) {
+        // default color 
+        let fillColor = baseColor;
+        let labelColor = '#000000';
+        let filtered = '#b400b4';
 
+        // settings. see hex table https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
+        let normal = '99'; // 60%
+        let accent = 'B3'; // 70%
+        let dimmed = '33'; // 20%
+        // attenuate
+        if (this.mouseIsOver) {
+            normal = 'E6'; // 90%
+            accent = 'E6'; // 90%
+        }
+
+        // *** EMPHASIZE COLOR ***
+        // *** Propagation
+        if (this.node.inFwdPropagation && DOM.boxChecked("forward") &&
+            this.node.inBkwPropagation && DOM.boxChecked("backward")) {
+            // console.log("here 1 " + this.node.label);
+            fillColor = baseColor.concat(accent);
+        } else if (this.node.inFwdPropagation && DOM.boxChecked("forward")) {
+            // console.log("here 2 " + this.node.label);
+            fillColor = baseColor.concat(accent);
+        } else if (this.node.inBkwPropagation && DOM.boxChecked("backward")) {
+            // console.log("here 3 " + this.node.label);
+            fillColor = baseColor.concat(accent);
+            // if it has no linked edges
+        } else {
+            //console.log("last in prop " + this.node.label);
+            fillColor = baseColor.concat(normal);
+        }
+
+        // *** DIM COLOR  ***
+        // *** Linked FILTER
+        if ((this.vConnectors.length < 1) && DOM.boxChecked("filterLinked")) {
+            fillColor = baseColor.concat(dimmed);
+            labelColor = labelColor.concat(dimmed);
+        }
+        // *** FILTER ***
+        // Subset checkBoxes matching node connectors
+        let filteredConnectors = this.node.filterConnectors();
+
+        if (filteredConnectors.length > 0) fillColor = filtered;
+
+        return { fill: fillColor, label: labelColor };
     }
 
-    _setStrokeWeight() {
+    _getStrokeColor(baseColor) {
+        // default color 
+        let strokeColor = baseColor;
+        let inPropagation = '#FF0000';
+        let dimmed = '#FFFFFF33'; // 20% white
+        let filtered = '#b400b4';
 
+        // in propagation 
+        if (this.propagated) {
+            strokeColor = inPropagation;
+        }
+
+        // *** Linked filter
+        if ((this.vConnectors.length < 1) && DOM.boxChecked("filterLinked")) {
+            strokeColor = dimmed;
+        }
+
+        // *** filter by edge category
+        let filteredConnectors = this.node.filterConnectors();
+
+        if (filteredConnectors.length > 0) strokeColor = filtered;
+
+        return strokeColor;
+    }
+
+    _getStrokeWeight() {
+        let weight = 1;
+        // Highlight 
+        if (this.propagated) {
+            weight = 2;
+        } else if ((this.vConnectors.length > 0) && DOM.boxChecked("filterLinked")) {
+            weight = 2;
+        } else {
+            weight = 1;
+        }
+        return weight;
     }
 
 
-    showDescription(renderer) {
+    _showDescription(renderer) {
         renderer.fill("#000000");
         renderer.textAlign(gp5.LEFT, gp5.TOP);
         renderer.strokeWeight(0.5);

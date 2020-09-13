@@ -109,7 +109,7 @@
                         <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addNodeModal">Add node</button>
                     </div>
                     <div class="col-sm-6">
-                        <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addKindModal">Edge Categories</button>
+                        <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addKindModal">Edge Catgrs</button>
                         <button class="btn btn-default btn-xs" id="clearEdges" name="clearEdgs">Clear edges</button>
                         <hr style="margin: 3px;">
 
@@ -121,14 +121,20 @@
                 <p> FILTERS </p>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div id="filters">
+                        <div id="filtersA">
                             <div>
-                                <input type="checkbox" id="filterLinked">
-                                <label for="filterLinked" style="font-size:10px">Linked only</label>
+                                <div style="font-size:10px; font-weight:200">Nodes</div>
+                                <input type="checkbox" id="filterLinked" style="margin:0px;">
+                                <label for="filterLinked" style="font-size:10px; font-weight:400">Linked only</label>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
+                        <div id="filtersB">
+                            <div>
+                                <div style="font-size:10px; font-weight:200">Edges</div>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -141,11 +147,11 @@
                     <p>PROPAGATION</p>
                     <div>
                         <input type="checkbox" id="forward" name="fwd" style="padding: 0px; margin: 0px;">
-                        <label for="forward">Succesors</label>
+                        <label for="forward" style="font-size:10px; font-weight:400">Succesors</label>
                     </div>
                     <div>
                         <input type="checkbox" id="backward" name="bws" style="padding: 0px; margin: 0px;">
-                        <label for="backward">Predecesors</label>
+                        <label for="backward" style="font-size:10px; font-weight:400">Predecesors</label>
                     </div>
                 </div>
             </div>
@@ -154,7 +160,7 @@
                 <p> VIEW </p>
                 <div>
                     <input type="checkbox" id="backgroundContrast">
-                    <label for="backgroundContrast" style="font-size:10px">Contrast</label><br>
+                    <label for="backgroundContrast" style="font-size:10px; font-weight:400">Contrast</label><br>
                 </div>
             </div>
             <div class="col-sm-1">

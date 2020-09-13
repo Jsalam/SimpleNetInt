@@ -9,7 +9,6 @@ class VEdge {
         this.vSource;
         this.vTarget;
         this.color;
-        this.alpha = 50
     }
 
     // Observing to Canvas
@@ -38,40 +37,78 @@ class VEdge {
     }
 
     show(renderer) {
+        // get stroke color
+        let strokeColor = this._getStrokeColor(this.vSource.strokeColor)
+        let strokeWeight = this._getStrokeWeight();
+
+        this.showBeziers(renderer, strokeColor, strokeWeight);
+
+    }
+
+    _getStrokeColor(baseColor) {
+        // default color 
+        let strokeColor = baseColor;
+        let inPropagation = '#FF0000';
+        let alpha = '80'
 
         if (DOM.boxChecked("forward") && DOM.boxChecked("backward")) {
             if (this.source.inFwdPropagation || this.edge.target && this.edge.target.inBkwPropagation) {
-                renderer.strokeWeight(5);
-                this.alpha = '99';
+                strokeColor = inPropagation;
             } else {
-                renderer.strokeWeight(3);
-                this.alpha = '50';
+                strokeColor = baseColor;
             }
         } else if (DOM.boxChecked("forward")) {
             if (this.source.inFwdPropagation) {
-                renderer.strokeWeight(5);
-                this.alpha = '99';
+                strokeColor = inPropagation;
             } else {
-                renderer.strokeWeight(3);
-                this.alpha = '50';
+                strokeColor = baseColor;
             }
         } else if (DOM.boxChecked("backward")) {
             if (this.edge.target && this.edge.target.inBkwPropagation) {
-                renderer.strokeWeight(5);
-                this.alpha = '99';
+                strokeColor = inPropagation;
             } else {
-                renderer.strokeWeight(3);
-                this.alpha = '50';
+                strokeColor = baseColor;
             }
 
         } else {
-            renderer.strokeWeight(3);
-            this.alpha = '50';
+            strokeColor = baseColor;
         }
-        renderer.strokeWeight(3 * this.edge.weight);
-        this.showBeziers(renderer)
 
+        return strokeColor.concat(alpha);
     }
+
+    _getStrokeWeight() {
+        // default color 
+        let strokeWeight = 1;
+        let thick = 5;
+        let light = 3
+
+        if (DOM.boxChecked("forward") && DOM.boxChecked("backward")) {
+            if (this.source.inFwdPropagation || this.edge.target && this.edge.target.inBkwPropagation) {
+                strokeWeight = thick;
+            } else {
+                strokeWeight = light;
+            }
+        } else if (DOM.boxChecked("forward")) {
+            if (this.source.inFwdPropagation) {
+                strokeWeight = thick;
+            } else {
+                strokeWeight = light;
+            }
+        } else if (DOM.boxChecked("backward")) {
+            if (this.edge.target && this.edge.target.inBkwPropagation) {
+                strokeWeight = thick;
+            } else {
+                strokeWeight = light;
+            }
+
+        } else {
+            strokeWeight = light;
+        }
+
+        return strokeWeight;
+    }
+
 
     getOrgCoords(vNode, _kind) {
         let pos, kind;
@@ -85,11 +122,14 @@ class VEdge {
         return pos;
     }
 
-    showBeziers(renderer) {
+    showBeziers(renderer, color, weight) {
+
+        // line thickness
+        renderer.strokeWeight(weight);
 
         // If the edge does not have target yet
         if (!this.vTarget) {
-            renderer.stroke(this.vSource.color.concat(this.alpha));
+            renderer.stroke(color);
             let org = this.getOrgCoords(this.vSource);
             let end = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y);
             let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;
@@ -110,7 +150,7 @@ class VEdge {
                 renderer.endShape();
             }
         } else {
-            renderer.stroke(this.vSource.color.concat(this.alpha));
+            renderer.stroke(color);
             let org = this.getOrgCoords(this.vSource);
             let end = this.getOrgCoords(this.vTarget);;
             let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;

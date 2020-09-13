@@ -1,42 +1,4 @@
 {
-    "nodes": [{
-            "clusterID": "1",
-            "clusterLabel": "Looking to the sky",
-            "clusterDescription": "Lenses, gyroscopes and stuff",
-            "nodes": [{
-                "id": 0,
-                "nodeLabel": "Node A",
-                "nodeDescription": "Node description",
-                "polarity": "BOTH",
-                "connectors": [],
-                "pajekIndex": 1,
-                "vNode": {
-                    "posX": 35,
-                    "posY": 547,
-                    "posZ": 0,
-                    "color": "#adadad"
-                }
-            }]
-        },
-        {
-            "clusterID": "2",
-            "clusterLabel": "Changing climate changing lives",
-            "clusterDescription": "Climate change",
-            "nodes": [{
-                "id": 0,
-                "nodeLabel": "Node B",
-                "nodeDescription": "Node description",
-                "polarity": "BOTH",
-                "connectors": [],
-                "pajekIndex": 2,
-                "vNode": {
-                    "posX": 178,
-                    "posY": 547,
-                    "posZ": 0,
-                    "color": "#adadad"
-                }
-            }]
-        }
-    ],
+    "nodes": [],
     "edges": []
 }
