@@ -36,7 +36,7 @@
     <script src="src/GUI/ContextualGUIS/ContextualGUI.js"></script>
 
     <!-- Control -->
-    <script src="src/main2.js"></script>
+    <script src="src/main.js"></script>
     <script src="src/canvas/canvas.js"></script>
     <script src="src/GUI/forms/addClusterModalForm.js"></script>
     <script src="src/GUI/forms/addNodeModalForm.js"></script>
@@ -102,11 +102,15 @@
             </div>
             <!-- Edit -->
             <div class="col-sm-2">
-                <p>EDIT &nbsp<input type="checkbox" id="edit" style="margin:0px" checked></p>
+                <p>NETWORK</p>
                 <div class="row">
                     <div class="col-sm-6">
                         <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addClusterModal">Add cluster</button>
                         <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addNodeModal">Add node</button>
+                        <div>
+                            <input type="checkbox" id="edit" style="margin:0px" checked>
+                            <label for="edit" style="font-size:10px; font-weight:400">Edit network</label>
+                        </div>
                     </div>
                     <div class="col-sm-6">
                         <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#addKindModal">Edge Catgrs</button>
@@ -135,10 +139,7 @@
                                 <div style="font-size:10px; font-weight:200">Edges</div>
                             </div>
                         </div>
-
                     </div>
-
-
                 </div>
             </div>
             <!-- Propagation -->

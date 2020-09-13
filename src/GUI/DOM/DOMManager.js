@@ -149,7 +149,7 @@ class DOM {
         DOM.buildEdges(edgesTemp);
 
         // add checkboxes to filters. It taked whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
-        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
+        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersA)
         DOM.updateCheckboxes();
 
         // update canvas

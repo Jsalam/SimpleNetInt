@@ -39,20 +39,22 @@ class VConnector extends Button {
         this.color = color;
     }
 
-    updateCoords(pos, catWidth, sequence, height) {
-        if (this.connector.polarity == true) {
-            // right
-            this.setPos(gp5.createVector(pos.x + catWidth, pos.y + (sequence * height)));
-        } else {
-            // left
-            this.setPos(gp5.createVector(pos.x - this.width, pos.y + (sequence * height)));
-        }
+    updateCoords(pos, sequence, height) {
+        this.setPos(gp5.createVector(pos.x - this.width, pos.y + (sequence * height)));
         this.setHeight(height);
     }
 
-    show(renderer) {
+    updateCoordsByAngle(center, angle, radius) {
+
+        let x = Math.cos(angle) * (radius - this.width / 2);
+        let y = Math.sin(angle) * (radius - this.width / 2);
+
+        this.setPos(gp5.createVector(center.x + x, center.y + y));
+    }
+
+    show(renderer, fillColor) {
         renderer.ellipseMode(gp5.CENTER);
-        renderer.noFill();
+        renderer.fill(fillColor);
         renderer.stroke(this.color);
         //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
         renderer.ellipse(this.pos.x, this.pos.y, this.width)

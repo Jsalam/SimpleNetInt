@@ -15,8 +15,8 @@
           ],
           "pajekIndex": 1,
           "vNode": {
-            "posX": 84,
-            "posY": 75,
+            "posX": 93,
+            "posY": 600,
             "posZ": 0,
             "color": "#253493"
           }
@@ -30,8 +30,8 @@
           ],
           "pajekIndex": 2,
           "vNode": {
-            "posX": 88,
-            "posY": 111,
+            "posX": 222,
+            "posY": 599,
             "posZ": 0,
             "color": "#09519c"
           }
@@ -46,8 +46,8 @@
           ],
           "pajekIndex": 3,
           "vNode": {
-            "posX": 166,
-            "posY": 167,
+            "posX": 361,
+            "posY": 600,
             "posZ": 0,
             "color": "#2270b5"
           }
@@ -61,8 +61,8 @@
           ],
           "pajekIndex": 4,
           "vNode": {
-            "posX": 89,
-            "posY": 201,
+            "posX": 487,
+            "posY": 598,
             "posZ": 0,
             "color": "#1d91bf"
           }
@@ -77,8 +77,8 @@
           ],
           "pajekIndex": 5,
           "vNode": {
-            "posX": 327,
-            "posY": 221,
+            "posX": 745,
+            "posY": 600,
             "posZ": 0,
             "color": "#6baed6"
           }
@@ -93,8 +93,8 @@
           ],
           "pajekIndex": 6,
           "vNode": {
-            "posX": 89,
-            "posY": 278,
+            "posX": 615,
+            "posY": 599,
             "posZ": 0,
             "color": "#9ecae1"
           }
@@ -108,8 +108,8 @@
           ],
           "pajekIndex": 7,
           "vNode": {
-            "posX": 322,
-            "posY": 285,
+            "posX": 864,
+            "posY": 599,
             "posZ": 0,
             "color": "#41b6c4"
           }
@@ -123,8 +123,8 @@
           ],
           "pajekIndex": 8,
           "vNode": {
-            "posX": 323,
-            "posY": 356,
+            "posX": 1001,
+            "posY": 597,
             "posZ": 0,
             "color": "#bfd3e6"
           }
@@ -138,8 +138,8 @@
           ],
           "pajekIndex": 9,
           "vNode": {
-            "posX": 94,
-            "posY": 409,
+            "posX": 1140,
+            "posY": 600,
             "posZ": 0,
             "color": "#9ebcda"
           }
@@ -153,8 +153,8 @@
           ],
           "pajekIndex": 10,
           "vNode": {
-            "posX": 96,
-            "posY": 462,
+            "posX": 1278,
+            "posY": 600,
             "posZ": 0,
             "color": "#c2a5cf"
           }

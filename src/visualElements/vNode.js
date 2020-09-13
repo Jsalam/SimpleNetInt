@@ -105,9 +105,9 @@ class VNode extends Button {
         this.updateConnectorsCoords();
     }
 
-    // resetVConnectors() {
-    //     this.vConnectors = [];
-    // }
+    resetVConnectors() {
+        this.vConnectors = [];
+    }
 
     popLastVConnector() {
         this.vConnectors.shift();
@@ -131,12 +131,20 @@ class VNode extends Button {
     }
 
     updateConnectorsCoords() {
-        let counter = 0;
-        //let positives = this.getConnectors(true);
+        let counter = 1;
+        let angle = (Math.PI * 2) / this.node.connectors.length;
+
         this.vConnectors.forEach(vConnector => {
-            vConnector.updateCoords(this.pos, 0, counter, this.vConnectorsGap);
+            //vConnector.updateCoords(this.pos, counter, this.vConnectorsGap);
+            if (this.node.connectors.length < 2) {
+                vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
+            } else {
+                vConnector.updateCoordsByAngle(this.pos, angle * counter, this.width / 2);
+            }
             counter++;
         });
+
+
     }
 
     /*** SHOW FUNCTIONS */
@@ -149,6 +157,7 @@ class VNode extends Button {
 
         // assign colors
         renderer.fill(fillColors.fill);
+        //renderer.fill(this.color.concat('00'));
         renderer.stroke(this.strokeColor);
         renderer.strokeWeight(strokeWeight);
 
@@ -165,8 +174,9 @@ class VNode extends Button {
         }
         // Show connectors 
         if (this.vConnectors.length > 0) {
-            for (let index = 0; index < this.vConnectors.length; index++) {
-                this.vConnectors[index].show(renderer)
+            for (const vCnctr of this.vConnectors) {
+                vCnctr.show(renderer, this.color.concat('00'));
+
             }
         }
     }
@@ -180,7 +190,7 @@ class VNode extends Button {
             renderer.textStyle(renderer.BOLD);
         }
         renderer.textAlign(gp5.CENTER, gp5.CENTER);
-        renderer.text(this.node.label, this.pos.x, this.pos.y);
+        renderer.text(this.node.label, this.pos.x - 75, this.pos.y + 5 + this.height / 2, 140);
         renderer.textStyle(renderer.NORMAL);
 
     }
@@ -192,7 +202,7 @@ class VNode extends Button {
         let filtered = '#b400b4';
 
         // settings. see hex table https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
-        let normal = '99'; // 60%
+        let normal = '40'; // 60%
         let accent = 'B3'; // 70%
         let dimmed = '33'; // 20%
         // attenuate

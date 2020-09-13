@@ -38,10 +38,11 @@ class VEdge {
 
     show(renderer) {
         // get stroke color
-        let strokeColor = this._getStrokeColor(this.vSource.strokeColor)
+        let strokeColor = this._getStrokeColor(this.vSource.color)
         let strokeWeight = this._getStrokeWeight();
 
-        this.showBeziers(renderer, strokeColor, strokeWeight);
+        //this.showBeziers(renderer, strokeColor, strokeWeight);
+        this.showBezierArcs(renderer, strokeColor, strokeWeight);
 
     }
 
@@ -106,7 +107,7 @@ class VEdge {
             strokeWeight = light;
         }
 
-        return strokeWeight;
+        return strokeWeight * this.edge.weight;
     }
 
 
@@ -126,51 +127,108 @@ class VEdge {
 
         // line thickness
         renderer.strokeWeight(weight);
+        renderer.stroke(color);
+        renderer.noFill();
+
+        // general properties
+        let factor = 3; // the propotion of distance between nodes
+        let controlOrg;
+        let controlEnd;
+        let org = this.getOrgCoords(this.vSource);
+        let end;
+
 
         // If the edge does not have target yet
         if (!this.vTarget) {
-            renderer.stroke(color);
-            let org = this.getOrgCoords(this.vSource);
-            let end = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y);
-            let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;
-            renderer.noFill();
-            if (end.x <= org.x) {
-                renderer.beginShape();
-                renderer.vertex(org.x, org.y);
-                renderer.vertex(org.x - arm, org.y);
-                renderer.bezierVertex(org.x - (3 * arm), org.y, end.x + (3 * arm), end.y, end.x + arm, end.y);
-                renderer.vertex(end.x, end.y);
-                renderer.endShape();
-            } else {
-                renderer.beginShape();
-                renderer.vertex(org.x, org.y);
-                renderer.vertex(org.x + arm, org.y);
-                renderer.bezierVertex(org.x + (3 * arm), org.y, end.x - (3 * arm), end.y, end.x - arm, end.y);
-                renderer.vertex(end.x, end.y);
-                renderer.endShape();
-            }
+            end = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y);
         } else {
-            renderer.stroke(color);
-            let org = this.getOrgCoords(this.vSource);
-            let end = this.getOrgCoords(this.vTarget);;
-            let arm = gp5.dist(org.x, org.y, end.x, org.y) / 5;
-            renderer.noFill();
-            if (end.x <= org.x) {
-                renderer.beginShape();
-                renderer.vertex(org.x, org.y);
-                renderer.vertex(org.x - arm, org.y);
-                renderer.bezierVertex(org.x - (3 * arm), org.y, end.x + (3 * arm), end.y, end.x + arm, end.y);
-                renderer.vertex(end.x, end.y);
-                renderer.endShape();
-            } else {
-                renderer.beginShape();
-                renderer.vertex(org.x, org.y);
-                renderer.vertex(org.x + arm, org.y);
-                renderer.bezierVertex(org.x + (3 * arm), org.y, end.x - (3 * arm), end.y, end.x - arm, end.y);
-                renderer.vertex(end.x, end.y);
-                renderer.endShape();
-            }
+            end = this.getOrgCoords(this.vTarget);;
         }
+
+        // estimate arm length
+        let extension = 0.7;
+        let arm = factor * gp5.dist(org.x, org.y, end.x, org.y) / 5;
+
+        // set control points
+        if (end.x <= org.x) {
+            controlOrg = gp5.createVector(org.x - arm, org.y);
+            controlEnd = gp5.createVector(end.x + arm, end.y);
+            renderer.beginShape();
+            renderer.vertex(org.x, org.y);
+            renderer.vertex(controlOrg.x + (arm * extension), controlOrg.y);
+            renderer.bezierVertex(controlOrg.x, controlOrg.y, controlEnd.x, controlEnd.y, controlEnd.x - (arm * extension), end.y);
+            renderer.vertex(end.x, end.y);
+            renderer.endShape();
+
+        } else {
+            controlOrg = gp5.createVector(org.x + arm, org.y);
+            controlEnd = gp5.createVector(end.x - arm, end.y);
+            renderer.beginShape();
+            renderer.vertex(org.x, org.y);
+            renderer.vertex(controlOrg.x - (arm * extension), controlOrg.y);
+            renderer.bezierVertex(controlOrg.x, controlOrg.y, controlEnd.x, controlEnd.y, controlEnd.x + (arm * extension), end.y);
+            renderer.vertex(end.x, end.y);
+            renderer.endShape();
+        }
+
+        // controlpoints
+        renderer.strokeWeight(0.5);
+        renderer.stroke('#FF0000');
+        renderer.line(org.x, org.y, controlOrg.x, controlOrg.y);
+        renderer.line(end.x, end.y, controlEnd.x, controlEnd.y);
+
+    }
+
+    showBezierArcs(renderer, color, weight) {
+
+        // line thickness
+        renderer.strokeWeight(weight);
+        renderer.stroke(color);
+        renderer.noFill();
+
+        // general properties
+        let factor = 1 / 8;
+        let controlOrg;
+        let controlEnd;
+        let org = this.getOrgCoords(this.vSource);
+        let end;
+
+        // If the edge does not have target yet
+        if (!this.vTarget) {
+            end = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y);
+        } else {
+            end = this.getOrgCoords(this.vTarget);;
+        }
+
+        // estimate arm length
+        let gap = gp5.dist(org.x, org.y, end.x, org.y)
+        let arm = factor * gap;
+        let riseFactor = gp5.mouseY / gp5.height;
+
+        // set control points
+        if (end.x <= org.x) {
+            controlOrg = gp5.createVector(org.x - arm, org.y - (gap * riseFactor));
+            controlEnd = gp5.createVector(end.x + arm, end.y - (gap * riseFactor));
+
+        } else {
+            // controlOrg = gp5.createVector(org.x + arm, org.y);
+            // controlEnd = gp5.createVector(end.x - arm, end.y);
+            controlOrg = gp5.createVector(org.x + arm, org.y - (gap * riseFactor));
+            controlEnd = gp5.createVector(end.x - arm, end.y - (gap * riseFactor));
+        }
+
+        // draw curve
+        renderer.beginShape();
+        renderer.vertex(org.x, org.y);
+        renderer.bezierVertex(controlOrg.x, controlOrg.y, controlEnd.x, controlEnd.y, end.x, end.y);
+        renderer.vertex(end.x, end.y);
+        renderer.endShape();
+
+        // controlpoints
+        renderer.strokeWeight(0.5);
+        renderer.stroke('#FF0000');
+        renderer.line(org.x, org.y, controlOrg.x, controlOrg.y);
+        renderer.line(end.x, end.y, controlEnd.x, controlEnd.y);
 
     }
 }
