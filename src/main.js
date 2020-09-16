@@ -39,7 +39,7 @@ var main = function(p5) {
         DOM.init();
 
         // load the first selected model by default
-        DOM.switchModel(DOM.dropdowns.modelChoice.value);
+        DOM.switchModel(8); //DOM.dropdowns.modelChoice.value);
     }
 
     // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
@@ -55,7 +55,9 @@ var main = function(p5) {
         // DOM event
         if (DOM.event) {
             Canvas.update();
-            DOM.event = false;
+            console.log('here');
+            Canvas.notifyObservers({ event: DOM.event, type: "DOMEvent" })
+            DOM.event = undefined;
         }
 
         // translating to upper left corner in WebGL mode
@@ -73,14 +75,7 @@ var main = function(p5) {
         // draw canvas status
         Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5); //gp5.createVector((xOrg) , (yOrg) + 5)
         Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 60), gp5);
-
-
-
     }
 }
-
-
-
-
 
 var gp5 = new p5(main, "model");

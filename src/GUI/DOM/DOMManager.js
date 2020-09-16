@@ -21,12 +21,13 @@ class DOM {
         DOM.buttons.importNetwork = document.getElementById("importNetwork");
         DOM.buttons.submitEdgeKinds = document.getElementById("submitEdgeKinds");
 
-        DOM.buttons.clearEdges.onclick = DOM.clearEdges;
+        DOM.buttons.clearEdges.onclick = (evt) => DOM.clearEdges(evt);
         DOM.buttons.submitAddClusterModal.onclick = getDataCluster;
         DOM.buttons.submitAddNodeModal.onclick = getData;
         DOM.buttons.exportNetwork.onclick = saveJSON;
         DOM.buttons.importNetwork.onclick = getDataImport;
         DOM.buttons.submitEdgeKinds.onclick = DOM.getTextBoxContent;
+
         // Checkboxes
         DOM.checkboxes.edit = document.getElementById('edit');
         DOM.checkboxes.forward = document.getElementById('forward');
@@ -34,16 +35,16 @@ class DOM {
         DOM.checkboxes.filterLinked = document.getElementById('filterLinked');
         DOM.checkboxes.backgroundContrast = document.getElementById('backgroundContrast');
 
-        DOM.checkboxes.edit.onclick = DOM.eventTriggered;
-        DOM.checkboxes.forward.onclick = DOM.checkPropagation;
-        DOM.checkboxes.backward.onclick = DOM.checkPropagation;
-        DOM.checkboxes.filterLinked.onclick = DOM.eventTriggered;
-        DOM.checkboxes.backgroundContrast.onclick = DOM.switchBkgnd;
+        DOM.checkboxes.edit.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
+        DOM.checkboxes.backward.onclick = (evt) => DOM.checkPropagation(evt);
+        DOM.checkboxes.filterLinked.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.backgroundContrast.onclick = (evt) => DOM.switchBkgnd(evt);
 
         // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
-        DOM.dropdowns.modelChoice.addEventListener('change', () => {
-            DOM.switchModel(DOM.dropdowns.modelChoice.value);
+        DOM.dropdowns.modelChoice.addEventListener('change', (evt) => {
+            DOM.switchModel(DOM.dropdowns.modelChoice.value, evt);
         });
 
         // TextBoxes
@@ -62,8 +63,8 @@ class DOM {
      * 
      */
     static eventTriggered(evt) {
-        DOM.updateCheckboxes();
-        DOM.event = true;
+        DOM.updateCheckboxes(evt);
+        DOM.event = evt;
     }
 
     /**
@@ -75,7 +76,8 @@ class DOM {
         return box.value;
     }
 
-    static updateCheckboxes() {
+    static updateCheckboxes(evt) {
+        console.log(evt);
         for (const checkBox of Object.values(DOM.checkboxes)) {
             let exists = DOM.currentCheckboxes.filter(elm => elm.key == checkBox.id)[0]
             if (exists) {
@@ -90,12 +92,12 @@ class DOM {
     /**
      * Invoked everytime a DOM element changes to refresh the renderer in draw()
      */
-    static checkPropagation() {
-        DOM.updateCheckboxes();
+    static checkPropagation(evt) {
+        DOM.updateCheckboxes(evt);
         if (DOM.boxChecked("forward") || DOM.boxChecked("backward")) {
             ClusterFactory.checkPropagation();
         }
-        DOM.event = true;
+        DOM.event = evt;
     }
 
     /**
@@ -103,43 +105,43 @@ class DOM {
      * @param {Event} evt 
      */
     static switchBkgnd(evt) {
-        DOM.updateCheckboxes();
+        DOM.updateCheckboxes(evt);
         if (DOM.boxChecked("backgroundContrast")) {
             Canvas.currentBackground = 150;
         } else {
             Canvas.currentBackground = 230;
         }
 
-        DOM.event = true;
+        DOM.event = evt;
     }
 
     /** 
      * Delete edges and re-initialize nodes
      */
-    static clearEdges() {
+    static clearEdges(evt) {
         EdgeFactory.reset();
         Canvas.resetVEdges();
         Canvas.resetVConnectors();
         ClusterFactory.resetAllConnectors();
 
-        DOM.event = true;
+        DOM.event = evt;
     }
 
     /**
      * Loads the network file from the DOM.pathNetworks 
      * @param {String} value prefix of the file. Usually a digit. 
      */
-    static switchModel(value) {
+    static switchModel(value, evt) {
         console.log("Switching to " + value + " network");
         Canvas.resetObservers();
-        gp5.loadJSON(DOM.pathNetworks + value + '_network.json', DOM.onLoadNetwork);
+        gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => DOM.onLoadNetwork(data, evt));
     }
 
     /**
      * Callback for loadJSON
      * @param {Object} data 
      */
-    static onLoadNetwork(data) {
+    static onLoadNetwork(data, evt) {
         // get nodes and edges 
         let nodesTemp = data.nodes;
         let edgesTemp = data.edges;
@@ -150,10 +152,7 @@ class DOM {
 
         // add checkboxes to filters. It taked whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
         DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersA)
-        DOM.updateCheckboxes();
-
-        // update canvas
-        Canvas.update();
+        DOM.updateCheckboxes(evt);
     }
 
     /**

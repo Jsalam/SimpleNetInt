@@ -9,16 +9,36 @@ class VEdge {
         this.vSource;
         this.vTarget;
         this.color;
+        this.riseFactor = 0;
     }
 
     // Observing to Canvas
     fromCanvas(data) {
-        if (data instanceof MouseEvent) {
-            // do something
+        if (data.event instanceof MouseEvent) {
+            // DOM event
+            if (data.type == "DOMEvent") {
+                // get the checkbox
+                let DOMelementID = data.event.target.id;
+                let DOMChecked = data.event.target.checked;
+                let rise;
+                if (DOMChecked) { rise = 0.5 } else { rise = 0 }
+                anime({
+                    // filter all vEdges matching the user selected edge kind
+                    targets: EdgeFactory._vEdges.filter(function(vE) {
+                        if (vE.edge.kind == DOMelementID) return true;
+                    }),
+                    riseFactor: rise,
+                    easing: 'easeInOutSine',
+                    update: function() {
+                        Canvas.update()
+                    }
+                });
+            }
+
         } else if (data instanceof KeyboardEvent) {
             // do something
         } else {
-            // do something
+
         }
     }
 
@@ -203,18 +223,18 @@ class VEdge {
         // estimate arm length
         let gap = gp5.dist(org.x, org.y, end.x, org.y)
         let arm = factor * gap;
-        let riseFactor = gp5.mouseY / gp5.height;
+        // this.riseFactor = 0;
 
         // set control points
         if (end.x <= org.x) {
-            controlOrg = gp5.createVector(org.x - arm, org.y - (gap * riseFactor));
-            controlEnd = gp5.createVector(end.x + arm, end.y - (gap * riseFactor));
+            controlOrg = gp5.createVector(org.x - arm, org.y - (gap * this.riseFactor));
+            controlEnd = gp5.createVector(end.x + arm, end.y - (gap * this.riseFactor));
 
         } else {
             // controlOrg = gp5.createVector(org.x + arm, org.y);
             // controlEnd = gp5.createVector(end.x - arm, end.y);
-            controlOrg = gp5.createVector(org.x + arm, org.y - (gap * riseFactor));
-            controlEnd = gp5.createVector(end.x - arm, end.y - (gap * riseFactor));
+            controlOrg = gp5.createVector(org.x + arm, org.y - (gap * this.riseFactor));
+            controlEnd = gp5.createVector(end.x - arm, end.y - (gap * this.riseFactor));
         }
 
         // draw curve

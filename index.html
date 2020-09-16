@@ -16,6 +16,9 @@
     <!-- GUI Quicksettings -->
     <script src=https://cdn.jsdelivr.net/npm/quicksettings@latest/quicksettings.min.js></script>
 
+    <!-- Animation -->
+    <script src="libs/anime.min.js"></script>
+
     <!-- CSS -->
     <style>
         p {
@@ -174,7 +177,7 @@
             <!-- Model goes here -->
             <div id="model"></div>
 
-            <p style="margin-left:20px; font-size:xx-small;"> Using Simple Networks library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js & Quicksettings.js</p>
+            <p style="margin-left:20px; font-size:xx-small;"> Using Simple Networks library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js, Quicksettings.js & Anime.js</p>
 
         </div>
     </div>
@@ -303,8 +306,8 @@
                 <div class="modal-body">
 
                     <h4>Description</h4>
-                    <p>Categories are qualitative aspect that characterize links. Classes are also named kinds or classes. For instance the "friend" class represents the friendship between nodes A and B. Another link of the "classmates" class, can also connect
-                        the same nodes. In Simple Networks there is a link for every kind of relationship between nodes. </p>
+                    <p>Categories are classes of links. For instance the "friend" category represents the friendship between nodes A and B. Another link of the class "classmates" can connect the same nodes. In Simple Networks there is a category for every
+                        kind of relationship between nodes. </p>
                     <p>Enter the categories you want to use in this network separate by comas. For example: <b>friend,classmate,partner,relative</b> </p>
                     <textarea class="form-control" rows="1" id="edgeKinds">default</textarea>
                     <br>

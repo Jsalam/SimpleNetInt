@@ -50,7 +50,7 @@ class ContextualGUI {
     }
 
     static createEdgeMenu() {
-        ContextualGUI.edgeMenu = QuickSettings.create(40, gp5.height, 'Edge Menu', document.getElementById('model'));
+        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, 200, 'Edge Menu', document.getElementById('model'));
         //ContextualGUI.edgeMenu.toggleVisibility();
     }
 
