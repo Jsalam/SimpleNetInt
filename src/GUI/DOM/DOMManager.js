@@ -77,7 +77,6 @@ class DOM {
     }
 
     static updateCheckboxes(evt) {
-        console.log(evt);
         for (const checkBox of Object.values(DOM.checkboxes)) {
             let exists = DOM.currentCheckboxes.filter(elm => elm.key == checkBox.id)[0]
             if (exists) {

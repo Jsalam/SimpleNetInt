@@ -15,7 +15,7 @@ var main = function(p5) {
     p5.preload = function() {
 
         // get font
-        myFont = gp5.loadFont("../fonts/Roboto-Light.ttf");
+        myFont = gp5.loadFont("./fonts/Roboto-Light.ttf");
 
         // get color palette
         let paletteNames = ["palette1.txt", "palette2.txt", "palette3.txt", "palette4.txt"]
@@ -55,7 +55,6 @@ var main = function(p5) {
         // DOM event
         if (DOM.event) {
             Canvas.update();
-            console.log('here');
             Canvas.notifyObservers({ event: DOM.event, type: "DOMEvent" })
             DOM.event = undefined;
         }
