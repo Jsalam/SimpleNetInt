@@ -78,6 +78,7 @@ class ClusterFactory {
         let node = new Node(cluster.id, data.id, this.countCat);
         node.setLabel(data.nodeLabel);
         node.setDescription(data.nodeDescription);
+        node.setAttributes(data.nodeAttributes);
         node.setImportedVNodeData(data.vNode);
         ClusterFactory.countCat++;
         // create connectors if data comes with that info. Data usually comes from 

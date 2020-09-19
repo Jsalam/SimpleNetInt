@@ -61,6 +61,7 @@
     <script src="src/visualElements/vConnector.js"></script>
     <script src="src/visualElements/vEdge.js"></script>
     <script src="src/visualElements/vCluster.js"></script>
+    <script src="src/canvas/grid.js"></script>
 
     <!-- Utils-->
     <script src="src/utilities/utilities.js"></script>
@@ -95,8 +96,8 @@
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
-                            <option value="5">6</option>
-                            <option value="6">7</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
                             <option value="8">8</option>
                             <option value="9">9</option>
                         </select>
@@ -165,6 +166,8 @@
                 <div>
                     <input type="checkbox" id="backgroundContrast">
                     <label for="backgroundContrast" style="font-size:10px; font-weight:400">Contrast</label><br>
+                    <input type="checkbox" id="grid" checked>
+                    <label for="grid" style="font-size:10px; font-weight:400">Show grid</label><br>
                 </div>
             </div>
             <div class="col-sm-1">
@@ -177,7 +180,7 @@
             <!-- Model goes here -->
             <div id="model"></div>
 
-            <p style="margin-left:20px; font-size:xx-small;"> Using Simple Networks library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js, Quicksettings.js & Anime.js</p>
+            <p style="margin-left:20px; font-size:xx-small;"> Using Simple NetInt library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js, Quicksettings.js & Anime.js</p>
 
         </div>
     </div>
@@ -222,13 +225,32 @@
                     <form action="" id="clusterChoice"></form>
                     <hr>
                     <h4>Node name</h4>
-                    <p>The nodes in each cluster are <b> mutually exlusive</b>. Verify that none of the current nodes encompasses the node you inted to add </p>
                     <input id="catName" value="Node name"></input>
                     <hr>
 
                     <h4>Node description</h4>
                     <p>Describe briefly the content of the new node. Give credits to third parties if any. </p>
                     <textarea class="form-control" rows="5" id="catDescription">Node description</textarea>
+                    <hr>
+
+                    <h4>Node attributes</h4>
+                    <p>Add attributes in comma separated "key":"value" pairs. </p>
+                    <textarea class="form-control" rows="10" id="catAttributes">
+"Possible object":" ",
+"Primary ToI":" ",
+"Secondary ToI":" ",
+"Tiertiary ToI":" ",
+"URL":" ",
+"Observations":" ",
+"College": " ",
+"Department": " ",
+"Date or Decade": " ",
+"Photograph": " ",
+"Faculty_Staff_Graduate_Undergrad": " ",
+"Current Faculty research":" ",
+"Gender": " ",
+"Other": " "
+                    </textarea>
                     <hr>
 
                 </div>

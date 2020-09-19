@@ -185,12 +185,12 @@ class VNode extends Button {
         // draw the label
         renderer.fill(color);
         renderer.noStroke();
-        renderer.textSize(10);
+        renderer.textSize(5);
         if (this.propagated) {
             renderer.textStyle(renderer.BOLD);
         }
         renderer.textAlign(gp5.CENTER, gp5.CENTER);
-        renderer.text(this.node.label, this.pos.x - 75, this.pos.y + 5 + this.height / 2, 140);
+        renderer.text(this.node.label, this.pos.x - 22.5, this.pos.y + 5 + this.height / 2, 45);
         renderer.textStyle(renderer.NORMAL);
 
     }
@@ -303,6 +303,7 @@ class VNode extends Button {
             id: this.node.idCat.index,
             nodeLabel: this.node.label,
             nodeDescription: this.node.description,
+            nodeAttributes: this.node.attributes,
             polarity: this.node.polarity,
             connectors: cnctrs,
             pajekIndex: this.node.idCat.pajekIndex,

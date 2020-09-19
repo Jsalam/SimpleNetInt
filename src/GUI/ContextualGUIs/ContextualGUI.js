@@ -12,7 +12,6 @@ class ContextualGUI {
     static notifyObservers(data) {
         for (const obs of ContextualGUI.observers) {
             obs.getDataFromContextualGUI(data);
-
         }
     }
 
@@ -55,7 +54,15 @@ class ContextualGUI {
     }
 
     static addCheckboxes(label, items) {
-        ContextualGUI.edgeMenu.addDropDown(label, items, val => ContextualGUI.notifyObservers(val));
+        // the callback here is used when a new option is chosen
+        ContextualGUI.edgeMenu.addDropDown(label, items, (val) => {
+            ContextualGUI.edgeMenuChoice = val.value;
+            ContextualGUI.notifyObservers(val.value);
+        });
+        // get the value of first selected item in the dropdown at the moment of adding new checkboxes
+        let tmp = ContextualGUI.edgeMenu._controls.Categories.control.value;
+        ContextualGUI.notifyObservers(tmp);
+        ContextualGUI.edgeMenuChoice = tmp;
     }
 
     static getValue(val) {
@@ -80,3 +87,4 @@ class ContextualGUI {
 ContextualGUI.edgeMenu;
 ContextualGUI.observers = [];
 ContextualGUI.edgeCategories = [];
+ContextualGUI.edgeMenuChoice;

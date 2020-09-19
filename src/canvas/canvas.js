@@ -23,8 +23,11 @@ class Canvas {
         Canvas._mouse = gp5.createVector(0, 0, 0);
         // A Vector for the canvas origin
         this._newOrigin = gp5.createVector(0, 0, 0);
+        // grid
+        this.grid;
+        this.showGrid = true;
         // Transformation control
-        this._shiftDown;
+        //this._shiftDown;
         // Observers
         this.observers = [];
         // Events
@@ -33,8 +36,6 @@ class Canvas {
     }
 
     static subscribe(obj) {
-
-
         if (obj instanceof VEdge) {
             // get VEdge instances only
 
@@ -58,6 +59,7 @@ class Canvas {
         }
         Canvas.update();
     }
+
     static unsubscribe(obj) {
         this.observers = this.observers.filter(function(subscriber) {
             let rtn = true;
@@ -93,6 +95,10 @@ class Canvas {
         });
     }
 
+    static initGrid(org, width, height, hPartitions, vPartitions, scaleFactor) {
+        this.grid = new Grid(org, width, height, hPartitions, vPartitions, scaleFactor);
+    }
+
     /**
      * Main render function. It switches between two renderers to speed up performance: the p5 canvas and a graphics canvas.
      * The central idea is to have a gate that is always closed except when the user performs actions on the canvas that
@@ -116,6 +122,10 @@ class Canvas {
      * render on original p5.Renderer
      */
     static renderOnP5() {
+        // grid
+        if (this.grid && this.showGrid) {
+            this.grid.show(gp5);
+        }
 
         // show observers
         this.observers.forEach(element => {
@@ -127,7 +137,7 @@ class Canvas {
         // show EdgeFactory Buffer
         if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(gp5);
 
-        // set condition for grahics renderer
+        // Close gp5 render gate and set condition for grahics renderer
         this.graphicsRendered = false;
     }
 
@@ -139,6 +149,11 @@ class Canvas {
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
 
+            // grid
+            if (this.grid && this.showGrid) {
+                this.grid.show(this.graphics);
+            }
+
             // show observers
             this.observers.forEach(element => {
                 if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
@@ -148,6 +163,13 @@ class Canvas {
 
             // show EdgeFactory Buffer
             if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);
+
+            // canvas edge
+            this.graphics.stroke('#C0C0C0');
+            this.graphics.noFill();
+            this.graphics.rect(0, 0, this.graphics.width, this.graphics.height);
+
+            // Open gp5 renderer gate
             this.graphicsRendered = true;
         }
     }
@@ -232,7 +254,7 @@ class Canvas {
      */
     static displayValues(pos, renderer) {
         // **** Legends
-        renderer.fill(90, 200);
+        renderer.fill('#C0C0C0');
         renderer.textAlign(gp5.RIGHT);
         renderer.text("Mouse on canvas: x: " + Canvas._mouse.x.toFixed(1) + ", y: " + Canvas._mouse.y.toFixed(2) + "' z:" + Canvas._mouse.z.toFixed(2), pos.x, pos.y + 25);
         renderer.text("Zoom: " + this._zoom.toFixed(1), pos.x, pos.y + 35);
@@ -247,10 +269,10 @@ class Canvas {
      * @param {Vector} pos 
      */
     static showLegend(pos) {
-        gp5.fill(90, 200);
+        gp5.fill('#C0C0C0');
         gp5.textAlign(gp5.RIGHT);
         gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
-        gp5.text("use 'SHIFT + i' to zoom in, 'SHIFT + o' to zoom  out", pos.x, pos.y + 10);
+        gp5.text("use 'SHIFT + ' to zoom in, 'SHIFT -' to zoom  out", pos.x, pos.y + 10);
         gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 20);
         gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 30);
         gp5.textAlign(gp5.CENTER);
@@ -267,6 +289,7 @@ class Canvas {
         if (EdgeFactory.isThereOpenEdge()) {
             gp5.fill(90, 200);
             gp5.textAlign(gp5.LEFT);
+            gp5.textSize(10);
             gp5.text("open edge", Canvas._mouse.x, Canvas._mouse.y - 10);
         }
     }
@@ -341,15 +364,14 @@ class Canvas {
             Canvas.shiftDown = true;
         }
         // Control of zoom with keyboard
-        if (k.shiftKey && (k.key == 'i' || k.key == 'I')) {
+        if (k.shiftKey && (k.key == '+')) {
             this.zoomIn(0.1);
-        } else if (k.shiftKey && (k.key == 'o' || k.key == 'O')) {
+        } else if (k.shiftKey && (k.key == '_' || k.key == '-')) {
             this.zoomOut(0.1);
             // Restore initial values
         } else if (k.shiftKey && (k.key == 'r' || k.key == 'R')) {
             this.reset();
         }
-
 
         Canvas.notifyObservers({ event: k, type: "keydown" });
     }

@@ -2,14 +2,19 @@ getData = function() {
     let cluster = document.querySelector('input[name="cluster"]:checked');
     let name = document.getElementById("catName").value;
     let description = document.getElementById("catDescription").value;
+    let attributes = document.getElementById("catAttributes").value;
 
     if (cluster) {
         let clusterTmp = ClusterFactory.clusters[cluster.value];
+        attributes = '{' + attributes + '}';
+        // console.log(attributes);
+        attributes = JSON.parse(attributes);
 
         let dataTmp = {
             id: clusterTmp.nodes.length,
             nodeLabel: name,
             nodeDescription: description,
+            nodeAttributes: attributes,
         }
         let nodeTmp = ClusterFactory.makeNode(clusterTmp, dataTmp)
 

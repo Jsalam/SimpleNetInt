@@ -59,6 +59,7 @@ class VConnector extends Button {
         //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
         renderer.ellipse(this.pos.x, this.pos.y, this.width)
             // label
+        renderer.textSize(5);
         renderer.textAlign(gp5.RIGHT, gp5.CENTER);
         renderer.fill('#000000');
         renderer.noStroke();

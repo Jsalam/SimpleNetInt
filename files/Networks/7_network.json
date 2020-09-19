@@ -1,0 +1,321 @@
+{
+  "nodes": [
+    {
+      "clusterID": "1",
+      "clusterLabel": "Looking to the Sky",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "Vermillion River Observatory",
+          "nodeDescription": "The Vermillion River Observatory was constructed thanks to the work of George Swenson, a professor of astronomy and electrical engineering. Swenson was in charge of creating an interdisciplinary program in radio astronomy research. The telescopes (a model of which is found in the case) helped scientists catalog interstellar data. They then used this data to analyze the molecular structure of interstellar gas.",
+          "connectors": [
+            "Technology",
+            "Methodology"
+          ],
+          "pajekIndex": 1,
+          "vNode": {
+            "posX": 180,
+            "posY": 565,
+            "posZ": 0,
+            "color": "#253493"
+          }
+        },
+        {
+          "id": 1,
+          "nodeLabel": "Photoelectric Photometer",
+          "nodeDescription": "Measuring a star’s brightness would take hours of observation and calculations. Astronomy professor Joel Stebbins in collaboration with physics professors F.C. Brown and Jakob Kunz would develop the photoelectric photometer which would use electricity to help simplify this process. \n \n ii. Stebbins credited his wife as the driving force for this idea. When they were first married she would sometimes go to the observatory with him to help him get his work done faster so they could spend more time together. He told her one day they would be able to do this much faster with electricity and from then on she encouraged him to discover this method. A couple of months later he went to a physics open house where F.C. Brown had a demonstration of a selenium cell. Stebbins worked with Brown to create a selenium cell photometer.\n \n iii. While the selenium cell photometer helped discover five new eclipsing binary stars, Stebbins felt it was not strong enough. He was introduced to Jakob Kunz, who had been working to improve photoelectric cells. They collaborated to create and continually refine the photoelectric photometer. This development allowed for stebbins to better research variable stars and he was able to measure diameters and masses more accurately than any other instrument had been able to provide up to that point.",
+          "connectors": [
+            "Technology"
+          ],
+          "pajekIndex": 2,
+          "vNode": {
+            "posX": 249,
+            "posY": 564,
+            "posZ": 0,
+            "color": "#09519c"
+          }
+        },
+        {
+          "id": 2,
+          "nodeLabel": "Electrostatically Suspended Gyroscope",
+          "nodeDescription": "Sometimes an innovation can be used for multiple purposes, some not even imagined while creating it. The electrostatic gyroscope was created at the University of Illinois by Howard Knoebel. The electrostatic gyroscope was initially invented to be used in submarines - which needed an instrument that would not need to be calibrated since it would be submerged for up to 30 days at a time. This device though would later be used in satellites to help them navigate space.",
+          "connectors": [
+            "Technology",
+            "Process"
+          ],
+          "pajekIndex": 3,
+          "vNode": {
+            "posX": 316,
+            "posY": 564,
+            "posZ": 0,
+            "color": "#2270b5"
+          }
+        },
+        {
+          "id": 3,
+          "nodeLabel": "Large Synoptic Survey Telescope",
+          "nodeDescription": "Today, the University of Illinois continues its interdisciplinary and collaborative approach to astronomy. One current project is the Large Synoptic Survey Telescope. This project is an international collaboration with the telescope located in Chile and the data being stored in Champaign Urbana. The National Center for Supercomputing Applications will store the 10 years worth of data, collecting about 20 terabytes of image data a night beginning in 2023. The data will be processed into reports as well as alerting researchers in near-real time of new and unexpected astronomical events.",
+          "connectors": [
+            "Technology"
+          ],
+          "pajekIndex": 4,
+          "vNode": {
+            "posX": 386,
+            "posY": 565,
+            "posZ": 0,
+            "color": "#1d91bf"
+          }
+        },
+        {
+          "id": 4,
+          "nodeLabel": "Visualizations of space",
+          "nodeDescription": "The faculty and staff at NCSA has worked to develop models and visualizations of space. One recurrent visualization is the black hole. A prominent figure in Science Fiction, the black hole has a lot of unknowns. But through study and research of the space around the black hole, as well as other measurements, NCSA has been able to visualize and create artistic renderings of ways to show how a black hole operates. Examples include numeric models to detect gravitational waves from black holes colliding,",
+          "connectors": [
+            "Methodology",
+            "Technology"
+          ],
+          "pajekIndex": 5,
+          "vNode": {
+            "posX": 452,
+            "posY": 564,
+            "posZ": 0,
+            "color": "#6baed6"
+          }
+        },
+        {
+          "id": 5,
+          "nodeLabel": "Animation of Thunderstorms and Tornadoes",
+          "nodeDescription": "Dr. Robert Wilhemson was the first to create a digital animation of a thunderstorm (it was even nominated for an Academy Award in 1989 and won 14 other awards). He later developed an animation of a tornado forming from a thunderstorm. These technological advancements led to a new process to help with storm predictions. Computer models are now widely used to help understand storm movements. ",
+          "connectors": [
+            "Technology",
+            "Process"
+          ],
+          "pajekIndex": 6,
+          "vNode": {
+            "posX": 517,
+            "posY": 564,
+            "posZ": 0,
+            "color": "#9ecae1"
+          }
+        },
+        {
+          "id": 6,
+          "nodeLabel": "Stephen Cartright’s data sculptures",
+          "nodeDescription": "Another example of where Art and Science come together is Professor stephen Cartright's data sculptures. Cartright keeps different data sets related to himself including data points such as his longitude and latitude, personal habits, and the weather around him. He then takes these data sets and turns them into sculptures or digital media to showcase this data in new ways. One of his most recent works invites the public to input their own data on where their ancestors have lived to show how people move. ",
+          "connectors": [
+            "Methodology"
+          ],
+          "pajekIndex": 7,
+          "vNode": {
+            "posX": 586,
+            "posY": 563,
+            "posZ": 0,
+            "color": "#41b6c4"
+          }
+        },
+        {
+          "id": 7,
+          "nodeLabel": "Steve Hilberg new method for comparing weather data",
+          "nodeDescription": "Professor Steve Hilberg collaborated with meteorologist Barbara Mayes Bousted (National Weather Service) to create the Accumulated Winter Season Severity Index. They take four variables, which are the daily maximum and minimum temperatures, snowfall and snow depth, and assign each a value. The scores are then totaled for each day and are added to the index. The index is useful in analyzing trends over one season as well as comparing the current season to past winters. It helps to look at patterns of severity of winter, with the ability to look at more specific geographical areas and can help assist with studying changes in climate. ",
+          "connectors": [
+            "Methodology"
+          ],
+          "pajekIndex": 8,
+          "vNode": {
+            "posX": 655,
+            "posY": 564,
+            "posZ": 0,
+            "color": "#bfd3e6"
+          }
+        },
+        {
+          "id": 8,
+          "nodeLabel": "Tony Wong Large Magellanic Cloud to look at star formation",
+          "nodeDescription": "Astronomy professor Tony Wong and a group of researchers were able to map how stars are born in the nearest star-forming galaxy. Wong and his team hope to use this information to understand our own galaxy. Wong used the Large Magellanic Cloud (nearby galaxy) to study, as it it tilted face-on. This tilt makes it easier for astronomers to study star formation. Based on what they are able to see, they decided to focus on molecular clouds as a base for star formation. They used a telescope in Australia to look at the Large Magellanic Cloud straight on to view those molecular clouds.",
+          "connectors": [
+            "Process"
+          ],
+          "pajekIndex": 9,
+          "vNode": {
+            "posX": 722,
+            "posY": 563,
+            "posZ": 0,
+            "color": "#9ebcda"
+          }
+        },
+        {
+          "id": 9,
+          "nodeLabel": "Tracking Sputnik I's Orbit with minitrack inferometer",
+          "nodeDescription": "George Swenson obtained the minitrack inferometer for members of the Illinois Astronomical Society to track Sputnik I's orbit on October 4, 1957. On the night in question, the inferometer was able to get measurements of Sputnik and were able to use Doppler Radar data. Members of the department used the data from the Doppler and inferometer to study its orbit. This data helped advance sateillite-based astronomical research and was helped with grants from the National Research Council, NASA, and the Air Force.",
+          "connectors": [
+            "Process"
+          ],
+          "pajekIndex": 10,
+          "vNode": {
+            "posX": 789,
+            "posY": 563,
+            "posZ": 0,
+            "color": "#c2a5cf"
+          }
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": {
+        "cluster": "1",
+        "index": 0,
+        "pajekIndex": 1
+      },
+      "target": {
+        "cluster": "1",
+        "index": 1,
+        "pajekIndex": 2
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 1,
+        "pajekIndex": 2
+      },
+      "target": {
+        "cluster": "1",
+        "index": 2,
+        "pajekIndex": 3
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 2,
+        "pajekIndex": 3
+      },
+      "target": {
+        "cluster": "1",
+        "index": 3,
+        "pajekIndex": 4
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 3,
+        "pajekIndex": 4
+      },
+      "target": {
+        "cluster": "1",
+        "index": 5,
+        "pajekIndex": 6
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 4,
+        "pajekIndex": 5
+      },
+      "target": {
+        "cluster": "1",
+        "index": 6,
+        "pajekIndex": 7
+      },
+      "kind": "Methodology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 6,
+        "pajekIndex": 7
+      },
+      "target": {
+        "cluster": "1",
+        "index": 7,
+        "pajekIndex": 8
+      },
+      "kind": "Methodology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 8,
+        "pajekIndex": 9
+      },
+      "target": {
+        "cluster": "1",
+        "index": 9,
+        "pajekIndex": 10
+      },
+      "kind": "Process",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 0,
+        "pajekIndex": 1
+      },
+      "target": {
+        "cluster": "1",
+        "index": 4,
+        "pajekIndex": 5
+      },
+      "kind": "Methodology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 2,
+        "pajekIndex": 3
+      },
+      "target": {
+        "cluster": "1",
+        "index": 8,
+        "pajekIndex": 9
+      },
+      "kind": "Process",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 4,
+        "pajekIndex": 5
+      },
+      "target": {
+        "cluster": "1",
+        "index": 5,
+        "pajekIndex": 6
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 5,
+        "pajekIndex": 6
+      },
+      "target": {
+        "cluster": "1",
+        "index": 8,
+        "pajekIndex": 9
+      },
+      "kind": "Process",
+      "weight": 1
+    }
+  ]
+}

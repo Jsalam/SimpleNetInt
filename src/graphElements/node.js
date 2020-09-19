@@ -11,18 +11,12 @@ class Node {
         this.connectors = []
         this.label = "void";
         this.description = "No description yet";
+        this.attributes;
         this.inFwdPropagation = false;
         this.inBkwPropagation = false;
         this.vNodeObserver;
         this.importedVNodeData;
-        ContextualGUI.subscribe(this);
-        this.dataFromContextualGUI;
     }
-
-    // data from the Centextual gui
-    getDataFromContextualGUI(data) {
-        this.dataFromContextualGUI = data;
-    };
 
     /**** OBSERVER ****/
     subscribe(vNode) {
@@ -114,6 +108,10 @@ class Node {
 
     setDescription(description) {
         this.description = description;
+    }
+
+    setAttributes(attributes) {
+        this.attributes = attributes;
     }
 
     setImportedVNodeData(obj) {
@@ -298,7 +296,7 @@ class Node {
                     this.closeEdge(buffEdge);
                 } else {
                     // retrieve the connector type choosen value on the Contextual Menu
-                    let kind = this.dataFromContextualGUI.value;
+                    let kind = ContextualGUI.edgeMenuChoice;
                     if (kind == undefined) {
                         kind = "default";
                     }
@@ -309,8 +307,8 @@ class Node {
             } else {
                 // retrieve the connector type choosen value on the Contextual Menu
                 let kind;
-                if (this.dataFromContextualGUI) {
-                    kind = this.dataFromContextualGUI.value;
+                if (ContextualGUI.edgeMenuChoice) {
+                    kind = ContextualGUI.edgeMenuChoice;
                 }
                 if (kind == undefined) {
                     kind = "default";
@@ -395,6 +393,7 @@ class Node {
     }
 
     getJSON() {
+        console.log("here");
         let cnctrs = [];
         for (const connector of this.connectors) {
             cnctrs.push(connector.getJSON())
@@ -404,6 +403,7 @@ class Node {
             id: this.idCat.index,
             nodeLabel: this.label,
             nodeDescription: this.description,
+            nodeAttributes: this.attributes,
             connectors: JSON.stringify(cnctrs),
             pajekIndex: this.idCat.pajekIndex
         }

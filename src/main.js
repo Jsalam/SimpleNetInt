@@ -28,18 +28,29 @@ var main = function(p5) {
 
         // Create canvas
         gp5.createCanvas(window.innerWidth - 60, 740);
-        graphics = gp5.createGraphics(gp5.width * gp5.pixelDensity(), gp5.height * gp5.pixelDensity());
+
+        // set pixel density based on display
+        const canvas4KWidth = 3840;
+        const canvas4KHeight = 2160
+
+        // create non-iterative renderer
+        graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
+
+        // set text font
         gp5.textFont(myFont);
         graphics.textFont(myFont);
 
         // Global static canvas
         Canvas.makeCanvas(graphics);
 
+        // Add grid to canvas: org, width, height, hPartitions, vPartitions, scaleFactor [scaleFactor = 45 pixels represent 64/64 units]
+        Canvas.initGrid(gp5.createVector(0, 630), 64, 10, 64, 10, 45);
+
         // Connect with GUIs
         DOM.init();
 
         // load the first selected model by default
-        DOM.switchModel(8); //DOM.dropdowns.modelChoice.value);
+        DOM.switchModel(DOM.dropdowns.modelChoice.value);
     }
 
     // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
@@ -65,7 +76,7 @@ var main = function(p5) {
         // Canvas own transformations
         Canvas.transform();
         Canvas.render();
-        Canvas.originCrossHair();
+        // Canvas.originCrossHair();
         Canvas.showOnPointer();
 
         // pop transformation matrix
