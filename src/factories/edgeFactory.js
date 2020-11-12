@@ -57,16 +57,23 @@ class EdgeFactory {
         EdgeFactory._vEdges = [];
     }
 
-    static deleteLastEdge() {
-        let lastEdge = EdgeFactory._edges.pop();
-        lastEdge.source.popThisConnector();
-        lastEdge.target.popThisConnector();
-        EdgeFactory._vEdges.pop();
-        console.log(" Edge deleted linking category: " +
-            lastEdge.source.nodeObserver.label + ", in cluster: " +
-            lastEdge.id.source.cluster + " with category: " +
-            lastEdge.target.nodeObserver.label + ", in cluster: " +
-            lastEdge.id.target.cluster);
+    static deleteLastVEdge() {
+
+        // remove the last vEdge from the collection
+        let lastVEdge = EdgeFactory._vEdges.pop();
+
+        // delete corresponding edge
+        EdgeFactory._edges.pop();
+
+        if (lastVEdge) {
+
+            // remove connectors from its vNodes
+            lastVEdge.vSource.popVConnector(lastVEdge.edge.kind);
+            lastVEdge.vTarget.popVConnector(lastVEdge.edge.kind);
+
+            // unsubscribe vEdge from canvas
+            Canvas.unsubscribe(lastVEdge);
+        }
     }
 
     static isThereOpenEdge() {
@@ -92,9 +99,12 @@ class EdgeFactory {
 
     static pushVEdge(vEdge) {
         if (vEdge instanceof VEdge) {
-            let vEdgeInList = !EdgeFactory.contains(EdgeFactory._vEdges, vEdge)
+            let vEdgeInList = !EdgeFactory.contains(EdgeFactory._vEdges, vEdge);
+
             if (vEdgeInList) {
                 EdgeFactory._vEdges.push(vEdge);
+            } else {
+                console.log("Not included in vEdge List " + vEdgeInList);
             }
         } else {
             console.log("vEdge duplicated")
@@ -127,6 +137,9 @@ class EdgeFactory {
      * @param edgeB : either Edge or VEdge
      */
     static compareEdges(edgeA, edgeB) {
+        let rtn = false;
+
+        // compare pajek indexes
         if (edgeA && edgeB) {
             let A, B;
             if (edgeA.target) {
@@ -139,10 +152,21 @@ class EdgeFactory {
             } else {
                 B = [edgeB.source.idCat.pajekIndex, undefined];
             }
-            return (A[0] === B[0] && A[1] === B[1]);
-        } else {
-            return undefined;
+            rtn = (A[0] === B[0] && A[1] === B[1]);
         }
+        // compare kinds for edges
+        if (rtn == true) {
+            let A = edgeA;
+            let B = edgeB;
+            if (edgeA instanceof VEdge) {
+                A = edgeA.edge;
+            }
+            if (edgeB instanceof VEdge) {
+                B = edgeB.edge;
+            }
+            rtn = A.kind === B.kind;
+        }
+        return rtn;
     }
 
 
@@ -194,6 +218,20 @@ class EdgeFactory {
                 // the same process might need to be done with the target
             }
         }
+    }
+
+
+    /**This is not the function used by the exportModalFrom */
+    static recordJSON(suffix) {
+        let filename = "vEdges.json";
+        if (suffix) {
+            filename = suffix + "_" + filename;
+        }
+        let output = [];
+        for (let index = 0; index < EdgeFactory._vEdges.length; index++) {
+            output.push(EdgeFactory._vEdges[index].getJSON());
+        }
+        gp5.saveJSON(output, filename);
     }
 }
 EdgeFactory._edgeBuffer;

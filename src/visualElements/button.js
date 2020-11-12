@@ -3,7 +3,7 @@
  */
 class Button {
     constructor(posX, posY, width, height) {
-        this.pos = gp5.createVector(posX, posY);
+        this.pos = gp5.createVector(posX, posY, 0);
         this.width = width;
         this.height = height;
         this.mouseIsOver = false;

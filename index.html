@@ -62,6 +62,11 @@
     <script src="src/visualElements/vEdge.js"></script>
     <script src="src/visualElements/vCluster.js"></script>
     <script src="src/canvas/grid.js"></script>
+    <script src="src/SCDMural/gallery.js"></script>
+    <script src="src/SCDMural/fret.js"></script>
+    <script src="src/SCDMural/chord.js"></script>
+    <script src="src/SCDMural/ribbon.js"></script>
+    <script src="src/SCDMural/themeFlow.js"></script>
 
     <!-- Utils-->
     <script src="src/utilities/utilities.js"></script>
@@ -85,6 +90,7 @@
             network</button>
                     <button class="btn btn-default btn-xs" id="myBtn" data-toggle="modal" data-target="#importNetworkModal">Import
             network</button>
+                    <button class="btn btn-default btn-xs" id="exportEdges" data-toggle="modal">Grasshopper</button>
                 </div>
                 <hr style="margin: 3px;">
                 <div>
@@ -168,6 +174,10 @@
                     <label for="backgroundContrast" style="font-size:10px; font-weight:400">Contrast</label><br>
                     <input type="checkbox" id="grid" checked>
                     <label for="grid" style="font-size:10px; font-weight:400">Show grid</label><br>
+                    <input type="checkbox" id="showTexts" checked>
+                    <label for="showTexts" style="font-size:10px; font-weight:400">Show texts</label><br>
+                    <input type="checkbox" id="showEdges" checked>
+                    <label for="showEdges" style="font-size:10px; font-weight:400">Show edges</label><br>
                 </div>
             </div>
             <div class="col-sm-1">

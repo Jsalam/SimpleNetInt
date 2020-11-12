@@ -10,6 +10,9 @@ class VEdge {
         this.vTarget;
         this.color;
         this.riseFactor = 0;
+        // bezier control points
+        this.controlOrg;
+        this.controlEnd;
     }
 
     // Observing to Canvas
@@ -20,19 +23,32 @@ class VEdge {
                 // get the checkbox
                 let DOMelementID = data.event.target.id;
                 let DOMChecked = data.event.target.checked;
+                let elements = EdgeFactory._vEdges.filter(function(vE) {
+                    if (vE.edge.kind == DOMelementID) {
+
+                        return true
+                    };
+                })
                 let rise;
-                if (DOMChecked) { rise = 0.5 } else { rise = 0 }
-                anime({
-                    // filter all vEdges matching the user selected edge kind
-                    targets: EdgeFactory._vEdges.filter(function(vE) {
-                        if (vE.edge.kind == DOMelementID) return true;
-                    }),
-                    riseFactor: rise,
-                    easing: 'easeInOutSine',
-                    update: function() {
-                        Canvas.update()
+                if (DOMChecked) { rise = 0.26 } else { rise = 0 }
+
+                if (DOM.boxChecked('showEdges')) {
+                    anime({
+                        // filter all vEdges matching the user selected edge kind
+                        targets: elements,
+                        riseFactor: rise,
+                        easing: 'easeInOutSine',
+                        update: function() {
+                            Canvas.update()
+                        }
+                    });
+                } else {
+                    for (const element of elements) {
+                        element.riseFactor = rise;
                     }
-                });
+
+                    Canvas.update()
+                }
             }
 
         } else if (data instanceof KeyboardEvent) {
@@ -45,11 +61,14 @@ class VEdge {
     setVSource(vNode) {
         this.vSource = vNode;
         // this.setColor(vNode..color);
+        this.controlOrg = vNode.pos;
+
     }
 
     setVTarget(vNode) {
         this.vTarget = vNode;
         // vConctr.setColor(this.color);
+        this.controlEnd = vNode.pos;
     }
 
     setColor(color) {
@@ -57,13 +76,19 @@ class VEdge {
     }
 
     show(renderer) {
-        // get stroke color
-        let strokeColor = this._getStrokeColor(this.vSource.color)
-        let strokeWeight = this._getStrokeWeight();
+        if (DOM.boxChecked('showEdges')) {
+            let vCnctrSource = this.vSource.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
+            //let vCnctrTarget = this.vTarget.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
+            if (vCnctrSource.selected) {
 
-        //this.showBeziers(renderer, strokeColor, strokeWeight);
-        this.showBezierArcs(renderer, strokeColor, strokeWeight);
+                // get stroke color
+                let strokeColor = this._getStrokeColor(this.vSource.color)
+                let strokeWeight = this._getStrokeWeight();
 
+                //this.showBeziers(renderer, strokeColor, strokeWeight);
+                this.showBezierArcs(renderer, strokeColor, strokeWeight);
+            }
+        }
     }
 
     _getStrokeColor(baseColor) {
@@ -101,8 +126,8 @@ class VEdge {
     _getStrokeWeight() {
         // default color 
         let strokeWeight = 1;
-        let thick = 5;
-        let light = 3
+        let thick = 4;
+        let light = 2;
 
         if (DOM.boxChecked("forward") && DOM.boxChecked("backward")) {
             if (this.source.inFwdPropagation || this.edge.target && this.edge.target.inBkwPropagation) {
@@ -152,8 +177,6 @@ class VEdge {
 
         // general properties
         let factor = 3; // the propotion of distance between nodes
-        let controlOrg;
-        let controlEnd;
         let org = this.getOrgCoords(this.vSource);
         let end;
 
@@ -171,22 +194,22 @@ class VEdge {
 
         // set control points
         if (end.x <= org.x) {
-            controlOrg = gp5.createVector(org.x - arm, org.y);
-            controlEnd = gp5.createVector(end.x + arm, end.y);
+            this.controlOrg = gp5.createVector(org.x - arm, org.y);
+            this.controlEnd = gp5.createVector(end.x + arm, end.y);
             renderer.beginShape();
             renderer.vertex(org.x, org.y);
-            renderer.vertex(controlOrg.x + (arm * extension), controlOrg.y);
-            renderer.bezierVertex(controlOrg.x, controlOrg.y, controlEnd.x, controlEnd.y, controlEnd.x - (arm * extension), end.y);
+            renderer.vertex(this.controlOrg.x + (arm * extension), this.controlOrg.y);
+            renderer.bezierVertex(this.controlOrg.x, this.controlOrg.y, this.controlEnd.x, this.controlEnd.y, this.controlEnd.x - (arm * extension), end.y);
             renderer.vertex(end.x, end.y);
             renderer.endShape();
 
         } else {
-            controlOrg = gp5.createVector(org.x + arm, org.y);
-            controlEnd = gp5.createVector(end.x - arm, end.y);
+            this.controlOrg = gp5.createVector(org.x + arm, org.y);
+            this.controlEnd = gp5.createVector(end.x - arm, end.y);
             renderer.beginShape();
             renderer.vertex(org.x, org.y);
-            renderer.vertex(controlOrg.x - (arm * extension), controlOrg.y);
-            renderer.bezierVertex(controlOrg.x, controlOrg.y, controlEnd.x, controlEnd.y, controlEnd.x + (arm * extension), end.y);
+            renderer.vertex(this.controlOrg.x - (arm * extension), this.controlOrg.y);
+            renderer.bezierVertex(this.controlOrg.x, this.controlOrg.y, this.controlEnd.x, this.controlEnd.y, this.controlEnd.x + (arm * extension), end.y);
             renderer.vertex(end.x, end.y);
             renderer.endShape();
         }
@@ -194,8 +217,8 @@ class VEdge {
         // controlpoints
         renderer.strokeWeight(0.5);
         renderer.stroke('#FF0000');
-        renderer.line(org.x, org.y, controlOrg.x, controlOrg.y);
-        renderer.line(end.x, end.y, controlEnd.x, controlEnd.y);
+        renderer.line(org.x, org.y, this.controlOrg.x, this.controlOrg.y);
+        renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
 
     }
 
@@ -207,9 +230,7 @@ class VEdge {
         renderer.noFill();
 
         // general properties
-        let factor = 1 / 8;
-        let controlOrg;
-        let controlEnd;
+        let factor = 1 / 2;
         let org = this.getOrgCoords(this.vSource);
         let end;
 
@@ -217,7 +238,7 @@ class VEdge {
         if (!this.vTarget) {
             end = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y);
         } else {
-            end = this.getOrgCoords(this.vTarget);;
+            end = this.getOrgCoords(this.vTarget);
         }
 
         // estimate arm length
@@ -227,28 +248,60 @@ class VEdge {
 
         // set control points
         if (end.x <= org.x) {
-            controlOrg = gp5.createVector(org.x - arm, org.y - (gap * this.riseFactor));
-            controlEnd = gp5.createVector(end.x + arm, end.y - (gap * this.riseFactor));
+            this.controlOrg = gp5.createVector(org.x - arm, org.y - (gap * this.riseFactor));
+            this.controlEnd = gp5.createVector(end.x + arm, end.y - (gap * this.riseFactor));
 
         } else {
-            // controlOrg = gp5.createVector(org.x + arm, org.y);
-            // controlEnd = gp5.createVector(end.x - arm, end.y);
-            controlOrg = gp5.createVector(org.x + arm, org.y - (gap * this.riseFactor));
-            controlEnd = gp5.createVector(end.x - arm, end.y - (gap * this.riseFactor));
+            this.controlOrg = gp5.createVector(org.x + arm, org.y - (gap * this.riseFactor));
+            this.controlEnd = gp5.createVector(end.x - arm, end.y - (gap * this.riseFactor));
         }
 
         // draw curve
         renderer.beginShape();
         renderer.vertex(org.x, org.y);
-        renderer.bezierVertex(controlOrg.x, controlOrg.y, controlEnd.x, controlEnd.y, end.x, end.y);
+        renderer.bezierVertex(this.controlOrg.x, this.controlOrg.y, this.controlEnd.x, this.controlEnd.y, end.x, end.y);
         renderer.vertex(end.x, end.y);
         renderer.endShape();
 
         // controlpoints
-        renderer.strokeWeight(0.5);
-        renderer.stroke('#FF0000');
-        renderer.line(org.x, org.y, controlOrg.x, controlOrg.y);
-        renderer.line(end.x, end.y, controlEnd.x, controlEnd.y);
+        // renderer.strokeWeight(0.5);
+        // renderer.stroke('#FF0000');
+        // renderer.line(org.x, org.y, this.controlOrg.x, this.controlOrg.y);
+        // renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
 
+    }
+
+    getJSON() {
+        let org = this.getOrgCoords(this.vSource);
+        let end = this.getOrgCoords(this.vTarget);
+
+        let rtn = {
+            "edge": this.edge.getJSON(),
+            "vSource": this.vSource.getJSON(),
+            "vTarget": this.vTarget.getJSON(),
+            "controlPoints": {
+                "org": [
+                    org.x,
+                    org.y,
+                    org.z
+                ],
+                "orgControl": [
+                    this.controlOrg.x,
+                    this.controlOrg.y,
+                    this.controlOrg.z
+                ],
+                "endControl": [
+                    this.controlEnd.x,
+                    this.controlEnd.y,
+                    this.controlEnd.z
+                ],
+                "end": [
+                    end.x,
+                    end.y,
+                    end.z
+                ],
+            }
+        }
+        return rtn;
     }
 }

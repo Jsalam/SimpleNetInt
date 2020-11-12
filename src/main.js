@@ -3,7 +3,7 @@ var main = function(p5) {
 
     // variables
     let graphics;
-
+    let gallery;
 
     // font
     let myFont;
@@ -46,11 +46,16 @@ var main = function(p5) {
         // Add grid to canvas: org, width, height, hPartitions, vPartitions, scaleFactor [scaleFactor = 45 pixels represent 64/64 units]
         Canvas.initGrid(gp5.createVector(0, 630), 64, 10, 64, 10, 45);
 
+        // add gallery
+        gallery = new Gallery(1710, 270, 7.5);
+
         // Connect with GUIs
         DOM.init();
 
         // load the first selected model by default
         DOM.switchModel(DOM.dropdowns.modelChoice.value);
+
+
     }
 
     // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
@@ -62,6 +67,7 @@ var main = function(p5) {
 
         // push transformation matrix
         gp5.push();
+
 
         // DOM event
         if (DOM.event) {
@@ -76,8 +82,15 @@ var main = function(p5) {
         // Canvas own transformations
         Canvas.transform();
         Canvas.render();
+
         // Canvas.originCrossHair();
         Canvas.showOnPointer();
+
+        // gallery
+        gallery.wall(gp5);
+        gallery.canvas(gp5);
+        gallery.column(gp5);
+        gallery.hotArea(gp5);
 
         // pop transformation matrix
         gp5.pop();

@@ -24,20 +24,38 @@ class Node {
     }
 
     /**** FILTERS *****/
+    /**
+     * This method matches the user selections on the gui with the connectors of this node. 
+     * If any, the corresponding VConnector AND VNODE are marked as selected.
+     * This method should be handled by the VNode subcribed to this node
+     */
     filterConnectors() {
-        // on a DOM Event (similar to contextualGUI)/ this should be handled by the VNode buscribed to this node
+        // on a DOM Event (similar to contextualGUI)/ this should be handled by the VNode subcribed to this node
         let filteredConnectors = this.connectors.filter(function(cnctr) {
             let rtn = false;
+
+            // mark vConnector as unselected
+            cnctr.vConnectorObserver.selected = false;
+
+            // iterate over the gui checkboxes
             for (const ckbx of DOM.currentCheckboxes) {
 
                 // check which checkboxes are checked and get the keys
                 // if any of the keys match the connectors of this node
                 if (ckbx.value == true && cnctr.kind == ckbx.key) {
                     rtn = true;
+                    // mark this Vconnector observer as selected
+                    cnctr.vConnectorObserver.selected = true;
                 }
             }
             return rtn;
         });
+        // Switch the vNode selected to true
+        if (filteredConnectors.length > 0) {
+            this.vNodeObserver.selected = true;
+        } else {
+            this.vNodeObserver.selected = false;
+        }
         return filteredConnectors;
     }
 
@@ -77,7 +95,7 @@ class Node {
         this.connectors = this.connectors.filter(function(cnctr) {
             let rtn = true;
             if (cnctr.equals(conn)) {
-                if (cnctr.edgeObservers.length < 1) {
+                if (cnctr.edgeObservers.length <= 1) {
                     rtn = false
                 }
             }
@@ -292,7 +310,6 @@ class Node {
 
                 // if the edge is open
                 if (buffEdge.open) {
-                    alert("Node | Closing edge of type " + buffEdge.kind);
                     this.closeEdge(buffEdge);
                 } else {
                     // retrieve the connector type choosen value on the Contextual Menu
@@ -348,6 +365,21 @@ class Node {
         return connector;
     }
 
+    popConnector(kind) {
+        // look if there is a connector of this kind
+        let connectorList = this.connectors.filter(cnctr => cnctr.kind === kind);
+        let connector = connectorList[0];
+
+        // if there is a connector 
+        if (connector) {
+            // if the connector is linked to no more than one edges
+            if (connector.edgeObservers.length <= 1)
+            // pop the connector and the vConnector
+                console.log("delete connector " + connector.kind);
+            this.removeConnector(connector);
+        }
+    }
+
     closeEdge(buffEdge) {
         // set target
         if (buffEdge.setTarget(this)) {
@@ -392,8 +424,8 @@ class Node {
         return edgesTmp;
     }
 
+    /** This is not being used at this point because the json us made by the vNode */
     getJSON() {
-        console.log("here");
         let cnctrs = [];
         for (const connector of this.connectors) {
             cnctrs.push(connector.getJSON())

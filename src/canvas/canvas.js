@@ -10,7 +10,7 @@ class Canvas {
         this.graphics = graphics;
         this.graphicsRendered = false;
         this.renderGate = true;
-        this.currentBackground = 230;
+        this.currentBackground = 250;
         // The scale of our world
         this._zoom = 1;
         // A vector to store the offset
@@ -36,6 +36,7 @@ class Canvas {
     }
 
     static subscribe(obj) {
+
         if (obj instanceof VEdge) {
             // get VEdge instances only
 
@@ -130,7 +131,9 @@ class Canvas {
         // show observers
         this.observers.forEach(element => {
             if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
-                element.show(gp5)
+                element.show(gp5);
+            } else {
+                element.show(gp5);
             }
         });
 
@@ -149,15 +152,14 @@ class Canvas {
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
 
-            // grid
-            if (this.grid && this.showGrid) {
-                this.grid.show(this.graphics);
-            }
+
 
             // show observers
             this.observers.forEach(element => {
                 if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
-                    element.show(this.graphics)
+                    element.show(this.graphics);
+                } else {
+                    element.show(this.graphics);
                 }
             });
 
@@ -165,9 +167,14 @@ class Canvas {
             if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);
 
             // canvas edge
-            this.graphics.stroke('#C0C0C0');
-            this.graphics.noFill();
-            this.graphics.rect(0, 0, this.graphics.width, this.graphics.height);
+            // this.graphics.stroke('#C0C0C0');
+            // this.graphics.noFill();
+            // this.graphics.rect(0, 0, this.graphics.width, this.graphics.height);R
+
+            // grid
+            if (this.grid && this.showGrid) {
+                this.grid.show(this.graphics);
+            }
 
             // Open gp5 renderer gate
             this.graphicsRendered = true;
@@ -272,9 +279,10 @@ class Canvas {
         gp5.fill('#C0C0C0');
         gp5.textAlign(gp5.RIGHT);
         gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
-        gp5.text("use 'SHIFT + ' to zoom in, 'SHIFT -' to zoom  out", pos.x, pos.y + 10);
-        gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 20);
-        gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 30);
+        gp5.text("use 'SHIFT + ' to zoom in, 'SHIFT -' to zoom  out", pos.x, pos.y + 13);
+        gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 26);
+        gp5.text("Press 'SHIFT + e' to delete the last edge", pos.x, pos.y + 39);
+        gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 52);
         gp5.textAlign(gp5.CENTER);
     }
 
@@ -315,13 +323,18 @@ class Canvas {
         this._startOffset.set(gp5.mouseX, gp5.mouseY, 0);
         Canvas.mouseDown = true;
         this.renderGate = true;
+
+        if (Canvas.shiftDown) {
+            gp5.cursor('grab')
+        }
         Canvas.notifyObservers({ event: evt, type: "mousedown", pos: Canvas._mouse });
     }
 
     /** Mouse left button released */
     static mReleased(evt) {
         Canvas.mouseDown = false;
-        this.renderGate = false
+        this.renderGate = false;
+        gp5.cursor(gp5.ARROW)
         Canvas.notifyObservers({ event: evt, type: "mouseup", pos: Canvas._mouse });
     }
 
@@ -362,6 +375,10 @@ class Canvas {
         // evaluate 
         if (k.key == "Shift") {
             Canvas.shiftDown = true;
+
+            if (Canvas.mouseDown) {
+                gp5.cursor('grab')
+            }
         }
         // Control of zoom with keyboard
         if (k.shiftKey && (k.key == '+')) {
@@ -371,6 +388,9 @@ class Canvas {
             // Restore initial values
         } else if (k.shiftKey && (k.key == 'r' || k.key == 'R')) {
             this.reset();
+        } else if (k.shiftKey && (k.key == 'e' || k.key == 'E')) {
+            // delete last edge
+            EdgeFactory.deleteLastVEdge();
         }
 
         Canvas.notifyObservers({ event: k, type: "keydown" });
@@ -381,6 +401,10 @@ class Canvas {
         this.renderGate = true;
         if (k.key == "Shift") {
             Canvas.shiftDown = false;
+            if (Canvas.mouseDown) {
+                gp5.cursor(gp5.ARROW)
+            }
+
         }
 
         // Escape key
@@ -390,10 +414,6 @@ class Canvas {
             EdgeFactory.clearBuffer();
         }
 
-        // Delete last edge Shift + 'e' || 'E'
-        if (k.key == "Shift" && (k.key == 'e' || k.key == 'E')) {
-            EdgeFactory.deleteLastEdge();
-        }
         Canvas.notifyObservers({ event: k, type: "keyup" });
     }
 }

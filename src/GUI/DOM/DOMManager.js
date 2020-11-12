@@ -20,6 +20,7 @@ class DOM {
         DOM.buttons.exportNetwork = document.getElementById("exportNetwork");
         DOM.buttons.importNetwork = document.getElementById("importNetwork");
         DOM.buttons.submitEdgeKinds = document.getElementById("submitEdgeKinds");
+        DOM.buttons.exportEdges = document.getElementById("exportEdges");
 
         DOM.buttons.clearEdges.onclick = (evt) => DOM.clearEdges(evt);
         DOM.buttons.submitAddClusterModal.onclick = getDataCluster;
@@ -27,6 +28,10 @@ class DOM {
         DOM.buttons.exportNetwork.onclick = saveJSON;
         DOM.buttons.importNetwork.onclick = getDataImport;
         DOM.buttons.submitEdgeKinds.onclick = DOM.getTextBoxContent;
+        DOM.buttons.exportEdges.onclick = (evt) => EdgeFactory.recordJSON();
+
+
+
 
         // Checkboxes
         DOM.checkboxes.edit = document.getElementById('edit');
@@ -35,6 +40,8 @@ class DOM {
         DOM.checkboxes.filterLinked = document.getElementById('filterLinked');
         DOM.checkboxes.backgroundContrast = document.getElementById('backgroundContrast');
         DOM.checkboxes.grid = document.getElementById('grid');
+        DOM.checkboxes.showTexts = document.getElementById('showTexts');
+        DOM.checkboxes.showEdges = document.getElementById('showEdges');
 
         DOM.checkboxes.edit.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
@@ -42,6 +49,8 @@ class DOM {
         DOM.checkboxes.filterLinked.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.backgroundContrast.onclick = (evt) => DOM.switchBkgnd(evt);
         DOM.checkboxes.grid.onclick = (evt) => DOM.switchGrid(evt);
+        DOM.checkboxes.showTexts.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.showEdges.onclick = (evt) => DOM.eventTriggered(evt);
 
         // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
@@ -110,7 +119,7 @@ class DOM {
         if (DOM.boxChecked("backgroundContrast")) {
             Canvas.currentBackground = 150;
         } else {
-            Canvas.currentBackground = 230;
+            Canvas.currentBackground = 200;
         }
 
         DOM.event = evt;
@@ -144,7 +153,11 @@ class DOM {
     static switchModel(value, evt) {
         console.log("Switching to " + value + " network");
         Canvas.resetObservers();
-        gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => DOM.onLoadNetwork(data, evt));
+        gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => {
+            DOM.onLoadNetwork(data, evt);
+            // add a new themeFlow to canvas.
+            Canvas.subscribe(new ThemeFlow());
+        });
     }
 
     /**

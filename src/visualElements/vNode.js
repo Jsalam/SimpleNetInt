@@ -18,12 +18,15 @@ class VNode extends Button {
     }
 
     unsubscribe(obj) {
+        console.log(obj);
         this.vConnectors = this.vConnectors.filter(function(subscriber) {
             let rtn = true;
             // Filter vConnectors
             if (subscriber instanceof VConnector) {
-                if (subscriber.connector.id.pajekIndex == obj.connector.id.pajekIndex) {
+
+                if (subscriber.connector.equals(obj.connector)) {
                     rtn = false;
+                    console.log('unsubscribed vConnector ' + JSON.stringify(subscriber.connector.id));
                 }
             }
             return rtn;
@@ -38,6 +41,7 @@ class VNode extends Button {
         this.vConnectors = this.vConnectors.filter(function(vCnctr) {
             let rtn = true;
             if (vCnctr.connector.equals(conn)) {
+
                 if (vCnctr.connector.edgeObservers.length < 1) {
                     rtn = false
                 }
@@ -99,6 +103,7 @@ class VNode extends Button {
     }
 
     addVConnector(connector) {
+        //console.log('new V connector');
         let tmpVConnector = new VConnector(connector);
         tmpVConnector.setColor(this.color);
         this.subscribe(tmpVConnector);
@@ -109,9 +114,32 @@ class VNode extends Button {
         this.vConnectors = [];
     }
 
-    popLastVConnector() {
-        this.vConnectors.shift();
-        this.updateConnectorsCoords();
+    /**
+     * Remove a connector by its kind
+     * @param {} kind 
+     */
+    popVConnector(kind) {
+        // find the vConnector observer of the parameter and remove it from the collection
+        let vConnector = this.vConnectors.filter((vCnctr) => {
+            return vCnctr.connector.kind == kind;
+        })[0];
+
+        console.log(vConnector);
+        if (vConnector) {
+
+            // check if there are no other edges linked to this connector
+            if (vConnector.connector.edgeObservers.length <= 1) {
+                console.log('equal to one');
+
+                // popConnectors from nodes
+                this.node.popConnector(kind);
+
+                // unsubscribe connector
+                this.unsubscribe(vConnector);
+                this.updateConnectorsCoords();
+            }
+
+        }
     }
 
     setColor(color) {
@@ -139,16 +167,18 @@ class VNode extends Button {
             if (this.node.connectors.length < 2) {
                 vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
             } else {
-                vConnector.updateCoordsByAngle(this.pos, angle * counter, this.width / 2);
+                vConnector.updateCoordsByAngle(this.pos, angle * counter, this.width / 3);
             }
             counter++;
         });
-
-
     }
 
     /*** SHOW FUNCTIONS */
     show(renderer) {
+
+        // *** FILTER ***
+        // Check if any of this Node connectors matches User GUI inputs
+        this.node.filterConnectors();
 
         // get the visual properties
         let fillColors = this._getFillColor(this.color);
@@ -162,16 +192,19 @@ class VNode extends Button {
         renderer.strokeWeight(strokeWeight);
 
         // draw shape
-        renderer.ellipseMode(gp5.CENTER)
+        renderer.ellipseMode(gp5.CENTER);
         renderer.ellipse(this.pos.x, this.pos.y, this.width);
 
         // draw label
-        this._showLabel(renderer, fillColors.label);
+        if (DOM.boxChecked('showTexts')) {
+            this._showLabel(renderer, fillColors.label);
 
-        // show node description
-        if (this.mouseIsOver) {
-            this._showDescription(renderer);
+            // show node description
+            if (this.mouseIsOver) {
+                this._showDescription(renderer);
+            }
         }
+
         // Show connectors 
         if (this.vConnectors.length > 0) {
             for (const vCnctr of this.vConnectors) {
@@ -235,12 +268,9 @@ class VNode extends Button {
             fillColor = baseColor.concat(dimmed);
             labelColor = labelColor.concat(dimmed);
         }
-        // *** FILTER ***
-        // Subset checkBoxes matching node connectors
-        let filteredConnectors = this.node.filterConnectors();
 
-        if (filteredConnectors.length > 0) fillColor = filtered;
-
+        //if (filteredConnectors.length > 0) fillColor = filtered;
+        if (this.selected) fillColor = filtered;
         return { fill: fillColor, label: labelColor };
     }
 
@@ -262,9 +292,9 @@ class VNode extends Button {
         }
 
         // *** filter by edge category
-        let filteredConnectors = this.node.filterConnectors();
+        //let filteredConnectors = this.node.filterConnectors();
 
-        if (filteredConnectors.length > 0) strokeColor = filtered;
+        if (this.selected) strokeColor = filtered;
 
         return strokeColor;
     }

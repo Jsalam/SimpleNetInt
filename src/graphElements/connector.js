@@ -18,6 +18,9 @@ class Connector {
             this.id.pajekIndex == conn.id.pajekIndex) {
             rtn = true;
         }
+        if (rtn) {
+            rtn = this.kind === conn.kind;
+        }
         return rtn;
     }
 
@@ -32,10 +35,6 @@ class Connector {
 
     notifyVConnector(data) {
         this.vConnectorObserver.getData(data)
-    }
-
-    popThisConnector() {
-        this.vConnectorObserver.popLastConnector();
     }
 
     getJSON() {

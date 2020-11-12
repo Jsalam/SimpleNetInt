@@ -11,6 +11,7 @@ class Edge {
 
     equals(edgeA) {
         let A, B;
+        let rtn = false;
 
         if (edgeA.target) {
             A = [edgeA.source.idCat.pajekIndex, edgeA.target.idCat.pajekIndex];
@@ -22,7 +23,13 @@ class Edge {
         } else {
             B = [this.source.idCat.pajekIndex, undefined];
         }
-        return (A[0] === B[0] && A[1] === B[1]);
+        rtn = (A[0] === B[0] && A[1] === B[1]);
+
+        if (rtn) {
+            rtn = edgeA.kind === this.kind;
+        }
+
+        return rtn;
     }
 
     setWeight(val) {
