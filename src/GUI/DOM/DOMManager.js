@@ -119,7 +119,7 @@ class DOM {
         if (DOM.boxChecked("backgroundContrast")) {
             Canvas.currentBackground = 150;
         } else {
-            Canvas.currentBackground = 200;
+            Canvas.currentBackground = 250;
         }
 
         DOM.event = evt;
