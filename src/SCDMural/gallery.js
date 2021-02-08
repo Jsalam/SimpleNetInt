@@ -62,7 +62,7 @@ class Gallery {
     hotArea(renderer) {
         renderer.strokeWeight(this.colWeight * this.scale);
         renderer.noFill();
-        renderer.stroke(255, 0, 0);
+        renderer.stroke(255, 0, 0, 50);
         renderer.rect(this.x - 210 * this.scale, this.y + 23.2 * this.scale, 324 * this.scale, 18 * this.scale);
     }
 

@@ -55,7 +55,7 @@ class VConnector extends Button {
     show(renderer, fillColor) {
         renderer.ellipseMode(gp5.CENTER);
         renderer.fill(fillColor);
-        renderer.stroke(this.color);
+        renderer.stroke(fillColor);
         //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
         renderer.ellipse(this.pos.x, this.pos.y, this.width)
             // label
@@ -63,7 +63,7 @@ class VConnector extends Button {
         renderer.textAlign(gp5.RIGHT, gp5.CENTER);
         renderer.fill('#000000');
         renderer.noStroke();
-        renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
+        //renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
     }
 
     showAsButton(renderer) {

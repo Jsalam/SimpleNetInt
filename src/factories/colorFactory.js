@@ -26,16 +26,14 @@ class ColorFactory {
                             });
                         });
                     });
-                }))
-        })
+                })
+            );
+        });
     }
 
     static getPalette(n) {
-        if (0 <= n && n < ColorFactory.palettes.length) {
-            return ColorFactory.palettes[n];
-        } else {
-            console.log("Check palette index " + n);
-        }
+        let tempIndex = n % ColorFactory.palettes.length;
+        return ColorFactory.palettes[tempIndex];
     }
 
     static getColor(palette, index) {
@@ -45,3 +43,4 @@ class ColorFactory {
 
 }
 ColorFactory.palettes = [];
+ColorFactory.basic = { "r": '#cc0033', "g": '#00cc99', "b": '#0040ff', "y": '#ffbf00', "k": '#000000' };

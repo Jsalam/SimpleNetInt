@@ -28,7 +28,7 @@ class DOM {
         DOM.buttons.exportNetwork.onclick = saveJSON;
         DOM.buttons.importNetwork.onclick = getDataImport;
         DOM.buttons.submitEdgeKinds.onclick = DOM.getTextBoxContent;
-        DOM.buttons.exportEdges.onclick = (evt) => EdgeFactory.recordJSON();
+        DOM.buttons.exportEdges.onclick = DOM.exportEdges;
 
 
 
@@ -67,6 +67,22 @@ class DOM {
 
         // Get the current status of checkboxes 
         DOM.updateCheckboxes();
+    }
+
+    /**
+     * Used to export edges from user interaction on the GUI
+     * @param {Event} evt 
+     */
+    static exportEdges(evt) {
+
+        // Export edges
+        EdgeFactory.recordJSON();
+
+        // retrieve the instances of ThemeFlow and ask them to record JSON
+        let themeFlows = Canvas.observers.filter(kind => kind instanceof ThemeFlow)
+        for (const themeF of themeFlows) {
+            themeF.recordJSON();
+        }
     }
 
     /**
@@ -156,7 +172,9 @@ class DOM {
         gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => {
             DOM.onLoadNetwork(data, evt);
             // add a new themeFlow to canvas.
-            Canvas.subscribe(new ThemeFlow());
+            Canvas.subscribe(new ThemeFlow(0, 0, 5, 35));
+            // Canvas.subscribe(new ThemeFlow(0, -113, 6, 35));
+            // Canvas.subscribe(new ThemeFlow(0, -360, 11, 45));
         });
     }
 

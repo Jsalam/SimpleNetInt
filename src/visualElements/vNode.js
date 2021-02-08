@@ -181,8 +181,8 @@ class VNode extends Button {
         this.node.filterConnectors();
 
         // get the visual properties
-        let fillColors = this._getFillColor(this.color);
-        this.strokeColor = this._getStrokeColor(this.color);
+        let fillColors = this._getFillColor();
+        this.strokeColor = this._getStrokeColor();
         let strokeWeight = this._getStrokeWeight();
 
         // assign colors
@@ -193,7 +193,7 @@ class VNode extends Button {
 
         // draw shape
         renderer.ellipseMode(gp5.CENTER);
-        renderer.ellipse(this.pos.x, this.pos.y, this.width);
+        //renderer.ellipse(this.pos.x, this.pos.y, this.width);
 
         // draw label
         if (DOM.boxChecked('showTexts')) {
@@ -208,7 +208,7 @@ class VNode extends Button {
         // Show connectors 
         if (this.vConnectors.length > 0) {
             for (const vCnctr of this.vConnectors) {
-                vCnctr.show(renderer, this.color.concat('00'));
+                vCnctr.show(renderer, fillColors.fill);
 
             }
         }
@@ -228,11 +228,33 @@ class VNode extends Button {
 
     }
 
-    _getFillColor(baseColor) {
+    _getFillColor(_baseColor) {
+
+        let baseColor = _baseColor;
+        if (!baseColor) {
+            switch (this.node.attributes.Primary_ToI) {
+                case 'Technology':
+                    baseColor = ColorFactory.basic.r; //red
+                    break;
+                case 'Methodology':
+                    baseColor = ColorFactory.basic.g; // green
+                    break;
+                case 'Process':
+                    baseColor = ColorFactory.basic.b; // blue
+                    break;
+                case 'Knowledge Framework':
+                    baseColor = ColorFactory.basic.y; // yellow
+                    break;
+                default:
+                    baseColor = ColorFactory.basic.k; // black
+                    break;
+            }
+        }
+
         // default color 
         let fillColor = baseColor;
         let labelColor = '#000000';
-        let filtered = '#b400b4';
+        let filtered = baseColor;
 
         // settings. see hex table https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
         let normal = '40'; // 60%
@@ -274,7 +296,27 @@ class VNode extends Button {
         return { fill: fillColor, label: labelColor };
     }
 
-    _getStrokeColor(baseColor) {
+    _getStrokeColor(_baseColor) {
+        let baseColor = _baseColor;
+        if (!baseColor) {
+            switch (this.node.attributes.Primary_ToI) {
+                case 'Technology':
+                    baseColor = ColorFactory.basic.r; //red
+                    break;
+                case 'Methodology':
+                    baseColor = ColorFactory.basic.g; // green
+                    break;
+                case 'Process':
+                    baseColor = ColorFactory.basic.b; // blue
+                    break;
+                case 'Knowledge Framework':
+                    baseColor = ColorFactory.basic.y; // yellow
+                    break;
+                default:
+                    baseColor = ColorFactory.basic.k; // black
+                    break;
+            }
+        }
         // default color 
         let strokeColor = baseColor;
         let inPropagation = '#FF0000';
@@ -321,7 +363,7 @@ class VNode extends Button {
         renderer.text(this.node.label, 95, gp5.height - 80, gp5.width - 200, 97);
         renderer.noStroke();
         renderer.textSize(11);
-        renderer.text(this.node.description, 100, gp5.height - 62, gp5.width - 200, 97);
+        renderer.text(this.node.attributes.Date_or_Decade, 100, gp5.height - 62, gp5.width - 200, 97);
     }
 
     getJSON() {

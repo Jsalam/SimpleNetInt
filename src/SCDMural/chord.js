@@ -15,7 +15,7 @@ class Chord {
 
     show(renderer, showControlPoints) {
         renderer.noFill();
-
+        renderer.strokeWeight(1);
         renderer.beginShape();
         renderer.vertex(this.points[0][0], this.points[0][1]);
         for (let i = 0; i < this.points.length; i++) {
@@ -28,7 +28,33 @@ class Chord {
                 renderer.line(this.points[i][4], this.points[i][5], this.points[i][6], this.points[i][7]);
             }
         }
-        renderer.stroke(0, 255, 125, 80);
+        renderer.stroke(200);
         renderer.endShape();
+    }
+
+    getJSON() {
+        let rtn = {
+            arm: this.arm,
+            points: []
+        };
+
+        // points is a colecction of arrays of bezierPoints
+        for (let i = 0; i < this.points.length; i++) {
+
+            let tmp = {
+                orgX: this.points[i][0],
+                orgY: this.points[i][1],
+                orgControlX: this.points[i][2],
+                orgControlY: this.points[i][3],
+                endControlX: this.points[i][4],
+                endControlY: this.points[i][5],
+                endX: this.points[i][6],
+                endY: this.points[i][7]
+            }
+
+            rtn.points.push(tmp)
+        }
+
+        return rtn;
     }
 }

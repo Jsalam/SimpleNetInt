@@ -82,7 +82,7 @@ class VEdge {
             if (vCnctrSource.selected) {
 
                 // get stroke color
-                let strokeColor = this._getStrokeColor(this.vSource.color)
+                let strokeColor = this._getStrokeColor();
                 let strokeWeight = this._getStrokeWeight();
 
                 //this.showBeziers(renderer, strokeColor, strokeWeight);
@@ -91,7 +91,27 @@ class VEdge {
         }
     }
 
-    _getStrokeColor(baseColor) {
+    _getStrokeColor(_baseColor) {
+        let baseColor = _baseColor;
+        if (!baseColor) {
+            switch (this.edge.kind) {
+                case 'Technology':
+                    baseColor = ColorFactory.basic.r; //red
+                    break;
+                case 'Methodology':
+                    baseColor = ColorFactory.basic.g; // green
+                    break;
+                case 'Process':
+                    baseColor = ColorFactory.basic.b; // blue
+                    break;
+                case 'Knowledge Framework':
+                    baseColor = ColorFactory.basic.y; // yellow
+                    break;
+                default:
+                    baseColor = ColorFactory.basic.k; // black
+                    break;
+            }
+        }
         // default color 
         let strokeColor = baseColor;
         let inPropagation = '#FF0000';
@@ -242,18 +262,24 @@ class VEdge {
         }
 
         // estimate arm length
-        let gap = gp5.dist(org.x, org.y, end.x, org.y)
-        let arm = factor * gap;
+        let distBtwnNodes = gp5.dist(org.x, org.y, end.x, org.y)
+        let arm = factor * distBtwnNodes;
         // this.riseFactor = 0;
 
         // set control points
+        // when the link direction points to the left
         if (end.x <= org.x) {
-            this.controlOrg = gp5.createVector(org.x - arm, org.y - (gap * this.riseFactor));
-            this.controlEnd = gp5.createVector(end.x + arm, end.y - (gap * this.riseFactor));
+            //this.controlOrg = gp5.createVector(org.x - arm, org.y - (distBtwnNodes * this.riseFactor));
+            //this.controlEnd = gp5.createVector(end.x + arm, end.y - (distBtwnNodes * this.riseFactor));
+            this.controlOrg = gp5.createVector(org.x - 25, org.y - (1.5 * distBtwnNodes * this.riseFactor));
+            this.controlEnd = gp5.createVector(end.x + arm * 2, end.y); // - (distBtwnNodes * this.riseFactor));
 
+            // when the link direction points to the right
         } else {
-            this.controlOrg = gp5.createVector(org.x + arm, org.y - (gap * this.riseFactor));
-            this.controlEnd = gp5.createVector(end.x - arm, end.y - (gap * this.riseFactor));
+            //this.controlOrg = gp5.createVector(org.x + arm, org.y - (distBtwnNodes * this.riseFactor));
+            //this.controlEnd = gp5.createVector(end.x - arm, end.y - (distBtwnNodes * this.riseFactor));
+            this.controlOrg = gp5.createVector(org.x + 25, org.y - (1.5 * distBtwnNodes * this.riseFactor));
+            this.controlEnd = gp5.createVector(end.x - arm * 2, end.y); // - (distBtwnNodes * this.riseFactor));
         }
 
         // draw curve
