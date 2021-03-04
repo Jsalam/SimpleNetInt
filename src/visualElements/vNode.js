@@ -10,7 +10,8 @@ class VNode extends Button {
         this.vConnectorsGap = 13;
         this.node.subscribe(this);
         // events
-        this.keyP_Down = false;
+        this.keyP_Down = false; // propagation
+        this.keyD_Down = false; // deletion
     }
 
     subscribe(obj) {
@@ -86,10 +87,16 @@ class VNode extends Button {
                 if (data.event.key == 'p' || data.event.key == 'P') {
                     this.keyP_Down = true;
                 }
+                if (data.event.key == 'd' || data.event.key == 'D') {
+                    this.keyD_Down = true;
+                }
             }
             if (data.type == "keyup") {
                 if (data.event.key == 'p' || data.event.key == 'P') {
                     this.keyP_Down = false;
+                }
+                if (data.event.key == 'd' || data.event.key == 'D') {
+                    this.keyD_Down = false;
                 }
             }
         }
