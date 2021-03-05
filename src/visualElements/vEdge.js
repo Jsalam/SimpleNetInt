@@ -269,17 +269,17 @@ class VEdge {
         // set control points
         // when the link direction points to the left
         if (end.x <= org.x) {
-            //this.controlOrg = gp5.createVector(org.x - arm, org.y - (distBtwnNodes * this.riseFactor));
-            //this.controlEnd = gp5.createVector(end.x + arm, end.y - (distBtwnNodes * this.riseFactor));
-            this.controlOrg = gp5.createVector(org.x - 25, org.y - (1.5 * distBtwnNodes * this.riseFactor));
-            this.controlEnd = gp5.createVector(end.x + arm * 2, end.y); // - (distBtwnNodes * this.riseFactor));
+            this.controlOrg = gp5.createVector(org.x - arm, org.y - (distBtwnNodes * this.riseFactor));
+            this.controlEnd = gp5.createVector(end.x + arm, end.y - (distBtwnNodes * this.riseFactor));
+            // this.controlOrg = gp5.createVector(org.x - 25, org.y - (1.5 * distBtwnNodes * this.riseFactor));
+            // this.controlEnd = gp5.createVector(end.x + arm * 2, end.y); // - (distBtwnNodes * this.riseFactor));
 
             // when the link direction points to the right
         } else {
-            //this.controlOrg = gp5.createVector(org.x + arm, org.y - (distBtwnNodes * this.riseFactor));
-            //this.controlEnd = gp5.createVector(end.x - arm, end.y - (distBtwnNodes * this.riseFactor));
-            this.controlOrg = gp5.createVector(org.x + 25, org.y - (1.5 * distBtwnNodes * this.riseFactor));
-            this.controlEnd = gp5.createVector(end.x - arm * 2, end.y); // - (distBtwnNodes * this.riseFactor));
+            this.controlOrg = gp5.createVector(org.x + arm, org.y - (distBtwnNodes * this.riseFactor));
+            this.controlEnd = gp5.createVector(end.x - arm, end.y - (distBtwnNodes * this.riseFactor));
+            // this.controlOrg = gp5.createVector(org.x + 25, org.y - (1.5 * distBtwnNodes * this.riseFactor));
+            // this.controlEnd = gp5.createVector(end.x - arm * 2, end.y); // - (distBtwnNodes * this.riseFactor));
         }
 
         // draw curve

@@ -97,6 +97,35 @@ class ClusterFactory {
         return node;
     }
 
+    static deleteNode(vNode) {
+        console.log("delete node " + JSON.stringify(vNode.node.idCat));
+        for (let vC of vNode.vConnectors) {
+            for (let edgeObs of vC.connector.edgeObservers) {
+                // go over all its vConnectors and ask them to delete themselves. That should delete all the edges referencing them
+                EdgeFactory.deleteEdge(edgeObs);
+            }
+        }
+        if (vNode.node.connectors.length == 0) {
+
+            // get cluster
+            let cluster = this.getCluster(vNode.node.idCat.cluster);
+            let vCluster = this.getVCluster(vNode.node.idCat.cluster);
+
+            // get node index
+            const indexC = cluster.nodes.indexOf(vNode.node);
+            const indexVC = vCluster.vNodes.indexOf(vNode);
+
+            // delete node from array
+            cluster.nodes.splice(indexC, 1);
+            vCluster.vNodes.splice(indexVC, 1);
+
+            // unsubscribe vNode
+            Canvas.unsubscribe(vNode);
+
+            console.log("Node and VNode deleted " + JSON.stringify(vNode.node.idCat));
+        }
+    }
+
     /**This is not the function used by the exportModalFrom */
     static recordJSON(suffix) {
         let filename = "nodes.json";
@@ -143,7 +172,22 @@ class ClusterFactory {
     }
 
     static getVNodeOf(node) {
-        return ClusterFactory.vClusters[node.idCat.cluster - 1].vNodes[node.idCat.index];
+        let vCluster = ClusterFactory.getVCluster(node.idCat.cluster)
+        return vCluster.getVNode(node);
+    }
+
+    static getCluster(id) {
+        const tmp = ClusterFactory.clusters.filter(elem => {
+            return elem.id === id;
+        })[0];
+        return tmp;
+    }
+
+    static getVCluster(id) {
+        const tmp = ClusterFactory.vClusters.filter(elem => {
+            return elem.cluster.id === id;
+        })[0];
+        return tmp;
     }
 
 }

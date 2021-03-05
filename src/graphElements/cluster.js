@@ -18,6 +18,13 @@ class Cluster {
         this.description = text;
     }
 
+    getNode(index) {
+        let rtn = this.nodes.filter(n => {
+            return n.idCat.index === index;
+        })[0];
+        return rtn;
+    }
+
     getJSON() {
         let rtn = {
             clusterID: this.id,

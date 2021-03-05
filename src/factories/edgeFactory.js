@@ -8,15 +8,13 @@ class EdgeFactory {
             let e = edgs[index];
 
             // get source node
-            let clusterIndex = e.source.cluster - 1;
-            let nodeIndex = e.source.index;
-            let source = ClusterFactory.clusters[clusterIndex].nodes[nodeIndex];
+            let cluster = ClusterFactory.getCluster(e.source.cluster);
+            let source = cluster.getNode(e.source.index);
             let sourceConnector = source.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
             // get target node
-            clusterIndex = e.target.cluster - 1;
-            nodeIndex = e.target.index;
-            let target = ClusterFactory.clusters[clusterIndex].nodes[nodeIndex];
+            cluster = ClusterFactory.getCluster(e.target.cluster);
+            let target = cluster.getNode(e.target.index);
             let targetConnector = target.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
             // get vSource
@@ -74,6 +72,48 @@ class EdgeFactory {
             // unsubscribe vEdge from canvas
             Canvas.unsubscribe(lastVEdge);
         }
+    }
+
+    static deleteEdge(edge) {
+        // find the corresponding vEdge
+        let tmpEdge = EdgeFactory.contains(EdgeFactory._edges, edge);
+        let tmpVEdge = EdgeFactory.retrieveVEdgeForEdge(tmpEdge);
+        let indexOf = EdgeFactory._vEdges.indexOf(tmpVEdge);
+
+        // extract the VEdge from the collections
+        let removedVEdge = EdgeFactory._vEdges.splice(indexOf, 1)[0];
+
+        // delete corresponding edge
+        indexOf = EdgeFactory._edges.indexOf(edge);
+        let removedEdge = EdgeFactory._edges.splice(indexOf, 1)[0];
+
+        removedEdge = undefined;
+
+        // remove connectors from its vNodes
+        if (removedVEdge) {
+
+            // eliminate unliked connectors
+            removedVEdge.vSource.destroyVConnector(removedVEdge.edge);
+            removedVEdge.vTarget.destroyVConnector(removedVEdge.edge);
+
+            // unsubscribe vEdge from canvas
+            Canvas.unsubscribe(removedVEdge);
+            //     console.log("done")
+        }
+    }
+
+    static retrieveVEdgeForEdge(edgeA) {
+        let rtn = false;
+        let element;
+        if (EdgeFactory._vEdges.length > 0) {
+            element = EdgeFactory._vEdges.filter(function(vEdgeB) {
+                let edgeB = vEdgeB.edge;
+                if (EdgeFactory.compareEdges(edgeA, edgeB)) return true;
+            })[0];
+        }
+        if (element) rtn = element;
+        return rtn;
+
     }
 
     static isThereOpenEdge() {

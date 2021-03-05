@@ -4,7 +4,6 @@ class Fret {
         this.gap = gap;
         this.nChords = chords;
         this.neckH = gap * chords;
-        console.log(this.neckH);
         this.pos = pos;
         this.vertices = this.computeVertices(this.org, this.pos, factor);
     }

@@ -74,6 +74,12 @@ class VCluster {
         this.vNodes.push(vNode);
     }
 
+    getVNode(node) {
+        return this.vNodes.filter(vN => {
+            return vN.node.idCat === node.idCat;
+        })[0];
+    }
+
     setPalette(palette) {
         if (palette) {
             this.palette = palette;

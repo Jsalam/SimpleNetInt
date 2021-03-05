@@ -65,8 +65,14 @@ class Canvas {
         this.observers = this.observers.filter(function(subscriber) {
             let rtn = true;
             // Filter edges
-            if (subscriber instanceof VEdge || subscriber instanceof Edge) {
+            if (obj instanceof VEdge && subscriber instanceof VEdge || subscriber instanceof Edge) {
                 if (EdgeFactory.compareEdges(subscriber, obj)) {
+                    rtn = false;
+                }
+            }
+            // Filter nodes
+            if (obj instanceof VNode && subscriber instanceof VNode || subscriber instanceof Node) {
+                if (obj.node.idCat === subscriber.node.idCat) {
                     rtn = false;
                 }
             }
@@ -255,6 +261,13 @@ class Canvas {
         this.newOrigin = gp5.createVector(x, y);
     }
 
+    static addThemeFlow() {
+        // add a new themeFlow to canvas.
+        Canvas.subscribe(new ThemeFlow(0, 0, 5, 35));
+        // Canvas.subscribe(new ThemeFlow(0, -113, 6, 35));
+        //Canvas.subscribe(new ThemeFlow(0, -360, 11, 45));
+    }
+
     /**
      * Show canvas values on screen
      * @param {Vector} pos 
@@ -283,6 +296,7 @@ class Canvas {
         gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 26);
         gp5.text("Press 'SHIFT + e' to delete the last edge", pos.x, pos.y + 39);
         gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 52);
+        gp5.text("Click on a node while holding 'd' down to delete it", pos.x, pos.y + 65);
         gp5.textAlign(gp5.CENTER);
     }
 

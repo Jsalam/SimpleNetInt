@@ -19,7 +19,6 @@ class VNode extends Button {
     }
 
     unsubscribe(obj) {
-        console.log(obj);
         this.vConnectors = this.vConnectors.filter(function(subscriber) {
             let rtn = true;
             // Filter vConnectors
@@ -27,11 +26,17 @@ class VNode extends Button {
 
                 if (subscriber.connector.equals(obj.connector)) {
                     rtn = false;
-                    console.log('unsubscribed vConnector ' + JSON.stringify(subscriber.connector.id));
+                    // console.log('unsubscribed vConnector ' + JSON.stringify(subscriber.connector.id));
                 }
             }
             return rtn;
         });
+    }
+
+    /**Delete this Vnode, and node and all the vConnectrs, connectors and vEdges and edges referencing it */
+    delete() {
+        ClusterFactory.deleteNode(this);
+        // Call the static method from the cluster Factor
     }
 
     notifyObservers(data) {
@@ -122,7 +127,7 @@ class VNode extends Button {
     }
 
     /**
-     * Remove a connector by its kind
+     * Remove a connector by its kind only if it has one edge linked
      * @param {} kind 
      */
     popVConnector(kind) {
@@ -136,7 +141,6 @@ class VNode extends Button {
 
             // check if there are no other edges linked to this connector
             if (vConnector.connector.edgeObservers.length <= 1) {
-                console.log('equal to one');
 
                 // popConnectors from nodes
                 this.node.popConnector(kind);
@@ -145,8 +149,35 @@ class VNode extends Button {
                 this.unsubscribe(vConnector);
                 this.updateConnectorsCoords();
             }
-
         }
+    }
+
+    /**
+     * Remove a connector regardless of the number of linked edges
+     * @param {} kind
+     */
+    destroyVConnector(edge) {
+        this.node.disconnectEdge(edge);
+
+        // find the vConnector observer of the parameter and remove it from the collection
+        let vConnector = this.vConnectors.filter((vCnctr) => {
+            return vCnctr.connector.kind == edge.kind;
+        })[0];
+
+        if (vConnector) {
+
+            // check if there are no edges linked to this connector
+            if (vConnector.connector.edgeObservers.length == 0) {
+
+                // popConnectors from nodes
+                this.node.popConnector(edge.kind);
+
+                // unsubscribe connector
+                this.unsubscribe(vConnector);
+                this.updateConnectorsCoords();
+            }
+        }
+
     }
 
     setColor(color) {
@@ -200,7 +231,7 @@ class VNode extends Button {
 
         // draw shape
         renderer.ellipseMode(gp5.CENTER);
-        //renderer.ellipse(this.pos.x, this.pos.y, this.width);
+        renderer.ellipse(this.pos.x, this.pos.y, this.width);
 
         // draw label
         if (DOM.boxChecked('showTexts')) {
@@ -420,6 +451,8 @@ class VNode extends Button {
             if (this.keyP_Down) {
                 this.propagated = !this.propagated;
                 this.node.propagate(this.node, this.propagated);
+            } else if (this.keyD_Down) {
+                this.delete();
             } else {
                 // *** BEGINIG OF EDGE CREATION ***
                 // instantiate edge from node 

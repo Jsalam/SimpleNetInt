@@ -373,10 +373,24 @@ class Node {
         // if there is a connector 
         if (connector) {
             // if the connector is linked to no more than one edges
+            if (connector.edgeObservers.length <= 1) {
+                // pop the connector and the vConnector
+                this.removeConnector(connector);
+            }
+        }
+    }
+
+    destroyConnector(kind) {
+        // look if there is a connector of this kind
+        let connectorList = this.connectors.filter(cnctr => cnctr.kind === kind);
+        let connector = connectorList[0];
+
+        // if there is a connector 
+        if (connector) {
+            // if the connector is linked to no more than one edges
             if (connector.edgeObservers.length <= 1)
             // pop the connector and the vConnector
-                console.log("delete connector " + connector.kind);
-            this.removeConnector(connector);
+                this.removeConnector(connector);
         }
     }
 

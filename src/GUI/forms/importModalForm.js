@@ -8,9 +8,8 @@ importNetworkModalForm = function() {
     makeDroppable(networkFile, callbackNetwork);
 }
 
-getDataImport = function() {
-    buildClustersImport(nodesImported);
-    buildEdgesImport(edgesImported);
+getDataImport = function(evt) {
+    DOM.onLoadNetwork({ nodes: nodesImported, edges: edgesImported }, evt)
 }
 
 callbackNetwork = function(files) {
@@ -20,7 +19,7 @@ callbackNetwork = function(files) {
         loadFile(files[0]);
 
     } else {
-        alert("Wrong file format. Must be a JSON file")
+        alert("Wrong file format. Must use a JSON file")
     }
 }
 

@@ -97,7 +97,7 @@ var main = function(p5) {
 
         // draw canvas status
         Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5); //gp5.createVector((xOrg) , (yOrg) + 5)
-        Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 60), gp5);
+        Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 90), gp5);
     }
 }
 

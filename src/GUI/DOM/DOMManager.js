@@ -171,10 +171,7 @@ class DOM {
         Canvas.resetObservers();
         gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => {
             DOM.onLoadNetwork(data, evt);
-            // add a new themeFlow to canvas.
-            Canvas.subscribe(new ThemeFlow(0, 0, 5, 35));
-            // Canvas.subscribe(new ThemeFlow(0, -113, 6, 35));
-            // Canvas.subscribe(new ThemeFlow(0, -360, 11, 45));
+            Canvas.addThemeFlow();
         });
     }
 
