@@ -33,10 +33,10 @@ class VNode extends Button {
         });
     }
 
-    /**Delete this Vnode, and node and all the vConnectrs, connectors and vEdges and edges referencing it */
+    /**Delete this vNode, and node and all the vConnectors, connectors and vEdges and edges referencing it */
     delete() {
         ClusterFactory.deleteNode(this);
-        // Call the static method from the cluster Factor
+        // Call the static method from the cluster Factory
     }
 
     notifyObservers(data) {
@@ -224,8 +224,8 @@ class VNode extends Button {
         let strokeWeight = this._getStrokeWeight();
 
         // assign colors
-        renderer.fill(fillColors.fill);
-        //renderer.fill(this.color.concat('00'));
+        //renderer.fill(fillColors.fill);
+        renderer.fill(this.color.concat('00'));
         renderer.stroke(this.strokeColor);
         renderer.strokeWeight(strokeWeight);
 
