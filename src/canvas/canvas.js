@@ -158,8 +158,6 @@ class Canvas {
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
 
-
-
             // show observers
             this.observers.forEach(element => {
                 if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
@@ -291,7 +289,7 @@ class Canvas {
     static showLegend(pos) {
         gp5.fill('#C0C0C0');
         gp5.textAlign(gp5.RIGHT);
-        gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
+        gp5.text("Hold SHIFT and left mouse button to pan", pos.x, pos.y);
         gp5.text("use 'SHIFT + ' to zoom in, 'SHIFT -' to zoom  out", pos.x, pos.y + 13);
         gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 26);
         gp5.text("Press 'SHIFT + e' to delete the last edge", pos.x, pos.y + 39);

@@ -15,7 +15,7 @@ class Fret {
             //renderer.circle(this.vertices[i].x, this.vertices[i].y, 5);
             // this.showGapID(renderer, i, this.vertices[i], this.gap);
         }
-        this.showPosition(renderer, this.org);
+        //  this.showPosition(renderer, this.org);
     }
 
     /**

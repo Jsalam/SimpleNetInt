@@ -237,9 +237,11 @@ class VNode extends Button {
         if (DOM.boxChecked('showTexts')) {
             this._showLabel(renderer, fillColors.label);
 
+
             // show node description
             if (this.mouseIsOver) {
                 this._showDescription(renderer);
+                this._showAttribute(renderer, ["Date_or_Decade", "College", "Department", "Faculty_Staff_Graduate_Undergrad", "URL", "Observations"]);
             }
         }
 
@@ -264,6 +266,29 @@ class VNode extends Button {
         renderer.text(this.node.label, this.pos.x - 22.5, this.pos.y + 5 + this.height / 2, 45);
         renderer.textStyle(renderer.NORMAL);
 
+    }
+
+    _showAttribute(renderer, attributes) {
+
+        renderer.stroke(0);
+        renderer.line(this.pos.x, this.pos.y - 20, this.pos.x, this.pos.y - 70);
+
+
+        let textContent = "";
+        for (let i = 0; i < attributes.length; i++) {
+            const element = this.node.attributes[attributes[i]];
+            if (element !== " ") {
+                textContent = textContent.concat('\n', element)
+            }
+        }
+
+        renderer.push();
+        renderer.translate(this.pos.x - 10, this.pos.y - 100);
+        renderer.noStroke();
+        renderer.rotate(-gp5.PI / 4);
+        renderer.textSize(10);
+        renderer.text(textContent, 0, 0, 500, 500);
+        renderer.pop();
     }
 
     _getFillColor(_baseColor) {
@@ -374,7 +399,7 @@ class VNode extends Button {
         // *** filter by edge category
         //let filteredConnectors = this.node.filterConnectors();
 
-        if (this.selected) strokeColor = filtered;
+        //if (this.selected) strokeColor = filtered;
 
         return strokeColor;
     }
@@ -396,12 +421,11 @@ class VNode extends Button {
     _showDescription(renderer) {
         renderer.fill("#000000");
         renderer.textAlign(gp5.LEFT, gp5.TOP);
-        renderer.strokeWeight(0.5);
-        renderer.textSize(12);
-        renderer.text(this.node.label, 95, gp5.height - 80, gp5.width - 200, 97);
         renderer.noStroke();
+        renderer.textSize(12);
+        renderer.text(this.node.label, 95, gp5.height - 90, gp5.width - 200, 97);
         renderer.textSize(11);
-        renderer.text(this.node.attributes.Date_or_Decade, 100, gp5.height - 62, gp5.width - 200, 97);
+        renderer.text(this.node.description, 100, gp5.height - 72, gp5.width - 200, 97);
     }
 
     getJSON() {

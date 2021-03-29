@@ -66,5 +66,29 @@ class Gallery {
         renderer.rect(this.x - 210 * this.scale, this.y + 23.2 * this.scale, 324 * this.scale, 18 * this.scale);
     }
 
+    colleges(renderer, list) {
+        let step = -4 * this.scale;
+        renderer.noFill();
+        if (!DOM.boxChecked("backgroundContrast")) {
+            renderer.fill(100);
+        } else {
+            renderer.fill(250);
+        }
+
+        renderer.textSize(10);
+        renderer.strokeWeight(1);
+
+        for (let i = 0; i < list.length; i++) {
+            const element = list[i];
+            let _x = this.x - 210 * this.scale;
+            let _y = (this.y + 30.2 * this.scale) + i * step
+            renderer.noStroke();
+            renderer.textAlign(renderer.LEFT, renderer.BOTTOM)
+            renderer.text(element, _x, _y)
+            renderer.stroke(155, 205, 155, 80);
+            renderer.line(_x, _y, _x + 424 * this.scale, _y);
+        }
+    }
+
 
 }

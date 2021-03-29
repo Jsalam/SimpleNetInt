@@ -9,12 +9,14 @@ class EdgeFactory {
 
             // get source node
             let cluster = ClusterFactory.getCluster(e.source.cluster);
-            let source = cluster.getNode(e.source.index);
+            let source = cluster.getNode(e.source.pajekIndex);
             let sourceConnector = source.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
             // get target node
             cluster = ClusterFactory.getCluster(e.target.cluster);
-            let target = cluster.getNode(e.target.index);
+
+            let target = cluster.getNode(e.target.pajekIndex);
+
             let targetConnector = target.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
             // get vSource
@@ -45,10 +47,6 @@ class EdgeFactory {
             Canvas.subscribe(vEdge);
         }
     }
-
-    // static get EDGES() {
-    //     return EdgeFactory._edges;
-    // }
 
     static reset() {
         EdgeFactory._edges = [];
@@ -176,7 +174,7 @@ class EdgeFactory {
      * @param edgeA : either Edge or VEdge
      * @param edgeB : either Edge or VEdge
      */
-    static compareEdges(edgeA, edgeB) {
+    static compareEdges(edgeA, edgeB, excludeKind) {
         let rtn = false;
 
         // compare pajek indexes
@@ -195,7 +193,7 @@ class EdgeFactory {
             rtn = (A[0] === B[0] && A[1] === B[1]);
         }
         // compare kinds for edges
-        if (rtn == true) {
+        if (rtn == true && !excludeKind) {
             let A = edgeA;
             let B = edgeB;
             if (edgeA instanceof VEdge) {
@@ -273,6 +271,21 @@ class EdgeFactory {
         }
         gp5.saveJSON(output, filename);
     }
+
+    static findEdge(sourcePajek, targetPajek, kind) {
+        const tempSource = new Node(undefined, undefined, sourcePajek);
+        const tempTarget = new Node(undefined, undefined, targetPajek);
+        const tempEdge = new Edge(tempSource);
+        tempEdge.kind = kind;
+        tempEdge.setTarget(tempTarget);
+        for (let edge of EdgeFactory._edges) {
+            let found = EdgeFactory.compareEdges(tempEdge, edge, true);
+            if (found) {
+                console.log(edge);
+            }
+        }
+    }
+
 }
 EdgeFactory._edgeBuffer;
 EdgeFactory._vEdgeBuffer;

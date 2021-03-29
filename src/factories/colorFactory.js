@@ -19,10 +19,25 @@ class ColorFactory {
                             gp5.loadStrings(path + names[3], data => {
                                 ColorFactory.palettes.push(data);
                                 console.log(3 + ", :" + ColorFactory.palettes.length);
-                                // Call the "then" function once all the palettes are completed
-                                if (thenFunction) {
-                                    thenFunction();
-                                }
+                                // Fifth palette
+                                gp5.loadStrings(path + names[4], data => {
+                                    ColorFactory.palettes.push(data);
+                                    console.log(4 + ", :" + ColorFactory.palettes.length);
+                                    // Sixth palette
+                                    gp5.loadStrings(path + names[5], data => {
+                                        ColorFactory.palettes.push(data);
+                                        console.log(5 + ", :" + ColorFactory.palettes.length);
+                                        // Seventh palette
+                                        gp5.loadStrings(path + names[6], data => {
+                                            ColorFactory.palettes.push(data);
+                                            console.log(6 + ", :" + ColorFactory.palettes.length);
+                                            // Call the "then" function once all the palettes are completed
+                                            if (thenFunction) {
+                                                thenFunction();
+                                            }
+                                        });
+                                    });
+                                });
                             });
                         });
                     });
@@ -30,6 +45,7 @@ class ColorFactory {
             );
         });
     }
+
 
     static getPalette(n) {
         let tempIndex = n % ColorFactory.palettes.length;

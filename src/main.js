@@ -18,7 +18,7 @@ var main = function(p5) {
         myFont = gp5.loadFont("./fonts/Roboto-Light.ttf");
 
         // get color palette
-        let paletteNames = ["palette1.txt", "palette2.txt", "palette3.txt", "palette4.txt"]
+        let paletteNames = ["paletteA.txt", "paletteB.txt", "paletteC.txt", "paletteD.txt", "paletteE.txt", "paletteF.txt", "paletteG.txt"]
         ColorFactory.loadPalettes('./files/colorPalettes/', paletteNames);
     }
 
@@ -55,7 +55,6 @@ var main = function(p5) {
         // load the first selected model by default
         DOM.switchModel(DOM.dropdowns.modelChoice.value);
 
-
     }
 
     // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
@@ -87,10 +86,17 @@ var main = function(p5) {
         Canvas.showOnPointer();
 
         // gallery
-        gallery.wall(gp5);
-        gallery.canvas(gp5);
-        gallery.column(gp5);
-        gallery.hotArea(gp5);
+        if (DOM.boxChecked('showWall')) {
+            gallery.wall(gp5);
+            gallery.column(gp5);
+            gallery.canvas(gp5);
+            gallery.hotArea(gp5);
+        }
+        if (DOM.boxChecked('showColleges')) {
+            gallery.colleges(gp5, ["Carle College of Medicine", "College of Agriculture, Consumer and Environmental Sciences", "College of Veterinary Medicine", "College of Applied Health Sciences", "College of Education", "College of Fine and Applied Arts", "College of Liberal Arts and Sciences", "College of Media", "Gies College of Business", "Grainger College of Engineering", "Institute for Genomic Biology", "Institute for Sustainability Energy and Environment",
+                "National Center of Supercomputer Applications", "School of Information Sciences", "School of Social Work", "University of Illinois Library", "Other"
+            ])
+        }
 
         // pop transformation matrix
         gp5.pop();

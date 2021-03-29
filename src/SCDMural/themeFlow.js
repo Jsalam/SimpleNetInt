@@ -19,7 +19,7 @@ class ThemeFlow {
     init() {
         // Build Frets 
         let pos = this.nRibbons;
-        let chordGapFactor = 0.2;
+        let chordGapFactor = 0.8;
 
         // Custom made frets on west side
         let tmpOrg1 = gp5.createVector(0, 470);
@@ -53,7 +53,8 @@ class ThemeFlow {
 
         // Build Ribbons
         for (let i = 0; i < this.chords.length - 1; i++) {
-            this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(gp5.random(10, 255), 0, gp5.random(50, 255), 20)))
+            //this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(ColorFactory.palettes[6 - i][0] + '30')));
+            this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(200, 100 - i * 10)));
         }
     }
 

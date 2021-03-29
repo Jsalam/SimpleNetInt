@@ -42,7 +42,7 @@ class Grid {
                 renderer.line(this.org.x, y, this.org.x + this.width, y);
                 renderer.text(i / this.scaleFactor, this.org.x + 12, y);
             }
-            this.showScale(renderer, gp5.width - 500, 25);
+            //this.showScale(renderer, gp5.width - 500, 25);
         }
     }
 

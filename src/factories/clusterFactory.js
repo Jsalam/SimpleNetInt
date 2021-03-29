@@ -75,12 +75,14 @@ class ClusterFactory {
     }
 
     static makeNode(cluster, data) {
-        let node = new Node(cluster.id, data.id, this.countCat);
+        let node = new Node(cluster.id, data.id, data.pajekIndex);
         node.setLabel(data.nodeLabel);
         node.setDescription(data.nodeDescription);
         node.setAttributes(data.nodeAttributes);
         node.setImportedVNodeData(data.vNode);
-        ClusterFactory.countCat++;
+        if (data.pajekIndex > ClusterFactory.countPajek) {
+            ClusterFactory.countPajek = data.pajekIndex;
+        }
         // create connectors if data comes with that info. Data usually comes from 
         // the JSON file or the node created by user input 
         if (data.connectors) {
@@ -143,7 +145,7 @@ class ClusterFactory {
         console.log("Clusters re-intialized")
         ClusterFactory.clusters = [];
         ClusterFactory.vClusters = [];
-        ClusterFactory.countCat = 1;
+        ClusterFactory.countPajek = 1;
     }
 
     static getVClusterOf(cluster) {
@@ -190,8 +192,20 @@ class ClusterFactory {
         return tmp;
     }
 
+    static findDuplicateNodes() {
+        for (let cluster of ClusterFactory.clusters) {
+            for (let i = 0; i < cluster.nodes.length; i++) {
+                const nodeA = cluster.nodes[i];
+                for (let j = i + 1; j < cluster.nodes.length; j++) {
+                    const nodeB = cluster.nodes[j];
+                    nodeA.equalsTo(nodeB);
+                }
+            }
+
+        }
+    }
 }
 
 ClusterFactory.clusters = [];
 ClusterFactory.vClusters = [];
-ClusterFactory.countCat = 1;
+ClusterFactory.countPajek = 1;

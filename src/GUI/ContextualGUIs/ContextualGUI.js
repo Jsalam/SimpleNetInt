@@ -50,7 +50,7 @@ class ContextualGUI {
 
     static createEdgeMenu() {
         ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, 200, 'Edge Menu', document.getElementById('model'));
-        //ContextualGUI.edgeMenu.toggleVisibility();
+        ContextualGUI.edgeMenu.toggleVisibility();
     }
 
     static addCheckboxes(label, items) {

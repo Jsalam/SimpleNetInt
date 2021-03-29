@@ -3,7 +3,7 @@
  * grouped in a single collection
  * @param clusterID: the cluster to which this node belongs to
  * @param _indexInCluster: the index in this cluster
- * @param _count: the pajeckIndex
+ * @param _count: the pajekIndex
  */
 class Node {
     constructor(clusterID, _indexInCluster, _count) {
@@ -436,6 +436,18 @@ class Node {
             }
         });
         return edgesTmp;
+    }
+
+    equalsTo(node) {
+        if (this.idCat.cluster === node.idCat.cluster) {
+            console.log("same cluster: " + this.idCat.cluster);
+            if (this.idCat.index === node.idCat.index) {
+                console.log("same cluster and same index: " + this.idCat.index);
+                if (this.idCat.pajekIndex === node.idCat.pajekIndex) {
+                    console.log("same cluster, index and pajek: " + this.idCat.pajekIndex);
+                }
+            }
+        }
     }
 
     /** This is not being used at this point because the json us made by the vNode */

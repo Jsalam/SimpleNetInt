@@ -11,7 +11,7 @@ getData = function() {
         attributes = JSON.parse(attributes);
 
         let dataTmp = {
-            id: clusterTmp.nodes.length,
+            id: clusterTmp.getLastNodeId(),
             nodeLabel: name,
             nodeDescription: description,
             nodeAttributes: attributes,

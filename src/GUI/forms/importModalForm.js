@@ -89,12 +89,14 @@ makeDroppable = function(element, callback) {
     }
 }
 
+/** deprecated */
 buildClustersImport = function(result) {
     Canvas.resetObservers();
     ClusterFactory.reset();
     ClusterFactory.makeClusters(result);
 }
 
+/** deprecated */
 buildEdgesImport = function(result) {
     EdgeFactory.reset();
     EdgeFactory.buildEdges(result, ClusterFactory.clusters)

@@ -42,6 +42,9 @@ class DOM {
         DOM.checkboxes.grid = document.getElementById('grid');
         DOM.checkboxes.showTexts = document.getElementById('showTexts');
         DOM.checkboxes.showEdges = document.getElementById('showEdges');
+        DOM.checkboxes.showWall = document.getElementById('showWall');
+        DOM.checkboxes.showColleges = document.getElementById('showColleges');
+        DOM.checkboxes.showEdgeMenu = document.getElementById('showEdgeMenu');
 
         DOM.checkboxes.edit.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
@@ -51,6 +54,9 @@ class DOM {
         DOM.checkboxes.grid.onclick = (evt) => DOM.switchGrid(evt);
         DOM.checkboxes.showTexts.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.showEdges.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.showWall.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.showColleges.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.showEdgeMenu.onclick = (evt) => ContextualGUI.edgeMenu.toggleVisibility();
 
         // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
@@ -168,10 +174,8 @@ class DOM {
      */
     static switchModel(value, evt) {
         console.log("Switching to " + value + " network");
-        Canvas.resetObservers();
         gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => {
             DOM.onLoadNetwork(data, evt);
-            Canvas.addThemeFlow();
         });
     }
 
@@ -180,6 +184,10 @@ class DOM {
      * @param {Object} data 
      */
     static onLoadNetwork(data, evt) {
+
+        Canvas.resetObservers();
+        Canvas.addThemeFlow();
+
         // get nodes and edges 
         let nodesTemp = data.nodes;
         let edgesTemp = data.edges;
@@ -229,8 +237,8 @@ class DOM {
         for (let index = 0; index < items.length; index++) {
             const name = items[index];
 
-            // div
-            let div = document.createElement('div');
+            // element
+            let element = document.createElement('span');
 
             // checkbox
             let checkbox = document.createElement('input');
@@ -245,16 +253,18 @@ class DOM {
             var label = document.createElement('label')
             label.htmlFor = name;
             label.style["font-weight"] = "400";
+            label.style["color"] = "#7f7f7f";
+            checkbox.style["margin-left"] = "10px";
             label.appendChild(document.createTextNode("\u00A0")); // &nbsp
             label.appendChild(document.createTextNode(name));
 
-            div.appendChild(checkbox);
-            div.appendChild(label);
+            element.appendChild(checkbox);
+            element.appendChild(label);
 
             // prevent duplicate filters in menu
             if (!DOM.childrenExists(name, list)) {
                 DOM.checkboxes[name] = checkbox;
-                list.appendChild(div);
+                list.appendChild(element);
             }
         }
     }
@@ -268,9 +278,9 @@ class DOM {
         for (let index = 0; index < list.children.length; index++) {
             // get the children in the list
             const child = list.children[index];
-            // get the input un the case of checkboxes
+            // get the input in the case of checkboxes
             const childInput = child.children[0]
-            if (childInput.id === id) {
+            if (childInput && childInput.id === id) {
                 return true;
             }
         }
