@@ -78,8 +78,6 @@ var main = function(p5) {
         // translating to upper left corner in WebGL mode
         // gp5.translate(xOrg,yOrg );
 
-        // Canvas own transformations
-        Canvas.transform();
         Canvas.render();
 
         // Canvas.originCrossHair();

@@ -116,9 +116,11 @@ class Canvas {
     static render() {
         gp5.background(this.currentBackground);
         if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
+            Canvas.transform();
             Canvas.renderOnP5();
         } else {
             //this.graphicsRendered = false;
+            Canvas.transform();
             Canvas.renderOnGraphics();
             gp5.image(this.graphics, 0, 0);
         }
@@ -169,16 +171,6 @@ class Canvas {
 
             // show EdgeFactory Buffer
             if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);
-
-            // canvas edge
-            // this.graphics.stroke('#C0C0C0');
-            // this.graphics.noFill();
-            // this.graphics.rect(0, 0, this.graphics.width, this.graphics.height);R
-
-            // grid
-            if (this.grid && this.showGrid) {
-                this.grid.show(this.graphics);
-            }
 
             // Open gp5 renderer gate
             this.graphicsRendered = true;
