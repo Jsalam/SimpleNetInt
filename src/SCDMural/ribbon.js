@@ -1,8 +1,9 @@
 class Ribbon {
-    constructor(chordA, chordB, _color) {
+    constructor(chordA, chordB, _color, _name) {
         this.pChordA = chordA.points;
         this.pChordB = chordB.points;
         this.color = _color;
+        this.name = _name;
     }
 
 
@@ -51,6 +52,12 @@ class Ribbon {
         if (showStroke) { renderer.stroke(0, 0, 255, 100) } else { renderer.noStroke(); }
 
         renderer.endShape();
+
+        renderer.fill('black');
+        renderer.textAlign(renderer.LEFT, renderer.CENTER)
+        renderer.noStroke()
+        renderer.textSize(14)
+        renderer.text(this.name, this.pChordA[0][0] + 150, this.pChordA[0][1] + 15);
     }
 
     getJSON() {

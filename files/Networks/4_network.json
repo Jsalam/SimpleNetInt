@@ -1,13 +1,7 @@
 {
     "nodes": [{
-            "clusterID": "1",
-            "clusterLabel": "Looking to the Sky",
-            "clusterDescription": "...",
-            "nodes": []
-        },
-        {
             "clusterID": "2",
-            "clusterLabel": "Changing Climate = Changing Lives",
+            "clusterLabel": "Confronting Climate Change",
             "clusterDescription": "...",
             "nodes": [{
                     "id": 0,
@@ -422,7 +416,7 @@
         },
         {
             "clusterID": "3",
-            "clusterLabel": "Staying Healthy",
+            "clusterLabel": "Revolutionizing Health and Wellness",
             "clusterDescription": "...",
             "nodes": [{
                     "id": 0,
@@ -805,7 +799,7 @@
         },
         {
             "clusterID": "4",
-            "clusterLabel": "Building a Safer World",
+            "clusterLabel": "Building Resiliency",
             "clusterDescription": "...",
             "nodes": [{
                     "id": 0,
@@ -1156,7 +1150,7 @@
         },
         {
             "clusterID": "5",
-            "clusterLabel": "Solving Problems Around the World",
+            "clusterLabel": "Sharing Innovation Worldwide",
             "clusterDescription": "...",
             "nodes": [{
                     "id": 0,
@@ -1505,7 +1499,7 @@
         },
         {
             "clusterID": "6",
-            "clusterLabel": "Innovations that Impacted the Nation",
+            "clusterLabel": "Shaping Modern Life",
             "clusterDescription": "...",
             "nodes": [{
                     "id": 0,

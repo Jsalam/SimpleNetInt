@@ -1,3 +1,5 @@
+Palette D
+No theme
 #c66f3b
 #c67c48
 #c68b56

@@ -155,5 +155,59 @@ class Utilities {
             });
         }
     }
+
+    static sortNodesByDateOrDecade(dataset) {
+        let rtn = dataset.sort(function(a, b) {
+            return a.node.attributes.Date_or_Decade - b.node.attributes.Date_or_Decade;
+        })
+        return rtn
+    }
+
+    static sortNodesByCollege(dataset) {
+        let rtn = dataset.sort(function(a, b) {
+            if (a.node.attributes.College < b.node.attributes.College) {
+                return -1;
+            }
+            if (a.node.attributes.College > b.node.attributes.College) {
+                return 1;
+            }
+            return 0;
+        })
+        return rtn;
+    }
+
+    static sortFretsByNodeXCoordinate(frets) {
+        let rtn = frets.sort(function(a, b) {
+            return a.org.x - b.org.x
+        })
+        return rtn;
+    }
+
+    static _updateVNodesCoordinates(sortedList, observersList, offsetX, offsetY, gapX, gapY) {
+        // get the element in the sorted list 
+        for (let i = 0; i < sortedList.length; i++) {
+            // compute its position. Multiply index by factor and add offset
+            const element = sortedList[i];
+            let posX = offsetX + gapX * i;
+            let posY = offsetY + gapY * i;
+            // find the corresponding node in the observers list
+            let index = observersList.findIndex(elm => {
+                if (elm instanceof VNode) {
+                    return elm.node.equalsTo(element.node)
+                }
+            });
+            // set the computed  position
+            if (index != undefined) {
+                if (index != -1) {
+                    const pos = gp5.createVector(posX, posY);
+                    observersList[index].updateCoords(pos, 0);
+                }
+            } else {
+                console.log(index);
+                console.log(element.node);
+            }
+        }
+    }
+
 }
 Utilities.mergedJSON = { nodes: [], edges: [] };

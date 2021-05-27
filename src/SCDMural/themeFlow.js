@@ -1,18 +1,36 @@
+/**
+ * All the data is comming from Canvas.observers. See filtering methods at the bottom 
+ */
 class ThemeFlow {
-    constructor(_x, _y, _nRibbons, _ribbonHeight) {
+    /**
+     * 
+     * @param {*} _x 
+     * @param {*} _y 
+     * @param {*} _ribbonHeight 
+     */
+    constructor(_x, _y, _ribbonHeight) {
         this.org = gp5.createVector(_x, _y)
-            // frets
+        this.ribbonHeight = _ribbonHeight;
+        this.setup();
+        if (this.nRibbons > 0) {
+            this.init();
+        }
+    }
+
+    setup() {
+        this.vNodes = this.getVNodesFromCanvas();
+        // frets
         this.frets = [];
-        this.nFrets = 50;
+        this.nFrets = this.vNodes.length;
         this.fretGap = 45;
         // strings
-        this.ribbonHeight = _ribbonHeight;
-        this.nRibbons = _nRibbons;
+
+        this.nRibbons = this.getVClustersFromCanvas().length;
         this.chords = [];
         this.arm = this.fretGap / 2;
         // ribbons
         this.ribbons = [];
-        this.init();
+        this.labels = this.getLabelsFromCanvas();
     }
 
 
@@ -21,28 +39,33 @@ class ThemeFlow {
         let pos = this.nRibbons;
         let chordGapFactor = 0.8;
 
+        let cascadeXPos = 9; // feet * pixels
+
         // Custom made frets on west side
         let tmpOrg1 = gp5.createVector(0, 470);
-        let tmpOrg2 = gp5.createVector(270, 470);
-        this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg1), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
+        let tmpOrg2 = gp5.createVector(cascadeXPos * this.fretGap, 470);
+        this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg1), this.ribbonHeight, this.nRibbons, 4, chordGapFactor));
 
-        this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg2), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
+        this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg2), this.ribbonHeight, this.nRibbons, 4, chordGapFactor));
+
 
         // Intermediate frets
-        for (let i = 1; i < this.nFrets; i++) {
-            let x = 270 + (i * this.fretGap);
-            let tmpOrg3 = gp5.createVector(x, 470);
-            // this is the temporary position of each dot in the theme flow
-            pos = gp5.floor(gp5.random(1, this.nRibbons + 1));
+        for (let i = 0; i < this.nFrets; i++) {
+            let x = (cascadeXPos + 1) * this.fretGap + (i * this.fretGap);
+            //let tmpOrg3 = gp5.createVector(x, 470);
             chordGapFactor = this.nRibbons / Math.pow(this.nRibbons, 2);
-            this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg3), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
+            let vNodeTmp = this.vNodes[i];
+            let tmpOrg3 = vNodeTmp.pos;
+            // this is the temporary position of each dot in the theme flow
+            pos = 1 + this.getPositionOnThemeFlow(vNodeTmp);
+            this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg3), this.ribbonHeight, this.nRibbons, pos, chordGapFactor, vNodeTmp));
         }
 
         // Custom made frets on east side
         pos = this.nRibbons;;
         chordGapFactor = 0.2;
-        let tmpOrg4 = gp5.createVector(2520, 470)
-        let tmpOrg5 = gp5.createVector(2700, 470)
+        let tmpOrg4 = gp5.createVector(2681, 472)
+        let tmpOrg5 = gp5.createVector(2700, 472)
         this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg4), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
         this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg5), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
 
@@ -53,8 +76,18 @@ class ThemeFlow {
 
         // Build Ribbons
         for (let i = 0; i < this.chords.length - 1; i++) {
-            //this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(ColorFactory.palettes[6 - i][0] + '30')));
-            this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(200, 100 - i * 10)));
+            let colorPalette = ColorFactory.getPaletteByTheme(this.labels[i]);
+            if (colorPalette) {
+                this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(colorPalette.colors[0] + '30'), this.labels[i]));
+            } else {
+                this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(200, 100 - i * 10), this.labels[i]));
+            }
+        }
+    }
+
+    updateCoordinates() {
+        for (const fret of this.frets) {
+            fret.updateCoordinates();
         }
     }
 
@@ -101,6 +134,33 @@ class ThemeFlow {
             }
             if (data.type == "keyup") {}
         }
+    }
+
+    getVNodesFromCanvas() {
+        return Canvas.observers.filter(elm => elm instanceof VNode);
+    }
+
+    getVClustersFromCanvas() {
+        return Canvas.observers.filter(elm => elm instanceof VCluster);
+    }
+
+    getLabelsFromCanvas() {
+        let names = []
+
+        for (const elem of this.getVClustersFromCanvas()) {
+            names.push(elem.cluster.label)
+        }
+        return names;
+    }
+
+    getPositionOnThemeFlow(vNode) {
+        // get the cluster name of the node
+        let labelTmp = ClusterFactory.getCluster(vNode.node.idCat.cluster).label;
+        // find the index in  this.labels collection
+        const isEqual = (element) => element === labelTmp;
+        let index = this.labels.findIndex(isEqual)
+
+        return index
     }
 
     getJSON() {

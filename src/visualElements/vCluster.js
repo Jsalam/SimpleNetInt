@@ -41,7 +41,7 @@ class VCluster {
 
             }
 
-            // set color if the data from JSPN does not have color info
+            // set color if the data from JSON does not have color info
             if (!node.importedVNodeData.color) {
 
                 if (!this.palette) {

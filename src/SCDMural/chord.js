@@ -3,15 +3,18 @@ class Chord {
         this.points = [];
         this.arm = arm;
         // this.points.push(frets[0].vertices[pos]);
-        for (let i = 1; i < frets.length; i++) {
-            let pVrtx = frets[i - 1].vertices[pos];
-            let cVrtx = frets[i].vertices[pos];
+        let sortedFrets = Utilities.sortFretsByNodeXCoordinate(frets)
+
+        for (let i = 1; i < sortedFrets.length; i++) {
+            let pVrtx = sortedFrets[i - 1].vertices[pos];
+            let cVrtx = sortedFrets[i].vertices[pos];
             let cpStart = p5.Vector.add(pVrtx, gp5.createVector(this.arm, 0));
             let cpEnd = p5.Vector.add(cVrtx, gp5.createVector(-this.arm, 0))
             let bezierPoints = [pVrtx.x, pVrtx.y, cpStart.x, cpStart.y, cpEnd.x, cpEnd.y, cVrtx.x, cVrtx.y]
             this.points.push(bezierPoints);
         }
     }
+
 
     show(renderer, showControlPoints) {
         renderer.noFill();

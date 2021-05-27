@@ -1,21 +1,71 @@
 class Fret {
-    constructor(org, gap, chords, pos, factor) {
-        this.org = org;
+    /**
+     * 
+     * @param {*} previous the coordinates of the previous Fret
+     * @param {*} gap the ribbon height
+     * @param {*} chords the number of chords
+     * @param {*} pos the fret space where the node will be placed
+     * @param {*} factor 
+     * @param {*} vNode 
+     */
+    constructor(previous, gap, chords, pos, factor, vNode) {
+
         this.gap = gap;
         this.nChords = chords;
         this.neckH = gap * chords;
-        this.pos = pos;
-        this.vertices = this.computeVertices(this.org, this.pos, factor);
+        if (pos > chords) {
+            console.log("Position in fret greater than number of ribbons")
+            this.pos = 1
+        } else {
+            this.pos = pos;
+        }
+        this.vertices;
+        this.vNode = vNode;
+        this.init(previous, factor)
+    }
+
+    init(previous, factor) {
+        // if a fret
+        if (previous instanceof Fret) {
+            this.org = previous.org
+            this.vertices = this.computeVertices(this.org, this.pos, factor);
+
+        } else {
+            this.org = previous
+            this.vertices = this.computeVertices(this.org, this.pos, factor);
+        }
+
+        if (this.vNode) {
+            //this.vNode.updateCoords(p5.Vector.add(this.org, gp5.createVector(0, 87.5)), 0)
+            // this.vNode.updateCoords(gp5.createVector(this.vNode.pos.x, this.org.y + 87.5), 0)
+            this.org = gp5.createVector(this.vNode.pos.x, this.vNode.pos.y - 87.5); //this.vNode.pos;
+            this.vertices = this.computeVertices(this.org, this.pos, factor);
+        }
+
+    }
+
+    updateCoordinates() {
+        if (this.vNode) {
+            this.org = this.vNode.pos;
+        }
     }
 
     show(renderer) {
         // renderer.fill('red');
-        // renderer.text(this.pos, this.org.x, this.org.y - 10);
-        for (let i = 0; i < this.vertices.length; i++) {
-            //renderer.circle(this.vertices[i].x, this.vertices[i].y, 5);
-            // this.showGapID(renderer, i, this.vertices[i], this.gap);
+        // renderer.textSize(10);
+        // renderer.textAlign(gp5.CENTER)
+        // renderer.text("T " + this.pos, this.org.x, this.org.y + 100);
+        // for (let i = 0; i < this.vertices.length; i++) {
+        //     renderer.circle(this.vertices[i].x, this.vertices[i].y, 5);
+        //     this.showGapID(renderer, i, this.vertices[i], this.gap);
+        // }
+
+        this.showPosition(renderer, this.org);
+
+        // show vNode on fret
+        if (this.vNode) {
+            this.vNode.setColor("#ff0000")
         }
-        //  this.showPosition(renderer, this.org);
     }
 
     /**

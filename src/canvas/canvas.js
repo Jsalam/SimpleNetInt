@@ -115,6 +115,7 @@ class Canvas {
      */
     static render() {
         gp5.background(this.currentBackground);
+        // grid
         if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
             Canvas.transform();
             Canvas.renderOnP5();
@@ -159,6 +160,11 @@ class Canvas {
 
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
+
+            // grid
+            if (this.grid && this.showGrid) {
+                this.grid.show(this.graphics);
+            }
 
             // show observers
             this.observers.forEach(element => {
@@ -253,7 +259,7 @@ class Canvas {
 
     static addThemeFlow() {
         // add a new themeFlow to canvas.
-        Canvas.subscribe(new ThemeFlow(0, 0, 5, 35));
+        Canvas.subscribe(new ThemeFlow(0, 0, 35, ClusterFactory));
         // Canvas.subscribe(new ThemeFlow(0, -113, 6, 35));
         //Canvas.subscribe(new ThemeFlow(0, -360, 11, 45));
     }

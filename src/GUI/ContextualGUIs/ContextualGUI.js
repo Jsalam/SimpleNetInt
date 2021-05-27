@@ -28,9 +28,9 @@ class ContextualGUI {
         ContextualGUI.createEdgeMenu();
 
         // populate contextual menu
-        ContextualGUI.edgeCategories = kinds.split(',')
-        ContextualGUI.addCheckboxes("Categories", ContextualGUI.edgeCategories)
-            //console.log('contextual menu initialized');
+        ContextualGUI.edgeCategories = kinds.split(',');
+        ContextualGUI.addCheckboxes("Categories", ContextualGUI.edgeCategories);
+        //console.log('contextual menu initialized');
     }
 
     /**
@@ -50,7 +50,9 @@ class ContextualGUI {
 
     static createEdgeMenu() {
         ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, 200, 'Edge Menu', document.getElementById('model'));
-        ContextualGUI.edgeMenu.toggleVisibility();
+        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersA)
+        DOM.updateCheckboxes();
+        //ContextualGUI.edgeMenu.toggleVisibility();
     }
 
     static addCheckboxes(label, items) {

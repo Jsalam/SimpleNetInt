@@ -39,7 +39,11 @@ class VConnector extends Button {
         this.color = color;
     }
 
-    updateCoords(pos, sequence, height) {
+    updateCoords(pos) {
+        this.setPos(gp5.createVector(pos.x, pos.y));
+    }
+
+    updateCoordsByColumn(pos, sequence, height) {
         this.setPos(gp5.createVector(pos.x - this.width, pos.y + (sequence * height)));
         this.setHeight(height);
     }

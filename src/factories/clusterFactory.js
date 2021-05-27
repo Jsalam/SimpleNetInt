@@ -21,7 +21,7 @@ class ClusterFactory {
             let posY = 20;
             let width = ClusterFactory.width;
             let height = ClusterFactory.height;
-            let palette = ColorFactory.getPalette(index);
+            let palette = ColorFactory.getPaletteByIndex(index);
 
             // vCluster instantiation
             let tmp = new VCluster(cluster, posX, posY, width, height, palette);
@@ -35,10 +35,11 @@ class ClusterFactory {
      * @param {Object} data cluster attributes. Usually entered with a form
      */
     static makeCluster(data) {
+        console.log(data);
         this.instantiateCluster(data);
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         let index = ClusterFactory.clusters.length - 1;
-        let tmp = new VCluster(ClusterFactory.clusters[index], 15 + x * index, 20, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
+        let tmp = new VCluster(ClusterFactory.clusters[index], 15 + x * index, 20, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPaletteByIndex(index));
         Canvas.subscribe(tmp);
         ClusterFactory.vClusters.push(tmp);
     }
@@ -203,6 +204,16 @@ class ClusterFactory {
             }
 
         }
+    }
+
+    static getNextClusterID() {
+        let max = 0;
+        for (const cluster of ClusterFactory.clusters) {
+            let tmp = cluster.id
+            console.log(cluster);
+            if (tmp > max) max = tmp
+        }
+        return parseInt(max) + 1;
     }
 }
 

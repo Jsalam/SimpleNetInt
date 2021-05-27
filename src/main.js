@@ -18,7 +18,7 @@ var main = function(p5) {
         myFont = gp5.loadFont("./fonts/Roboto-Light.ttf");
 
         // get color palette
-        let paletteNames = ["paletteA.txt", "paletteB.txt", "paletteC.txt", "paletteD.txt", "paletteE.txt", "paletteF.txt", "paletteG.txt"]
+        let paletteNames = ["paletteA.txt", "paletteB.txt", "paletteC.txt", "paletteD.txt", "paletteE.txt", "paletteF.txt", "paletteG.txt", "paletteH.txt"]
         ColorFactory.loadPalettes('./files/colorPalettes/', paletteNames);
     }
 

@@ -67,7 +67,7 @@ class Gallery {
     }
 
     colleges(renderer, list) {
-        let step = -4 * this.scale;
+        let step = -2.4 * this.scale;
         renderer.noFill();
         if (!DOM.boxChecked("backgroundContrast")) {
             renderer.fill(100);
@@ -80,8 +80,8 @@ class Gallery {
 
         for (let i = 0; i < list.length; i++) {
             const element = list[i];
-            let _x = this.x - 210 * this.scale;
-            let _y = (this.y + 30.2 * this.scale) + i * step
+            let _x = this.x - 208 * this.scale;
+            let _y = (this.y + 32 * this.scale) + i * step
             renderer.noStroke();
             renderer.textAlign(renderer.LEFT, renderer.BOTTOM)
             renderer.text(element, _x, _y)

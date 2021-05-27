@@ -201,12 +201,18 @@ class VNode extends Button {
         let angle = (Math.PI * 2) / this.node.connectors.length;
 
         this.vConnectors.forEach(vConnector => {
-            //vConnector.updateCoords(this.pos, counter, this.vConnectorsGap);
-            if (this.node.connectors.length < 2) {
-                vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
-            } else {
-                vConnector.updateCoordsByAngle(this.pos, angle * counter, this.width / 3);
-            }
+            // update connectors by column
+            //vConnector.updateCoordsByColumn(this.pos, counter, this.vConnectorsGap);
+
+            // update connectors around the center
+            // if (this.node.connectors.length < 2) {
+            //     vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
+            // } else {
+            //     vConnector.updateCoordsByAngle(this.pos, angle * counter, this.width / 3);
+            // }
+
+            // update connectors at the center of the vNode
+            vConnector.updateCoords(this.pos);
             counter++;
         });
     }
@@ -294,23 +300,31 @@ class VNode extends Button {
     _getFillColor(_baseColor) {
 
         let baseColor = _baseColor;
+
         if (!baseColor) {
-            switch (this.node.attributes.Primary_ToI) {
-                case 'Technology':
-                    baseColor = ColorFactory.basic.r; //red
-                    break;
-                case 'Methodology':
-                    baseColor = ColorFactory.basic.g; // green
-                    break;
-                case 'Process':
-                    baseColor = ColorFactory.basic.b; // blue
-                    break;
-                case 'Knowledge Framework':
-                    baseColor = ColorFactory.basic.y; // yellow
-                    break;
-                default:
-                    baseColor = ColorFactory.basic.k; // black
-                    break;
+            let clusterID = this.node.idCat.cluster;
+            let themeName = ClusterFactory.getCluster(clusterID).label;
+            let palette = ColorFactory.getPaletteByTheme(themeName);
+            if (palette) {
+                baseColor = palette.colors[0];
+            } else {
+                switch (this.node.attributes.Primary_ToI) {
+                    case 'Technology':
+                        baseColor = ColorFactory.basic.r; //red
+                        break;
+                    case 'Methodology':
+                        baseColor = ColorFactory.basic.g; // green
+                        break;
+                    case 'Process':
+                        baseColor = ColorFactory.basic.b; // blue
+                        break;
+                    case 'Knowledge Framework':
+                        baseColor = ColorFactory.basic.y; // yellow
+                        break;
+                    default:
+                        baseColor = ColorFactory.basic.k; // black
+                        break;
+                }
             }
         }
 
@@ -362,24 +376,32 @@ class VNode extends Button {
     _getStrokeColor(_baseColor) {
         let baseColor = _baseColor;
         if (!baseColor) {
-            switch (this.node.attributes.Primary_ToI) {
-                case 'Technology':
-                    baseColor = ColorFactory.basic.r; //red
-                    break;
-                case 'Methodology':
-                    baseColor = ColorFactory.basic.g; // green
-                    break;
-                case 'Process':
-                    baseColor = ColorFactory.basic.b; // blue
-                    break;
-                case 'Knowledge Framework':
-                    baseColor = ColorFactory.basic.y; // yellow
-                    break;
-                default:
-                    baseColor = ColorFactory.basic.k; // black
-                    break;
+            let clusterID = this.node.idCat.cluster;
+            let themeName = ClusterFactory.getCluster(clusterID).label;
+            let palette = ColorFactory.getPaletteByTheme(themeName);
+            if (palette) {
+                baseColor = palette.colors[0];
+            } else {
+                switch (this.node.attributes.Primary_ToI) {
+                    case 'Technology':
+                        baseColor = ColorFactory.basic.r; //red
+                        break;
+                    case 'Methodology':
+                        baseColor = ColorFactory.basic.g; // green
+                        break;
+                    case 'Process':
+                        baseColor = ColorFactory.basic.b; // blue
+                        break;
+                    case 'Knowledge Framework':
+                        baseColor = ColorFactory.basic.y; // yellow
+                        break;
+                    default:
+                        baseColor = ColorFactory.basic.k; // black
+                        break;
+                }
             }
         }
+
         // default color 
         let strokeColor = baseColor;
         let inPropagation = '#FF0000';
@@ -423,6 +445,8 @@ class VNode extends Button {
         renderer.textAlign(gp5.LEFT, gp5.TOP);
         renderer.noStroke();
         renderer.textSize(12);
+        let clusterLabel = ClusterFactory.getCluster(this.node.idCat.cluster).label
+        renderer.text("Theme:  " + clusterLabel, 95, gp5.height - 108, gp5.width - 200, 97);
         renderer.text(this.node.label, 95, gp5.height - 90, gp5.width - 200, 97);
         renderer.textSize(11);
         renderer.text(this.node.description, 100, gp5.height - 72, gp5.width - 200, 97);

@@ -1,3 +1,5 @@
+Palette B
+No theme
 #616075
 #756e80
 #887c8b

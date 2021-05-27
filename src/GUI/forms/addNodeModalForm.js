@@ -6,8 +6,8 @@ getData = function() {
 
     if (cluster) {
         let clusterTmp = ClusterFactory.clusters[cluster.value];
+        console.log(attributes);
         attributes = '{' + attributes + '}';
-        // console.log(attributes);
         attributes = JSON.parse(attributes);
 
         let dataTmp = {

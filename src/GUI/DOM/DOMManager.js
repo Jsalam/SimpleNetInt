@@ -186,7 +186,6 @@ class DOM {
     static onLoadNetwork(data, evt) {
 
         Canvas.resetObservers();
-        Canvas.addThemeFlow();
 
         // get nodes and edges 
         let nodesTemp = data.nodes;
@@ -196,10 +195,36 @@ class DOM {
         DOM.buildClusters(nodesTemp);
         DOM.buildEdges(edgesTemp);
 
+        // add theme flow with nodes data
+        Canvas.addThemeFlow();
+
+        // Sort the nodes by cronological order and adjust the themeflow frets and chords.
+        DOM._sortNodes();
+
         // add checkboxes to filters. It taked whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
         DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersA)
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
+    }
+
+    /**
+     * Private function to sort nodes by date or decade. It could use other sorting functions
+     */
+    static _sortNodes() {
+        let data = Canvas.observers.filter(elm => elm instanceof VNode);
+        // sort nodes by time
+        const sortedData = Utilities.sortNodesByDateOrDecade(data);
+
+        // update coordinates
+        Utilities._updateVNodesCoordinates(sortedData, Canvas.observers, 450, 560, 45, 0);
+
+        // re-initiate themeFlow
+        let tf = Canvas.observers.find(elm => elm instanceof ThemeFlow);
+        tf.setup();
+        tf.init();
+
+        // update canvas
+        Canvas.update();
     }
 
     /**
@@ -248,6 +273,7 @@ class DOM {
             checkbox.id = name;
             checkbox.style["margin"] = "0px";
             checkbox.onclick = DOM.eventTriggered; // event listener
+            checkbox.checked = true;
 
             // label
             var label = document.createElement('label')

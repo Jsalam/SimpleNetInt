@@ -439,15 +439,19 @@ class Node {
     }
 
     equalsTo(node) {
+        let rtn = false;
         if (this.idCat.cluster === node.idCat.cluster) {
-            console.log("same cluster: " + this.idCat.cluster);
+            //console.log("same cluster: " + this.idCat.cluster);
             if (this.idCat.index === node.idCat.index) {
-                console.log("same cluster and same index: " + this.idCat.index);
+                //  console.log("same cluster and same index: " + this.idCat.index);
+                rtn = true;
                 if (this.idCat.pajekIndex === node.idCat.pajekIndex) {
-                    console.log("same cluster, index and pajek: " + this.idCat.pajekIndex);
+                    // console.log("same cluster, index and pajek: " + this.idCat.pajekIndex);
+                    //rtn = true;
                 }
             }
         }
+        return rtn;
     }
 
     /** This is not being used at this point because the json us made by the vNode */

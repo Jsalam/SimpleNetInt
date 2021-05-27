@@ -26,8 +26,10 @@ class Cluster {
     }
 
     getLastNodeId() {
+        let rtn = 0;
         let last = this.nodes[this.nodes.length - 1]
-        return last.idCat.index;
+        if (last) rtn = last.idCat.index
+        return rtn;
     }
 
     getJSON() {
