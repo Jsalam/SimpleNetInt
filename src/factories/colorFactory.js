@@ -27,15 +27,15 @@ class ColorFactory {
                                     // Sixth palette
                                     gp5.loadStrings(path + names[5], data => {
                                         this.makePalette(data);
-                                        //console.log(5 + ", :" + ColorFactory.palettes.length);
+                                        // console.log(5 + ", :" + ColorFactory.palettes.length);
                                         // Seventh palette
                                         gp5.loadStrings(path + names[6], data => {
                                             this.makePalette(data);
-                                            //console.log(6 + ", :" + ColorFactory.palettes.length);
+                                            //console.log(6 + ", :" + data[0] + data[1]);
                                             // Eighth palette
                                             gp5.loadStrings(path + names[7], data => {
                                                 this.makePalette(data);
-                                                //console.log(7 + ", :" + ColorFactory.palettes.length);
+                                                //console.log(7 + ", :" + data[0] + data[1]);
                                                 // Call the "then" function once all the palettes are completed
                                                 if (thenFunction) {
                                                     thenFunction();

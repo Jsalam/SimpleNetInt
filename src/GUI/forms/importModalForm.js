@@ -30,7 +30,12 @@ loadFile = function(file) {
         return function(e) {
             // Read text data and parse to JSON.
             let data = JSON.parse(e.target.result)
-            nodesImported = data.nodes;
+
+            if (data.nodes) {
+                nodesImported = data.nodes;
+            } else if (data.clusters) {
+                nodesImported = data.clusters;
+            }
             edgesImported = data.edges;
         };
     })(file);

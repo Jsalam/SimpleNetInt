@@ -1,11 +1,11 @@
 Palette G
 Confronting Climate Change
-#acb672
-#b7bf7b
-#c1c884
-#cbd18e
-#d5da96
-#e0e3a0
-#eaecaa
-#f4f6b3
+#41b447
+#5fbe56
+#78c764
+#90d173
+#a7da81
+#bde490
+#d3ed9f
+#e9f6ae
 #ffffbd

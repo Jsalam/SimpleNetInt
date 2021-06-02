@@ -184,11 +184,15 @@ class DOM {
      * @param {Object} data 
      */
     static onLoadNetwork(data, evt) {
-
+        console.log(data);
         Canvas.resetObservers();
-
         // get nodes and edges 
-        let nodesTemp = data.nodes;
+        let nodesTemp
+        if (data.nodes) {
+            nodesTemp = data.nodes;
+        } else if (data.clusters) {
+            nodeTemp = data.clusters;
+        }
         let edgesTemp = data.edges;
 
         // buld clusters and edges

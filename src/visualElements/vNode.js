@@ -226,7 +226,7 @@ class VNode extends Button {
 
         // get the visual properties
         let fillColors = this._getFillColor();
-        this.strokeColor = this._getStrokeColor();
+        this.strokeColor = this._getStrokeColor('#808080');
         let strokeWeight = this._getStrokeWeight();
 
         // assign colors

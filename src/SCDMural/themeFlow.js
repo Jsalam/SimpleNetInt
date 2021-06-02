@@ -66,7 +66,7 @@ class ThemeFlow {
         chordGapFactor = 0.2;
         let tmpOrg4 = gp5.createVector(2681, 472)
         let tmpOrg5 = gp5.createVector(2700, 472)
-        this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg4), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
+            //this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg4), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
         this.frets.push(new Fret(p5.Vector.add(this.org, tmpOrg5), this.ribbonHeight, this.nRibbons, pos, chordGapFactor));
 
         // Build Strings
@@ -77,6 +77,7 @@ class ThemeFlow {
         // Build Ribbons
         for (let i = 0; i < this.chords.length - 1; i++) {
             let colorPalette = ColorFactory.getPaletteByTheme(this.labels[i]);
+            //  console.log(i + "  " + colorPalette.theme)
             if (colorPalette) {
                 this.ribbons.push(new Ribbon(this.chords[i], this.chords[i + 1], gp5.color(colorPalette.colors[0] + '30'), this.labels[i]));
             } else {

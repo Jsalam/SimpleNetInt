@@ -158,7 +158,19 @@ class Utilities {
 
     static sortNodesByDateOrDecade(dataset) {
         let rtn = dataset.sort(function(a, b) {
-            return a.node.attributes.Date_or_Decade - b.node.attributes.Date_or_Decade;
+            let aDate = a.node.attributes.Date_or_Decade;
+            let bDate = b.node.attributes.Date_or_Decade;
+
+            // In case the date is a string  instead of a number
+            if (typeof aDate === 'string') {
+                aDate = aDate.split('-')[0]
+            }
+
+            if (typeof bDate === 'string') {
+                bDate = bDate.split('-')[0]
+            }
+
+            return aDate - bDate;
         })
         return rtn
     }
