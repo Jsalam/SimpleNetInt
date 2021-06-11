@@ -175,6 +175,15 @@ class Utilities {
         return rtn
     }
 
+    static sortNodesByPajekIndex(dataset) {
+        let rtn = dataset.sort(function(a, b) {
+            let aDate = a.node.idCat.pajekIndex;
+            let bDate = b.node.idCat.pajekIndex;
+            return aDate - bDate;
+        })
+        return rtn
+    }
+
     static sortNodesByCollege(dataset) {
         let rtn = dataset.sort(function(a, b) {
             if (a.node.attributes.College < b.node.attributes.College) {

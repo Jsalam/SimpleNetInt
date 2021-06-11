@@ -181,14 +181,14 @@ class ClusterFactory {
 
     static getCluster(id) {
         const tmp = ClusterFactory.clusters.filter(elem => {
-            return elem.id === id;
+            return elem.id == id;
         })[0];
         return tmp;
     }
 
     static getVCluster(id) {
         const tmp = ClusterFactory.vClusters.filter(elem => {
-            return elem.cluster.id === id;
+            return elem.cluster.id == id;
         })[0];
         return tmp;
     }

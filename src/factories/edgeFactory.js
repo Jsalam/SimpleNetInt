@@ -9,7 +9,9 @@ class EdgeFactory {
 
             // get source node
             let cluster = ClusterFactory.getCluster(e.source.cluster);
+
             let source = cluster.getNode(e.source.pajekIndex);
+
             let sourceConnector = source.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
             // get target node

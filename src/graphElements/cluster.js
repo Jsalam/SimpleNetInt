@@ -20,7 +20,7 @@ class Cluster {
 
     getNode(pajekIndex) {
         let rtn = this.nodes.filter(n => {
-            return n.idCat.pajekIndex === pajekIndex;
+            return n.idCat.pajekIndex == pajekIndex;
         })[0];
         return rtn;
     }
