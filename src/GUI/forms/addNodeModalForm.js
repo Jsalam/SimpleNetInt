@@ -6,7 +6,6 @@ getData = function() {
 
     if (cluster) {
         let clusterTmp = ClusterFactory.clusters[cluster.value];
-        console.log(attributes);
         attributes = '{' + attributes + '}';
         attributes = JSON.parse(attributes);
 
@@ -15,6 +14,7 @@ getData = function() {
             nodeLabel: name,
             nodeDescription: description,
             nodeAttributes: attributes,
+            pajekIndex: ClusterFactory.countPajek
         }
         let nodeTmp = ClusterFactory.makeNode(clusterTmp, dataTmp)
 

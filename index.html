@@ -90,7 +90,7 @@
             network</button>
                             <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="myBtn" data-toggle="modal" data-target="#importNetworkModal">Import
             network</button>
-                            <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="exportEdges" data-toggle="modal">Grasshopper</button>
+                            <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="exportEdges" data-toggle="modal" hidden>Grasshopper</button>
                         </div>
 
                     </div>
@@ -151,10 +151,10 @@
                         <label for="showTexts">Show texts</label>
                         <input type="checkbox" id="showEdges" checked>
                         <label for="showEdges">Show edges</label>
-                        <input type="checkbox" id="showWall" checked>
-                        <label for="showWall">Show wall</label>
-                        <input type="checkbox" id="showColleges">
-                        <label for="showColleges">Show colleges</label>
+                        <input type="checkbox" id="showWall" checked hidden>
+                        <label for="showWall" hidden>Show wall</label>
+                        <input type="checkbox" id="showColleges" hidden>
+                        <label for="showColleges" hidden>Show colleges</label>
                         <input type="checkbox" id="showEdgeMenu" checked>
                         <label for="showEdgeMenu">Show edge menu</label>
                         </span>
@@ -171,13 +171,8 @@
         <div>
             <span class="navbar-brand" style="font-size: 0.8em;">Network lib &nbsp
                 <select id="modelChoice" style="font-size:10px; color:grey;">
-                            <option value="0">Colors SCD</option>
-                            <option value="1">Empty network</option>
-                            <option value="2">Dataset March 11 2021</option>
-                            <option value="3">Dataset March 12 2021</option>
-                            <option value="4">Dataset March 17 2021 Colleges</option>
-                            <option value="5" >Dataset May 26 2021 Colleges</option>
-                            <option value="6" selected>FINAL DATASET june 10</option>
+                            <option value="1"selected >Empty network</option>
+
                         </select>
                     </span>
         </div>
@@ -191,7 +186,7 @@
 
     <div id="filtersA" style="margin-left: 50px;">
 
-        <span style="font-size:10px; font-weight: bold;">Types of innovation:</span>
+        <span style="font-size:10px; font-weight: bold;">Edge type visibility:</span>
         <input type="checkbox" id="filterLinked" style="margin:0px;">
         <label for="filterLinked" style="font-size:10px; font-weight:400; color:#7f7f7f">Linked only</label>
 
@@ -257,20 +252,7 @@
                     <h4>Node attributes</h4>
                     <p>Add attributes in comma separated "key":"value" pairs. </p>
                     <textarea class="form-control" rows="10" id="catAttributes">
-"Possible_object":" ",
-"Primary_ToI":" ",
-"Secondary_ToI":" ",
-"Tiertiary_ToI":" ",
-"URL":" ",
-"Observations":" ",
-"College": " ",
-"Department": " ",
-"Date_or_Decade": " ",
-"Photograph": " ",
-"Faculty_Staff_Graduate_Undergrad": " ",
-"Current_Faculty_research":" ",
-"Gender": " ",
-"Other": " "
+"Key":"Value"
                     </textarea>
                     <hr>
 

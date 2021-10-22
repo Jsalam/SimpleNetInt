@@ -79,6 +79,7 @@ class ClusterFactory {
         let node = new Node(cluster.id, data.id, data.pajekIndex);
         node.setLabel(data.nodeLabel);
         node.setDescription(data.nodeDescription);
+        node.setNodeShortDescription(data.nodeShortDescription);
         node.setAttributes(data.nodeAttributes);
         node.setImportedVNodeData(data.vNode);
         if (data.pajekIndex > ClusterFactory.countPajek) {
@@ -97,6 +98,7 @@ class ClusterFactory {
                 node.addConnector(connector, node.connectors.length);
             }
         }
+        ClusterFactory.countPajek++;
         return node;
     }
 

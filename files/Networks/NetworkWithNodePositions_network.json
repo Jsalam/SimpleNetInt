@@ -103,9 +103,9 @@
             "Technology",
             "Methodology"
           ],
-          "pajekIndex": 28,
+          "pajekIndex": 30,
           "vNode": {
-            "posX": 1710,
+            "posX": 1800,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -113,6 +113,42 @@
         },
         {
           "id": 4,
+          "nodeLabel": "Food for Thought App",
+          "nodeShortDescription": "Professor Emma Mercier and her research team created a new app called \"Food for Thought\" which tells children about the carbon footprint created by the food they eat.",
+          "nodeDescription": "Professor Emma Mercier and her research team created a new app called \"Food for Thought\" which tells children about the carbon footprint created by the food they eat. The app also includes nutritional data. Mercier's goal is twofold: to help children be more \"data literate\" and learn more about the causes of climate change. To do this research, Mercier and her team videotaped children learning about climate change and their food carbon footprint. Mercier focused on food since children have more control over what they eat than other aspects of their life. This helps to make climate change awareness more relatable and accessible.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Emma Mercier",
+            "Possible_object": "Tabletop screens mentioned in article",
+            "Primary_ToI": "Technology",
+            "Secondary_ToI": "Knowledge Framework",
+            "URL": "https://news.illinois.edu/view/6367/363728#image-1",
+            "Observations": "link to University Laboratory High School",
+            "College": "College of Education",
+            "N_colleges": 1,
+            "Department": "Curriculum and Instruction",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "2010",
+            "Photograph": "https://news.illinois.edu/view/6367/363728#image-1",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "Emma Mercier",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Technology",
+            "Knowledge Framework"
+          ],
+          "pajekIndex": 32,
+          "vNode": {
+            "posX": 1890,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 5,
           "nodeLabel": "TIGER",
           "nodeShortDescription": "Deke Weaver's series \"The Unreliable Bestiary\" calls attention to climate change by examining different animals through new media and performance art.  ",
           "nodeDescription": "Deke Weaver, professor of new media, created and starred in a show called TIGER from a five-part series called \"The Unreliable Bestiary.\" In this show and this series, Weaver talks about famous tigers, such as Tony the Tiger and the tigers from the Jungle Book, as well as how humans interact with tigers. This was created to call attention to climate change and how it affects wildlife. To further comment on this, Weaver performed the show along the Mississippi River and its watershed to comment on migration as a result of climate change. ",
@@ -138,45 +174,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 35,
+          "pajekIndex": 34,
           "vNode": {
-            "posX": 2025,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 5,
-          "nodeLabel": "Religious Figures talking about climate change: Stewardship",
-          "nodeShortDescription": "Faith Shin's research shows that when  Christians hear language that says God wants people to be stewards of the Earth, they have a greater concern about Climate Change",
-          "nodeDescription": "Psychology graduate student Faith Shin conducted research on how different messages within Christianity were linked to how people viewed and responded to climate change. Shin found that messages linked to stewardship (God commands humans to take care of the Earth) often resulted in Christians viewing climate change concern as a moral imperative. This is compared to dominion beliefs, which advocate for the idea that God gives humans free reign. Dominion beliefs are linked to lower concern for climate change. Shin conducted this research through having different groups read different articles including: Bible passages (either stewardship or dominion) or a control article. An interesting find is that while the stewardship articles showed an increase in moral concern about climate change, the dominion articles did not reduce moral concerns.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Faith Shin",
-            "Possible_object": "image of religious figures?",
-            "Primary_ToI": "Knowledge Framework",
-            "Secondary_ToI": "Process",
-            "URL": "https://news.illinois.edu/view/6367/758796",
-            "Observations": "(solution of having people change their language)",
-            "College": "College of Liberal Arts & Sciences",
-            "N_colleges": 1,
-            "Department": "Psychology\nReligion\nLinguistics ",
-            "N_departments": 3,
-            "Institutes": "",
-            "Date_or_Decade": "2010",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Graduate student",
-            "Current_Faculty_research": "current",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Knowledge Framework",
-            "Process"
-          ],
-          "pajekIndex": 38,
-          "vNode": {
-            "posX": 2160,
+            "posX": 1980,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -209,9 +209,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 39,
+          "pajekIndex": 35,
           "vNode": {
-            "posX": 2205,
+            "posX": 2025,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -219,42 +219,6 @@
         },
         {
           "id": 7,
-          "nodeLabel": "Food for Thought App",
-          "nodeShortDescription": "Professor Emma Mercier and her research team created a new app called \"Food for Thought\" which tells children about the carbon footprint created by the food they eat.",
-          "nodeDescription": "Professor Emma Mercier and her research team created a new app called \"Food for Thought\" which tells children about the carbon footprint created by the food they eat. The app also includes nutritional data. Mercier's goal is twofold: to help children be more \"data literate\" and learn more about the causes of climate change. To do this research, Mercier and her team videotaped children learning about climate change and their food carbon footprint. Mercier focused on food since children have more control over what they eat than other aspects of their life. This helps to make climate change awareness more relatable and accessible.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Emma Mercier",
-            "Possible_object": "Tabletop screens mentioned in article",
-            "Primary_ToI": "Technology",
-            "Secondary_ToI": "Knowledge Framework",
-            "URL": "https://news.illinois.edu/view/6367/363728#image-1",
-            "Observations": "link to University Laboratory High School",
-            "College": "College of Education",
-            "N_colleges": 1,
-            "Department": "Curriculum and Instruction",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "2010",
-            "Photograph": "https://news.illinois.edu/view/6367/363728#image-1",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "Emma Mercier",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Technology",
-            "Knowledge Framework"
-          ],
-          "pajekIndex": 40,
-          "vNode": {
-            "posX": 2250,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 8,
           "nodeLabel": "Local Weather and Perceptions of Climate Change",
           "nodeShortDescription": "Professor of Finance, Tatyana Deryugina, found through surveys that people think climate change is a problem if there are abnormalities in their local weather for two months or more, but not for only a few days or weeks.",
           "nodeDescription": "Professor of Finance, Tatyana Deryugina, found through surveys that people think climate change is a problem if there are abnormalities in their local weather for two months or more, but not for only a few days or weeks. She argues that combating climate change is linked to individual perceptions of climate issues as opposed to societal views, which is why it is important to look at how individuals come to their views towards climate change. Based on her research, Deryugina found that people often didn't show a sense of urgency unless there were significant changes. People often paid more attention to local weather in forming their views of climate change and often times forget about larger occurrences like heat waves. These views impact how public policy is enacted and the timeline it is enacted in.",
@@ -280,9 +244,45 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 43,
+          "pajekIndex": 38,
           "vNode": {
-            "posX": 2385,
+            "posX": 2160,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 8,
+          "nodeLabel": "Religious Figures talking about climate change: Stewardship",
+          "nodeShortDescription": "Faith Shin's research shows that when  Christians hear language that says God wants people to be stewards of the Earth, they have a greater concern about Climate Change",
+          "nodeDescription": "Psychology graduate student Faith Shin conducted research on how different messages within Christianity were linked to how people viewed and responded to climate change. Shin found that messages linked to stewardship (God commands humans to take care of the Earth) often resulted in Christians viewing climate change concern as a moral imperative. This is compared to dominion beliefs, which advocate for the idea that God gives humans free reign. Dominion beliefs are linked to lower concern for climate change. Shin conducted this research through having different groups read different articles including: Bible passages (either stewardship or dominion) or a control article. An interesting find is that while the stewardship articles showed an increase in moral concern about climate change, the dominion articles did not reduce moral concerns.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Faith Shin",
+            "Possible_object": "image of religious figures?",
+            "Primary_ToI": "Knowledge Framework",
+            "Secondary_ToI": "Process",
+            "URL": "https://news.illinois.edu/view/6367/758796",
+            "Observations": "(solution of having people change their language)",
+            "College": "College of Liberal Arts & Sciences",
+            "N_colleges": 1,
+            "Department": "Psychology\nReligion\nLinguistics ",
+            "N_departments": 3,
+            "Institutes": "",
+            "Date_or_Decade": "2010",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Graduate student",
+            "Current_Faculty_research": "current",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Knowledge Framework",
+            "Process"
+          ],
+          "pajekIndex": 42,
+          "vNode": {
+            "posX": 2340,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -290,41 +290,6 @@
         },
         {
           "id": 9,
-          "nodeLabel": "\"Other Natures\" book about Ancient Greek ethnographies",
-          "nodeShortDescription": "Professor Clara Bosak-Schroeder utilizes ancient perspectives to look at a \"newer\" problem: climate change.",
-          "nodeDescription": "Professor Clara Bosak-Schroeder utilizes ancient perspectives to look at a \"newer\" problem: climate change. In her book, Professor Bosak-Schroeder discusses ethnographies written by Herodotus and Diodorus. These ethnographies look at natural resources in other locations and the issues of food and consumption, a theme that rings true today. There was a focus on the interaction between humans and animals and looks at how people are educated about climate change and environmental issues.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Clara Bosak-Schroeder",
-            "Possible_object": "",
-            "Primary_ToI": "Knowledge Framework",
-            "Secondary_ToI": "",
-            "URL": "https://news.illinois.edu/view/6367/808452",
-            "Observations": "",
-            "College": "College of Liberal Arts & Sciences",
-            "N_colleges": 1,
-            "Department": "Classics\nHistory\nComparative & World Literature",
-            "N_departments": 3,
-            "Institutes": "",
-            "Date_or_Decade": "2020",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "Clara Bosak-Schroder",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Knowledge Framework"
-          ],
-          "pajekIndex": 44,
-          "vNode": {
-            "posX": 2430,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 10,
           "nodeLabel": "Critical Zone Science",
           "nodeShortDescription": "The critical zone looks at how changing the Earth's surface can affect subsurface processes including waterflow and elements, which can help us understand climate change.",
           "nodeDescription": "The Earth's critical zone is it's \"living skin\" that, when studied, looks at how different processes on Earth interact. Praveen Kumar does research on hydrology and its different processes. The critical zone helps us understand how interactions between water, air, life, and rock can be affected by human behavior. More specifically, the critical zone looks at how changing the Earth's surface can affect subsurface processes including waterflow and elements. Kumar's research into water is a key aspect of looking at the critical zone and its link to climate change. ",
@@ -350,6 +315,41 @@
           "connectors": [
             "Knowledge Framework",
             "Process"
+          ],
+          "pajekIndex": 45,
+          "vNode": {
+            "posX": 2475,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 10,
+          "nodeLabel": "\"Other Natures\" book about Ancient Greek ethnographies",
+          "nodeShortDescription": "Professor Clara Bosak-Schroeder utilizes ancient perspectives to look at a \"newer\" problem: climate change.",
+          "nodeDescription": "Professor Clara Bosak-Schroeder utilizes ancient perspectives to look at a \"newer\" problem: climate change. In her book, Professor Bosak-Schroeder discusses ethnographies written by Herodotus and Diodorus. These ethnographies look at natural resources in other locations and the issues of food and consumption, a theme that rings true today. There was a focus on the interaction between humans and animals and looks at how people are educated about climate change and environmental issues.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Clara Bosak-Schroeder",
+            "Possible_object": "",
+            "Primary_ToI": "Knowledge Framework",
+            "Secondary_ToI": "",
+            "URL": "https://news.illinois.edu/view/6367/808452",
+            "Observations": "",
+            "College": "College of Liberal Arts & Sciences",
+            "N_colleges": 1,
+            "Department": "Classics\nHistory\nComparative & World Literature",
+            "N_departments": 3,
+            "Institutes": "",
+            "Date_or_Decade": "2020",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "Clara Bosak-Schroder",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Knowledge Framework"
           ],
           "pajekIndex": 49,
           "vNode": {
@@ -428,9 +428,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 4,
+          "pajekIndex": 3,
           "vNode": {
-            "posX": 630,
+            "posX": 585,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -535,9 +535,9 @@
           "connectors": [
             "Process"
           ],
-          "pajekIndex": 10,
+          "pajekIndex": 9,
           "vNode": {
-            "posX": 900,
+            "posX": 855,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -570,9 +570,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 12,
+          "pajekIndex": 13,
           "vNode": {
-            "posX": 990,
+            "posX": 1035,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -580,42 +580,6 @@
         },
         {
           "id": 7,
-          "nodeLabel": "Using Fitness Trackers in research to monitor health",
-          "nodeShortDescription": "Dr. Ruby Mendenhall uses fitness trackers to better understand black women's experiences living in areas with gun violence",
-          "nodeDescription": "Dr. Ruby Mendenhall is a jack of all trades, conducting research in various disciplines, all of which focus on black women and poverty and inequality. One of her focuses is on how stress based on gun violence would affect the genomes of black woman. Mendenhall and her team took blood samples to help create a fitness tracker. She worked with other departments, including the NCSA to help track black women's lives and history. Mendenhall is looking at health with regards to historical and cultural issues, calling on a wide range of experts to help her with her research. By understanding what these women experience, better policies and community building measures can be established",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Ruby Mendenhall",
-            "Possible_object": "fitness tracker",
-            "Primary_ToI": "Technology",
-            "Secondary_ToI": "Methodology",
-            "URL": "https://news.illinois.edu/view/6367/686071",
-            "Observations": "",
-            "College": "College of Liberal Arts & Sciences",
-            "N_colleges": 2,
-            "Department": "Sociology\nAfrican-American Studies",
-            "N_departments": 2,
-            "Institutes": "National Center for Supercomputing Applications",
-            "Date_or_Decade": "2010",
-            "Photograph": "https://news.illinois.edu/view/6367/686071",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "Ruby Mendenhall, Mark Van Moer, Kiel Gilleade",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Technology",
-            "Methodology"
-          ],
-          "pajekIndex": 33,
-          "vNode": {
-            "posX": 1935,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 8,
           "nodeLabel": "Computational Design",
           "nodeShortDescription": "Dr. Kai James is an Aerospace Engineering professor who creates new algorithms to help optimize design, mostly in manufacturing.",
           "nodeDescription": "Dr. Kai James is an Aerospace Engineering professor who creates new algorithms to help optimize design, mostly in manufacturing. His work uses mathematical models to quickly find the best way to design parts in order to make sure machines are running efficiently. He develops different types of algorithms, like ones that simulate mechanical behaviors of solids and algorithms that can then use those simulations to find the best design for the structure to accomplish its goal. For example he has worked on the design of aircraft wings to help the plane fly most efficiently. Leveraging technology, he and his team are able to find solutions for complex problems, find ways new technology, such as 3D printing, can be used, and can help with a wide range of engineering problems.  ",
@@ -641,16 +605,16 @@
           "connectors": [
             "Process"
           ],
-          "pajekIndex": 36,
+          "pajekIndex": 33,
           "vNode": {
-            "posX": 2070,
+            "posX": 1935,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
           }
         },
         {
-          "id": 9,
+          "id": 8,
           "nodeLabel": "Focusing on users feelings can lead to more creative designs",
           "nodeShortDescription": "Dr. Ravi Mehta's research showed that thinking about end users feelings made designers more empathetic which increased creativity in finding solutions for product design. ",
           "nodeDescription": "Creating designs that consumers want requires creativity. Dr. Ravi Mehta, a professor of business administration at Illinois and an expert in product development and marketing, questioned what could improve the process for creating products. His research showed that thinking about end users feelings made designers more empathetic which increased creativity in finding solutions for product design. He and his collaborators did several experiments where people had to create a new product using either a \"feelings-imagination approach\", where creators thought of end users feelings, or an \"object-imagination\" approach, which focuses more on the utility of an object. They found the feelings approach led to more creativity. Dr. Mehta suggests this will be especially useful for companies who are crowdsourcing new ideas and the creators do not have as much experience in product design. ",
@@ -685,6 +649,42 @@
           }
         },
         {
+          "id": 9,
+          "nodeLabel": "Using Fitness Trackers in research to monitor health",
+          "nodeShortDescription": "Dr. Ruby Mendenhall uses fitness trackers to better understand black women's experiences living in areas with gun violence",
+          "nodeDescription": "Dr. Ruby Mendenhall is a jack of all trades, conducting research in various disciplines, all of which focus on black women and poverty and inequality. One of her focuses is on how stress based on gun violence would affect the genomes of black woman. Mendenhall and her team took blood samples to help create a fitness tracker. She worked with other departments, including the NCSA to help track black women's lives and history. Mendenhall is looking at health with regards to historical and cultural issues, calling on a wide range of experts to help her with her research. By understanding what these women experience, better policies and community building measures can be established",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Ruby Mendenhall",
+            "Possible_object": "fitness tracker",
+            "Primary_ToI": "Technology",
+            "Secondary_ToI": "Methodology",
+            "URL": "https://news.illinois.edu/view/6367/686071",
+            "Observations": "",
+            "College": "College of Liberal Arts & Sciences",
+            "N_colleges": 2,
+            "Department": "Sociology\nAfrican-American Studies",
+            "N_departments": 2,
+            "Institutes": "National Center for Supercomputing Applications",
+            "Date_or_Decade": "2010",
+            "Photograph": "https://news.illinois.edu/view/6367/686071",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "Ruby Mendenhall, Mark Van Moer, Kiel Gilleade",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Technology",
+            "Methodology"
+          ],
+          "pajekIndex": 43,
+          "vNode": {
+            "posX": 2385,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
           "id": 10,
           "nodeLabel": "Cost analysis of robot-assisted surgeries",
           "nodeShortDescription": "Dr. Ujjal Kumar Mukherjee, a professor of business administration, studies when robot-assisted surgeries are most cost efficient to use and achieve positive health outcomes for the patients.",
@@ -712,9 +712,9 @@
             "Knowledge Framework",
             "Process"
           ],
-          "pajekIndex": 45,
+          "pajekIndex": 44,
           "vNode": {
-            "posX": 2475,
+            "posX": 2430,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -755,9 +755,9 @@
             "Knowledge Framework",
             "Process"
           ],
-          "pajekIndex": 3,
+          "pajekIndex": 4,
           "vNode": {
-            "posX": 585,
+            "posX": 630,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -791,9 +791,9 @@
             "Technology",
             "Methodology"
           ],
-          "pajekIndex": 14,
+          "pajekIndex": 12,
           "vNode": {
-            "posX": 1080,
+            "posX": 990,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -801,77 +801,6 @@
         },
         {
           "id": 3,
-          "nodeLabel": "Log Antenna",
-          "nodeShortDescription": "Research at the Illinois Antenna Lab led to the development of the log antennae, which would later be used for radio and television signals. ",
-          "nodeDescription": "Raymond H. DuHamel was an electrical engineer who helped created the log antenna on a radio telescope.The initial project was to create log antennae for high-speed aircrafts after World War II. Professor DuHamel and his team worked together in the Illinois Antenna Lab to help create these new types of antennae. After many years of research, DuHamel and his team were able to patent a design for the log antenna, even patenting a design for a log antenna that could receive signals from space.His work would later be used for radio and television signals, helping spread information across the airwaves.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Raymond DuHamel",
-            "Possible_object": "",
-            "Primary_ToI": "Technology",
-            "Secondary_ToI": "",
-            "URL": "https://distributedmuseum.illinois.edu/exhibit/raymond_h_duhamel/",
-            "Observations": "",
-            "College": "Grainger College of Engineering",
-            "N_colleges": 1,
-            "Department": "Electrical Engineering",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "1960",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Technology"
-          ],
-          "pajekIndex": 16,
-          "vNode": {
-            "posX": 1170,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 4,
-          "nodeLabel": "Optimal Food Reserve stocks",
-          "nodeShortDescription": "Combining mathematics, technology and economics Dr. Takashi Takayama and Dr. George Judge were able to develop a new linear model to help predict if prices would increase or decrease for agriculture products.",
-          "nodeDescription": "Combining mathematics, technology and economics Dr. Takashi Takayama  and Dr. George Judge were able to develop a new linear model to help predict if prices would increase or decrease for agriculture products. Linear models help to solve complex problems and can be used to look at supply and demand. Their model had parameters and variables that researchers often defined from looking at historical data to help run these spatial-temporal equilibrium models. Dr. Takayama used these linear models to predict future costs of products that would be traded internationally, such as wheat. This was used generally to see if prices would likely increase or decrease based on the projected supply (including taking into account any stock piles) and demand. Other researchers also used this model and it proved to be a useful tool. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Takashi Takayama and George Judge",
-            "Possible_object": "",
-            "Primary_ToI": "Methodology",
-            "Secondary_ToI": "Technology",
-            "URL": "https://economics.illinois.edu/spotlight/historical-faculty/takayama-takashi",
-            "Observations": "",
-            "College": "College of Liberal Arts & Sciences\nCollege of Agricultural, Consumer & Environmental Sciences",
-            "N_colleges": 2,
-            "Department": "Economics\nAgricultural and Consumer Economics",
-            "N_departments": 2,
-            "Institutes": "",
-            "Date_or_Decade": "1960-1970",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Methodology",
-            "Technology"
-          ],
-          "pajekIndex": 17,
-          "vNode": {
-            "posX": 1215,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 5,
           "nodeLabel": "Graduated Reciprocation in Tension Reduction (GRIT) strategy and the Cold War",
           "nodeShortDescription": "The GRIT strategy (Graduated Reciprocation in Tension Reduction) was a new method to reduce tensions through communication developed during the Cold War.",
           "nodeDescription": "Dr. Charles Osgood was a professor of psychology and leader of the Institute of Communications. His particular focus in the 1960s-1980s was diffusing tensions between countries, specifically the United States and the Soviet Union. He developed the GRIT strategy (Graduated Reciprocation in Tension Reduction) as a new method of how to reduce tensions through communication and not necessarily negotiations. In his process, two countries make a plan for open communication and reciprocation with a particular focus on the arms race and disarmament. This process was used in what Osgood called the \"Kennedy Experiment\" with the Cuban MIssile Crisis and was also used later by Jimmy Carter. Along with his work on GRIT, he also served as the president of the American Psychological Association and published many articles on the future of the nation with regards to the arms race.",
@@ -898,6 +827,77 @@
             "Knowledge Framework",
             "Process"
           ],
+          "pajekIndex": 17,
+          "vNode": {
+            "posX": 1215,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 4,
+          "nodeLabel": "Log Antenna",
+          "nodeShortDescription": "Research at the Illinois Antenna Lab led to the development of the log antennae, which would later be used for radio and television signals. ",
+          "nodeDescription": "Raymond H. DuHamel was an electrical engineer who helped created the log antenna on a radio telescope.The initial project was to create log antennae for high-speed aircrafts after World War II. Professor DuHamel and his team worked together in the Illinois Antenna Lab to help create these new types of antennae. After many years of research, DuHamel and his team were able to patent a design for the log antenna, even patenting a design for a log antenna that could receive signals from space.His work would later be used for radio and television signals, helping spread information across the airwaves.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Raymond DuHamel",
+            "Possible_object": "",
+            "Primary_ToI": "Technology",
+            "Secondary_ToI": "",
+            "URL": "https://distributedmuseum.illinois.edu/exhibit/raymond_h_duhamel/",
+            "Observations": "",
+            "College": "Grainger College of Engineering",
+            "N_colleges": 1,
+            "Department": "Electrical Engineering",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "1960",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Technology"
+          ],
+          "pajekIndex": 18,
+          "vNode": {
+            "posX": 1260,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 5,
+          "nodeLabel": "Optimal Food Reserve stocks",
+          "nodeShortDescription": "Combining mathematics, technology and economics Dr. Takashi Takayama and Dr. George Judge were able to develop a new linear model to help predict if prices would increase or decrease for agriculture products.",
+          "nodeDescription": "Combining mathematics, technology and economics Dr. Takashi Takayama  and Dr. George Judge were able to develop a new linear model to help predict if prices would increase or decrease for agriculture products. Linear models help to solve complex problems and can be used to look at supply and demand. Their model had parameters and variables that researchers often defined from looking at historical data to help run these spatial-temporal equilibrium models. Dr. Takayama used these linear models to predict future costs of products that would be traded internationally, such as wheat. This was used generally to see if prices would likely increase or decrease based on the projected supply (including taking into account any stock piles) and demand. Other researchers also used this model and it proved to be a useful tool. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Takashi Takayama and George Judge",
+            "Possible_object": "",
+            "Primary_ToI": "Methodology",
+            "Secondary_ToI": "Technology",
+            "URL": "https://economics.illinois.edu/spotlight/historical-faculty/takayama-takashi",
+            "Observations": "",
+            "College": "College of Liberal Arts & Sciences\nCollege of Agricultural, Consumer & Environmental Sciences",
+            "N_colleges": 2,
+            "Department": "Economics\nAgricultural and Consumer Economics",
+            "N_departments": 2,
+            "Institutes": "",
+            "Date_or_Decade": "1960-1970",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Methodology",
+            "Technology"
+          ],
           "pajekIndex": 19,
           "vNode": {
             "posX": 1305,
@@ -908,42 +908,6 @@
         },
         {
           "id": 6,
-          "nodeLabel": "Expanding Women's Sports",
-          "nodeShortDescription": "Karol Kahrs worked tirelessly to ensure that women were given opportunities to play sports at the collegiate level.",
-          "nodeDescription": "Karol Kahrs was an instructor in Physical Education and coached collegiate sports in the late 1960s. In 1974, she helped develop the University's women's collegiate sports programs within the Division of Intercollegiate Athletics. She was given a budget of $83,500 to help create seven women's sports and hire their coaches. This work led her to serving as the President of the National Association of College Women's Athletic Administrators. In 1981, she was on the committee who submitted the proposal to the Big Ten  for the inclusion of women's sports in the conference. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Karol Kahrs",
-            "Possible_object": "",
-            "Primary_ToI": "Knowledge Framework",
-            "Secondary_ToI": "Process",
-            "URL": "https://distributedmuseum.illinois.edu/exhibit/karol-khars/",
-            "Observations": "",
-            "College": "College of Applied Health Sciences",
-            "N_colleges": 2,
-            "Department": "Kinesiology",
-            "N_departments": 1,
-            "Institutes": "Athletics",
-            "Date_or_Decade": "1970",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Knowledge Framework",
-            "Process"
-          ],
-          "pajekIndex": 22,
-          "vNode": {
-            "posX": 1440,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 7,
           "nodeLabel": "Eye tracking for reading studies",
           "nodeShortDescription": "The University of Illinois has a long history of studying reading through eye tracking studies.",
           "nodeDescription": "The University of Illinois has a long history of studying reading through eye tracking studies. George McConkie worked on developing a new method to study reading by using computers to help track eye movements. He started this work at Cornell but moved to the University of Illinois in 1979 to the Educational Psychology department. He was one of the first researchers to develop this method for studying reading. Some examples of his work included examining how large of a fixed area eyes had when reading and how eyes move while looking at photos. Other researchers continue to use this method to explore new areas of research and expand our knowledge. Dr. Kiel Christianson works in this area and has helped many students conduct research with eye-tracking research. Mallory Stites, a graduate student worked on examining if people's reading speeds changed when adverbs such as quickly or slowly described how text was said. She was able to show that the speed of reading does change and called the phenomenon as \"Auditory Perceptual Simulation\". ",
@@ -970,9 +934,45 @@
             "Methodology",
             "Technology"
           ],
-          "pajekIndex": 23,
+          "pajekIndex": 20,
           "vNode": {
-            "posX": 1485,
+            "posX": 1350,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 7,
+          "nodeLabel": "Expanding Women's Sports",
+          "nodeShortDescription": "Karol Kahrs worked tirelessly to ensure that women were given opportunities to play sports at the collegiate level.",
+          "nodeDescription": "Karol Kahrs was an instructor in Physical Education and coached collegiate sports in the late 1960s. In 1974, she helped develop the University's women's collegiate sports programs within the Division of Intercollegiate Athletics. She was given a budget of $83,500 to help create seven women's sports and hire their coaches. This work led her to serving as the President of the National Association of College Women's Athletic Administrators. In 1981, she was on the committee who submitted the proposal to the Big Ten  for the inclusion of women's sports in the conference. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Karol Kahrs",
+            "Possible_object": "",
+            "Primary_ToI": "Knowledge Framework",
+            "Secondary_ToI": "Process",
+            "URL": "https://distributedmuseum.illinois.edu/exhibit/karol-khars/",
+            "Observations": "",
+            "College": "College of Applied Health Sciences",
+            "N_colleges": 2,
+            "Department": "Kinesiology",
+            "N_departments": 1,
+            "Institutes": "Athletics",
+            "Date_or_Decade": "1970",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Knowledge Framework",
+            "Process"
+          ],
+          "pajekIndex": 21,
+          "vNode": {
+            "posX": 1395,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1051,7 +1051,7 @@
         },
         {
           "id": 10,
-          "nodeLabel": "Ninth Letter ",
+          "nodeLabel": "Ninth Letter",
           "nodeShortDescription": "Students, emerging authors and well known authors work on poetry, nonfiction and fiction pieces for the Ninth Letter magazine and graphic designers offer an interpretation of the writing through their own original designs.",
           "nodeDescription": "Ninth Letter is a collaborative project between the Graduate Creative Writing program and the School of Art and Design. Students, emerging authors and well known authors work on poetry, nonfiction and fiction pieces for the magazine and graphic designers offer an interpretation of the writing through their own original designs. Students in the creative writing program are the editors for the journal and pick which submissions go into the journal before sending it off to students in the art program. The magazine's designs often like to test what can be done in a magazine and find creative ways for readers to engage with it. A web version has also been developed that has exclusive content designed for the web. Ninth Letter received its name because the letter I is the ninth letter in the alphabet. ",
           "nodeAttributes": {
@@ -1076,9 +1076,9 @@
           "connectors": [
             "Methodology"
           ],
-          "pajekIndex": 30,
+          "pajekIndex": 29,
           "vNode": {
-            "posX": 1800,
+            "posX": 1755,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1088,366 +1088,6 @@
     },
     {
       "clusterID": "3",
-      "clusterLabel": "Revolutionizing Health and Wellness",
-      "clusterDescription": "...",
-      "nodes": [
-        {
-          "id": 1,
-          "nodeLabel": "Early Childhood Curriculum",
-          "nodeShortDescription": "Celia Lavatelli found through her research that children improved their learning through interactions with teachers, materials and school work.",
-          "nodeDescription": "Early Childhood Education is important for children so that they develop motor, social and other skills that will help them later in life. Celia Lavatelli's work greatly informed and pushed early education to become better. She found through her research that children improved their learning through interactions with teachers, materials and school work. The curriculums she developed therefore focused more on project based approaches to teaching. She taught that teachers should be interacting with students and creating an interactive experience for students to be more successful.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Celia Lavatelli",
-            "Possible_object": "",
-            "Primary_ToI": "Knowledge Framework",
-            "Secondary_ToI": "",
-            "URL": "",
-            "Observations": "",
-            "College": "College of Education",
-            "N_colleges": 1,
-            "Department": "Elementary and Early Childhood Education",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "1940",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Knowledge Framework"
-          ],
-          "pajekIndex": 6,
-          "vNode": {
-            "posX": 720,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 2,
-          "nodeLabel": "National Wheelchair Basketball association",
-          "nodeShortDescription": "Dr. Timothy Nugent, a professor of Rehabilitation Education, pioneered the National Wheelchair Basketball Association in 1949.",
-          "nodeDescription": "Dr. Timothy Nugent, a professor of Rehabilitation Education, pioneered the National Wheelchair Basketball Association in 1949. He created this league to help destigmatize those with disabilities, aiming to change the societal and cultural views towards disability. This idea initially began after World War II, when wounded veterans would play wheelchair basketball. Nugent was in charge of the university’s disability programming and decided to create an organized league. Nugent's league eventually included both men's and women's teams that played in the Olympics in 1968, and can still be seen playing here at the University, maintaining Nugent's original view of a destigmatized sport.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Timothy Nugent ",
-            "Possible_object": "Wheelchair",
-            "Primary_ToI": "Knowledge Framework",
-            "Secondary_ToI": "",
-            "URL": "https://distributedmuseum.illinois.edu/exhibit/national-wheelchair-basketball-association/",
-            "Observations": "There's a lot of great pictures at: https://archon.library.illinois.edu/index.php?p=digitallibrary/thumbnails&q=timothy+nugent",
-            "College": "College of Applied Health Sciences",
-            "N_colleges": 1,
-            "Department": "Kinesiology",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "1940-1960",
-            "Photograph": "https://archon.library.illinois.edu/index.php?p=digitallibrary/digitalcontent&id=3453",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty, Staff, undergraduates",
-            "Current_Faculty_research": "Men's Wheelchair Basketball Coach: Matt Buchi  , Women's Wheelchair Basketball Coach: Stephanie Wheeler",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Knowledge Framework"
-          ],
-          "pajekIndex": 9,
-          "vNode": {
-            "posX": 855,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 3,
-          "nodeLabel": "Special Education",
-          "nodeShortDescription": "",
-          "nodeDescription": "Education is a valuable asset to people of all different abilities. Faculty at the University of Illinois felt it was important to make sure children received the appropriate education from trained teachers and developed new methods and pathways for children's education. Samuel Kirk and his wife Winifred worked hard for those with different mental abilities. Samuel Kirk was hired as the director of the newly created Institute for Research on Exceptional Children at the University of Illinois. This institute was to be one of the first multidisciplinary institutes that produced research to help children with different mental abilities. Kirk was the person who coined the phrase \"learning disabilities\" and produced new methodologies for teaching students who had delays in speech, reading, communication and other areas. Merle Karnes would later work with Samuel Kirk and she helped to develop programs in early childhood education. This included programs for those who were considered behind and advanced as well as helping to create the Head Start program which allows lower income families to send their children to preschool. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Samuel and Winifred Kirk, Merle Karnes",
-            "Possible_object": "",
-            "Primary_ToI": "Methodology",
-            "Secondary_ToI": "",
-            "URL": "https://distributedmuseum.illinois.edu/exhibit/samuel_kirk/",
-            "Observations": "",
-            "College": "College of Education",
-            "N_colleges": 1,
-            "Department": "Special Education",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "1950-1980",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Methodology"
-          ],
-          "pajekIndex": 11,
-          "vNode": {
-            "posX": 945,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 4,
-          "nodeLabel": "Ultrasound for non-invasive surgeries",
-          "nodeShortDescription": "William Fry, a professor in the electrical engineering apartment, pioneered the use of ultrasound for use in non-invasive surgeries.",
-          "nodeDescription": "William Fry, a professor in the electrical engineering apartment, pioneered the use of ultrasound for use in non-invasive surgeries. He personally built his ultrasound equipment specifically to study how ultrasounds would affect animal tissue. After extensive testing, his first human trials were on 5 women with late stage breast cancer. One of the women lived twenty month longer after doing the ultrasound procedure. Along with his study on late stage breast cancer, he used the ultrasound technology to study the nervous system.Fry unfortunately died of a heart attack at age 50 but his new methods were able to be built on with radiation to be used on tumors and his brother Frank created some of the first imaging of live brains using ultrasound. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "William Fry",
-            "Possible_object": "ultrasound",
-            "Primary_ToI": "Technology",
-            "Secondary_ToI": "Methodology",
-            "URL": "https://distributedmuseum.illinois.edu/exhibit/william_j_fry/",
-            "Observations": "ultrasound and artificial heart",
-            "College": "Grainger College of Engineering",
-            "N_colleges": 1,
-            "Department": "Electrical Engineering",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "1950",
-            "Photograph": "https://archon.library.illinois.edu/index.php?p=digitallibrary/digitalcontent&id=8170",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Technology",
-            "Methodology"
-          ],
-          "pajekIndex": 15,
-          "vNode": {
-            "posX": 1125,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 5,
-          "nodeLabel": "PAC-1",
-          "nodeShortDescription": "PAC-1 is an anti-cancer drug discovered by chemistry Professor Paul Hergenrother and further developed with the help from Professor Timothy Fan, from veterinary sciences.",
-          "nodeDescription": "PAC-1 is an anti-cancer drug discovered by chemistry Professor Paul Hergenrother and further developed with the help from Professor Timothy Fan, from veterinary sciences. PAC-1 is an abbreviation for procaspase-activating compound and was discovered in Hergenrother's lab when he was studying 20,000 compounds to see their ability to turn on an enzyme that can selectively kill cancer cells. Hergenrother and Fan work together to test the effectiveness of PAC-1 through animal trials and now human trials.  Along with Hergenrother and Fan, one of the main researchers was a daschund with a brain tumor named Pretzel, who acted as one of the test dogs, with success. Pretzel, after going through treatment with PAC-1 and standard cancer treatment, had her tumor shrunk and her life expectancy extended. Hergenrother and Fan are continuing with trials today to make this an effective treatment.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Paul Hergenrother and Timothy Fan",
-            "Possible_object": "Picture of Pretzel? PAC-1 compound",
-            "Primary_ToI": "Process",
-            "Secondary_ToI": "",
-            "URL": "https://distributedmuseum.illinois.edu/exhibit/pac-1/",
-            "Observations": "",
-            "College": "College of Liberal Arts & Sciences\nCollege of Veterinary Medicine\nCarle Illinois College of Medicine",
-            "N_colleges": 4,
-            "Department": "Chemistry\nVeterinary Clinical Medicine",
-            "N_departments": 2,
-            "Institutes": "Carl R. Woese Institute of Genomic Biology",
-            "Date_or_Decade": "2010",
-            "Photograph": "Picture with Hoover, a research dog (link)",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "Timothy Fan, Paul Hergenrother",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Process"
-          ],
-          "pajekIndex": 31,
-          "vNode": {
-            "posX": 1845,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 6,
-          "nodeLabel": "Identifying Depression through Early Awareness (IDEA) Coalition",
-          "nodeShortDescription": "Karen Dina Tabb, WenHao David Huang, and Brandon Meline created the IDEA coalition in 2017 to improve maternal mental health awareness by identifying risk factors during the perinatal period.",
-          "nodeDescription": "Karen Dina Tabb, professor of Social work along with WenHao David Huang (Education Policy, Organization and Leadership department) and Brandon Meline (Champaign-Urbana Public Health District) created the IDEA Coalition in 2017  to improve maternal mental health awareness by identifying risk factors during the perinatal period. In 2018, Tabb and her team obtained funding from the Patient-Centered Outcomes Research Institute (PCORI) to create an advisory board that includes local women who have had depression before and after giving birth to engage the Champaign-Urbana community. The IDEA Coalition's research is community-driven where researchers and community members work together to create better mental health support for pregnant women. The IDEA coalition quickly gained ground, hosting a national symposium in 2019, a mental-health film screening in both 2018 and 2019, and many other meetings. The IDEA Coalition expanded to rural areas to help every population with perinatal depression.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Karen Dina Tabb, WenHao David Huang",
-            "Possible_object": "",
-            "Primary_ToI": "Process",
-            "Secondary_ToI": "",
-            "URL": "",
-            "Observations": "2 different departments",
-            "College": "School of Social Work\nCollege of Education",
-            "N_colleges": 2,
-            "Department": "Social Work\nEducation Policy, Organization, and Leadership",
-            "N_departments": 2,
-            "Institutes": "",
-            "Date_or_Decade": "2010",
-            "Photograph": "In source you emailed me",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "current",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Process"
-          ],
-          "pajekIndex": 34,
-          "vNode": {
-            "posX": 1980,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 7,
-          "nodeLabel": "MV Lab",
-          "nodeShortDescription": "The mv lab at the University of Illinois incorporates multiple technologies to research how our bodies move, especially when there are constraints, like the edges of camera frames for cinematic pieces.",
-          "nodeDescription": "There are many different methods for understanding how our bodies move in space. The mv lab at the University of Illinois incorporates multiple technologies to research how our bodies move, especially when there are constraints, like the edges of camera frames for cinematic pieces. The mv lab was developed by Jenny Oyakkon-Koloski, assistant professor of Media and Cinema studies, and Mike Junokas, research in Media and Cinema Studies. They record a person's movements and are able to show an abstract skeleton (dots and lines) of the movements. They examine how the camera and the movements of the body influence each other. For example the moving agent may make the camera move so that it follows the head, hands or other movements. The lab has also expanded to create artistic pieces of work, use Laban Movement Studies methods, analyze dance numbers from cinema, and continues to add to its scope of research. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Jenny Oyakkon-Koloski and Mike Junokas",
-            "Possible_object": "",
-            "Primary_ToI": "Process",
-            "Secondary_ToI": "",
-            "URL": "http://mvlab.org/",
-            "Observations": "",
-            "College": "College of Media",
-            "N_colleges": 1,
-            "Department": "Media & Cinema Studies",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "2010",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty, Staff",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Process"
-          ],
-          "pajekIndex": 42,
-          "vNode": {
-            "posX": 2340,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 8,
-          "nodeLabel": "Parkinson's Dance Class",
-          "nodeShortDescription": "Dance for People with Parkinson's is a program that invites those with Parkinson's to come together to dance and move their bodies to promote physical and mental health.",
-          "nodeDescription": "For the last decade, the Krannert Center has been hosting the Dance for People with Parkinson's, a program that invites those with Parkinson's to come together to dance and move their bodies. This program works to provide those with Parkinson's to embrace their body movements in a judgement free zone, combining health with dance and music. The dancers go at their own pace and utilize the space in ways that their ability can afford them to. Regardless of their range of motion, there is a joyful mood surrounding the class, as it creates a space for people to embrace the music and temporarily step away from Parkinson's and to promote both physical and mental health habits. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Various faculty and staff",
-            "Possible_object": "",
-            "Primary_ToI": "Process",
-            "Secondary_ToI": "",
-            "URL": "https://news.illinois.edu/view/6367/809544",
-            "Observations": "",
-            "College": "College of Fine and Applied Arts",
-            "N_colleges": 1,
-            "Department": "Dance",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "2020",
-            "Photograph": "Great photos in link",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty, staff",
-            "Current_Faculty_research": "also Kate Insolia",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Process"
-          ],
-          "pajekIndex": 46,
-          "vNode": {
-            "posX": 2520,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 9,
-          "nodeLabel": "Technology Limits to Lower Stress",
-          "nodeShortDescription": "Labor and Employment Relations professors have found that limiting technology that keeps us connected to work during non-work hours helps reduce people's stress",
-          "nodeDescription": "Work-life balance is an important topic, especially as our world becomes more digitally connected. Labor and Employment Relations professors YoungAh Park and Yihao Liu, along with graduate student Lucille Headrick studies how workers manage these boundaries and what tactics can lead to lower stress. In 2017 they surveyed teachers to find how many create a boundary related to email and what other influences in the school environment enable teachers to have a clearer boundary between work and life. Their findings showed that about 50% of the teachers surveyed had email notifications on their phones and on weeks when they received more emails after hours, they had higher instances of thinking about the negative events that had happened at their jobs and insomnia. They also found that  principles (or supervisors) who communicate their own work-home boundaries will lead to more teachers implementing these boundaries. The final factor they examined were parents' expectations, and found what teachers' perceived parents (or clients) expectations to be played an important role on being able to separate these boundaries. Their conclusions that limiting technology that can break these boundaries and setting clear expectations of when they will work to supervisors and clients can help individuals to lower their work related stress. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "YoungAh Park and Yihao Liu, and graduate student Lucille Headrick",
-            "Possible_object": "",
-            "Primary_ToI": "Knowledge Framework",
-            "Secondary_ToI": "Process",
-            "URL": "https://news.illinois.edu/view/6367/809752",
-            "Observations": "",
-            "College": "School of Labor and Employment Relations\nCollege of Liberal Arts & Sciences",
-            "N_colleges": 2,
-            "Department": "Psychology",
-            "N_departments": 1,
-            "Institutes": "",
-            "Date_or_Decade": "2020",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty, Graduate student",
-            "Current_Faculty_research": "",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Knowledge Framework",
-            "Process"
-          ],
-          "pajekIndex": 47,
-          "vNode": {
-            "posX": 2565,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 10,
-          "nodeLabel": "Artificial Intelligence Websites for Agricultural Challenges",
-          "nodeShortDescription": "Artificial Intelligence websites being developed by Illinois faculty will help to solve new agricultural challenges. ",
-          "nodeDescription": "The USDA's National Institute of Food and Agriculture and the National Science Foundation created seven new artificial intelligence sites across the country, with the University of Illinois in charge of two sites. The University of Illinois would be in charge of the AI Institute of Future Agricultural Resilience, and Sustainability (AIFARMS), and the AI Institute for Molecular Discovery, Synthetic Strategy, and Manufacturing. AIFARMS will work on computer software and human-robot interaction to help with major agricultural challenges such as the wellness of animals in agriculture, and resiliency of crops. The AI institute for Molecular Discovery would focus on chemical synthesis to create new materials and bioactive compounds and teaching students new interdisciplinary methods. ",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Vikram Adve, Huimin Zhao",
-            "Possible_object": "",
-            "Primary_ToI": "Technology",
-            "Secondary_ToI": "Methodology",
-            "URL": "https://blogs.illinois.edu/view/6367/1159979456",
-            "Observations": "",
-            "College": "Grainger College of Engineering\nCollege of Liberal Arts & Sciences",
-            "N_colleges": 2,
-            "Department": "Computer Science\nChemical and Biomolecular Engineering\nChemistry",
-            "N_departments": 3,
-            "Institutes": "",
-            "Date_or_Decade": "2020",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "Vikram Adve, Huimin Zhao",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Technology",
-            "Methodology"
-          ],
-          "pajekIndex": 48,
-          "vNode": {
-            "posX": 2610,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        }
-      ]
-    },
-    {
-      "clusterID": "4",
       "clusterLabel": "Sharing Innovations Worldwide",
       "clusterDescription": "...",
       "nodes": [
@@ -1478,9 +1118,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 7,
+          "pajekIndex": 6,
           "vNode": {
-            "posX": 765,
+            "posX": 720,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1513,9 +1153,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 13,
+          "pajekIndex": 14,
           "vNode": {
-            "posX": 1035,
+            "posX": 1080,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1549,9 +1189,9 @@
             "Process",
             "Knowledge Framework"
           ],
-          "pajekIndex": 18,
+          "pajekIndex": 16,
           "vNode": {
-            "posX": 1260,
+            "posX": 1170,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1584,9 +1224,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 20,
+          "pajekIndex": 22,
           "vNode": {
-            "posX": 1350,
+            "posX": 1440,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1620,9 +1260,9 @@
             "Knowledge Framework",
             "Process"
           ],
-          "pajekIndex": 21,
+          "pajekIndex": 23,
           "vNode": {
-            "posX": 1395,
+            "posX": 1485,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1726,9 +1366,9 @@
           "connectors": [
             "Knowledge Framework"
           ],
-          "pajekIndex": 29,
+          "pajekIndex": 28,
           "vNode": {
-            "posX": 1755,
+            "posX": 1710,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1736,42 +1376,6 @@
         },
         {
           "id": 9,
-          "nodeLabel": "Appropriate Scale Mechanization Consortium ",
-          "nodeShortDescription": "Dr. Alan Hanson has worked with multiple universities to create the Appropriate Scale Mechanization Consortium, whose goal is to promote appropriate-scale mechanization focusing on small farming systems in Feed-the-Future countries.",
-          "nodeDescription": "Dr. Alan Hanson has worked with multiple universities to create the Appropriate Scale Mechanization Consortium, whose goal is to promote appropriate-scale mechanization focusing on small farming systems in Feed-the-Future countries. It enhances the experiences of women in the adoption of agricultural technologies. The target countries in the ASMC are Burkina Faso, Ethiopia, Bangladesh, and Cambodia. Dr. Hanson and his team want to make technological advancements and that business ventures are facilitated with gender considerations in mind.",
-          "nodeAttributes": {
-            "Faculty_Student_Name": "Alan Hansen",
-            "Possible_object": "",
-            "Primary_ToI": "Process",
-            "Secondary_ToI": "Knowledge Framework",
-            "URL": "I have a powerpoint from Dr. Hansen on this I will share with you",
-            "Observations": "lots more stuff in the powerpoint (I'll add more soon)",
-            "College": "College of Agricultural, Consumer & Environmental Sciences\nCollege of Liberal Arts & Sciences",
-            "N_colleges": 2,
-            "Department": "Agricultural and Biological Engineering\nCenter for African Studies",
-            "N_departments": 2,
-            "Institutes": "",
-            "Date_or_Decade": "2010",
-            "Photograph": "",
-            "Faculty_Staff_Graduate_Undergrad": "Faculty",
-            "Current_Faculty_research": "Dr. Alan Hanson, Tim Rendall",
-            "Gender": "",
-            "Other": ""
-          },
-          "connectors": [
-            "Process",
-            "Knowledge Framework"
-          ],
-          "pajekIndex": 32,
-          "vNode": {
-            "posX": 1890,
-            "posY": 560,
-            "posZ": 0,
-            "color": "#ff0000"
-          }
-        },
-        {
-          "id": 10,
           "nodeLabel": "Higher wage incentives increases crowdsource drivers productivity",
           "nodeShortDescription": "Dr. Yuqian Xu. a business administration professor, looked at redistributing some of the top earners money for a crowdsourced delivery service in China and found that when underpaid workers had opportunity to earn more they increased their productivity.",
           "nodeDescription": "As new models of employment emerge like crowdsource delivery, it becomes increasingly important for companies to understand what will keep workers in order to meet the demands of their customers. Dr. Yuqian Xu. a business administration professor, looked at redistributing some of the top earners money for a crowdsourced delivery service in China and found that when underpaid workers had opportunity to earn more they increased their productivity. Dr. Xu found that these incentives increased workers' service capacity between 14 and 31 percent with little affect to the workers who were in the top 1%, 3% and 5% earnings. Finding new ways to study the effectiveness of these models and ensure that supply of workers is available to meet the demands of the consumers will continue to be important as people choose to have this model of employment. ",
@@ -1798,9 +1402,405 @@
             "Knowledge Framework",
             "Process"
           ],
+          "pajekIndex": 31,
+          "vNode": {
+            "posX": 1845,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 10,
+          "nodeLabel": "Appropriate Scale Mechanization Consortium ",
+          "nodeShortDescription": "Dr. Alan Hanson has worked with multiple universities to create the Appropriate Scale Mechanization Consortium, whose goal is to promote appropriate-scale mechanization focusing on small farming systems in Feed-the-Future countries.",
+          "nodeDescription": "Dr. Alan Hanson has worked with multiple universities to create the Appropriate Scale Mechanization Consortium, whose goal is to promote appropriate-scale mechanization focusing on small farming systems in Feed-the-Future countries. It enhances the experiences of women in the adoption of agricultural technologies. The target countries in the ASMC are Burkina Faso, Ethiopia, Bangladesh, and Cambodia. Dr. Hanson and his team want to make technological advancements and that business ventures are facilitated with gender considerations in mind.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Alan Hansen",
+            "Possible_object": "",
+            "Primary_ToI": "Process",
+            "Secondary_ToI": "Knowledge Framework",
+            "URL": "I have a powerpoint from Dr. Hansen on this I will share with you",
+            "Observations": "lots more stuff in the powerpoint (I'll add more soon)",
+            "College": "College of Agricultural, Consumer & Environmental Sciences\nCollege of Liberal Arts & Sciences",
+            "N_colleges": 2,
+            "Department": "Agricultural and Biological Engineering\nCenter for African Studies",
+            "N_departments": 2,
+            "Institutes": "",
+            "Date_or_Decade": "2010",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "Dr. Alan Hanson, Tim Rendall",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Process",
+            "Knowledge Framework"
+          ],
           "pajekIndex": 41,
           "vNode": {
             "posX": 2295,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        }
+      ]
+    },
+    {
+      "clusterID": "4",
+      "clusterLabel": "Revolutionizing Health and Wellness",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 1,
+          "nodeLabel": "Early Childhood Curriculum",
+          "nodeShortDescription": "Celia Lavatelli found through her research that children improved their learning through interactions with teachers, materials and school work.",
+          "nodeDescription": "Early Childhood Education is important for children so that they develop motor, social and other skills that will help them later in life. Celia Lavatelli's work greatly informed and pushed early education to become better. She found through her research that children improved their learning through interactions with teachers, materials and school work. The curriculums she developed therefore focused more on project based approaches to teaching. She taught that teachers should be interacting with students and creating an interactive experience for students to be more successful.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Celia Lavatelli",
+            "Possible_object": "",
+            "Primary_ToI": "Knowledge Framework",
+            "Secondary_ToI": "",
+            "URL": "",
+            "Observations": "",
+            "College": "College of Education",
+            "N_colleges": 1,
+            "Department": "Elementary and Early Childhood Education",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "1940",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Knowledge Framework"
+          ],
+          "pajekIndex": 7,
+          "vNode": {
+            "posX": 765,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 2,
+          "nodeLabel": "National Wheelchair Basketball association",
+          "nodeShortDescription": "Dr. Timothy Nugent, a professor of Rehabilitation Education, pioneered the National Wheelchair Basketball Association in 1949.",
+          "nodeDescription": "Dr. Timothy Nugent, a professor of Rehabilitation Education, pioneered the National Wheelchair Basketball Association in 1949. He created this league to help destigmatize those with disabilities, aiming to change the societal and cultural views towards disability. This idea initially began after World War II, when wounded veterans would play wheelchair basketball. Nugent was in charge of the university’s disability programming and decided to create an organized league. Nugent's league eventually included both men's and women's teams that played in the Olympics in 1968, and can still be seen playing here at the University, maintaining Nugent's original view of a destigmatized sport.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Timothy Nugent ",
+            "Possible_object": "Wheelchair",
+            "Primary_ToI": "Knowledge Framework",
+            "Secondary_ToI": "",
+            "URL": "https://distributedmuseum.illinois.edu/exhibit/national-wheelchair-basketball-association/",
+            "Observations": "There's a lot of great pictures at: https://archon.library.illinois.edu/index.php?p=digitallibrary/thumbnails&q=timothy+nugent",
+            "College": "College of Applied Health Sciences",
+            "N_colleges": 1,
+            "Department": "Kinesiology",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "1940-1960",
+            "Photograph": "https://archon.library.illinois.edu/index.php?p=digitallibrary/digitalcontent&id=3453",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty, Staff, undergraduates",
+            "Current_Faculty_research": "Men's Wheelchair Basketball Coach: Matt Buchi  , Women's Wheelchair Basketball Coach: Stephanie Wheeler",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Knowledge Framework"
+          ],
+          "pajekIndex": 10,
+          "vNode": {
+            "posX": 900,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 3,
+          "nodeLabel": "Ultrasound for non-invasive surgeries",
+          "nodeShortDescription": "William Fry, a professor in the electrical engineering apartment, pioneered the use of ultrasound for use in non-invasive surgeries.",
+          "nodeDescription": "William Fry, a professor in the electrical engineering apartment, pioneered the use of ultrasound for use in non-invasive surgeries. He personally built his ultrasound equipment specifically to study how ultrasounds would affect animal tissue. After extensive testing, his first human trials were on 5 women with late stage breast cancer. One of the women lived twenty month longer after doing the ultrasound procedure. Along with his study on late stage breast cancer, he used the ultrasound technology to study the nervous system.Fry unfortunately died of a heart attack at age 50 but his new methods were able to be built on with radiation to be used on tumors and his brother Frank created some of the first imaging of live brains using ultrasound. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "William Fry",
+            "Possible_object": "ultrasound",
+            "Primary_ToI": "Technology",
+            "Secondary_ToI": "Methodology",
+            "URL": "https://distributedmuseum.illinois.edu/exhibit/william_j_fry/",
+            "Observations": "ultrasound and artificial heart",
+            "College": "Grainger College of Engineering",
+            "N_colleges": 1,
+            "Department": "Electrical Engineering",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "1950",
+            "Photograph": "https://archon.library.illinois.edu/index.php?p=digitallibrary/digitalcontent&id=8170",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Technology",
+            "Methodology"
+          ],
+          "pajekIndex": 11,
+          "vNode": {
+            "posX": 945,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 4,
+          "nodeLabel": "Special Education",
+          "nodeShortDescription": "",
+          "nodeDescription": "Education is a valuable asset to people of all different abilities. Faculty at the University of Illinois felt it was important to make sure children received the appropriate education from trained teachers and developed new methods and pathways for children's education. Samuel Kirk and his wife Winifred worked hard for those with different mental abilities. Samuel Kirk was hired as the director of the newly created Institute for Research on Exceptional Children at the University of Illinois. This institute was to be one of the first multidisciplinary institutes that produced research to help children with different mental abilities. Kirk was the person who coined the phrase \"learning disabilities\" and produced new methodologies for teaching students who had delays in speech, reading, communication and other areas. Merle Karnes would later work with Samuel Kirk and she helped to develop programs in early childhood education. This included programs for those who were considered behind and advanced as well as helping to create the Head Start program which allows lower income families to send their children to preschool. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Samuel and Winifred Kirk, Merle Karnes",
+            "Possible_object": "",
+            "Primary_ToI": "Methodology",
+            "Secondary_ToI": "",
+            "URL": "https://distributedmuseum.illinois.edu/exhibit/samuel_kirk/",
+            "Observations": "",
+            "College": "College of Education",
+            "N_colleges": 1,
+            "Department": "Special Education",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "1950-1980",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Methodology"
+          ],
+          "pajekIndex": 15,
+          "vNode": {
+            "posX": 1125,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 5,
+          "nodeLabel": "Identifying Depression through Early Awareness (IDEA) Coalition",
+          "nodeShortDescription": "Karen Dina Tabb, WenHao David Huang, and Brandon Meline created the IDEA coalition in 2017 to improve maternal mental health awareness by identifying risk factors during the perinatal period.",
+          "nodeDescription": "Karen Dina Tabb, professor of Social work along with WenHao David Huang (Education Policy, Organization and Leadership department) and Brandon Meline (Champaign-Urbana Public Health District) created the IDEA Coalition in 2017  to improve maternal mental health awareness by identifying risk factors during the perinatal period. In 2018, Tabb and her team obtained funding from the Patient-Centered Outcomes Research Institute (PCORI) to create an advisory board that includes local women who have had depression before and after giving birth to engage the Champaign-Urbana community. The IDEA Coalition's research is community-driven where researchers and community members work together to create better mental health support for pregnant women. The IDEA coalition quickly gained ground, hosting a national symposium in 2019, a mental-health film screening in both 2018 and 2019, and many other meetings. The IDEA Coalition expanded to rural areas to help every population with perinatal depression.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Karen Dina Tabb, WenHao David Huang",
+            "Possible_object": "",
+            "Primary_ToI": "Process",
+            "Secondary_ToI": "",
+            "URL": "",
+            "Observations": "2 different departments",
+            "College": "School of Social Work\nCollege of Education",
+            "N_colleges": 2,
+            "Department": "Social Work\nEducation Policy, Organization, and Leadership",
+            "N_departments": 2,
+            "Institutes": "",
+            "Date_or_Decade": "2010",
+            "Photograph": "In source you emailed me",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "current",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Process"
+          ],
+          "pajekIndex": 36,
+          "vNode": {
+            "posX": 2070,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 6,
+          "nodeLabel": "MV Lab",
+          "nodeShortDescription": "The mv lab at the University of Illinois incorporates multiple technologies to research how our bodies move, especially when there are constraints, like the edges of camera frames for cinematic pieces.",
+          "nodeDescription": "There are many different methods for understanding how our bodies move in space. The mv lab at the University of Illinois incorporates multiple technologies to research how our bodies move, especially when there are constraints, like the edges of camera frames for cinematic pieces. The mv lab was developed by Jenny Oyakkon-Koloski, assistant professor of Media and Cinema studies, and Mike Junokas, research in Media and Cinema Studies. They record a person's movements and are able to show an abstract skeleton (dots and lines) of the movements. They examine how the camera and the movements of the body influence each other. For example the moving agent may make the camera move so that it follows the head, hands or other movements. The lab has also expanded to create artistic pieces of work, use Laban Movement Studies methods, analyze dance numbers from cinema, and continues to add to its scope of research. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Jenny Oyakkon-Koloski and Mike Junokas",
+            "Possible_object": "",
+            "Primary_ToI": "Process",
+            "Secondary_ToI": "",
+            "URL": "http://mvlab.org/",
+            "Observations": "",
+            "College": "College of Media",
+            "N_colleges": 1,
+            "Department": "Media & Cinema Studies",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "2010",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty, Staff",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Process"
+          ],
+          "pajekIndex": 39,
+          "vNode": {
+            "posX": 2205,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 7,
+          "nodeLabel": "PAC-1",
+          "nodeShortDescription": "PAC-1 is an anti-cancer drug discovered by chemistry Professor Paul Hergenrother and further developed with the help from Professor Timothy Fan, from veterinary sciences.",
+          "nodeDescription": "PAC-1 is an anti-cancer drug discovered by chemistry Professor Paul Hergenrother and further developed with the help from Professor Timothy Fan, from veterinary sciences. PAC-1 is an abbreviation for procaspase-activating compound and was discovered in Hergenrother's lab when he was studying 20,000 compounds to see their ability to turn on an enzyme that can selectively kill cancer cells. Hergenrother and Fan work together to test the effectiveness of PAC-1 through animal trials and now human trials.  Along with Hergenrother and Fan, one of the main researchers was a daschund with a brain tumor named Pretzel, who acted as one of the test dogs, with success. Pretzel, after going through treatment with PAC-1 and standard cancer treatment, had her tumor shrunk and her life expectancy extended. Hergenrother and Fan are continuing with trials today to make this an effective treatment.",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Paul Hergenrother and Timothy Fan",
+            "Possible_object": "Picture of Pretzel? PAC-1 compound",
+            "Primary_ToI": "Process",
+            "Secondary_ToI": "",
+            "URL": "https://distributedmuseum.illinois.edu/exhibit/pac-1/",
+            "Observations": "",
+            "College": "College of Liberal Arts & Sciences\nCollege of Veterinary Medicine\nCarle Illinois College of Medicine",
+            "N_colleges": 4,
+            "Department": "Chemistry\nVeterinary Clinical Medicine",
+            "N_departments": 2,
+            "Institutes": "Carl R. Woese Institute of Genomic Biology",
+            "Date_or_Decade": "2010",
+            "Photograph": "Picture with Hoover, a research dog (link)",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "Timothy Fan, Paul Hergenrother",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Process"
+          ],
+          "pajekIndex": 40,
+          "vNode": {
+            "posX": 2250,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 8,
+          "nodeLabel": "Parkinson's Dance Class",
+          "nodeShortDescription": "Dance for People with Parkinson's is a program that invites those with Parkinson's to come together to dance and move their bodies to promote physical and mental health.",
+          "nodeDescription": "For the last decade, the Krannert Center has been hosting the Dance for People with Parkinson's, a program that invites those with Parkinson's to come together to dance and move their bodies. This program works to provide those with Parkinson's to embrace their body movements in a judgement free zone, combining health with dance and music. The dancers go at their own pace and utilize the space in ways that their ability can afford them to. Regardless of their range of motion, there is a joyful mood surrounding the class, as it creates a space for people to embrace the music and temporarily step away from Parkinson's and to promote both physical and mental health habits. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Various faculty and staff",
+            "Possible_object": "",
+            "Primary_ToI": "Process",
+            "Secondary_ToI": "",
+            "URL": "https://news.illinois.edu/view/6367/809544",
+            "Observations": "",
+            "College": "College of Fine and Applied Arts",
+            "N_colleges": 1,
+            "Department": "Dance",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "2020",
+            "Photograph": "Great photos in link",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty, staff",
+            "Current_Faculty_research": "also Kate Insolia",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Process"
+          ],
+          "pajekIndex": 46,
+          "vNode": {
+            "posX": 2520,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 9,
+          "nodeLabel": "Artificial Intelligence Websites for Agricultural Challenges",
+          "nodeShortDescription": "Artificial Intelligence websites being developed by Illinois faculty will help to solve new agricultural challenges. ",
+          "nodeDescription": "The USDA's National Institute of Food and Agriculture and the National Science Foundation created seven new artificial intelligence sites across the country, with the University of Illinois in charge of two sites. The University of Illinois would be in charge of the AI Institute of Future Agricultural Resilience, and Sustainability (AIFARMS), and the AI Institute for Molecular Discovery, Synthetic Strategy, and Manufacturing. AIFARMS will work on computer software and human-robot interaction to help with major agricultural challenges such as the wellness of animals in agriculture, and resiliency of crops. The AI institute for Molecular Discovery would focus on chemical synthesis to create new materials and bioactive compounds and teaching students new interdisciplinary methods. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "Vikram Adve, Huimin Zhao",
+            "Possible_object": "",
+            "Primary_ToI": "Technology",
+            "Secondary_ToI": "Methodology",
+            "URL": "https://blogs.illinois.edu/view/6367/1159979456",
+            "Observations": "",
+            "College": "Grainger College of Engineering\nCollege of Liberal Arts & Sciences",
+            "N_colleges": 2,
+            "Department": "Computer Science\nChemical and Biomolecular Engineering\nChemistry",
+            "N_departments": 3,
+            "Institutes": "",
+            "Date_or_Decade": "2020",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty",
+            "Current_Faculty_research": "Vikram Adve, Huimin Zhao",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Technology",
+            "Methodology"
+          ],
+          "pajekIndex": 47,
+          "vNode": {
+            "posX": 2565,
+            "posY": 560,
+            "posZ": 0,
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": 10,
+          "nodeLabel": "Technology Limits to Lower Stress",
+          "nodeShortDescription": "Labor and Employment Relations professors have found that limiting technology that keeps us connected to work during non-work hours helps reduce people's stress",
+          "nodeDescription": "Work-life balance is an important topic, especially as our world becomes more digitally connected. Labor and Employment Relations professors YoungAh Park and Yihao Liu, along with graduate student Lucille Headrick studies how workers manage these boundaries and what tactics can lead to lower stress. In 2017 they surveyed teachers to find how many create a boundary related to email and what other influences in the school environment enable teachers to have a clearer boundary between work and life. Their findings showed that about 50% of the teachers surveyed had email notifications on their phones and on weeks when they received more emails after hours, they had higher instances of thinking about the negative events that had happened at their jobs and insomnia. They also found that  principles (or supervisors) who communicate their own work-home boundaries will lead to more teachers implementing these boundaries. The final factor they examined were parents' expectations, and found what teachers' perceived parents (or clients) expectations to be played an important role on being able to separate these boundaries. Their conclusions that limiting technology that can break these boundaries and setting clear expectations of when they will work to supervisors and clients can help individuals to lower their work related stress. ",
+          "nodeAttributes": {
+            "Faculty_Student_Name": "YoungAh Park and Yihao Liu, and graduate student Lucille Headrick",
+            "Possible_object": "",
+            "Primary_ToI": "Knowledge Framework",
+            "Secondary_ToI": "Process",
+            "URL": "https://news.illinois.edu/view/6367/809752",
+            "Observations": "",
+            "College": "School of Labor and Employment Relations\nCollege of Liberal Arts & Sciences",
+            "N_colleges": 2,
+            "Department": "Psychology",
+            "N_departments": 1,
+            "Institutes": "",
+            "Date_or_Decade": "2020",
+            "Photograph": "",
+            "Faculty_Staff_Graduate_Undergrad": "Faculty, Graduate student",
+            "Current_Faculty_research": "",
+            "Gender": "",
+            "Other": ""
+          },
+          "connectors": [
+            "Knowledge Framework",
+            "Process"
+          ],
+          "pajekIndex": 48,
+          "vNode": {
+            "posX": 2610,
             "posY": 560,
             "posZ": 0,
             "color": "#ff0000"
@@ -1826,7 +1826,7 @@
     },
     {
       "source": {
-        "cluster": "3",
+        "cluster": "4",
         "index": 3,
         "pajekIndex": 11
       },
@@ -1842,10 +1842,10 @@
       "source": {
         "cluster": "2",
         "index": 2,
-        "pajekIndex": 14
+        "pajekIndex": 12
       },
       "target": {
-        "cluster": "3",
+        "cluster": "4",
         "index": 3,
         "pajekIndex": 11
       },
@@ -1854,14 +1854,14 @@
     },
     {
       "source": {
-        "cluster": "3",
+        "cluster": "4",
         "index": 4,
         "pajekIndex": 15
       },
       "target": {
         "cluster": "2",
         "index": 2,
-        "pajekIndex": 14
+        "pajekIndex": 12
       },
       "kind": "Methodology",
       "weight": 1
@@ -1869,11 +1869,11 @@
     {
       "source": {
         "cluster": "2",
-        "index": 4,
-        "pajekIndex": 17
+        "index": 5,
+        "pajekIndex": 19
       },
       "target": {
-        "cluster": "3",
+        "cluster": "4",
         "index": 4,
         "pajekIndex": 15
       },
@@ -1883,27 +1883,13 @@
     {
       "source": {
         "cluster": "2",
-        "index": 7,
-        "pajekIndex": 23
+        "index": 6,
+        "pajekIndex": 20
       },
       "target": {
         "cluster": "2",
-        "index": 4,
-        "pajekIndex": 17
-      },
-      "kind": "Methodology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "0",
-        "index": 3,
-        "pajekIndex": 28
-      },
-      "target": {
-        "cluster": "2",
-        "index": 7,
-        "pajekIndex": 23
+        "index": 5,
+        "pajekIndex": 19
       },
       "kind": "Methodology",
       "weight": 1
@@ -1912,12 +1898,26 @@
       "source": {
         "cluster": "2",
         "index": 10,
+        "pajekIndex": 29
+      },
+      "target": {
+        "cluster": "2",
+        "index": 6,
+        "pajekIndex": 20
+      },
+      "kind": "Methodology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "0",
+        "index": 3,
         "pajekIndex": 30
       },
       "target": {
-        "cluster": "0",
-        "index": 3,
-        "pajekIndex": 28
+        "cluster": "2",
+        "index": 10,
+        "pajekIndex": 29
       },
       "kind": "Methodology",
       "weight": 1
@@ -1925,12 +1925,12 @@
     {
       "source": {
         "cluster": "1",
-        "index": 7,
-        "pajekIndex": 33
+        "index": 8,
+        "pajekIndex": 37
       },
       "target": {
-        "cluster": "2",
-        "index": 10,
+        "cluster": "0",
+        "index": 3,
         "pajekIndex": 30
       },
       "kind": "Methodology",
@@ -1940,34 +1940,34 @@
       "source": {
         "cluster": "1",
         "index": 9,
-        "pajekIndex": 37
+        "pajekIndex": 43
       },
       "target": {
         "cluster": "1",
-        "index": 7,
-        "pajekIndex": 33
+        "index": 8,
+        "pajekIndex": 37
       },
       "kind": "Methodology",
       "weight": 1
     },
     {
       "source": {
-        "cluster": "3",
-        "index": 10,
-        "pajekIndex": 48
+        "cluster": "4",
+        "index": 9,
+        "pajekIndex": 47
       },
       "target": {
         "cluster": "1",
         "index": 9,
-        "pajekIndex": 37
+        "pajekIndex": 43
       },
       "kind": "Methodology",
       "weight": 1
     },
     {
       "source": {
-        "cluster": "2",
-        "index": 1,
+        "cluster": "1",
+        "index": 2,
         "pajekIndex": 3
       },
       "target": {
@@ -1980,13 +1980,13 @@
     },
     {
       "source": {
-        "cluster": "1",
-        "index": 2,
+        "cluster": "2",
+        "index": 1,
         "pajekIndex": 4
       },
       "target": {
-        "cluster": "2",
-        "index": 1,
+        "cluster": "1",
+        "index": 2,
         "pajekIndex": 3
       },
       "kind": "Knowledge Framework",
@@ -1999,8 +1999,8 @@
         "pajekIndex": 6
       },
       "target": {
-        "cluster": "1",
-        "index": 2,
+        "cluster": "2",
+        "index": 1,
         "pajekIndex": 4
       },
       "kind": "Knowledge Framework",
@@ -2036,9 +2036,9 @@
     },
     {
       "source": {
-        "cluster": "3",
+        "cluster": "4",
         "index": 2,
-        "pajekIndex": 9
+        "pajekIndex": 10
       },
       "target": {
         "cluster": "1",
@@ -2052,39 +2052,25 @@
       "source": {
         "cluster": "1",
         "index": 6,
-        "pajekIndex": 12
+        "pajekIndex": 13
       },
       "target": {
-        "cluster": "3",
+        "cluster": "4",
         "index": 2,
-        "pajekIndex": 9
+        "pajekIndex": 10
       },
       "kind": "Knowledge Framework",
       "weight": 1
     },
     {
       "source": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 2,
-        "pajekIndex": 13
+        "pajekIndex": 14
       },
       "target": {
         "cluster": "1",
         "index": 6,
-        "pajekIndex": 12
-      },
-      "kind": "Knowledge Framework",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "4",
-        "index": 3,
-        "pajekIndex": 18
-      },
-      "target": {
-        "cluster": "4",
-        "index": 2,
         "pajekIndex": 13
       },
       "kind": "Knowledge Framework",
@@ -2092,55 +2078,55 @@
     },
     {
       "source": {
-        "cluster": "2",
-        "index": 5,
-        "pajekIndex": 19
-      },
-      "target": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 3,
-        "pajekIndex": 18
-      },
-      "kind": "Knowledge Framework",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "4",
-        "index": 4,
-        "pajekIndex": 20
+        "pajekIndex": 16
       },
       "target": {
-        "cluster": "2",
-        "index": 5,
-        "pajekIndex": 19
+        "cluster": "3",
+        "index": 2,
+        "pajekIndex": 14
       },
       "kind": "Knowledge Framework",
       "weight": 1
     },
     {
       "source": {
-        "cluster": "4",
-        "index": 5,
+        "cluster": "2",
+        "index": 3,
+        "pajekIndex": 17
+      },
+      "target": {
+        "cluster": "3",
+        "index": 3,
+        "pajekIndex": 16
+      },
+      "kind": "Knowledge Framework",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "2",
+        "index": 7,
         "pajekIndex": 21
       },
       "target": {
-        "cluster": "4",
-        "index": 4,
-        "pajekIndex": 20
+        "cluster": "2",
+        "index": 3,
+        "pajekIndex": 17
       },
       "kind": "Knowledge Framework",
       "weight": 1
     },
     {
       "source": {
-        "cluster": "2",
-        "index": 6,
+        "cluster": "3",
+        "index": 4,
         "pajekIndex": 22
       },
       "target": {
-        "cluster": "4",
-        "index": 5,
+        "cluster": "2",
+        "index": 7,
         "pajekIndex": 21
       },
       "kind": "Knowledge Framework",
@@ -2148,14 +2134,28 @@
     },
     {
       "source": {
-        "cluster": "4",
+        "cluster": "3",
+        "index": 5,
+        "pajekIndex": 23
+      },
+      "target": {
+        "cluster": "3",
+        "index": 4,
+        "pajekIndex": 22
+      },
+      "kind": "Knowledge Framework",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "3",
         "index": 6,
         "pajekIndex": 24
       },
       "target": {
-        "cluster": "2",
-        "index": 6,
-        "pajekIndex": 22
+        "cluster": "3",
+        "index": 5,
+        "pajekIndex": 23
       },
       "kind": "Knowledge Framework",
       "weight": 1
@@ -2167,7 +2167,7 @@
         "pajekIndex": 26
       },
       "target": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 6,
         "pajekIndex": 24
       },
@@ -2176,9 +2176,9 @@
     },
     {
       "source": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 8,
-        "pajekIndex": 29
+        "pajekIndex": 28
       },
       "target": {
         "cluster": "2",
@@ -2190,14 +2190,14 @@
     },
     {
       "source": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 9,
-        "pajekIndex": 32
+        "pajekIndex": 31
       },
       "target": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 8,
-        "pajekIndex": 29
+        "pajekIndex": 28
       },
       "kind": "Knowledge Framework",
       "weight": 1
@@ -2206,12 +2206,12 @@
       "source": {
         "cluster": "0",
         "index": 4,
-        "pajekIndex": 35
+        "pajekIndex": 32
       },
       "target": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 9,
-        "pajekIndex": 32
+        "pajekIndex": 31
       },
       "kind": "Knowledge Framework",
       "weight": 1
@@ -2220,11 +2220,39 @@
       "source": {
         "cluster": "0",
         "index": 5,
-        "pajekIndex": 38
+        "pajekIndex": 34
       },
       "target": {
         "cluster": "0",
         "index": 4,
+        "pajekIndex": 32
+      },
+      "kind": "Knowledge Framework",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "0",
+        "index": 6,
+        "pajekIndex": 35
+      },
+      "target": {
+        "cluster": "0",
+        "index": 5,
+        "pajekIndex": 34
+      },
+      "kind": "Knowledge Framework",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "0",
+        "index": 7,
+        "pajekIndex": 38
+      },
+      "target": {
+        "cluster": "0",
+        "index": 6,
         "pajekIndex": 35
       },
       "kind": "Knowledge Framework",
@@ -2232,13 +2260,13 @@
     },
     {
       "source": {
-        "cluster": "0",
-        "index": 6,
-        "pajekIndex": 39
+        "cluster": "3",
+        "index": 10,
+        "pajekIndex": 41
       },
       "target": {
         "cluster": "0",
-        "index": 5,
+        "index": 7,
         "pajekIndex": 38
       },
       "kind": "Knowledge Framework",
@@ -2247,39 +2275,11 @@
     {
       "source": {
         "cluster": "0",
-        "index": 7,
-        "pajekIndex": 40
-      },
-      "target": {
-        "cluster": "0",
-        "index": 6,
-        "pajekIndex": 39
-      },
-      "kind": "Knowledge Framework",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "4",
-        "index": 10,
-        "pajekIndex": 41
-      },
-      "target": {
-        "cluster": "0",
-        "index": 7,
-        "pajekIndex": 40
-      },
-      "kind": "Knowledge Framework",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "0",
         "index": 8,
-        "pajekIndex": 43
+        "pajekIndex": 42
       },
       "target": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 10,
         "pajekIndex": 41
       },
@@ -2288,27 +2288,27 @@
     },
     {
       "source": {
-        "cluster": "0",
-        "index": 9,
+        "cluster": "1",
+        "index": 10,
         "pajekIndex": 44
       },
       "target": {
         "cluster": "0",
         "index": 8,
-        "pajekIndex": 43
+        "pajekIndex": 42
       },
       "kind": "Knowledge Framework",
       "weight": 1
     },
     {
       "source": {
-        "cluster": "1",
-        "index": 10,
+        "cluster": "0",
+        "index": 9,
         "pajekIndex": 45
       },
       "target": {
-        "cluster": "0",
-        "index": 9,
+        "cluster": "1",
+        "index": 10,
         "pajekIndex": 44
       },
       "kind": "Knowledge Framework",
@@ -2316,196 +2316,196 @@
     },
     {
       "source": {
-        "cluster": "3",
-        "index": 9,
-        "pajekIndex": 47
-      },
-      "target": {
-        "cluster": "1",
-        "index": 10,
-        "pajekIndex": 45
-      },
-      "kind": "Knowledge Framework",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "0",
-        "index": 10,
-        "pajekIndex": 49
-      },
-      "target": {
-        "cluster": "3",
-        "index": 9,
-        "pajekIndex": 47
-      },
-      "kind": "Knowledge Framework",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "1",
-        "index": 4,
-        "pajekIndex": 8
-      },
-      "target": {
-        "cluster": "1",
-        "index": 3,
-        "pajekIndex": 5
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "2",
-        "index": 2,
-        "pajekIndex": 14
-      },
-      "target": {
-        "cluster": "1",
-        "index": 4,
-        "pajekIndex": 8
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "3",
-        "index": 4,
-        "pajekIndex": 15
-      },
-      "target": {
-        "cluster": "2",
-        "index": 2,
-        "pajekIndex": 14
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "2",
-        "index": 3,
-        "pajekIndex": 16
-      },
-      "target": {
-        "cluster": "3",
-        "index": 4,
-        "pajekIndex": 15
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "2",
-        "index": 4,
-        "pajekIndex": 17
-      },
-      "target": {
-        "cluster": "2",
-        "index": 3,
-        "pajekIndex": 16
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "2",
-        "index": 7,
-        "pajekIndex": 23
-      },
-      "target": {
-        "cluster": "2",
-        "index": 4,
-        "pajekIndex": 17
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
         "cluster": "4",
-        "index": 7,
-        "pajekIndex": 25
-      },
-      "target": {
-        "cluster": "2",
-        "index": 7,
-        "pajekIndex": 23
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "2",
-        "index": 9,
-        "pajekIndex": 27
-      },
-      "target": {
-        "cluster": "4",
-        "index": 7,
-        "pajekIndex": 25
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "0",
-        "index": 3,
-        "pajekIndex": 28
-      },
-      "target": {
-        "cluster": "2",
-        "index": 9,
-        "pajekIndex": 27
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "1",
-        "index": 7,
-        "pajekIndex": 33
-      },
-      "target": {
-        "cluster": "0",
-        "index": 3,
-        "pajekIndex": 28
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "0",
-        "index": 7,
-        "pajekIndex": 40
-      },
-      "target": {
-        "cluster": "1",
-        "index": 7,
-        "pajekIndex": 33
-      },
-      "kind": "Technology",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "3",
         "index": 10,
         "pajekIndex": 48
       },
       "target": {
         "cluster": "0",
+        "index": 9,
+        "pajekIndex": 45
+      },
+      "kind": "Knowledge Framework",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "0",
+        "index": 10,
+        "pajekIndex": 49
+      },
+      "target": {
+        "cluster": "4",
+        "index": 10,
+        "pajekIndex": 48
+      },
+      "kind": "Knowledge Framework",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 4,
+        "pajekIndex": 8
+      },
+      "target": {
+        "cluster": "1",
+        "index": 3,
+        "pajekIndex": 5
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "4",
+        "index": 3,
+        "pajekIndex": 11
+      },
+      "target": {
+        "cluster": "1",
+        "index": 4,
+        "pajekIndex": 8
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "2",
+        "index": 2,
+        "pajekIndex": 12
+      },
+      "target": {
+        "cluster": "4",
+        "index": 3,
+        "pajekIndex": 11
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "2",
+        "index": 4,
+        "pajekIndex": 18
+      },
+      "target": {
+        "cluster": "2",
+        "index": 2,
+        "pajekIndex": 12
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "2",
+        "index": 5,
+        "pajekIndex": 19
+      },
+      "target": {
+        "cluster": "2",
+        "index": 4,
+        "pajekIndex": 18
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "2",
+        "index": 6,
+        "pajekIndex": 20
+      },
+      "target": {
+        "cluster": "2",
+        "index": 5,
+        "pajekIndex": 19
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "3",
         "index": 7,
-        "pajekIndex": 40
+        "pajekIndex": 25
+      },
+      "target": {
+        "cluster": "2",
+        "index": 6,
+        "pajekIndex": 20
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "2",
+        "index": 9,
+        "pajekIndex": 27
+      },
+      "target": {
+        "cluster": "3",
+        "index": 7,
+        "pajekIndex": 25
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "0",
+        "index": 3,
+        "pajekIndex": 30
+      },
+      "target": {
+        "cluster": "2",
+        "index": 9,
+        "pajekIndex": 27
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "0",
+        "index": 4,
+        "pajekIndex": 32
+      },
+      "target": {
+        "cluster": "0",
+        "index": 3,
+        "pajekIndex": 30
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "1",
+        "index": 9,
+        "pajekIndex": 43
+      },
+      "target": {
+        "cluster": "0",
+        "index": 4,
+        "pajekIndex": 32
+      },
+      "kind": "Technology",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "4",
+        "index": 9,
+        "pajekIndex": 47
+      },
+      "target": {
+        "cluster": "1",
+        "index": 9,
+        "pajekIndex": 43
       },
       "kind": "Technology",
       "weight": 1
@@ -2519,7 +2519,7 @@
       "target": {
         "cluster": "2",
         "index": 1,
-        "pajekIndex": 3
+        "pajekIndex": 4
       },
       "kind": "Process",
       "weight": 1
@@ -2528,7 +2528,7 @@
       "source": {
         "cluster": "1",
         "index": 5,
-        "pajekIndex": 10
+        "pajekIndex": 9
       },
       "target": {
         "cluster": "1",
@@ -2540,28 +2540,14 @@
     },
     {
       "source": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 3,
-        "pajekIndex": 18
+        "pajekIndex": 16
       },
       "target": {
         "cluster": "1",
         "index": 5,
-        "pajekIndex": 10
-      },
-      "kind": "Process",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "4",
-        "index": 5,
-        "pajekIndex": 21
-      },
-      "target": {
-        "cluster": "4",
-        "index": 3,
-        "pajekIndex": 18
+        "pajekIndex": 9
       },
       "kind": "Process",
       "weight": 1
@@ -2569,12 +2555,26 @@
     {
       "source": {
         "cluster": "2",
-        "index": 6,
-        "pajekIndex": 22
+        "index": 7,
+        "pajekIndex": 21
       },
       "target": {
-        "cluster": "4",
+        "cluster": "3",
+        "index": 3,
+        "pajekIndex": 16
+      },
+      "kind": "Process",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "3",
         "index": 5,
+        "pajekIndex": 23
+      },
+      "target": {
+        "cluster": "2",
+        "index": 7,
         "pajekIndex": 21
       },
       "kind": "Process",
@@ -2582,14 +2582,14 @@
     },
     {
       "source": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 7,
         "pajekIndex": 25
       },
       "target": {
-        "cluster": "2",
-        "index": 6,
-        "pajekIndex": 22
+        "cluster": "3",
+        "index": 5,
+        "pajekIndex": 23
       },
       "kind": "Process",
       "weight": 1
@@ -2601,7 +2601,7 @@
         "pajekIndex": 27
       },
       "target": {
-        "cluster": "4",
+        "cluster": "3",
         "index": 7,
         "pajekIndex": 25
       },
@@ -2611,7 +2611,7 @@
     {
       "source": {
         "cluster": "3",
-        "index": 5,
+        "index": 9,
         "pajekIndex": 31
       },
       "target": {
@@ -2624,13 +2624,13 @@
     },
     {
       "source": {
-        "cluster": "4",
-        "index": 9,
-        "pajekIndex": 32
+        "cluster": "1",
+        "index": 7,
+        "pajekIndex": 33
       },
       "target": {
         "cluster": "3",
-        "index": 5,
+        "index": 9,
         "pajekIndex": 31
       },
       "kind": "Process",
@@ -2638,41 +2638,27 @@
     },
     {
       "source": {
-        "cluster": "3",
-        "index": 6,
-        "pajekIndex": 34
-      },
-      "target": {
         "cluster": "4",
-        "index": 9,
-        "pajekIndex": 32
-      },
-      "kind": "Process",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "1",
-        "index": 8,
+        "index": 5,
         "pajekIndex": 36
       },
       "target": {
-        "cluster": "3",
-        "index": 6,
-        "pajekIndex": 34
+        "cluster": "1",
+        "index": 7,
+        "pajekIndex": 33
       },
       "kind": "Process",
       "weight": 1
     },
     {
       "source": {
-        "cluster": "0",
-        "index": 5,
-        "pajekIndex": 38
+        "cluster": "4",
+        "index": 6,
+        "pajekIndex": 39
       },
       "target": {
-        "cluster": "1",
-        "index": 8,
+        "cluster": "4",
+        "index": 5,
         "pajekIndex": 36
       },
       "kind": "Process",
@@ -2681,25 +2667,39 @@
     {
       "source": {
         "cluster": "4",
-        "index": 10,
-        "pajekIndex": 41
-      },
-      "target": {
-        "cluster": "0",
-        "index": 5,
-        "pajekIndex": 38
-      },
-      "kind": "Process",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "3",
         "index": 7,
-        "pajekIndex": 42
+        "pajekIndex": 40
       },
       "target": {
         "cluster": "4",
+        "index": 6,
+        "pajekIndex": 39
+      },
+      "kind": "Process",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "3",
+        "index": 10,
+        "pajekIndex": 41
+      },
+      "target": {
+        "cluster": "4",
+        "index": 7,
+        "pajekIndex": 40
+      },
+      "kind": "Process",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "0",
+        "index": 8,
+        "pajekIndex": 42
+      },
+      "target": {
+        "cluster": "3",
         "index": 10,
         "pajekIndex": 41
       },
@@ -2710,11 +2710,11 @@
       "source": {
         "cluster": "1",
         "index": 10,
-        "pajekIndex": 45
+        "pajekIndex": 44
       },
       "target": {
-        "cluster": "3",
-        "index": 7,
+        "cluster": "0",
+        "index": 8,
         "pajekIndex": 42
       },
       "kind": "Process",
@@ -2722,13 +2722,27 @@
     },
     {
       "source": {
-        "cluster": "3",
-        "index": 8,
-        "pajekIndex": 46
+        "cluster": "0",
+        "index": 9,
+        "pajekIndex": 45
       },
       "target": {
         "cluster": "1",
         "index": 10,
+        "pajekIndex": 44
+      },
+      "kind": "Process",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "4",
+        "index": 8,
+        "pajekIndex": 46
+      },
+      "target": {
+        "cluster": "0",
+        "index": 9,
         "pajekIndex": 45
       },
       "kind": "Process",
@@ -2736,28 +2750,14 @@
     },
     {
       "source": {
-        "cluster": "3",
-        "index": 9,
-        "pajekIndex": 47
+        "cluster": "4",
+        "index": 10,
+        "pajekIndex": 48
       },
       "target": {
-        "cluster": "3",
+        "cluster": "4",
         "index": 8,
         "pajekIndex": 46
-      },
-      "kind": "Process",
-      "weight": 1
-    },
-    {
-      "source": {
-        "cluster": "0",
-        "index": 10,
-        "pajekIndex": 49
-      },
-      "target": {
-        "cluster": "3",
-        "index": 9,
-        "pajekIndex": 47
       },
       "kind": "Process",
       "weight": 1

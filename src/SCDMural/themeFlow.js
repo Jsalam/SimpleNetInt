@@ -34,7 +34,7 @@ class ThemeFlow {
     }
 
 
-    init() {
+    initA() {
         // Build Frets 
         let pos = this.nRibbons;
         let chordGapFactor = 0.8;

@@ -84,17 +84,17 @@ var main = function(p5) {
         Canvas.showOnPointer();
 
         // gallery
-        if (DOM.boxChecked('showWall')) {
-            gallery.wall(gp5);
-            gallery.column(gp5);
-            gallery.canvas(gp5);
-            gallery.hotArea(gp5);
-        }
-        if (DOM.boxChecked('showColleges')) {
-            gallery.colleges(gp5, ["Carle College of Medicine", "College of Agriculture, Consumer and Environmental Sciences", "College of Veterinary Medicine", "College of Applied Health Sciences", "College of Education", "College of Fine and Applied Arts", "College of Liberal Arts and Sciences", "College of Media", "Gies College of Business", "Grainger College of Engineering", "Institute for Genomic Biology", "Institute for Sustainability Energy and Environment",
-                "National Center of Supercomputer Applications", "School of Information Sciences", "School of Social Work", "University of Illinois Library", "Other"
-            ])
-        }
+        // if (DOM.boxChecked('showWall')) {
+        //     gallery.wall(gp5);
+        //     gallery.column(gp5);
+        //     gallery.canvas(gp5);
+        //     gallery.hotArea(gp5);
+        // }
+        // if (DOM.boxChecked('showColleges')) {
+        //     gallery.colleges(gp5, ["Carle College of Medicine", "College of Agriculture, Consumer and Environmental Sciences", "College of Veterinary Medicine", "College of Applied Health Sciences", "College of Education", "College of Fine and Applied Arts", "College of Liberal Arts and Sciences", "College of Media", "Gies College of Business", "Grainger College of Engineering", "Institute for Genomic Biology", "Institute for Sustainability Energy and Environment",
+        //         "National Center of Supercomputer Applications", "School of Information Sciences", "School of Social Work", "University of Illinois Library", "Other"
+        //     ])
+        // }
 
         // pop transformation matrix
         gp5.pop();

@@ -11,6 +11,7 @@ class Node {
         this.connectors = []
         this.label = "void";
         this.description = "No description yet";
+        this.nodeShortDescription = "No description yet";
         this.attributes;
         this.inFwdPropagation = false;
         this.inBkwPropagation = false;
@@ -126,6 +127,10 @@ class Node {
 
     setDescription(description) {
         this.description = description;
+    }
+
+    setNodeShortDescription(description) {
+        this.nodeShortDescription = description;
     }
 
     setAttributes(attributes) {
@@ -454,7 +459,7 @@ class Node {
         return rtn;
     }
 
-    /** This is not being used at this point because the json us made by the vNode */
+    /** This is not being used at this point because the json is made by the vNode */
     getJSON() {
         let cnctrs = [];
         for (const connector of this.connectors) {
@@ -464,6 +469,7 @@ class Node {
         let rtn = {
             id: this.idCat.index,
             nodeLabel: this.label,
+            nodeShortDescription: this.nodeShortDescription,
             nodeDescription: this.description,
             nodeAttributes: this.attributes,
             connectors: JSON.stringify(cnctrs),

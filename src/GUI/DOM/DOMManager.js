@@ -200,7 +200,7 @@ class DOM {
         DOM.buildEdges(edgesTemp);
 
         // add theme flow with nodes data
-        Canvas.addThemeFlow();
+        //Canvas.addThemeFlow();
 
         // Sort the nodes by cronological order and adjust the themeflow frets and chords.
         DOM._sortNodesByPajekIndex();
@@ -243,9 +243,9 @@ class DOM {
         Utilities._updateVNodesCoordinates(sortedData, Canvas.observers, 450, 560, 45, 0);
 
         // re-initiate themeFlow
-        let tf = Canvas.observers.find(elm => elm instanceof ThemeFlow);
-        tf.setup();
-        tf.init();
+        // let tf = Canvas.observers.find(elm => elm instanceof ThemeFlow);
+        // tf.setup();
+        // tf.init();
 
         // update canvas
         Canvas.update();

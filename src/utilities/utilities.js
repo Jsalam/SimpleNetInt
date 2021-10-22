@@ -197,6 +197,19 @@ class Utilities {
         return rtn;
     }
 
+    static sortNodesByXPosition(dataset) {
+        let rtn = dataset.sort(function(a, b) {
+            if (a.node.vNode.posX < b.node.vNode.posX) {
+                return -1;
+            }
+            if (a.node.vNode.posX > b.node.vNode.posX) {
+                return 1;
+            }
+            return 0;
+        })
+        return rtn;
+    }
+
     static sortFretsByNodeXCoordinate(frets) {
         let rtn = frets.sort(function(a, b) {
             return a.org.x - b.org.x

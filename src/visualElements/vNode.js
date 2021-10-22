@@ -225,13 +225,13 @@ class VNode extends Button {
         this.node.filterConnectors();
 
         // get the visual properties
-        let fillColors = this._getFillColor();
+        let fillColors = this._getFillColor(this.color);
         this.strokeColor = this._getStrokeColor('#808080');
         let strokeWeight = this._getStrokeWeight();
 
         // assign colors
-        //renderer.fill(fillColors.fill);
-        renderer.fill(this.color.concat('00'));
+        renderer.fill(fillColors.fill);
+        //renderer.fill(this.color.concat('00'));
         renderer.stroke(this.strokeColor);
         renderer.strokeWeight(strokeWeight);
 
@@ -247,7 +247,7 @@ class VNode extends Button {
             // show node description
             if (this.mouseIsOver) {
                 this._showDescription(renderer);
-                this._showAttribute(renderer, ["Date_or_Decade", "College", "Department", "Faculty_Staff_Graduate_Undergrad", "URL", "Observations"]);
+                this._showAttribute(renderer, ["Key"]);
             }
         }
 
@@ -264,7 +264,7 @@ class VNode extends Button {
         // draw the label
         renderer.fill(color);
         renderer.noStroke();
-        renderer.textSize(5);
+        renderer.textSize(12);
         if (this.propagated) {
             renderer.textStyle(renderer.BOLD);
         }
@@ -460,6 +460,7 @@ class VNode extends Button {
         let rtn = {
             id: this.node.idCat.index,
             nodeLabel: this.node.label,
+            nodeShortDescription: this.node.nodeShortDescription,
             nodeDescription: this.node.description,
             nodeAttributes: this.node.attributes,
             polarity: this.node.polarity,
