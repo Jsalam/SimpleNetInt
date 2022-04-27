@@ -12,15 +12,24 @@ Once Simple NetInt receives the data, either from a JSON database or manually en
 
 By default, the nodes on the canvas belong to a general cluster, but they can be assorted further in non-intersecting subgroups if the user chooses a clustering attribute. Simple NetInt have an independent uni, bi, or tridimensional coordinate system, enabling individual spatial transformations and user manipulation of their contents. As a result, Simple NetInt renders database records as nested clusters of nodes concatenated by links dissociated from any cluster.
 
-## JSON structure
+## Data structure
 
-The data structure read by Simple NetInt is a JSON object with two independent arrays, one for nodes and one for edges. Each node must have these key:value pairs:
+The data structure read by Simple NetInt is a JSON object with two independent arrays, one for nodes and one for edges. 
+
+Each node is an object containing these key:value pairs:
 
 - a unique {integer} _id_
 - an {object} with all the node _attributes_
 - an {array} with all the _connectors_
 - a unique {integer} _pajekIndex_
-- an {object} with the 3D coordinates on canvas and color   
+- an {object} with the 3D coordinates on canvas and color 
+
+Each edge is an object with these key:value pairs:
+
+- an {object} specifying the _source_ (id and pajeckIndex)
+- an {object} specifying the _target_ (id and pajeckIndex)
+- an {string} with the category _kind_
+- a {number} with the _weight_
 
 ## **Future extensions**
 
