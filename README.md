@@ -14,7 +14,13 @@ By default, the nodes on the canvas belong to a general cluster, but they can be
 
 ## JSON structure
 
-The data structure read by Simple NetInt is a JSON object with two independent arrays of nodes and edges. Each node must have an _id_, a set of _attributes_, a set of _connectors_, and a unique _pajekIndex_.    
+The data structure read by Simple NetInt is a JSON object with two independent arrays, one for nodes and one for edges. Each node must have this key:value pairs:
+
+- an _id_
+- a set of _attributes_
+- a set of _connectors_
+- a unique _pajekIndex_
+- and a position in a tridimensional canvas   
 
 ## **Future extensions**
 
