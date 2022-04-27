@@ -8,9 +8,13 @@ The library seeks to help creative thinkers to structure information through ope
 
 Simple NetInt extends the p5.js library initiated by Lauren Lee McCarthy in 2013. https://p5js.org. Simple NetInt assigns numerical or categorical data to corresponding visual channels such as position, length, size, luminance, or hue, using software components named **factories**. The factories are functions that take the information of data points and produce visual nodes or links. Their channels represent magnitudes (numerical), classes (categories), or concepts (regions), following mapping operations and style guidelines customizable by designers. The latest version of Simple NetInt includes cluster, node, edge, color, and spatial factories.
 
-Once Simple NetInt receives the data, either from a database or manually entered, a column of nodes appears on a two-dimensional canvas. Nodes can be moved anywhere with simple drag and drop operations. Links appear automatically or users can add them manually by selecting pairs of source-target nodes. Such flexibility in arranging the distribution of visual elements allows users to convey information from relations of association, proximity, and similarity within regions in a method that works best for them. 
+Once Simple NetInt receives the data, either from a JSON database or manually entered, a column of nodes appears on a two-dimensional canvas. Nodes can be moved anywhere with simple drag and drop operations. Links appear automatically or users can add them manually by selecting pairs of source-target nodes. Such flexibility in arranging the distribution of visual elements allows users to convey information from relations of association, proximity, and similarity within regions in a method that works best for them. 
 
 By default, the nodes on the canvas belong to a general cluster, but they can be assorted further in non-intersecting subgroups if the user chooses a clustering attribute. Simple NetInt have an independent uni, bi, or tridimensional coordinate system, enabling individual spatial transformations and user manipulation of their contents. As a result, Simple NetInt renders database records as nested clusters of nodes concatenated by links dissociated from any cluster.
+
+## JSON structure
+
+The data structure read by Simple NetInt is a JSON object with two independent arrays of nodes and edges. Each node must have an _id_, a set of _attributes_, a set of _connectors_, and a unique _pajekIndex_.    
 
 ## **Future extensions**
 
