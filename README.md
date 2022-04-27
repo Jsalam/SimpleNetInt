@@ -16,7 +16,7 @@ By default, the nodes on the canvas belong to a general cluster, but they can be
 
 The data structure read by Simple NetInt is a JSON object with two independent arrays, one for nodes and one for edges. 
 
-Each node is an object containing these key:value pairs:
+Each node is an object containing these _key:value_ pairs:
 
 - a unique {integer} _id_
 - an {object} with all the node _attributes_
