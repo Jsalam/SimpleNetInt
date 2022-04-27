@@ -4,6 +4,8 @@ Simple NetInt is a JavaScript version of NetInt, a Java-based node-link visualiz
 
 The library seeks to help creative thinkers to structure information through open and speculative mental processes. Therefore, the visualization strategy used is to place clustered nodes in independent 3D spaces and draw links between nodes across multiple spaces. Each data point is represented by a circular node encompassing as many colored connectors as relational attributes of the data point. The links are colored bezier curves that associate nodes by shared relational attributes or interactions. The result is a simple graphic user interface that enables visual depth as an intuitive dimension for data exploration.
 
+An application of Simple NetInt is FireFly & Serenity Interactive Timeline (http://fireflytimeline.web.illinois.edu/index.html)
+
 ## **How does it work?**
 
 Simple NetInt extends the p5.js library initiated by Lauren Lee McCarthy in 2013. https://p5js.org. Simple NetInt assigns numerical or categorical data to corresponding visual channels such as position, length, size, luminance, or hue, using software components named **factories**. The factories are functions that take the information of data points and produce visual nodes or links. Their channels represent magnitudes (numerical), classes (categories), or concepts (regions), following mapping operations and style guidelines customizable by designers. The latest version of Simple NetInt includes cluster, node, edge, color, and spatial factories.
@@ -26,8 +28,8 @@ Each node is an object containing these _key:value_ pairs:
 
 Each edge is an object with these key:value pairs:
 
-- an {object} specifying the _source_ (id and pajeckIndex)
-- an {object} specifying the _target_ (id and pajeckIndex)
+- an {object} specifying the _source_ (id and pajekIndex)
+- an {object} specifying the _target_ (id and pajekIndex)
 - an {string} with the category _kind_
 - a {number} with the _weight_
 
