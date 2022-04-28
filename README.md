@@ -13,7 +13,7 @@ Once Simple NetInt receives the data, either from a JSON database or manually en
 
 By default, the nodes on the canvas belong to a general cluster, but they can be assorted further in non-intersecting subgroups if the user chooses a clustering attribute. Simple NetInt have an independent uni, bi, or tridimensional coordinate system, enabling individual spatial transformations and user manipulation of their contents. As a result, Simple NetInt renders database records as nested clusters of nodes concatenated by links dissociated from any cluster.
 
-Simple NetInt is a JavaScript version of NetInt (https://github.com/LeonardoResearchGroup/NetInt) a Java-based node-link visualization prototype designed to support the visual discovery of patterns across datasets by displaying disjoint clusters of vertices that could be filtered, zoomed in or drilled down interactively.![Screen Shot 2022-04-27 at 7 19 26 PM](https://user-images.githubusercontent.com/10836823/165651689-342f116b-145e-4327-ad18-2220ba4fbfc6.png)
+Simple NetInt is a JavaScript version of NetInt (https://github.com/LeonardoResearchGroup/NetInt) a Java-based node-link visualization prototype designed to support the visual discovery of patterns across datasets by displaying disjoint clusters of vertices that could be filtered, zoomed in or drilled down interactively.
 
 
 ## Data structure
