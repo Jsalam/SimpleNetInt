@@ -2,6 +2,10 @@
 
 Simple NetInt is a JavaScript sketchpad for the visualization of networks on the browser using a node-edge layout. It seeks to help creative thinkers to structure information through open and speculative mental processes. Therefore, the visualization strategy used is to place clustered nodes in independent 3D spaces and draw links between nodes across multiple spaces. Each data point is represented by a circular node encompassing as many colored connectors as relational attributes of the data point. The links are colored bezier curves that associate nodes by shared relational attributes or interactions. The result is a simple graphic user interface that enables visual depth as an intuitive dimension for data exploration.
 
+## Sketchpad
+
+Example
+
 ## Application example
 
 ![Screen Shot 2022-04-27 at 7 01 17 PM](https://user-images.githubusercontent.com/10836823/165650188-9db0ad61-2f69-468e-a343-bd31762bac94.png)
