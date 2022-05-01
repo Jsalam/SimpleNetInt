@@ -4,7 +4,8 @@ Simple NetInt is a JavaScript sketchpad for the visualization of networks on the
 
 ## Sketchpad
 
-Example
+![Screen Shot 2022-04-30 at 11 47 16 PM](https://user-images.githubusercontent.com/10836823/166132595-453beb72-17f8-4703-a1e5-9ef33d879232.png)*Sketchpad available [here](https://jsalam.github.io/SimpleNetInt/)*
+
 
 ## Application example
 
