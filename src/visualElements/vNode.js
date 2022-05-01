@@ -316,7 +316,7 @@ class VNode extends Button {
         if (this.propagated) {
             renderer.textStyle(renderer.BOLD);
         }
-        let labelHeight = 15 * this.localScale;
+        let labelHeight = 105 * this.localScale;
         if (this.mouseIsOver) {
             labelHeight = 145 * this.localScale;
         }
@@ -330,13 +330,19 @@ class VNode extends Button {
             y = newPos.y;
         }
 
-        renderer.text(this.node.label, x - 22.5, y + 8 * this.localScale + this.height / 2, 65 + this.localScale * 2, labelHeight);
+        renderer.text(
+            this.node.label,
+            x - 22.5, y + 8 * this.localScale + this.height / 2,
+            65 + this.localScale * 2,
+            labelHeight);
 
     }
 
     _getFillColor(_baseColor) {
 
         let baseColor = _baseColor;
+
+        if (this.color) { baseColor = this.color };
 
         // default color 
         let fillColor = baseColor;
@@ -490,7 +496,9 @@ class VNode extends Button {
         renderer.noStroke();
         renderer.textSize(11);
 
-        let textString = "Name: " + this.node.label + "\n" + "Description: " + this.node.description
+        let clusterName = ClusterFactory.getCluster(this.node.idCat.cluster).label
+
+        let textString = "Name: " + this.node.label + "\n" + "Description: " + this.node.description + "\nCluster: " + clusterName;
 
         // renderer.text("Name: " + this.node.label, x + 5, y - 25, 650, 97);
         // renderer.text("Description: " + this.node.description, x + 5, y - 40, 650, 97);

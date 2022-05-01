@@ -45,45 +45,14 @@ class ColorFactory {
     static getColorFor(kind) {
         let rtn;
         switch (kind) {
-            // Edges
-            case "Book":
-                rtn = "#172940"
-                break;
-            case "Inara":
-                rtn = "#68182D";
-                break;
-            case "Jayne":
-                rtn = "#E84C25";
-                break;
-            case "Kaylee":
-                rtn = "#A6499B";
-                break;
-            case "Mal":
-                rtn = "#8C6444";
-                break;
-            case "River":
-                rtn = "#FAC7C4";
-                break;
-            case "Serenity":
-                rtn = "#FAA61A";
-                break;
-            case "Simon":
-                rtn = "#F2E640";
-                break;
-            case "Wash":
-                rtn = "#7DC6BB";
-                break;
-            case "Zoe":
-                rtn = "#613967";
-                break;
-                // Categories
-            case "1":
+            // Categories
+            case 1:
                 rtn = "#FA1374";
                 break;
-            case "2":
+            case 2:
                 rtn = "#FAFA74";
                 break;
-            case "3":
+            case 3:
                 rtn = "#74FAFA";
                 break;
             default:

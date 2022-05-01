@@ -18,7 +18,7 @@ class ClusterFactory {
 
             //  vCluster parameters
             let cluster = ClusterFactory.clusters[index];
-            let posX = 15 + x * index;
+            let posX = 25 + x * index;
             let posY = 20;
             let width = ClusterFactory.wdth;
             let height = ClusterFactory.hght;
