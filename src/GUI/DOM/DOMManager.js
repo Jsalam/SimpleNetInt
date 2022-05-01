@@ -20,7 +20,7 @@ class DOM {
         DOM.buttons.exportNetwork = document.getElementById("exportNetwork");
         DOM.buttons.importNetwork = document.getElementById("importNetwork");
         DOM.buttons.submitEdgeKinds = document.getElementById("submitEdgeKinds");
-        DOM.buttons.exportEdges = document.getElementById("exportEdges");
+        DOM.buttons.toggle_instructions = document.getElementById("toggle_instructions");
 
         DOM.buttons.clearEdges.onclick = (evt) => DOM.clearEdges(evt);
         DOM.buttons.submitAddClusterModal.onclick = getDataCluster;
@@ -28,7 +28,7 @@ class DOM {
         DOM.buttons.exportNetwork.onclick = saveJSON;
         DOM.buttons.importNetwork.onclick = getDataImport;
         DOM.buttons.submitEdgeKinds.onclick = DOM.getTextBoxContent;
-        DOM.buttons.exportEdges.onclick = DOM.exportEdges;
+        DOM.buttons.toggle_instructions.onclick = DOM.toggleInstructions;
 
 
 
@@ -42,11 +42,9 @@ class DOM {
         DOM.checkboxes.grid = document.getElementById('grid');
         DOM.checkboxes.showTexts = document.getElementById('showTexts');
         DOM.checkboxes.showEdges = document.getElementById('showEdges');
-        DOM.checkboxes.showWall = document.getElementById('showWall');
-        DOM.checkboxes.showColleges = document.getElementById('showColleges');
-        DOM.checkboxes.showEdgeMenu = document.getElementById('showEdgeMenu');
+        DOM.checkboxes.magnifyingEffect = document.getElementById('magnifyingEffect');
 
-        DOM.checkboxes.edit.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.edit.onclick = (evt) => DOM.toggleContextualMenu(evt);
         DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.backward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.filterLinked.onclick = (evt) => DOM.eventTriggered(evt);
@@ -54,9 +52,7 @@ class DOM {
         DOM.checkboxes.grid.onclick = (evt) => DOM.switchGrid(evt);
         DOM.checkboxes.showTexts.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.showEdges.onclick = (evt) => DOM.eventTriggered(evt);
-        DOM.checkboxes.showWall.onclick = (evt) => DOM.eventTriggered(evt);
-        DOM.checkboxes.showColleges.onclick = (evt) => DOM.eventTriggered(evt);
-        DOM.checkboxes.showEdgeMenu.onclick = (evt) => ContextualGUI.edgeMenu.toggleVisibility();
+        DOM.checkboxes.magnifyingEffect.onclick = (evt) => DOM.toggleMagnifyingEffect(evt);
 
         // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
@@ -83,12 +79,6 @@ class DOM {
 
         // Export edges
         EdgeFactory.recordJSON();
-
-        // retrieve the instances of ThemeFlow and ask them to record JSON
-        let themeFlows = Canvas.observers.filter(kind => kind instanceof ThemeFlow)
-        for (const themeF of themeFlows) {
-            themeF.recordJSON();
-        }
     }
 
     /**
@@ -139,7 +129,7 @@ class DOM {
     static switchBkgnd(evt) {
         DOM.updateCheckboxes(evt);
         if (DOM.boxChecked("backgroundContrast")) {
-            Canvas.currentBackground = 150;
+            Canvas.currentBackground = 50;
         } else {
             Canvas.currentBackground = 250;
         }
@@ -173,10 +163,14 @@ class DOM {
      * @param {String} value prefix of the file. Usually a digit. 
      */
     static switchModel(value, evt) {
+
         console.log("Switching to " + value + " network");
+
         gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => {
+
             DOM.onLoadNetwork(data, evt);
         });
+
     }
 
     /**
@@ -184,71 +178,41 @@ class DOM {
      * @param {Object} data 
      */
     static onLoadNetwork(data, evt) {
-        console.log(data);
+
+        // Reset canvas, factories and GUI
         Canvas.resetObservers();
+        ClusterFactory.reset();
+        EdgeFactory.reset();
+
+        // Reset TransFactory After reseting the clusters
+        TransFactory.reset();
+        TransFactory.init();
+
+        // reset the list of edge kinds
+        DOM.textboxes.edgeKinds.textContent = "default";
+        DOM.removeChildrenOf(DOM.lists.filtersB);
+
         // get nodes and edges 
-        let nodesTemp
-        if (data.nodes) {
-            nodesTemp = data.nodes;
-        } else if (data.clusters) {
-            nodeTemp = data.clusters;
-        }
+        let nodesTemp = data.nodes;
         let edgesTemp = data.edges;
 
-        // buld clusters and edges
-        DOM.buildClusters(nodesTemp);
-        DOM.buildEdges(edgesTemp);
+        if (nodesTemp.length == 0) {
+            ClusterFactory.makeCluster({
+                clusterID: 1,
+                clusterLabel: "main space",
+                clusterDescription: "The default space built on initialization"
+            })
+        } else {
+            // build clusters and edges
+            DOM.buildClusters(nodesTemp);
+            DOM.buildEdges(edgesTemp);
+        }
+        // add checkboxes to filters. It takes whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
+        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
+        ContextualGUI.init(DOM.textboxes.edgeKinds.value);
 
-        // add theme flow with nodes data
-        //Canvas.addThemeFlow();
-
-        // Sort the nodes by cronological order and adjust the themeflow frets and chords.
-        DOM._sortNodesByPajekIndex();
-
-        // add checkboxes to filters. It taked whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
-        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersA)
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
-    }
-
-    /**
-     * Private function to sort nodes by date or decade. It could use other sorting functions
-     */
-    static _sortNodesByDate() {
-        let data = Canvas.observers.filter(elm => elm instanceof VNode);
-        // sort nodes by time
-        const sortedData = Utilities.sortNodesByDateOrDecade(data);
-
-        // update coordinates
-        Utilities._updateVNodesCoordinates(sortedData, Canvas.observers, 450, 560, 45, 0);
-
-        // re-initiate themeFlow
-        let tf = Canvas.observers.find(elm => elm instanceof ThemeFlow);
-        tf.setup();
-        tf.init();
-
-        // update canvas
-        Canvas.update();
-    }
-
-    /**
-     * Private function to sort nodes by pajekIndex. It could use other sorting functions
-     */
-    static _sortNodesByPajekIndex() {
-        let data = Canvas.observers.filter(elm => elm instanceof VNode);
-        // sort nodes by time
-        const sortedData = Utilities.sortNodesByPajekIndex(data);
-
-        // update coordinates
-        Utilities._updateVNodesCoordinates(sortedData, Canvas.observers, 450, 560, 45, 0);
-
-        // re-initiate themeFlow
-        // let tf = Canvas.observers.find(elm => elm instanceof ThemeFlow);
-        // tf.setup();
-        // tf.init();
-
-        // update canvas
-        Canvas.update();
     }
 
     /**
@@ -282,12 +246,15 @@ class DOM {
      * @param {object} list the element to which the checkbox will be appended
      */
     static createCheckboxFor(names, list) {
+
         let items = names.split(',');
+
         for (let index = 0; index < items.length; index++) {
             const name = items[index];
 
-            // element
-            let element = document.createElement('span');
+            // div
+            let div = document.createElement('div');
+            // div.classList.add("linkList");
 
             // checkbox
             let checkbox = document.createElement('input');
@@ -295,27 +262,32 @@ class DOM {
             checkbox.name = name;
             checkbox.value = "value";
             checkbox.id = name;
-            checkbox.style["margin"] = "0px";
             checkbox.onclick = DOM.eventTriggered; // event listener
-            checkbox.checked = true;
 
             // label
             var label = document.createElement('label')
             label.htmlFor = name;
-            label.style["font-weight"] = "400";
-            label.style["color"] = "#7f7f7f";
-            checkbox.style["margin-left"] = "10px";
             label.appendChild(document.createTextNode("\u00A0")); // &nbsp
             label.appendChild(document.createTextNode(name));
 
-            element.appendChild(checkbox);
-            element.appendChild(label);
+            div.appendChild(checkbox);
+            div.appendChild(label);
 
             // prevent duplicate filters in menu
             if (!DOM.childrenExists(name, list)) {
                 DOM.checkboxes[name] = checkbox;
-                list.appendChild(element);
+                list.appendChild(div);
             }
+        }
+    }
+
+    /**
+     * Remove all the children from a DOM element
+     * @param {object} parent the element to which the checkbox will be appended
+     */
+    static removeChildrenOf(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
         }
     }
 
@@ -328,13 +300,28 @@ class DOM {
         for (let index = 0; index < list.children.length; index++) {
             // get the children in the list
             const child = list.children[index];
-            // get the input in the case of checkboxes
+            // get the input un the case of checkboxes
             const childInput = child.children[0]
-            if (childInput && childInput.id === id) {
+            if (childInput.id === id) {
                 return true;
             }
         }
         return false;
+    }
+
+    static toggleContextualMenu(evt) {
+        ContextualGUI.edgeMenu.toggleVisibility();
+        DOM.eventTriggered(evt)
+    }
+
+    static toggleMagnifyingEffect(evt) {
+        DOM.updateCheckboxes(evt);
+        DOM.eventTriggered(evt)
+    }
+
+
+    static toggleInstructions() {
+        DOM.showLegend = !DOM.showLegend;
     }
 }
 DOM.event = false;
@@ -346,3 +333,4 @@ DOM.dropdowns = {};
 DOM.labels = {};
 DOM.sliders = {};
 DOM.lists = {};
+DOM.showLegend = true;

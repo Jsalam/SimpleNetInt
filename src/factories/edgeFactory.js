@@ -9,17 +9,25 @@ class EdgeFactory {
 
             // get source node
             let cluster = ClusterFactory.getCluster(e.source.cluster);
-
-            let source = cluster.getNode(e.source.pajekIndex);
-
+            let source = cluster.getNode(e.source.index);
             let sourceConnector = source.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
+
+            // In case the node does not have the connector. Usual case in merged networks.
+            if (!sourceConnector) {
+                sourceConnector = source.addConnector(e.kind, source.connectors.length);
+                source.vNodeObserver.addVConnector(sourceConnector);
+            }
 
             // get target node
             cluster = ClusterFactory.getCluster(e.target.cluster);
-
-            let target = cluster.getNode(e.target.pajekIndex);
-
+            let target = cluster.getNode(e.target.index);
             let targetConnector = target.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
+
+            // In case the node does not have the connector. Usual case in merged networks.
+            if (!targetConnector) {
+                targetConnector = target.addConnector(e.kind, target.connectors.length);
+                target.vNodeObserver.addVConnector(targetConnector);
+            }
 
             // get vSource
             let vSource = ClusterFactory.getVNodeOf(source)
@@ -33,6 +41,9 @@ class EdgeFactory {
             edge.weight = e.weight;
 
             // subscribe to source and target's connector. This sets the edge kind
+            // console.log(e);
+            // console.log(source);
+            // console.log(target);
             sourceConnector.subscribeEdgeObserver(edge);
             targetConnector.subscribeEdgeObserver(edge);
 
@@ -49,6 +60,10 @@ class EdgeFactory {
             Canvas.subscribe(vEdge);
         }
     }
+
+    // static get EDGES() {
+    //     return EdgeFactory._edges;
+    // }
 
     static reset() {
         EdgeFactory._edges = [];
@@ -176,7 +191,7 @@ class EdgeFactory {
      * @param edgeA : either Edge or VEdge
      * @param edgeB : either Edge or VEdge
      */
-    static compareEdges(edgeA, edgeB, excludeKind) {
+    static compareEdges(edgeA, edgeB) {
         let rtn = false;
 
         // compare pajek indexes
@@ -195,7 +210,7 @@ class EdgeFactory {
             rtn = (A[0] === B[0] && A[1] === B[1]);
         }
         // compare kinds for edges
-        if (rtn == true && !excludeKind) {
+        if (rtn == true) {
             let A = edgeA;
             let B = edgeB;
             if (edgeA instanceof VEdge) {
@@ -273,21 +288,6 @@ class EdgeFactory {
         }
         gp5.saveJSON(output, filename);
     }
-
-    static findEdge(sourcePajek, targetPajek, kind) {
-        const tempSource = new Node(undefined, undefined, sourcePajek);
-        const tempTarget = new Node(undefined, undefined, targetPajek);
-        const tempEdge = new Edge(tempSource);
-        tempEdge.kind = kind;
-        tempEdge.setTarget(tempTarget);
-        for (let edge of EdgeFactory._edges) {
-            let found = EdgeFactory.compareEdges(tempEdge, edge, true);
-            if (found) {
-                console.log(edge);
-            }
-        }
-    }
-
 }
 EdgeFactory._edgeBuffer;
 EdgeFactory._vEdgeBuffer;

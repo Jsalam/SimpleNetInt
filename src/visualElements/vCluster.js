@@ -8,6 +8,8 @@ class VCluster {
         this.palette = palette;
         this.populateVNodes(cluster);
         //   this.setPalette();
+        // instantiate a tranformer for this vCluster
+        TransFactory.initTransformer(this);
     }
 
     // Observing to Canvas
@@ -30,8 +32,8 @@ class VCluster {
             if (node instanceof Node) {
 
                 // node size
-                let vNodeW = 30;
-                let vNodeH = 30;
+                let vNodeW = 10;
+                let vNodeH = 10;
 
                 // instantiation
                 vNodeTemp = new VNode(node, vNodeW, vNodeH);
@@ -99,16 +101,14 @@ class VCluster {
     }
 
     show(renderer) {
-        // renderer.textAlign(gp5.LEFT, gp5.TOP);
-        // if (this.cluster.label) {
-        //     renderer.textSize(12);
-        //     renderer.fill(0);
-        //     renderer.noStroke();
-        //     renderer.textLeading(12);
-        //     renderer.text(this.cluster.label, this.pos.x, this.pos.y, 140);
-        //     renderer.textSize(9);
-        //     renderer.text(this.cluster.description, this.pos.x, this.pos.y + 30, 100);
-        // }
+        renderer.textAlign(gp5.LEFT, gp5.TOP);
+        if (this.cluster.label) {
+            renderer.textSize(12);
+            renderer.fill(100);
+            renderer.noStroke();
+            renderer.textLeading(12);
+            renderer.text(this.cluster.label, this.pos.x, this.pos.y, 140);
+        }
     }
 
     getJSON() {

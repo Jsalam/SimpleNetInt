@@ -11,7 +11,6 @@ class Node {
         this.connectors = []
         this.label = "void";
         this.description = "No description yet";
-        this.nodeShortDescription = "No description yet";
         this.attributes;
         this.inFwdPropagation = false;
         this.inBkwPropagation = false;
@@ -127,10 +126,6 @@ class Node {
 
     setDescription(description) {
         this.description = description;
-    }
-
-    setNodeShortDescription(description) {
-        this.nodeShortDescription = description;
     }
 
     setAttributes(attributes) {
@@ -378,10 +373,10 @@ class Node {
         // if there is a connector 
         if (connector) {
             // if the connector is linked to no more than one edges
-            if (connector.edgeObservers.length <= 1) {
-                // pop the connector and the vConnector
-                this.removeConnector(connector);
-            }
+            if (connector.edgeObservers.length <= 1)
+            // pop the connector and the vConnector
+                console.log("delete connector " + connector.kind);
+            this.removeConnector(connector);
         }
     }
 
@@ -443,23 +438,7 @@ class Node {
         return edgesTmp;
     }
 
-    equalsTo(node) {
-        let rtn = false;
-        if (this.idCat.cluster === node.idCat.cluster) {
-            //console.log("same cluster: " + this.idCat.cluster);
-            if (this.idCat.index === node.idCat.index) {
-                //  console.log("same cluster and same index: " + this.idCat.index);
-                rtn = true;
-                if (this.idCat.pajekIndex === node.idCat.pajekIndex) {
-                    // console.log("same cluster, index and pajek: " + this.idCat.pajekIndex);
-                    //rtn = true;
-                }
-            }
-        }
-        return rtn;
-    }
-
-    /** This is not being used at this point because the json is made by the vNode */
+    /** This is not being used at this point because the json us made by the vNode */
     getJSON() {
         let cnctrs = [];
         for (const connector of this.connectors) {
@@ -469,7 +448,6 @@ class Node {
         let rtn = {
             id: this.idCat.index,
             nodeLabel: this.label,
-            nodeShortDescription: this.nodeShortDescription,
             nodeDescription: this.description,
             nodeAttributes: this.attributes,
             connectors: JSON.stringify(cnctrs),

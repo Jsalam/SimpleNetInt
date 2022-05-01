@@ -11,6 +11,10 @@ class Button {
         this.dragged = false;
         this.delta = undefined;
         this.selected = false;
+        // this is true when the Transformer has affected the coordinates of this object. It turns to false when the Tranformer has been reset.
+        this.transformed = false;
+        this.localScale = 1;
+
     }
 
     show() {
@@ -44,17 +48,16 @@ class Button {
     }
 
     mouseOver() {
-        if (Canvas._mouse.x > this.pos.x - this.width / 2 &&
-            Canvas._mouse.x < this.pos.x + this.width / 2 &&
-            Canvas._mouse.y > this.pos.y - this.height / 2 &&
-            Canvas._mouse.y < this.pos.y + this.height / 2) {
+
+        if (Canvas._mouse.x > this.pos.x - this.width * this.localScale / 2 &&
+            Canvas._mouse.x < this.pos.x + this.width * this.localScale / 2 &&
+            Canvas._mouse.y > this.pos.y - this.height * this.localScale / 2 &&
+            Canvas._mouse.y < this.pos.y + this.height * this.localScale / 2) {
             this.mouseIsOver = true;
         } else {
             this.mouseIsOver = false;
         }
     }
-
-
 
     getDeltaMouse() {
         let rtn = gp5.createVector(0, 0);
@@ -63,5 +66,9 @@ class Button {
             rtn.y = Canvas._mouse.y - this.pos.y;
         }
         return rtn;
+    }
+
+    getDistToMouse() {
+        return (gp5.dist(Canvas._mouse.x, Canvas._mouse.y, this.pos.x, this.pos.y));
     }
 }

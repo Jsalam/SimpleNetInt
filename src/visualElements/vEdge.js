@@ -25,12 +25,11 @@ class VEdge {
                 let DOMChecked = data.event.target.checked;
                 let elements = EdgeFactory._vEdges.filter(function(vE) {
                     if (vE.edge.kind == DOMelementID) {
-
                         return true
                     };
                 })
                 let rise;
-                if (DOMChecked) { rise = 0.26 } else { rise = 0 }
+                if (DOMChecked) { rise = 0.03 } else { rise = 0 }
 
                 if (DOM.boxChecked('showEdges')) {
                     anime({
@@ -79,43 +78,44 @@ class VEdge {
         if (DOM.boxChecked('showEdges')) {
             let vCnctrSource = this.vSource.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
             //let vCnctrTarget = this.vTarget.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
-            if (vCnctrSource.selected) {
 
-                // get stroke color
-                let strokeColor = this._getStrokeColor();
-                let strokeWeight = this._getStrokeWeight();
+            let alpha;
 
-                //this.showBeziers(renderer, strokeColor, strokeWeight);
-                this.showBezierArcs(renderer, strokeColor, strokeWeight);
+            if (this.vSource.mouseIsOver || vCnctrSource.selected) {
+                alpha = '85';
+            } else if (this.vTarget) {
+                if (this.vTarget.mouseIsOver) {
+                    alpha = '85';
+                }
             }
+
+            // get stroke color
+            let baseColor = ColorFactory.getColorFor(this.edge.kind);
+            let strokeColor = this._getStrokeColor(baseColor, alpha);
+            let strokeWeight = this._getStrokeWeight();
+
+            strokeColor = gp5.color(strokeColor);
+
+            if (vCnctrSource.selected) {
+                const tr = TransFactory.getTransformerByVClusterID(this.source.idCat.cluster);
+                strokeColor.setAlpha(gp5.map(tr.scaleFactor, 1, 0.3, 140, 1));
+            }
+
+            // this.showBeziers(renderer, strokeColor, strokeWeight);
+            this.showBezierArcs(renderer, strokeColor, strokeWeight);
+
         }
     }
 
-    _getStrokeColor(_baseColor) {
+    _getStrokeColor(_baseColor, _alpha) {
         let baseColor = _baseColor;
-        if (!baseColor) {
-            switch (this.edge.kind) {
-                case 'Technology':
-                    baseColor = ColorFactory.basic.r; //red
-                    break;
-                case 'Methodology':
-                    baseColor = ColorFactory.basic.g; // green
-                    break;
-                case 'Process':
-                    baseColor = ColorFactory.basic.b; // blue
-                    break;
-                case 'Knowledge Framework':
-                    baseColor = ColorFactory.basic.y; // yellow
-                    break;
-                default:
-                    baseColor = ColorFactory.basic.k; // black
-                    break;
-            }
-        }
+
         // default color 
         let strokeColor = baseColor;
         let inPropagation = '#FF0000';
-        let alpha = '80'
+        let alpha;
+
+        if (_alpha) { alpha = _alpha } else { alpha = "05" }
 
         if (DOM.boxChecked("forward") && DOM.boxChecked("backward")) {
             if (this.source.inFwdPropagation || this.edge.target && this.edge.target.inBkwPropagation) {
@@ -236,9 +236,15 @@ class VEdge {
 
         // controlpoints
         renderer.strokeWeight(0.5);
-        renderer.stroke('#FF0000');
+        renderer.stroke('#FF000030');
         renderer.line(org.x, org.y, this.controlOrg.x, this.controlOrg.y);
         renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
+
+        // edge label
+        renderer.stroke(color);
+        renderer.noFill();
+        renderer.textSize(12);
+        renderer.text(this.edge.kind, 10 + (this.controlOrg.x + this.controlEnd.x) / 2, (this.controlOrg.y + this.controlEnd.y) / 2);
 
     }
 
@@ -291,10 +297,17 @@ class VEdge {
 
         // controlpoints
         // renderer.strokeWeight(0.5);
-        // renderer.stroke('#FF0000');
+        // renderer.stroke('#FF000030');
         // renderer.line(org.x, org.y, this.controlOrg.x, this.controlOrg.y);
         // renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
 
+        // edge label
+
+        renderer.noStroke();
+        renderer.fill(color);
+        renderer.textAlign(renderer.LEFT, renderer.TOP);
+        renderer.textSize(12);
+        renderer.text(this.edge.kind, 10 + (this.controlOrg.x + this.controlEnd.x) / 2, (this.controlOrg.y + this.controlEnd.y) / 2);
     }
 
     getJSON() {

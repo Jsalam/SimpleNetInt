@@ -2,24 +2,30 @@ getData = function() {
     let cluster = document.querySelector('input[name="cluster"]:checked');
     let name = document.getElementById("catName").value;
     let description = document.getElementById("catDescription").value;
-    let attributes = document.getElementById("catAttributes").value;
+    let attr = document.getElementById("catAttributesOther").value;
 
     if (cluster) {
         let clusterTmp = ClusterFactory.clusters[cluster.value];
-        attributes = '{' + attributes + '}';
-        attributes = JSON.parse(attributes);
+        // format string
+        attr = '{' + attr + '}';
+        // parse to JSON
+        attr = JSON.parse(attr);
+        // Merge JSONs
+        let attributes = { attr };
+        // console.log(attributes);
 
         let dataTmp = {
-            id: clusterTmp.getLastNodeId(),
+            id: clusterTmp.nodes.length,
             nodeLabel: name,
             nodeDescription: description,
             nodeAttributes: attributes,
-            pajekIndex: ClusterFactory.countPajek
         }
+
         let nodeTmp = ClusterFactory.makeNode(clusterTmp, dataTmp)
 
         // visual representation of the new category
         let vClustTmp = ClusterFactory.getVClusterOf(clusterTmp);
+        console.log(vClustTmp);
         let vNodeTmp = new VNode(nodeTmp, ClusterFactory.wdth, ClusterFactory.hght);
         if (nodeTmp instanceof Node) {
             if (nodeTmp.connectors.length > 0) {

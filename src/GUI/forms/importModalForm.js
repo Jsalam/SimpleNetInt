@@ -19,7 +19,7 @@ callbackNetwork = function(files) {
         loadFile(files[0]);
 
     } else {
-        alert("Wrong file format. Must use a JSON file")
+        alert("Wrong file format. Must be a JSON file")
     }
 }
 
@@ -30,12 +30,7 @@ loadFile = function(file) {
         return function(e) {
             // Read text data and parse to JSON.
             let data = JSON.parse(e.target.result)
-
-            if (data.nodes) {
-                nodesImported = data.nodes;
-            } else if (data.clusters) {
-                nodesImported = data.clusters;
-            }
+            nodesImported = data.nodes;
             edgesImported = data.edges;
         };
     })(file);

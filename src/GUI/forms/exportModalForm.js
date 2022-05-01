@@ -1,7 +1,6 @@
-saveJSON = function(name) {
-    let fileSuffix = document.getElementById("exportFileSuffix").value;
+saveJSON = function() {
 
-    console.log(fileSuffix);
+    let fileSuffix = document.getElementById("exportFileSuffix").value;
 
     if (fileSuffix) {
         let output = [];
@@ -15,17 +14,10 @@ saveJSON = function(name) {
         }
         output = { nodes: nodes, edges: edges }
 
-
         let filename = "network.json";
-
-        if (name instanceof String) {
-            filename = name + "_" + filename;
-        } else {
-            if (fileSuffix) {
-                filename = fileSuffix + "_" + filename;
-            }
+        if (fileSuffix) {
+            filename = fileSuffix + "_" + filename;
         }
-
         gp5.saveJSON(output, filename);
     } else {
         alert("Missing file name");

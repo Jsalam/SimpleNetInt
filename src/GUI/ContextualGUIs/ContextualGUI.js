@@ -2,7 +2,7 @@
  * This class uses the library Quicksettings. See http://bit101.github.io/quicksettings/
  */
 class ContextualGUI {
-    // This constructor is not needed, but it is here because the documentation generatior requires it to format the documentation
+    // This constructor is not needed, but it is here because the documentation generator requires it to format the documentation
     constructor() {}
 
     static subscribe(obj) { ContextualGUI.observers.push(obj) }
@@ -28,9 +28,9 @@ class ContextualGUI {
         ContextualGUI.createEdgeMenu();
 
         // populate contextual menu
-        ContextualGUI.edgeCategories = kinds.split(',');
-        ContextualGUI.addCheckboxes("Categories", ContextualGUI.edgeCategories);
-        //console.log('contextual menu initialized');
+        ContextualGUI.edgeCategories = kinds.split(',')
+        ContextualGUI.addCheckboxes("Categories", ContextualGUI.edgeCategories)
+            //console.log('contextual menu initialized');
     }
 
     /**
@@ -49,10 +49,12 @@ class ContextualGUI {
     }
 
     static createEdgeMenu() {
-        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, 200, 'Edge Menu', document.getElementById('model'));
-        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersA)
-        DOM.updateCheckboxes();
-        //ContextualGUI.edgeMenu.toggleVisibility();
+        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, gp5.height - 240, 'Edge Menu', document.getElementById('model'));
+
+        // Switch it off is the checkbox is off
+        if (!DOM.checkboxes.edit.checked) {
+            ContextualGUI.edgeMenu.toggleVisibility();
+        }
     }
 
     static addCheckboxes(label, items) {

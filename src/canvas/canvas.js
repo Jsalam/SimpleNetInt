@@ -10,26 +10,33 @@ class Canvas {
         this.graphics = graphics;
         this.graphicsRendered = false;
         this.renderGate = true;
-        this.currentBackground = 250;
+        this.currentBackground = 50;
+
         // The scale of our world
         this._zoom = 1;
+
         // A vector to store the offset
         this._offset = gp5.createVector(0, 0, 0);
+
         // A vector to store the start offset
         this._startOffset = gp5.createVector(0, 0, 0);
+
         // The previous offset
         this._endOffset = gp5.createVector(0, 0, 0);
+
         // A vector for the mouse position
         Canvas._mouse = gp5.createVector(0, 0, 0);
+
         // A Vector for the canvas origin
         this._newOrigin = gp5.createVector(0, 0, 0);
+
         // grid
         this.grid;
-        this.showGrid = true;
-        // Transformation control
-        //this._shiftDown;
+        this.showGrid = false;
+
         // Observers
         this.observers = [];
+
         // Events
         Canvas.mouseEvents();
         Canvas.keyEvents();
@@ -109,19 +116,16 @@ class Canvas {
     /**
      * Main render function. It switches between two renderers to speed up performance: the p5 canvas and a graphics canvas.
      * The central idea is to have a gate that is always closed except when the user performs actions on the canvas that
-     * produce changes on the visual output. When the gate is closed, the render is done on a graphics object only once, 
+     * produce changes on the visual output. When the gate is closed, the render is drawn on a graphics object only once, 
      * preventing the draw to keep on computing operations that do not yield a different visual output than the one currently
-     * being displayed. When the gate is open, the render is done on the regular p5 canvas
+     * being displayed. When the gate is open, the render is drawn on the regular p5 canvas
      */
     static render() {
         gp5.background(this.currentBackground);
-        // grid
         if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
-            Canvas.transform();
             Canvas.renderOnP5();
         } else {
-            //this.graphicsRendered = false;
-            Canvas.transform();
+            //  this.graphicsRendered = false;
             Canvas.renderOnGraphics();
             gp5.image(this.graphics, 0, 0);
         }
@@ -137,14 +141,27 @@ class Canvas {
             this.grid.show(gp5);
         }
 
+        // push transformations
+        TransFactory.pushVClusters();
+
         // show observers
         this.observers.forEach(element => {
             if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+
+                // if (element instanceof VNode) {
+                //     this.transformAndShowVNodes(element, gp5);
+                // } else {
                 element.show(gp5);
-            } else {
-                element.show(gp5);
+                // }
+
             }
+            // else {
+            //     element.show(gp5);
+            // }
         });
+
+        // pop transformations
+        TransFactory.popVClusters();
 
         // show EdgeFactory Buffer
         if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(gp5);
@@ -161,27 +178,64 @@ class Canvas {
         if (!this.graphicsRendered) {
             this.graphics.background(this.currentBackground);
 
+            // push transformations
+            TransFactory.pushVClusters();
+
+            // show observers
+            this.observers.forEach(element => {
+                if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+
+                    // if (element instanceof VNode) {
+                    //     this.transformAndShowVNodes(element, this.graphics);
+                    // } else {
+                    element.show(this.graphics);
+                    //}
+
+                }
+            });
+
+            // pop transformations
+            TransFactory.popVClusters();
+
+            // show EdgeFactory Buffer. This is used to visualize the temporary edge while the user picks the target
+            if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);
+
+            // canvas edge
+            // this.graphics.stroke('#C0C0C0');
+            // this.graphics.noFill();
+            // this.graphics.rect(0, 0, this.graphics.width, this.graphics.height);
+
             // grid
             if (this.grid && this.showGrid) {
                 this.grid.show(this.graphics);
             }
 
-            // show observers
-            this.observers.forEach(element => {
-                if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
-                    element.show(this.graphics);
-                } else {
-                    element.show(this.graphics);
-                }
-            });
-
-            // show EdgeFactory Buffer
-            if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);
-
             // Open gp5 renderer gate
             this.graphicsRendered = true;
         }
     }
+
+    /**
+     *This method applies the transformation in the class Transformer to nodes belonging to a specific cluster
+     * @param {Object} element An element from the canvas.observers collection
+     * @param {Object} renderer either gp5 or this.graphics
+     * @param {Integer} clusterID the cluster id
+     */
+    static transformAndShowVNodes(element, renderer) {
+
+        let transformer = TransformerFactory.get(element.node.idCat.cluster);
+
+        let vN = element;
+
+        // Applies transformation on the node
+        transformer.pushTo([vN.pos]);
+
+        vN.show(renderer);
+
+        // Applies inverse transformation on the node
+        transformer.popTo([vN.pos]);
+    }
+
 
     /**
      * This method MUST be invoked iteratively to get a fresh mouseCoordinate.
@@ -216,6 +270,13 @@ class Canvas {
     static reset() {
         this._zoom = 1;
         this._offset.set(0, 0, 0);
+        TransFactory.reset();
+        for (let i = 0; i < Canvas.observers; i++) {
+            let element = Canvas.observers[i];
+            if (element instanceof VNode) {
+                element.transformed = false;
+            }
+        }
     }
 
     /**
@@ -257,13 +318,6 @@ class Canvas {
         this.newOrigin = gp5.createVector(x, y);
     }
 
-    static addThemeFlow() {
-        // add a new themeFlow to canvas.
-        Canvas.subscribe(new ThemeFlow(0, 0, 35, ClusterFactory));
-        // Canvas.subscribe(new ThemeFlow(0, -113, 6, 35));
-        //Canvas.subscribe(new ThemeFlow(0, -360, 11, 45));
-    }
-
     /**
      * Show canvas values on screen
      * @param {Vector} pos 
@@ -272,11 +326,13 @@ class Canvas {
         // **** Legends
         renderer.fill('#C0C0C0');
         renderer.textAlign(gp5.RIGHT);
+        renderer.textSize(10);
         renderer.text("Mouse on canvas: x: " + Canvas._mouse.x.toFixed(1) + ", y: " + Canvas._mouse.y.toFixed(2) + "' z:" + Canvas._mouse.z.toFixed(2), pos.x, pos.y + 25);
         renderer.text("Zoom: " + this._zoom.toFixed(1), pos.x, pos.y + 35);
         renderer.text("Offset: " + this._offset, pos.x, pos.y + 45);
         renderer.text("startOffset: " + this._startOffset, pos.x, pos.y + 55);
         renderer.text("endOffset: " + this._endOffset, pos.x, pos.y + 65);
+        renderer.text("Frame rate: " + gp5.nf(gp5.frameRate(), 2, 1), pos.x, pos.y + 75)
         renderer.textAlign(gp5.CENTER);
     }
 
@@ -287,12 +343,13 @@ class Canvas {
     static showLegend(pos) {
         gp5.fill('#C0C0C0');
         gp5.textAlign(gp5.RIGHT);
-        gp5.text("Hold SHIFT and left mouse button to pan", pos.x, pos.y);
-        gp5.text("use 'SHIFT + ' to zoom in, 'SHIFT -' to zoom  out", pos.x, pos.y + 13);
-        gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 26);
-        gp5.text("Press 'SHIFT + e' to delete the last edge", pos.x, pos.y + 39);
-        gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 52);
-        gp5.text("Click on a node while holding 'd' down to delete it", pos.x, pos.y + 65);
+        gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
+        gp5.text("use 'SHIFT + ' to zoom in the canvas, 'SHIFT -' to zoom  out the canvas", pos.x, pos.y + 13);
+        gp5.text("use 'SHIFT + mouse wheel' to zoom in and out clusters", pos.x, pos.y + 26);
+        gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 39);
+        gp5.text("Press 'SHIFT + e' to delete the last edge", pos.x, pos.y + 52);
+        gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 65);
+        gp5.text("Press 'd' and click on an node to delete it", pos.x, pos.y + 78);
         gp5.textAlign(gp5.CENTER);
     }
 
@@ -315,15 +372,16 @@ class Canvas {
     // *** Events registration 
     static mouseEvents() {
         let htmlCanvas = document.getElementById('model');
-        htmlCanvas.addEventListener('mousedown', Canvas.mPressed.bind(this))
-        htmlCanvas.addEventListener('mouseup', Canvas.mReleased.bind(this))
-        htmlCanvas.addEventListener('mousemove', Canvas.mDragged.bind(this))
-        htmlCanvas.addEventListener('click', Canvas.mClicked.bind(this))
+        htmlCanvas.addEventListener('mousedown', Canvas.mPressed.bind(this));
+        htmlCanvas.addEventListener('mouseup', Canvas.mReleased.bind(this));
+        htmlCanvas.addEventListener('mousemove', Canvas.mDragged.bind(this));
+        htmlCanvas.addEventListener('click', Canvas.mClicked.bind(this));
+        htmlCanvas.addEventListener('wheel', Canvas.mWheel.bind(this));
     }
 
     static keyEvents() {
-        document.addEventListener('keydown', Canvas.kPressed.bind(this))
-        document.addEventListener('keyup', Canvas.kReleased.bind(this))
+        document.addEventListener('keydown', Canvas.kPressed.bind(this));
+        document.addEventListener('keyup', Canvas.kReleased.bind(this));
     }
 
     // *** Event related methods
@@ -377,6 +435,22 @@ class Canvas {
     static mClicked(evt) {
         Canvas.notifyObservers({ event: evt, type: "mouseclick", pos: Canvas._mouse });
         this.renderGate = true;
+    }
+
+    /** Mouse wheel */
+    static mWheel(evt) {
+
+        Canvas.notifyObservers({ event: evt, type: "mousewheel", pos: Canvas._mouse });
+
+        // Amount to scale.
+        const amnt = evt.deltaY < 0 ? 1.02 : .98;
+
+        // Zoom by amount about point.
+        //  TransFactory.zoom(amnt);
+        TransFactory.crissCross(amnt);
+
+        this.renderGate = true;
+
     }
 
     static kPressed(k) {

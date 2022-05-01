@@ -6,7 +6,7 @@
     <!-- Enable responsiveness on mobile devices-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-    <title>Simple NetInt</title>
+    <title>Simple NetInt Sketchpad</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -19,19 +19,11 @@
     <!-- Animation -->
     <script src="libs/anime.min.js"></script>
 
+    <!-- Matrix operations -->
+    <script src='libs/gl-matrix-min.js'></script>
+
     <!-- CSS -->
-    <style>
-        p {
-            font-size: 11px;
-        }
-        
-        label {
-            font-size: 10px;
-            padding: 0px;
-            margin: 0px;
-            width: 90px
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
 
@@ -42,10 +34,12 @@
     <!-- Control -->
     <script src="src/main.js"></script>
     <script src="src/canvas/canvas.js"></script>
+    <script src='src/canvas/transformer.js'></script>
     <script src="src/GUI/forms/addClusterModalForm.js"></script>
     <script src="src/GUI/forms/addNodeModalForm.js"></script>
     <script src="src/GUI/forms/exportModalForm.js"></script>
     <script src="src/GUI/forms/importModalForm.js"></script>
+
 
     <!-- Model -->
     <script src="src/graphElements/node.js"></script>
@@ -55,6 +49,7 @@
     <script src="src/factories/edgeFactory.js"></script>
     <script src="src/factories/clusterFactory.js"></script>
     <script src="src/factories/colorFactory.js"></script>
+    <script src="src/factories/transformerFactory.js"></script>
 
     <!-- View -->
     <script src="src/visualElements/button.js"></script>
@@ -63,11 +58,6 @@
     <script src="src/visualElements/vEdge.js"></script>
     <script src="src/visualElements/vCluster.js"></script>
     <script src="src/canvas/grid.js"></script>
-    <script src="src/SCDMural/gallery.js"></script>
-    <script src="src/SCDMural/fret.js"></script>
-    <script src="src/SCDMural/chord.js"></script>
-    <script src="src/SCDMural/ribbon.js"></script>
-    <script src="src/SCDMural/themeFlow.js"></script>
 
     <!-- Utils-->
     <script src="src/utilities/utilities.js"></script>
@@ -77,130 +67,119 @@
 </head>
 
 <body>
-    <div class="pos-f-t">
-        <div class="collapse" id="navbarToggleExternalContent">
-            <div class="bg-dark p-1"></div>
-            <div class="container-fluid" style="position: sticky; margin: 10px; background-color: rgba(255, 255, 255, 0.247); top: 0px; z-index: 100">
-                <div class="row">
-                    <!-- File -->
-                    <div class="col-sm-2">
-                        <div>
-                            <p>FILE</p>
-                            <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="myBtn" data-toggle="modal" data-target="#exportNetworkModal">Export
-            network</button>
-                            <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="myBtn" data-toggle="modal" data-target="#importNetworkModal">Import
-            network</button>
-                            <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="exportEdges" data-toggle="modal" hidden>Grasshopper</button>
-                        </div>
 
-                    </div>
-                    <!-- Edit -->
-                    <div class="col-sm-3">
-                        <p>NETWORK</p>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="myBtn" data-toggle="modal" data-target="#addClusterModal">Add cluster</button>
-                                <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="myBtn" data-toggle="modal" data-target="#addNodeModal">Add node</button>
-                                <div>
-                                    <input type="checkbox" id="edit" style="margin:0px" checked>
-                                    <label for="edit" style="font-size:10px; font-weight:400">Edit network</label>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="myBtn" data-toggle="modal" data-target="#addKindModal">Edge Catgrs</button>
-                                <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" id="clearEdges" name="clearEdgs">Clear edges</button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Filters -->
-                    <div class="col-sm-2">
-                        <p> FILTERS </p>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div id="filtersB">
-                                    <div>
-                                        <div style="font-size:10px; font-weight:200">Edges</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Propagation -->
-                    <div class="col-sm-1">
-                        <div>
-                            <p>PROPAGATION</p>
-                            <div>
-                                <input type="checkbox" id="forward" name="fwd" style="padding: 0px; margin: 0px;">
-                                <label for="forward" style="font-size:10px; font-weight:400">Succesors</label>
-                            </div>
-                            <div>
-                                <input type="checkbox" id="backward" name="bws" style="padding: 0px; margin: 0px;">
-                                <label for="backward" style="font-size:10px; font-weight:400">Predecesors</label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- View -->
-                    <div class="col-sm-3">
-                        <p> VIEW </p>
-                        <input type="checkbox" id="backgroundContrast">
-                        <label for="backgroundContrast">Contrast</label>
-                        <input type="checkbox" id="grid" checked>
-                        <label for="grid">Show grid</label>
-                        <input type="checkbox" id="showTexts" checked>
-                        <label for="showTexts">Show texts</label>
-                        <input type="checkbox" id="showEdges" checked>
-                        <label for="showEdges">Show edges</label>
-                        <input type="checkbox" id="showWall" checked hidden>
-                        <label for="showWall" hidden>Show wall</label>
-                        <input type="checkbox" id="showColleges" hidden>
-                        <label for="showColleges" hidden>Show colleges</label>
-                        <input type="checkbox" id="showEdgeMenu" checked>
-                        <label for="showEdgeMenu">Show edge menu</label>
-                        </span>
-                    </div>
+    <div class="collapse show" id="navbarToggleExternalContent">
+        <!-- EDITOR SECTION -->
+        <div class="wrapper">
+            <!-- File -->
+            <div class="sectionTitle" id="fileTitle">File</div>
+            <div class="section" id="fileSection">
+                <div class="customButton">Choose network file &nbsp
+                    <select id="modelChoice">
+                        <option value="0" selected>Empty canvas</option>
+                        <option value="1">Firefly & Serenity Experimental Timeline</option>
+                    </select>
                 </div>
+                <div class="customButton" type="button" data-toggle="modal" data-target="#importNetworkModal">Import file </div>
+                <div class="customButton" type="button" data-toggle="modal" data-target="#exportNetworkModal">Export file</div>
+
+            </div>
+
+            <!-- Network -->
+
+            <div class="sectionTitle" id="networkTitle">Network</div>
+            <div class="section" id="networkSection">
+
+                <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add clustering domain</div>
+                <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
+                <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
+                <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
+                <input type="checkbox" id="edit" checked>
+                <label for="edit" style=" font-size: .8em">Enable network editing</label>
+            </div>
+
+            <!-- VISUALIZATION SECTION -->
+            <div class="sectionTitle" id="viewTitle">View</div>
+            <div class="section" id="viewSection">
+
+                <input type="checkbox" id="backgroundContrast" checked>
+                <label for="backgroundContrast">Contrast</label><br>
+
+                <input type="checkbox" id="grid">
+                <label for="grid">Show grid</label><br>
+
+                <input type="checkbox" id="showTexts" checked>
+                <label for="showTexts">Show texts</label><br>
+
+                <input type="checkbox" id="showEdges" checked>
+                <label for="showEdges">Show edges</label><br>
+
+                <input type="checkbox" id="filterLinked">
+                <label for="filterLinked">Linked nodes</label><br>
+
+                <input type="checkbox" id="magnifyingEffect" checked>
+                <label for="magnifyingEffect">Magnifying effect</label><br>
+            </div>
+
+            <!-- Propagation -->
+
+            <div class="sectionTitle" id="propagationTitle">Propagation</div>
+            <div class="section" id="propagationSection">
+                <input type="checkbox" id="forward" checked>
+                <label class="text-muted" for="forward">Successors</label><br>
+                <input type="checkbox" id="backward">
+                <label class="text-muted" for="backward">Predecessors</label><br>
+            </div>
+
+
+            <!-- Links -->
+
+            <div class="sectionTitle" id="linksTitle">Links</div>
+            <div class="section" id="filtersB"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Navigation Bar -->
+    <nav>
+        <!-- <div class="d-inline-flex flex-row-reverse" style="align-items: initial;"> -->
+        <div type="button" onclick="toggle_visibility('navbarHideableHeader')" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+
+            <div id="navbarHideableHeader">
+                <div id="logo"> <img src="files/logo.png" height="20px"> &nbsp Simple NetInt Sketchpad</div>
+                <div id="menuButton">menu</div>
             </div>
         </div>
-    </div>
-    <nav class="navbar navbar-dark bg-dark">
-        <button class="btn btn-outline-secondary btn-sm py-0" style="font-size: 0.8em;" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"> menu </button>
+        <script type="text/javascript">
+            function toggle_visibility(id) {
+                let e = document.getElementById(id);
+                if (window.getComputedStyle(e).opacity < 1) {
+                    e.style.opacity = 1;
+                } else
+                    e.style.opacity = 0.3;
+            }
+        </script>
 
-
-        <!-- Lib menu -->
-        <div>
-            <span class="navbar-brand" style="font-size: 0.8em;">Network lib &nbsp
-                <select id="modelChoice" style="font-size:10px; color:grey;">
-                            <option value="1"selected >Empty network</option>
-
-                        </select>
-                    </span>
-        </div>
-        <!-- NetInt logo -->
-        <span class="navbar-brand" style="font-size: 0.8em;">
-            <img src="files/logo.png" height="20px">
-            Simple NetInt
-        </span>
-        </button>
     </nav>
-
-    <div id="filtersA" style="margin-left: 50px;">
-
-        <span style="font-size:10px; font-weight: bold;">Edge type visibility:</span>
-        <input type="checkbox" id="filterLinked" style="margin:0px;">
-        <label for="filterLinked" style="font-size:10px; font-weight:400; color:#7f7f7f">Linked only</label>
-
     </div>
-    <div class="container-fluid">
-        <div class="row justify-content-center align-items-center pt-4">
+
+    <div class="container-fluid fixed" style="background-color: rgb(50,50,50);">
+        <!--        <div class="pt-4 pl-4" id="filtersB" hidden>-->
+        <!--        </div>-->
+        <div class="row  align-items-center">
             <!-- Model goes here -->
             <div id="model"></div>
-
-            <p style="margin-left:20px; font-size:xx-small;"> Using Simple NetInt library | Developed by Juan Salamanca Contact: jsal@illinois.edu | University of Illinois at Urbana-Champaign | 2020 | Made with p5.js, Quicksettings.js & Anime.js</p>
-
         </div>
     </div>
 
+    <!-- Footer -->
+    <div class="container-fluid" style="position: fixed; bottom: 0; background-color: rgb(53, 58, 63, 255); ">
+        <div type="button" id="toggle_instructions" style="padding: 5px; float: right;">
+            <div style="color: #888c8f; font-size: .7em; font-weight: lighter;">Display interaction instructions</div>
+        </div>
+    </div>
 
     <!-- ADD CLUSTER MODAL FORM -->
     <div class="modal fade" id="addClusterModal" tabindex="-1" role="dialog" aria-labelledby="addClusterModal" aria-hidden="true">
@@ -236,26 +215,26 @@
                 </div>
                 <div class="modal-body">
 
+
+                    <h4>Node name</h4>
+                    <input id="catName" value="Node name"></input>
+                    <hr>
                     <h4>Choose the cluster you want to add a node</h4>
                     <!-- This form is populated with global method addClusterToModalFormList() in addClusterModalForm.js -->
                     <form action="" id="clusterChoice"></form>
                     <hr>
-                    <h4>Node name</h4>
-                    <input id="catName" value="Node name"></input>
-                    <hr>
-
                     <h4>Node description</h4>
                     <p>Describe briefly the content of the new node. Give credits to third parties if any. </p>
-                    <textarea class="form-control" rows="5" id="catDescription">Node description</textarea>
+                    <textarea class="form-control" rows="3" id="catDescription">Node description</textarea>
                     <hr>
 
-                    <h4>Node attributes</h4>
+                    </textarea>
+                    <h4>Attributes</h4>
                     <p>Add attributes in comma separated "key":"value" pairs. </p>
-                    <textarea class="form-control" rows="10" id="catAttributes">
-"Key":"Value"
+                    <textarea class="form-control" rows="3" id="catAttributesOther">
+"Attribute A":"", "Attribute B":""
                     </textarea>
                     <hr>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal" id="SubmitAddNodeModal">Submit</button>
@@ -333,7 +312,7 @@
                     <h4>Description</h4>
                     <p>Categories are classes of links. For instance the "friend" category represents the friendship between nodes A and B. Another link of the class "classmates" can connect the same nodes. In Simple Networks there is a category for every
                         kind of relationship between nodes. </p>
-                    <p>Enter the categories you want to use in this network separate by comas. For example: <b>friend,classmate,partner,relative</b> </p>
+                    <p>Enter the categories you want to use in this network separated by comas. For example: <b>friend,classmate,partner,relative</b> </p>
                     <textarea class="form-control" rows="1" id="edgeKinds">default</textarea>
                     <br>
                 </div>
@@ -343,6 +322,8 @@
             </div>
         </div>
     </div>
+
+
 
 </body>
 

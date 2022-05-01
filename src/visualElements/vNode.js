@@ -5,13 +5,18 @@ class VNode extends Button {
         this.color;
         this.strokeColor;
         this.paddingTop = 3;
+        // for magnifying glass2
+        this.diam = width;
+        this.shiftPos = gp5.createVector(0, 0);
         // observers are vConnectors
         this.vConnectors = [];
-        this.vConnectorsGap = 13;
+        this.vConnectorsGap = 11;
         this.node.subscribe(this);
         // events
-        this.keyP_Down = false; // propagation
+        this.keyP_Down = false;
         this.keyD_Down = false; // deletion
+        // *** TRANSFORMATIONS ***
+        this.tr;
     }
 
     subscribe(obj) {
@@ -19,6 +24,7 @@ class VNode extends Button {
     }
 
     unsubscribe(obj) {
+        console.log(obj);
         this.vConnectors = this.vConnectors.filter(function(subscriber) {
             let rtn = true;
             // Filter vConnectors
@@ -26,7 +32,7 @@ class VNode extends Button {
 
                 if (subscriber.connector.equals(obj.connector)) {
                     rtn = false;
-                    // console.log('unsubscribed vConnector ' + JSON.stringify(subscriber.connector.id));
+                    console.log('unsubscribed vConnector ' + JSON.stringify(subscriber.connector.id));
                 }
             }
             return rtn;
@@ -79,12 +85,23 @@ class VNode extends Button {
             if (data.type == "mousedrag") {
                 this.mouseDraggedEvents();
             }
+
             if (data.type == "mousemove") {
                 this.mouseOver();
-                // update the canvas if the mouse is over a vNode
+                // // update the canvas if the mouse is over a vNode
                 if (this.mouseIsOver) {
                     Canvas.update();
-                };
+                }
+                // MAGNIFYING EFFECT
+                if (DOM.boxChecked("magnifyingEffect") && this.getDistToMouse() < 200) {
+                    this.computeMagnifyingEffect();
+                    Canvas.update();
+                }
+
+            }
+
+            if (data.type == "mousewheel") {
+
             }
             // Keyboard events
         } else if (data.event instanceof KeyboardEvent) {
@@ -120,6 +137,7 @@ class VNode extends Button {
         tmpVConnector.setColor(this.color);
         this.subscribe(tmpVConnector);
         this.updateConnectorsCoords();
+        // return tmpVConnector;
     }
 
     resetVConnectors() {
@@ -127,7 +145,7 @@ class VNode extends Button {
     }
 
     /**
-     * Remove a connector by its kind only if it has one edge linked
+     * Remove a connector by its kind
      * @param {} kind 
      */
     popVConnector(kind) {
@@ -136,7 +154,6 @@ class VNode extends Button {
             return vCnctr.connector.kind == kind;
         })[0];
 
-        console.log(vConnector);
         if (vConnector) {
 
             // check if there are no other edges linked to this connector
@@ -149,6 +166,7 @@ class VNode extends Button {
                 this.unsubscribe(vConnector);
                 this.updateConnectorsCoords();
             }
+
         }
     }
 
@@ -196,23 +214,28 @@ class VNode extends Button {
         this.updateConnectorsCoords();
     }
 
-    updateConnectorsCoords() {
+    updateConnectorsCoords(newPos) {
+
         let counter = 1;
         let angle = (Math.PI * 2) / this.node.connectors.length;
 
         this.vConnectors.forEach(vConnector => {
-            // update connectors by column
-            //vConnector.updateCoordsByColumn(this.pos, counter, this.vConnectorsGap);
+            //vConnector.updateCoords(this.pos, counter, this.vConnectorsGap);
+            if (this.node.connectors.length < 2) {
+                if (newPos) {
+                    vConnector.updateCoordsByAngle(newPos, 0, vConnector.width / 2);
+                } else {
+                    vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
+                }
 
-            // update connectors around the center
-            // if (this.node.connectors.length < 2) {
-            //     vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
-            // } else {
-            //     vConnector.updateCoordsByAngle(this.pos, angle * counter, this.width / 3);
-            // }
+            } else {
+                if (newPos) {
+                    vConnector.updateCoordsByAngle(newPos, angle * counter, this.vConnectorsGap);
+                } else {
+                    vConnector.updateCoordsByAngle(this.pos, angle * counter, this.vConnectorsGap);
+                }
 
-            // update connectors at the center of the vNode
-            vConnector.updateCoords(this.pos);
+            }
             counter++;
         });
     }
@@ -220,117 +243,107 @@ class VNode extends Button {
     /*** SHOW FUNCTIONS */
     show(renderer) {
 
+        // *** TRANSFORMATIONS ***
+        this.tr = TransFactory.getTransformerByVClusterID(this.node.idCat.cluster);
+
         // *** FILTER ***
         // Check if any of this Node connectors matches User GUI inputs
         this.node.filterConnectors();
 
         // get the visual properties
-        let fillColors = this._getFillColor(this.color);
-        this.strokeColor = this._getStrokeColor('#808080');
+        let fillColors = this._getFillColor(ColorFactory.getColorFor(this.node.idCat.cluster));
+        this.strokeColor = this._getStrokeColor(ColorFactory.getColorFor(this.node.idCat.cluster));
         let strokeWeight = this._getStrokeWeight();
 
         // assign colors
         renderer.fill(fillColors.fill);
-        //renderer.fill(this.color.concat('00'));
         renderer.stroke(this.strokeColor);
         renderer.strokeWeight(strokeWeight);
-
         // draw shape
         renderer.ellipseMode(gp5.CENTER);
-        renderer.ellipse(this.pos.x, this.pos.y, this.width);
+
+        // set diameter
+        this.diam = this.width * this.localScale;
+
+        // Ajust diameter to global transformation 
+        if (this.transformed) {
+            this.diam = this.width * this.tr.scaleFactor * this.localScale;
+        }
+        let newPos = p5.Vector.add(this.pos, this.shiftPos);
+
+        this.updateConnectorsCoords(newPos);
+
+        renderer.ellipse(newPos.x, newPos.y, this.diam + (this.node.connectors.length * 3));
 
         // draw label
         if (DOM.boxChecked('showTexts')) {
-            this._showLabel(renderer, fillColors.label);
 
+            if (this.transformed) {
+                if (this.tr.scaleFactor > 0.57) {
+                    this._showLabel(renderer, fillColors.label, newPos);
+                }
+            } else {
+                this._showLabel(renderer, fillColors.label, newPos);
+            }
 
             // show node description
             if (this.mouseIsOver) {
-                this._showDescription(renderer);
-                this._showAttribute(renderer, ["Key"]);
+                this._showDescription(renderer, newPos);
             }
         }
 
         // Show connectors 
         if (this.vConnectors.length > 0) {
             for (const vCnctr of this.vConnectors) {
-                vCnctr.show(renderer, fillColors.fill);
 
+                let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
+
+                strokeCnctrColor = gp5.color(strokeCnctrColor);
+
+                if (this.transformed) {
+                    strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
+                }
+                vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
             }
         }
     }
 
-    _showLabel(renderer, color) {
+    _showLabel(renderer, color, newPos) {
         // draw the label
         renderer.fill(color);
         renderer.noStroke();
-        renderer.textSize(12);
+        renderer.textSize(10 + 2 * this.localScale);
         if (this.propagated) {
             renderer.textStyle(renderer.BOLD);
         }
-        renderer.textAlign(gp5.CENTER, gp5.CENTER);
-        renderer.text(this.node.label, this.pos.x - 22.5, this.pos.y + 5 + this.height / 2, 45);
-        renderer.textStyle(renderer.NORMAL);
+        let labelHeight = 15 * this.localScale;
+        if (this.mouseIsOver) {
+            labelHeight = 145 * this.localScale;
+        }
+        renderer.textAlign(renderer.CENTER, renderer.TOP);
 
-    }
+        let x = this.pos.x;
+        let y = this.pos.y;
 
-    _showAttribute(renderer, attributes) {
-
-        renderer.stroke(0);
-        renderer.line(this.pos.x, this.pos.y - 20, this.pos.x, this.pos.y - 70);
-
-
-        let textContent = "";
-        for (let i = 0; i < attributes.length; i++) {
-            const element = this.node.attributes[attributes[i]];
-            if (element !== " ") {
-                textContent = textContent.concat('\n', element)
-            }
+        if (newPos) {
+            x = newPos.x;
+            y = newPos.y;
         }
 
-        renderer.push();
-        renderer.translate(this.pos.x - 10, this.pos.y - 100);
-        renderer.noStroke();
-        renderer.rotate(-gp5.PI / 4);
-        renderer.textSize(10);
-        renderer.text(textContent, 0, 0, 500, 500);
-        renderer.pop();
+        renderer.text(this.node.label, x - 22.5, y + 8 * this.localScale + this.height / 2, 65 + this.localScale * 2, labelHeight);
+
     }
 
     _getFillColor(_baseColor) {
 
         let baseColor = _baseColor;
 
-        if (!baseColor) {
-            let clusterID = this.node.idCat.cluster;
-            let themeName = ClusterFactory.getCluster(clusterID).label;
-            let palette = ColorFactory.getPaletteByTheme(themeName);
-            if (palette) {
-                baseColor = palette.colors[0];
-            } else {
-                switch (this.node.attributes.Primary_ToI) {
-                    case 'Technology':
-                        baseColor = ColorFactory.basic.r; //red
-                        break;
-                    case 'Methodology':
-                        baseColor = ColorFactory.basic.g; // green
-                        break;
-                    case 'Process':
-                        baseColor = ColorFactory.basic.b; // blue
-                        break;
-                    case 'Knowledge Framework':
-                        baseColor = ColorFactory.basic.y; // yellow
-                        break;
-                    default:
-                        baseColor = ColorFactory.basic.k; // black
-                        break;
-                }
-            }
-        }
-
         // default color 
         let fillColor = baseColor;
-        let labelColor = '#000000';
+        let labelColor = '#111111';
+        if (Canvas.currentBackground < 150) {
+            labelColor = '#EEEEEE';
+        }
         let filtered = baseColor;
 
         // settings. see hex table https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
@@ -370,37 +383,23 @@ class VNode extends Button {
 
         //if (filteredConnectors.length > 0) fillColor = filtered;
         if (this.selected) fillColor = filtered;
+
+        fillColor = gp5.color(fillColor);
+        labelColor = gp5.color(labelColor);
+
+        labelColor.setAlpha(gp5.map(this.localScale, 2, 1, 255, 150))
+
+        if (this.transformed) {
+
+            fillColor.setAlpha(gp5.map(this.tr.scaleFactor, 3, 0.3, 255, 1));
+            labelColor.setAlpha(gp5.map(this.tr.scaleFactor, 1, 0.5, 255, 1));
+        }
+
         return { fill: fillColor, label: labelColor };
     }
 
     _getStrokeColor(_baseColor) {
         let baseColor = _baseColor;
-        if (!baseColor) {
-            let clusterID = this.node.idCat.cluster;
-            let themeName = ClusterFactory.getCluster(clusterID).label;
-            let palette = ColorFactory.getPaletteByTheme(themeName);
-            if (palette) {
-                baseColor = palette.colors[0];
-            } else {
-                switch (this.node.attributes.Primary_ToI) {
-                    case 'Technology':
-                        baseColor = ColorFactory.basic.r; //red
-                        break;
-                    case 'Methodology':
-                        baseColor = ColorFactory.basic.g; // green
-                        break;
-                    case 'Process':
-                        baseColor = ColorFactory.basic.b; // blue
-                        break;
-                    case 'Knowledge Framework':
-                        baseColor = ColorFactory.basic.y; // yellow
-                        break;
-                    default:
-                        baseColor = ColorFactory.basic.k; // black
-                        break;
-                }
-            }
-        }
 
         // default color 
         let strokeColor = baseColor;
@@ -414,15 +413,23 @@ class VNode extends Button {
         }
 
         // *** Linked filter
-        if ((this.vConnectors.length < 1) && DOM.boxChecked("filterLinked")) {
-            strokeColor = dimmed;
-        }
+        // if ((this.vConnectors.length < 1) && DOM.boxChecked("filterLinked")) {
+        //     strokeColor = dimmed;
+        // }
 
         // *** filter by edge category
         //let filteredConnectors = this.node.filterConnectors();
 
-        //if (this.selected) strokeColor = filtered;
+        if (this.selected) strokeColor = filtered;
 
+        strokeColor = gp5.color(strokeColor);
+
+        if (this.transformed) {
+
+            strokeColor.setAlpha(gp5.map(this.tr.scaleFactor, 3, 0.1, 255, 1));
+        } else {
+            strokeColor.setAlpha(125);
+        }
         return strokeColor;
     }
 
@@ -432,7 +439,7 @@ class VNode extends Button {
         if (this.propagated) {
             weight = 2;
         } else if ((this.vConnectors.length > 0) && DOM.boxChecked("filterLinked")) {
-            weight = 2;
+            weight = 1;
         } else {
             weight = 1;
         }
@@ -440,16 +447,59 @@ class VNode extends Button {
     }
 
 
-    _showDescription(renderer) {
-        renderer.fill("#000000");
-        renderer.textAlign(gp5.LEFT, gp5.TOP);
+    _showDescription(renderer, newPos) {
+
+        // Get coordinates
+        let x = this.pos.x - 150;
+        let y = this.pos.y;
+
+        if (newPos) {
+            x = newPos.x - 150;
+            y = newPos.y;
+        }
+
+        // get attribute list
+
+        let entryList = []
+
+        // This nested structure flattens the nested structure of attribute objects to filter out the keys with void value 
+        for (const midLevel of Object.entries(this.node.attributes)) {
+            for (const innerLevel of Object.entries(midLevel[1])) {
+                entryList.push(innerLevel)
+            }
+        }
+
+        // This filters remove empty value items from the list of attributes
+        let filteredAttributes = entryList.filter(attr => attr[1] != "");
+
+        // Show background
+        let boxHeight = (2 + filteredAttributes.length * 15) + 45;
+        let boxWidth = 150;
+        if (this.node.label.length * 8 > boxWidth) boxWidth = this.node.label.length * 8;
+
+        renderer.fill(0, 170);
+        renderer.rect(x, y + 5, boxWidth, -boxHeight);
+
+        // Show texts
+        renderer.fill('#111111');
+        if (Canvas.currentBackground < 150) {
+            renderer.fill('#EEEEEE');
+        }
+
+        renderer.textAlign(renderer.LEFT, renderer.TOP);
         renderer.noStroke();
-        renderer.textSize(12);
-        let clusterLabel = ClusterFactory.getCluster(this.node.idCat.cluster).label
-        renderer.text("Theme:  " + clusterLabel, 95, gp5.height - 108, gp5.width - 200, 97);
-        renderer.text(this.node.label, 95, gp5.height - 90, gp5.width - 200, 97);
         renderer.textSize(11);
-        renderer.text(this.node.description, 100, gp5.height - 72, gp5.width - 200, 97);
+
+        let textString = "Name: " + this.node.label + "\n" + "Description: " + this.node.description
+
+        // renderer.text("Name: " + this.node.label, x + 5, y - 25, 650, 97);
+        // renderer.text("Description: " + this.node.description, x + 5, y - 40, 650, 97);
+
+        renderer.text(textString, x + 5, y - 25, 150, 97)
+
+        for (let i = 0; i < filteredAttributes.length; i++) {
+            renderer.text(filteredAttributes[i][0] + ": " + filteredAttributes[i][1], x + 5, y - 55 - (i * 15), 450, 97);
+        }
     }
 
     getJSON() {
@@ -460,7 +510,6 @@ class VNode extends Button {
         let rtn = {
             id: this.node.idCat.index,
             nodeLabel: this.node.label,
-            nodeShortDescription: this.node.nodeShortDescription,
             nodeDescription: this.node.description,
             nodeAttributes: this.node.attributes,
             polarity: this.node.polarity,
@@ -496,7 +545,6 @@ class VNode extends Button {
          * responsive as it should, but it is highly accurate ;-)
          */
         if (this.mouseIsOver && !this.dragged) {
-
             if (this.keyP_Down) {
                 this.propagated = !this.propagated;
                 this.node.propagate(this.node, this.propagated);
@@ -571,5 +619,40 @@ class VNode extends Button {
         Canvas.subscribe(currentVEdge);
 
         return currentVEdge;
+    }
+
+    ///****** METHODS FOR MAGNIFYING GLASS ********/
+
+    computeMagnifyingEffect() {
+        let effectWidth = 150;
+        let maxAmp = 3;
+        let minAmp = 1;
+        let factor;
+        if (this.getDistToMouse() <= effectWidth) {
+
+            //** GET SCALE CHANGE */
+            let radians = gp5.map(this.getDistToMouse(), effectWidth, 0, Math.PI, 0);
+            factor = (-Math.cos(radians) + 1) / 2
+            factor = gp5.map(factor, 1, 0, minAmp, maxAmp);
+
+            //** GET POSITION CHANGE */
+            //this.shiftPos.set(Math.sin(radians) * 20, 0);
+            let xDist = Canvas._mouse.x - this.pos.x;
+            let dNormalized = gp5.map(Math.abs(xDist), effectWidth, 0, 1, 0);
+
+            // Invert sign
+            if (xDist < 0) {
+                dNormalized *= -1;
+            }
+
+            // update values
+            this.localScale = factor;
+            //  this.shiftPos.set(dNormalized * 30, 0);
+
+
+        } else {
+            this.localScale = 1;
+            //this.shiftPos.setMag(0);
+        }
     }
 }

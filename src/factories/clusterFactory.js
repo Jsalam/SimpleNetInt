@@ -7,6 +7,7 @@ class ClusterFactory {
 
         // global function from addClusterModalForm.js
         clearClusterModalFormList();
+
         for (let index = 0; index < Object.keys(data).length; index++) {
             this.instantiateCluster(data[index]);
         }
@@ -19,9 +20,9 @@ class ClusterFactory {
             let cluster = ClusterFactory.clusters[index];
             let posX = 15 + x * index;
             let posY = 20;
-            let width = ClusterFactory.width;
-            let height = ClusterFactory.height;
-            let palette = ColorFactory.getPaletteByIndex(index);
+            let width = ClusterFactory.wdth;
+            let height = ClusterFactory.hght;
+            let palette = ColorFactory.getPalette(index);
 
             // vCluster instantiation
             let tmp = new VCluster(cluster, posX, posY, width, height, palette);
@@ -35,11 +36,10 @@ class ClusterFactory {
      * @param {Object} data cluster attributes. Usually entered with a form
      */
     static makeCluster(data) {
-        console.log(data);
         this.instantiateCluster(data);
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         let index = ClusterFactory.clusters.length - 1;
-        let tmp = new VCluster(ClusterFactory.clusters[index], 15 + x * index, 20, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPaletteByIndex(index));
+        let tmp = new VCluster(ClusterFactory.clusters[index], 15 + (x * index), 10, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
         Canvas.subscribe(tmp);
         ClusterFactory.vClusters.push(tmp);
     }
@@ -51,8 +51,8 @@ class ClusterFactory {
      * @param {number} gutter gap between columns of clusters
      */
     static initParameters() {
-        ClusterFactory.wdth = 30;
-        ClusterFactory.hght = 30;
+        ClusterFactory.wdth = 10;
+        ClusterFactory.hght = 10;
         ClusterFactory.gutter = 110;
     }
 
@@ -68,23 +68,22 @@ class ClusterFactory {
     }
 
     static makeNodes(cluster, data) {
-        // create Nodes
-        for (let index = 0; index < data.nodes.length; index++) {
-            let node = this.makeNode(cluster, data.nodes[index]);
-            cluster.addNode(node);
+        if (data.nodes) {
+            // create Nodes
+            for (let index = 0; index < data.nodes.length; index++) {
+                let node = this.makeNode(cluster, data.nodes[index]);
+                cluster.addNode(node);
+            }
         }
     }
 
     static makeNode(cluster, data) {
-        let node = new Node(cluster.id, data.id, data.pajekIndex);
+        let node = new Node(cluster.id, data.id, this.countCat);
         node.setLabel(data.nodeLabel);
         node.setDescription(data.nodeDescription);
-        node.setNodeShortDescription(data.nodeShortDescription);
         node.setAttributes(data.nodeAttributes);
         node.setImportedVNodeData(data.vNode);
-        if (data.pajekIndex > ClusterFactory.countPajek) {
-            ClusterFactory.countPajek = data.pajekIndex;
-        }
+        ClusterFactory.countCat++;
         // create connectors if data comes with that info. Data usually comes from 
         // the JSON file or the node created by user input 
         if (data.connectors) {
@@ -98,7 +97,6 @@ class ClusterFactory {
                 node.addConnector(connector, node.connectors.length);
             }
         }
-        ClusterFactory.countPajek++;
         return node;
     }
 
@@ -145,10 +143,9 @@ class ClusterFactory {
     }
 
     static reset() {
-        console.log("Clusters re-intialized")
         ClusterFactory.clusters = [];
         ClusterFactory.vClusters = [];
-        ClusterFactory.countPajek = 1;
+        ClusterFactory.countCat = 1;
     }
 
     static getVClusterOf(cluster) {
@@ -183,42 +180,22 @@ class ClusterFactory {
 
     static getCluster(id) {
         const tmp = ClusterFactory.clusters.filter(elem => {
-            return elem.id == id;
+            return elem.id === id;
         })[0];
         return tmp;
     }
 
     static getVCluster(id) {
         const tmp = ClusterFactory.vClusters.filter(elem => {
-            return elem.cluster.id == id;
+            return elem.cluster.id === id;
         })[0];
         return tmp;
-    }
-
-    static findDuplicateNodes() {
-        for (let cluster of ClusterFactory.clusters) {
-            for (let i = 0; i < cluster.nodes.length; i++) {
-                const nodeA = cluster.nodes[i];
-                for (let j = i + 1; j < cluster.nodes.length; j++) {
-                    const nodeB = cluster.nodes[j];
-                    nodeA.equalsTo(nodeB);
-                }
-            }
-
-        }
-    }
-
-    static getNextClusterID() {
-        let max = 0;
-        for (const cluster of ClusterFactory.clusters) {
-            let tmp = cluster.id
-            console.log(cluster);
-            if (tmp > max) max = tmp
-        }
-        return parseInt(max) + 1;
     }
 }
 
 ClusterFactory.clusters = [];
 ClusterFactory.vClusters = [];
-ClusterFactory.countPajek = 1;
+ClusterFactory.countCat = 1;
+ClusterFactory.wdth = 10;
+ClusterFactory.hght = 10;
+ClusterFactory.gutter = 150;

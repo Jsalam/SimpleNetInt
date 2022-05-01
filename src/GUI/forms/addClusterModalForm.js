@@ -6,7 +6,7 @@
 getDataCluster = function() {
     let name = document.getElementById("clusterName").value
     let description = document.getElementById("clusterDescription").value
-    let id = ClusterFactory.getNextClusterID();
+    let id = ClusterFactory.clusters.length + 1;
 
     let dataTmp = {
         clusterID: id.toString(),

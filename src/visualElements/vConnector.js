@@ -27,6 +27,9 @@ class VConnector extends Button {
             if (data.type == "mousemove") {
                 this.mouseOver();
             }
+            if (data.type == "mousewheel") {
+
+            }
             // do something
         } else if (data.event instanceof KeyboardEvent) {
             // do something
@@ -39,11 +42,7 @@ class VConnector extends Button {
         this.color = color;
     }
 
-    updateCoords(pos) {
-        this.setPos(gp5.createVector(pos.x, pos.y));
-    }
-
-    updateCoordsByColumn(pos, sequence, height) {
+    updateCoords(pos, sequence, height) {
         this.setPos(gp5.createVector(pos.x - this.width, pos.y + (sequence * height)));
         this.setHeight(height);
     }
@@ -56,18 +55,19 @@ class VConnector extends Button {
         this.setPos(gp5.createVector(center.x + x, center.y + y));
     }
 
-    show(renderer, fillColor) {
+    show(renderer, fillColor, strokeColor) {
         renderer.ellipseMode(gp5.CENTER);
         renderer.fill(fillColor);
         renderer.stroke(fillColor);
+        if (strokeColor) renderer.stroke(strokeColor);
         //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
         renderer.ellipse(this.pos.x, this.pos.y, this.width)
             // label
-        renderer.textSize(5);
-        renderer.textAlign(gp5.RIGHT, gp5.CENTER);
-        renderer.fill('#000000');
-        renderer.noStroke();
-        //renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
+            // renderer.textSize(5);
+            // renderer.textAlign(gp5.RIGHT, gp5.CENTER);
+            // renderer.fill('#000000');
+            // renderer.noStroke();
+            //renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
     }
 
     showAsButton(renderer) {

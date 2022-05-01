@@ -18,17 +18,10 @@ class Cluster {
         this.description = text;
     }
 
-    getNode(pajekIndex) {
+    getNode(index) {
         let rtn = this.nodes.filter(n => {
-            return n.idCat.pajekIndex == pajekIndex;
+            return n.idCat.index === index;
         })[0];
-        return rtn;
-    }
-
-    getLastNodeId() {
-        let rtn = 0;
-        let last = this.nodes[this.nodes.length - 1]
-        if (last) rtn = last.idCat.index
         return rtn;
     }
 

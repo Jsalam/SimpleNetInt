@@ -3,7 +3,6 @@ var main = function(p5) {
 
     // variables
     let graphics;
-    let gallery;
 
     // font
     let myFont;
@@ -18,7 +17,7 @@ var main = function(p5) {
         myFont = gp5.loadFont("./fonts/Roboto-Light.ttf");
 
         // get color palette
-        let paletteNames = ["paletteA.txt", "paletteB.txt", "paletteC.txt", "paletteD.txt", "paletteE.txt", "paletteF.txt", "paletteG.txt", "paletteH.txt"]
+        let paletteNames = ["palette1.txt", "palette2.txt", "palette3.txt", "palette4.txt"]
         ColorFactory.loadPalettes('./files/colorPalettes/', paletteNames);
     }
 
@@ -27,14 +26,16 @@ var main = function(p5) {
     p5.setup = function() {
 
         // Create canvas
-        gp5.createCanvas(window.innerWidth - 60, 740);
+        gp5.createCanvas(window.innerWidth, 840, gp5.WEBGL);
+        // gp5.createCanvas(window.innerWidth - 60, 840);
 
         // set pixel density based on display
         const canvas4KWidth = 3840;
         const canvas4KHeight = 2160
 
         // create non-iterative renderer
-        graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
+        graphics = gp5.createGraphics(window.innerWidth, 840);
+        // graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
 
         // set text font
         gp5.textFont(myFont);
@@ -46,27 +47,25 @@ var main = function(p5) {
         // Add grid to canvas: org, width, height, hPartitions, vPartitions, scaleFactor [scaleFactor = 45 pixels represent 64/64 units]
         Canvas.initGrid(gp5.createVector(0, 630), 64, 10, 64, 10, 45);
 
-        // add gallery
-        gallery = new Gallery(1710, 270, 7.5);
-
         // Connect with GUIs
         DOM.init();
 
         // load the first selected model by default
         DOM.switchModel(DOM.dropdowns.modelChoice.value);
 
+        // scroll
+        document.body.style.overflow = "hidden";
     }
+
 
     // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
     p5.draw = function() {
-        // gp5.background(250)
 
-        let xOrg = 0 //-gp5.width / 2
-        let yOrg = 0 //  -gp5.height / 2
+        let xOrg = -gp5.width / 2
+        let yOrg = -gp5.height / 2
 
         // push transformation matrix
         gp5.push();
-
 
         // DOM event
         if (DOM.event) {
@@ -76,32 +75,29 @@ var main = function(p5) {
         }
 
         // translating to upper left corner in WebGL mode
-        // gp5.translate(xOrg,yOrg );
+        gp5.translate(xOrg, yOrg);
 
+        // Canvas own transformations
+        Canvas.transform();
         Canvas.render();
 
         // Canvas.originCrossHair();
-        Canvas.showOnPointer();
-
-        // gallery
-        // if (DOM.boxChecked('showWall')) {
-        //     gallery.wall(gp5);
-        //     gallery.column(gp5);
-        //     gallery.canvas(gp5);
-        //     gallery.hotArea(gp5);
-        // }
-        // if (DOM.boxChecked('showColleges')) {
-        //     gallery.colleges(gp5, ["Carle College of Medicine", "College of Agriculture, Consumer and Environmental Sciences", "College of Veterinary Medicine", "College of Applied Health Sciences", "College of Education", "College of Fine and Applied Arts", "College of Liberal Arts and Sciences", "College of Media", "Gies College of Business", "Grainger College of Engineering", "Institute for Genomic Biology", "Institute for Sustainability Energy and Environment",
-        //         "National Center of Supercomputer Applications", "School of Information Sciences", "School of Social Work", "University of Illinois Library", "Other"
-        //     ])
-        // }
+        // Canvas.showOnPointer();
 
         // pop transformation matrix
         gp5.pop();
 
         // draw canvas status
-        Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5); //gp5.createVector((xOrg) , (yOrg) + 5)
-        Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 90), gp5);
+        //WEBGL
+        //gp5.image(Canvas.graphics, xOrg + window.innerWidth - 470, yOrg, gp5.width * 0.3, gp5.height * 0.3);
+        if (DOM.showLegend) {
+            Canvas.displayValues(gp5.createVector(xOrg + window.innerWidth - 70, yOrg), gp5);
+            Canvas.showLegend(gp5.createVector(xOrg + window.innerWidth - 83, yOrg + window.innerHeight - 170), gp5);
+        }
+        TransFactory.displayStatus(gp5.createVector(xOrg + 5, yOrg + window.innerHeight - 130), gp5);
+        // Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5);
+        // Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 85), gp5);
+
     }
 }
 
