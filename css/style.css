@@ -29,6 +29,7 @@ body {
     color: rgb(158, 175, 1);
     font-weight: bold;
     margin-bottom: 0.5em;
+    cursor: pointer
 }
 
 .dropdownContent {
@@ -53,6 +54,7 @@ body {
 
 .customButton:hover {
     background-color: rgba(109, 109, 109, 0.487);
+    cursor: pointer;
 }
 
 .checkboxItem {
@@ -102,6 +104,7 @@ hr {
     display: flex;
     opacity: 1;
     border-top: #888c8f6f solid 1px;
+    cursor: pointer
 }
 
 #logo {

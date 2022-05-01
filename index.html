@@ -74,29 +74,30 @@
 
             <!-- File -->
             <div class="dropdown">
-                <div class="dropdownTitle" type="button" id="fileTitle">File</div>
+                <div class="dropdownTitle" id="fileTitle">File</div>
                 <div class="dropdownContent" id="fileSection">
                     <div class="customButton">
-                        <div>Network from library</div>
+                        <div> <label>Network from library</label></div>
                         <select id="modelChoice">
                         <option value="0" selected>Empty canvas</option>
                         <option value="1">Firefly & Serenity Experimental Timeline</option>
                     </select>
                     </div>
                     <hr>
-                    <div class="customButton" type="button" data-toggle="modal" data-target="#importNetworkModal">Import file </div>
-                    <div class="customButton" type="button" data-toggle="modal" data-target="#exportNetworkModal">Export file</div>
+                    <div class="customButton" data-toggle="modal" data-target="#importNetworkModal">Import file </div>
+                    <div class="customButton" data-toggle="modal" data-target="#exportNetworkModal">Export file</div>
 
                 </div>
             </div>
 
             <!-- Network -->
             <div class="dropdown">
-                <div class="dropdownTitle" type="button" id="networkTitle">Network</div>
+                <div class="dropdownTitle" id="networkTitle">Network</div>
                 <div class="dropdownContent" id="networkSection">
 
                     <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add clustering domain</div>
                     <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
+                    <hr>
                     <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
                     <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
                     <hr>
@@ -109,7 +110,7 @@
 
             <!-- VISUALIZATION SECTION -->
             <div class="dropdown">
-                <div class="dropdownTitle" type="button" id="viewTitle">View</div>
+                <div class="dropdownTitle" id="viewTitle">View</div>
                 <div class="dropdownContent" id="viewSection">
                     <div class="checkboxItem">
                         <input type="checkbox" id="grid">
@@ -146,7 +147,7 @@
 
             <!-- Propagation -->
             <div class="dropdown">
-                <div class="dropdownTitle" type="button" id="propagationTitle">Propagation</div>
+                <div class="dropdownTitle" id="propagationTitle">Propagation</div>
                 <div class="dropdownContent" id="propagationSection">
                     <div class="checkboxItem">
                         <input type="checkbox" id="forward" checked>
@@ -162,7 +163,7 @@
 
             <!-- Links -->
             <div class="dropdown">
-                <div class="dropdownTitle" type="button" id="linksTitle">Links</div>
+                <div class="dropdownTitle" id="linksTitle">Filters</div>
                 <div class="dropdownContent" id="filtersB"></div>
             </div>
 
@@ -174,10 +175,9 @@
     <!-- Navigation Bar -->
     <nav>
         <!-- <div class="d-inline-flex flex-row-reverse" style="align-items: initial;"> -->
-        <div type="button" onclick="toggle_visibility('navbarHideableHeader')" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div onclick="toggle_visibility('navbarHideableHeader')" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
 
             <div id="navbarHideableHeader">
-
                 <div id="menuButton">menu</div>
             </div>
         </div>
@@ -216,7 +216,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="SubmitAddClusterModal">Submit</button>
+                    <button class="btn btn-primary" data-dismiss="modal" id="SubmitAddClusterModal">Submit</button>
                 </div>
             </div>
         </div>
@@ -253,7 +253,7 @@
                     <hr>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="SubmitAddNodeModal">Submit</button>
+                    <button class="btn btn-primary" data-dismiss="modal" id="SubmitAddNodeModal">Submit</button>
                 </div>
             </div>
         </div>
@@ -276,7 +276,7 @@
                     <p>This is the sufix of two separate files, one for nodes and one for edges</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="exportNetwork">Export
+                    <button class="btn btn-primary" data-dismiss="modal" id="exportNetwork">Export
               Network</button>
                 </div>
             </div>
@@ -310,7 +310,7 @@
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="importNetwork">Import network</button>
+                    <button class="btn btn-primary" data-dismiss="modal" id="importNetwork">Import network</button>
                 </div>
             </div>
         </div>
@@ -333,7 +333,7 @@
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="submitEdgeKinds">Generate categories</button>
+                    <button class="btn btn-primary" data-dismiss="modal" id="submitEdgeKinds">Generate categories</button>
                 </div>
             </div>
         </div>
