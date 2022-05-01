@@ -354,10 +354,10 @@ class Canvas {
     }
 
     static originCrossHair() {
-        gp5.stroke(255);
+        gp5.stroke(255, 100);
         gp5.strokeWeight(0.5);
-        gp5.line(0, -gp5.height, 0, gp5.height);
-        gp5.line(-gp5.width, 0, gp5.width, 0);
+        gp5.line(gp5.width / 2, -gp5.height, gp5.width / 2, gp5.height);
+        gp5.line(-gp5.width, gp5.height / 2, gp5.width, gp5.height / 2);
     }
 
     static showOnPointer() {

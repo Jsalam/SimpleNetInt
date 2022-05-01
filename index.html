@@ -68,7 +68,7 @@
 
 <body>
 
-    <div class="collapse show" id="navbarToggleExternalContent">
+    <div class="collapse" id="navbarToggleExternalContent">
         <!-- EDITOR SECTION -->
         <div class="wrapper">
             <!-- File -->
@@ -101,24 +101,34 @@
             <!-- VISUALIZATION SECTION -->
             <div class="sectionTitle" id="viewTitle">View</div>
             <div class="section" id="viewSection">
-
-                <input type="checkbox" id="backgroundContrast" checked>
-                <label for="backgroundContrast">Contrast</label><br>
-
-                <input type="checkbox" id="grid">
-                <label for="grid">Show grid</label><br>
-
-                <input type="checkbox" id="showTexts" checked>
-                <label for="showTexts">Show texts</label><br>
-
-                <input type="checkbox" id="showEdges" checked>
-                <label for="showEdges">Show edges</label><br>
-
-                <input type="checkbox" id="filterLinked">
-                <label for="filterLinked">Linked nodes</label><br>
-
-                <input type="checkbox" id="magnifyingEffect" checked>
-                <label for="magnifyingEffect">Magnifying effect</label><br>
+                <div>
+                    <input type="checkbox" id="backgroundContrast" checked>
+                    <label for="backgroundContrast">Contrast</label><br>
+                </div>
+                <div>
+                    <input type="checkbox" id="grid">
+                    <label for="grid">Show grid</label><br>
+                </div>
+                <div>
+                    <input type="checkbox" id="showTexts" checked>
+                    <label for="showTexts">Show texts</label><br>
+                </div>
+                <div>
+                    <input type="checkbox" id="showEdges" checked>
+                    <label for="showEdges">Show edges</label><br>
+                </div>
+                <div>
+                    <input type="checkbox" id="filterLinked">
+                    <label for="filterLinked">Linked nodes</label><br>
+                </div>
+                <div>
+                    <input type="checkbox" id="toggle_instructions" checked>
+                    <label for="toggle_instructions">System instructions</label><br>
+                </div>
+                <div>
+                    <input type="checkbox" id="magnifyingEffect" checked>
+                    <label for="magnifyingEffect">Magnifying effect</label><br>
+                </div>
             </div>
 
             <!-- Propagation -->
@@ -152,34 +162,21 @@
                 <div id="menuButton">menu</div>
             </div>
         </div>
+
         <script type="text/javascript">
             function toggle_visibility(id) {
                 let e = document.getElementById(id);
-                if (window.getComputedStyle(e).opacity < 1) {
-                    e.style.opacity = 1;
-                } else
+                if (window.getComputedStyle(e).opacity == 1) {
                     e.style.opacity = 0.3;
+                } else
+                    e.style.opacity = 1;
             }
         </script>
-
     </nav>
-    </div>
 
-    <div class="container-fluid fixed" style="background-color: rgb(50,50,50);">
-        <!--        <div class="pt-4 pl-4" id="filtersB" hidden>-->
-        <!--        </div>-->
-        <div class="row  align-items-center">
-            <!-- Model goes here -->
-            <div id="model"></div>
-        </div>
-    </div>
+    <!-- Model goes here -->
+    <div id="model"></div>
 
-    <!-- Footer -->
-    <div class="container-fluid" style="position: fixed; bottom: 0; background-color: rgb(53, 58, 63, 255); ">
-        <div type="button" id="toggle_instructions" style="padding: 5px; float: right;">
-            <div style="color: #888c8f; font-size: .7em; font-weight: lighter;">Display interaction instructions</div>
-        </div>
-    </div>
 
     <!-- ADD CLUSTER MODAL FORM -->
     <div class="modal fade" id="addClusterModal" tabindex="-1" role="dialog" aria-labelledby="addClusterModal" aria-hidden="true">
@@ -322,8 +319,6 @@
             </div>
         </div>
     </div>
-
-
 
 </body>
 

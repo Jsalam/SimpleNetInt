@@ -55,12 +55,15 @@ label:hover {
     background-color: rgba(109, 109, 109, 0.487);
 }
 
-#modelChoice {
-    font-size: 10px;
-    color: grey;
+#model {
+    width: 100%;
+    /* height: 90vw;
+    overflow-y: scroll; */
 }
 
 #modelChoice {
+    font-size: 10px;
+    color: grey;
     background-color: rgba(53, 58, 63, 255);
     width: 100%;
     border: none;
@@ -102,6 +105,9 @@ label:hover {
     grid-column: 3/4;
     grid-row: 2/3;
     padding: 0 5px 0 5px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: min-content;
 }
 
 #propagationTitle {
@@ -128,7 +134,7 @@ label:hover {
 
 #navbarHideableHeader {
     display: flex;
-    opacity: 0.3;
+    opacity: 1;
     border-top: #888c8f6f solid 1px;
 }
 
@@ -143,4 +149,11 @@ label:hover {
     margin-left: auto;
     color: #888c8f;
     padding: 1em 3em .5em
+}
+
+.foot {
+    color: #888c8f;
+    font-size: .7em;
+    font-weight: lighter;
+    height: 10px
 }
