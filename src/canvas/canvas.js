@@ -343,13 +343,32 @@ class Canvas {
     static showLegend(pos) {
         gp5.fill('#C0C0C0');
         gp5.textAlign(gp5.RIGHT);
-        gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
-        gp5.text("use 'SHIFT + ' to zoom in the canvas, 'SHIFT -' to zoom  out the canvas", pos.x, pos.y + 13);
-        gp5.text("use 'SHIFT + mouse wheel' to zoom in and out clusters", pos.x, pos.y + 26);
-        gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 39);
-        gp5.text("Press 'SHIFT + e' to delete the last edge", pos.x, pos.y + 52);
-        gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 65);
-        gp5.text("Press 'd' and click on an node to delete it", pos.x, pos.y + 78);
+        let copy = [
+            "ZOOM & PAN",
+            "Hold SHIFT and right mouse button to pan",
+            "use 'SHIFT + ' to zoom in the canvas, 'SHIFT -' to zoom  out the canvas",
+            "use 'SHIFT + mouse wheel' to zoom in and out clusters",
+            "Press 'SHIFT + r' to restore zoom and pan to default values",
+            " ",
+            "PROPAGATION",
+            "Press 'p' to enable propagation selection on node click",
+            " ",
+            "DELETING",
+            "Press 'SHIFT + e' to delete the last edge",
+            "Press 'd' and click on an node to delete it"
+        ]
+        for (let i = 0; i < copy.length; i++) {
+            const sentence = copy[i];
+            gp5.text(sentence, pos.x, pos.y + i * 13);
+        }
+
+        // gp5.text("Hold SHIFT and right mouse button to pan", pos.x, pos.y);
+        // gp5.text("use 'SHIFT + ' to zoom in the canvas, 'SHIFT -' to zoom  out the canvas", pos.x, pos.y + 13);
+        // gp5.text("use 'SHIFT + mouse wheel' to zoom in and out clusters", pos.x, pos.y + 26);
+        // gp5.text("Press 'SHIFT + r' to restore zoom and pan to default values", pos.x, pos.y + 39);
+        // gp5.text("Press 'p' to enable propagation selection on node click", pos.x, pos.y + 52);
+        // gp5.text("Press 'SHIFT + e' to delete the last edge", pos.x, pos.y + 65);
+        // gp5.text("Press 'd' and click on an node to delete it", pos.x, pos.y + 78);
         gp5.textAlign(gp5.CENTER);
     }
 

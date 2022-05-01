@@ -92,8 +92,8 @@ var main = function(p5) {
 
         // draw canvas status
         if (DOM.showLegend) {
-            Canvas.displayValues(gp5.createVector(xOrg + window.innerWidth - 70, yOrg), gp5);
-            Canvas.showLegend(gp5.createVector(xOrg + window.innerWidth - 83, yOrg + gp5.height - 100), gp5);
+            Canvas.showLegend(gp5.createVector(xOrg + window.innerWidth - 50, yOrg + 20), gp5);
+            Canvas.displayValues(gp5.createVector(xOrg + window.innerWidth - 50, yOrg + gp5.height - 100), gp5);
         }
         TransFactory.displayStatus(gp5.createVector(xOrg + gp5.width - 800, yOrg), gp5);
         // Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5);

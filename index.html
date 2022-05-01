@@ -62,90 +62,109 @@
     <!-- Utils-->
     <script src="src/utilities/utilities.js"></script>
 
-
-
 </head>
 
 <body>
 
-    <div class="collapse" id="navbarToggleExternalContent">
+    <div class="collapse show" id="navbarToggleExternalContent">
+
         <!-- EDITOR SECTION -->
-        <div class="wrapper">
+        <div class="menu">
+            <div id="logo"> <img src="files/logo.png" height="20px"> &nbsp Simple NetInt Sketchpad</div>
+
             <!-- File -->
-            <div class="sectionTitle" id="fileTitle">File</div>
-            <div class="section" id="fileSection">
-                <div class="customButton">Choose network file &nbsp
-                    <select id="modelChoice">
+            <div class="dropdown">
+                <div class="dropdownTitle" type="button" id="fileTitle">File</div>
+                <div class="dropdownContent" id="fileSection">
+                    <div class="customButton">
+                        <div>Network from library</div>
+                        <select id="modelChoice">
                         <option value="0" selected>Empty canvas</option>
                         <option value="1">Firefly & Serenity Experimental Timeline</option>
                     </select>
-                </div>
-                <div class="customButton" type="button" data-toggle="modal" data-target="#importNetworkModal">Import file </div>
-                <div class="customButton" type="button" data-toggle="modal" data-target="#exportNetworkModal">Export file</div>
+                    </div>
+                    <hr>
+                    <div class="customButton" type="button" data-toggle="modal" data-target="#importNetworkModal">Import file </div>
+                    <div class="customButton" type="button" data-toggle="modal" data-target="#exportNetworkModal">Export file</div>
 
+                </div>
             </div>
 
             <!-- Network -->
+            <div class="dropdown">
+                <div class="dropdownTitle" type="button" id="networkTitle">Network</div>
+                <div class="dropdownContent" id="networkSection">
 
-            <div class="sectionTitle" id="networkTitle">Network</div>
-            <div class="section" id="networkSection">
-
-                <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add clustering domain</div>
-                <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
-                <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
-                <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
-                <input type="checkbox" id="edit" checked>
-                <label for="edit" style=" font-size: .8em">Enable network editing</label>
+                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add clustering domain</div>
+                    <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
+                    <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
+                    <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
+                    <hr>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="edit" checked>
+                        <label for="edit" style=" font-size: .8em">Enable network editing</label>
+                    </div>
+                </div>
             </div>
 
             <!-- VISUALIZATION SECTION -->
-            <div class="sectionTitle" id="viewTitle">View</div>
-            <div class="section" id="viewSection">
-                <div>
-                    <input type="checkbox" id="backgroundContrast" checked>
-                    <label for="backgroundContrast">Contrast</label><br>
-                </div>
-                <div>
-                    <input type="checkbox" id="grid">
-                    <label for="grid">Show grid</label><br>
-                </div>
-                <div>
-                    <input type="checkbox" id="showTexts" checked>
-                    <label for="showTexts">Show texts</label><br>
-                </div>
-                <div>
-                    <input type="checkbox" id="showEdges" checked>
-                    <label for="showEdges">Show edges</label><br>
-                </div>
-                <div>
-                    <input type="checkbox" id="filterLinked">
-                    <label for="filterLinked">Linked nodes</label><br>
-                </div>
-                <div>
-                    <input type="checkbox" id="toggle_instructions" checked>
-                    <label for="toggle_instructions">System instructions</label><br>
-                </div>
-                <div>
-                    <input type="checkbox" id="magnifyingEffect" checked>
-                    <label for="magnifyingEffect">Magnifying effect</label><br>
+            <div class="dropdown">
+                <div class="dropdownTitle" type="button" id="viewTitle">View</div>
+                <div class="dropdownContent" id="viewSection">
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="grid">
+                        <label for="grid">Show grid</label><br>
+                    </div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="showTexts" checked>
+                        <label for="showTexts">Show labels</label><br>
+                    </div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="showEdges" checked>
+                        <label for="showEdges">Show edges</label><br>
+                    </div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="filterLinked">
+                        <label for="filterLinked">Linked nodes only</label><br>
+                    </div>
+                    <hr>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="toggle_instructions" checked>
+                        <label for="toggle_instructions">Instructions legend</label><br>
+                    </div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="magnifyingEffect" checked>
+                        <label for="magnifyingEffect">Magnifying effect</label><br>
+                    </div>
+                    <hr>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="backgroundContrast" checked>
+                        <label for="backgroundContrast">Contrast</label><br>
+                    </div>
                 </div>
             </div>
 
             <!-- Propagation -->
-
-            <div class="sectionTitle" id="propagationTitle">Propagation</div>
-            <div class="section" id="propagationSection">
-                <input type="checkbox" id="forward" checked>
-                <label class="text-muted" for="forward">Successors</label><br>
-                <input type="checkbox" id="backward">
-                <label class="text-muted" for="backward">Predecessors</label><br>
+            <div class="dropdown">
+                <div class="dropdownTitle" type="button" id="propagationTitle">Propagation</div>
+                <div class="dropdownContent" id="propagationSection">
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="forward" checked>
+                        <label class="text-muted" for="forward">Successors</label><br>
+                    </div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="backward">
+                        <label class="text-muted" for="backward">Predecessors</label><br>
+                    </div>
+                </div>
             </div>
 
 
             <!-- Links -->
-
-            <div class="sectionTitle" id="linksTitle">Links</div>
-            <div class="section" id="filtersB"></div>
+            <div class="dropdown">
+                <div class="dropdownTitle" type="button" id="linksTitle">Links</div>
+                <div class="dropdownContent" id="filtersB"></div>
+            </div>
 
         </div>
 
@@ -158,7 +177,7 @@
         <div type="button" onclick="toggle_visibility('navbarHideableHeader')" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
 
             <div id="navbarHideableHeader">
-                <div id="logo"> <img src="files/logo.png" height="20px"> &nbsp Simple NetInt Sketchpad</div>
+
                 <div id="menuButton">menu</div>
             </div>
         </div>
