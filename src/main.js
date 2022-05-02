@@ -85,7 +85,7 @@ var main = function(p5) {
         Canvas.render();
 
         // Canvas.originCrossHair();
-        // Canvas.showOnPointer();
+        Canvas.showOnPointer();
 
         // pop transformation matrix
         gp5.pop();
@@ -95,7 +95,7 @@ var main = function(p5) {
             Canvas.showLegend(gp5.createVector(xOrg + window.innerWidth - 50, yOrg + 20), gp5);
             Canvas.displayValues(gp5.createVector(xOrg + window.innerWidth - 50, yOrg + gp5.height - 100), gp5);
         }
-        TransFactory.displayStatus(gp5.createVector(xOrg + gp5.width - 800, yOrg), gp5);
+        // TransFactory.displayStatus(gp5.createVector(xOrg + gp5.width - 800, yOrg), gp5);
         // Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5);
         // Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 85), gp5);
 

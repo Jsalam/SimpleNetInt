@@ -152,6 +152,11 @@ class Transformer {
         glMatrix.mat2d.invert(this.invert, this.transform);
     }
 
+    setActive(val) {
+        console.log(this);
+        this.active = val;
+    }
+
     reset() {
         if (this.active) {
             this.transform = glMatrix.mat2d.create();

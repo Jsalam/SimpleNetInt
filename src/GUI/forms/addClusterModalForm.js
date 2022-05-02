@@ -15,6 +15,11 @@ getDataCluster = function() {
         nodes: []
     }
     ClusterFactory.makeCluster(dataTmp);
+
+    // add checkboxes to space contextual menu. Contextual menu created in ContextualGUI.init()
+    let transformerTemp = TransFactory.getTransformerByVClusterID(id);
+    ContextualGUI.spacesMenu.addBoolean(name, false, (val) => { transformerTemp.setActive(val) });
+
 }
 
 addClusterToModalFormList = function(id, name) {

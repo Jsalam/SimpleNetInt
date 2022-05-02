@@ -25,7 +25,7 @@ getData = function() {
 
         // visual representation of the new category
         let vClustTmp = ClusterFactory.getVClusterOf(clusterTmp);
-        console.log(vClustTmp);
+
         let vNodeTmp = new VNode(nodeTmp, ClusterFactory.wdth, ClusterFactory.hght);
         if (nodeTmp instanceof Node) {
             if (nodeTmp.connectors.length > 0) {

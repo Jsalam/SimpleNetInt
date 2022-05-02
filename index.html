@@ -15,6 +15,7 @@
 
     <!-- GUI Quicksettings -->
     <script src=https://cdn.jsdelivr.net/npm/quicksettings@latest/quicksettings.min.js></script>
+    <link href="css/quicksettings.min.css" type="text/css" rel="stylesheet">
 
     <!-- Animation -->
     <script src="libs/anime.min.js"></script>
@@ -95,16 +96,11 @@
                 <div class="dropdownTitle" id="networkTitle">Network</div>
                 <div class="dropdownContent" id="networkSection">
 
-                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add clustering domain</div>
+                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add space</div>
                     <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
                     <hr>
                     <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
                     <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
-                    <hr>
-                    <div class="checkboxItem">
-                        <input type="checkbox" id="edit" checked>
-                        <label for="edit" style=" font-size: .8em">Enable network editing</label>
-                    </div>
                 </div>
             </div>
 
@@ -114,33 +110,42 @@
                 <div class="dropdownContent" id="viewSection">
                     <div class="checkboxItem">
                         <input type="checkbox" id="grid">
-                        <label for="grid">Show grid</label><br>
+                        <label class="labelCheckbox" for="grid">Show grid</label><br>
                     </div>
                     <div class="checkboxItem">
                         <input type="checkbox" id="showTexts" checked>
-                        <label for="showTexts">Show labels</label><br>
+                        <label class="labelCheckbox" for="showTexts">Show labels</label><br>
                     </div>
                     <div class="checkboxItem">
                         <input type="checkbox" id="showEdges" checked>
-                        <label for="showEdges">Show edges</label><br>
+                        <label class="labelCheckbox" for="showEdges">Show edges</label><br>
                     </div>
                     <div class="checkboxItem">
                         <input type="checkbox" id="filterLinked">
-                        <label for="filterLinked">Linked nodes only</label><br>
+                        <label class="labelCheckbox" for="filterLinked">Linked nodes only</label><br>
                     </div>
                     <hr>
                     <div class="checkboxItem">
                         <input type="checkbox" id="toggle_instructions" checked>
-                        <label for="toggle_instructions">Instructions legend</label><br>
+                        <label class="labelCheckbox" for="toggle_instructions">Instructions legend</label><br>
                     </div>
                     <div class="checkboxItem">
                         <input type="checkbox" id="magnifyingEffect" checked>
-                        <label for="magnifyingEffect">Magnifying effect</label><br>
+                        <label class="labelCheckbox" for="magnifyingEffect">Magnifying effect</label><br>
                     </div>
                     <hr>
                     <div class="checkboxItem">
                         <input type="checkbox" id="backgroundContrast" checked>
-                        <label for="backgroundContrast">Contrast</label><br>
+                        <label class="labelCheckbox" for="backgroundContrast">Dark background</label><br>
+                    </div>
+                    <hr>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="edit" checked>
+                        <label class="labelCheckbox" for="edit" style=" font-size: .8em">Link menu</label>
+                    </div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="spaces" checked>
+                        <label class="labelCheckbox" for="spaces" style=" font-size: .8em">Spaces menu</label>
                     </div>
                 </div>
             </div>
@@ -151,11 +156,11 @@
                 <div class="dropdownContent" id="propagationSection">
                     <div class="checkboxItem">
                         <input type="checkbox" id="forward" checked>
-                        <label class="text-muted" for="forward">Successors</label><br>
+                        <label class="labelCheckbox" class="text-muted" for="forward">Successors</label><br>
                     </div>
                     <div class="checkboxItem">
                         <input type="checkbox" id="backward">
-                        <label class="text-muted" for="backward">Predecessors</label><br>
+                        <label class="labelCheckbox" class="text-muted" for="backward">Predecessors</label><br>
                     </div>
                 </div>
             </div>

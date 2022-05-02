@@ -45,7 +45,7 @@ class ClusterFactory {
     }
 
     /**
-     * Layuot parameters 
+     * Layout parameters 
      * @param {number} wdth node width
      * @param {number} hght node height. only used whith rectangular node shape
      * @param {number} gutter gap between columns of clusters

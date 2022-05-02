@@ -12,8 +12,10 @@ class TransFactory {
         TransFactory.transformers = [];
 
         for (const vC of ClusterFactory.vClusters) {
+            console.log(vC);
             TransFactory.initTransformer(vC);
         }
+
     }
 
     static initTransformer(vC) {
@@ -93,7 +95,7 @@ class TransFactory {
         }
 
         if (TransFactory.transformers.length == 0) {
-            outputString = "No clustering domains in tranformers factory";
+            outputString = "No clustering domains in tranformer factory";
         }
 
         renderer.text(outputString, pos.x + 10, pos.y + 35);

@@ -43,8 +43,9 @@ class DOM {
         DOM.checkboxes.showTexts = document.getElementById('showTexts');
         DOM.checkboxes.showEdges = document.getElementById('showEdges');
         DOM.checkboxes.magnifyingEffect = document.getElementById('magnifyingEffect');
+        DOM.checkboxes.spacesMenu = document.getElementById('spaces');
 
-        DOM.checkboxes.edit.onclick = (evt) => DOM.toggleContextualMenu(evt);
+        DOM.checkboxes.edit.onclick = (evt) => DOM.toggleContextualEdgeMenu(evt);
         DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.backward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.filterLinked.onclick = (evt) => DOM.eventTriggered(evt);
@@ -53,6 +54,7 @@ class DOM {
         DOM.checkboxes.showTexts.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.showEdges.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.magnifyingEffect.onclick = (evt) => DOM.toggleMagnifyingEffect(evt);
+        DOM.checkboxes.spacesMenu.onclick = (evt) => DOM.toggleContextualSpacesMenu(evt);
 
         // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
@@ -207,9 +209,18 @@ class DOM {
             DOM.buildClusters(nodesTemp);
             DOM.buildEdges(edgesTemp);
         }
+
         // add checkboxes to filters. It takes whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
         DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
+
+        // initialize contextual menues
         ContextualGUI.init(DOM.textboxes.edgeKinds.value);
+
+        // add checkboxes to space contextual menu. Contextual menu created in ContextualGUI.init()
+        for (const cluster of ClusterFactory.clusters) {
+            let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
+            ContextualGUI.spacesMenu.addBoolean(cluster.label, false, (val) => { transformerTemp.setActive(val) });
+        }
 
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
@@ -234,8 +245,10 @@ class DOM {
     }
 
     static getTextBoxContent() {
+
         // Initialize the gui with the text from the textbox on the DOM
         ContextualGUI.init(DOM.textboxes.edgeKinds.value);
+
         // add checkboxes to filters list B
         DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
     }
@@ -254,7 +267,7 @@ class DOM {
 
             // div
             let div = document.createElement('div');
-            // div.classList.add("linkList");
+            div.classList.add("checkboxItem");
 
             // checkbox
             let checkbox = document.createElement('input');
@@ -266,6 +279,7 @@ class DOM {
 
             // label
             var label = document.createElement('label')
+            label.classList.add("labelCheckbox");
             label.htmlFor = name;
             label.appendChild(document.createTextNode("\u00A0")); // &nbsp
             label.appendChild(document.createTextNode(name));
@@ -309,8 +323,13 @@ class DOM {
         return false;
     }
 
-    static toggleContextualMenu(evt) {
+    static toggleContextualEdgeMenu(evt) {
         ContextualGUI.edgeMenu.toggleVisibility();
+        DOM.eventTriggered(evt)
+    }
+
+    static toggleContextualSpacesMenu(evt) {
+        ContextualGUI.spacesMenu.toggleVisibility();
         DOM.eventTriggered(evt)
     }
 

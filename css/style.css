@@ -57,17 +57,17 @@ body {
     cursor: pointer;
 }
 
-.checkboxItem {
-    width: 100%;
-    background-color: rgba(62, 67, 72, 0.487);
-    padding: 0px .5em 0px .2em;
-}
-
-label {
+.labelCheckbox {
     font-size: 0.8em;
     margin: 0px;
     color: rgb(110, 117, 124);
     width: max-content;
+}
+
+.checkboxItem {
+    width: 100%;
+    background-color: rgba(62, 67, 72, 0.487);
+    padding: 0px .5em 0px .2em;
 }
 
 .checkboxItem:hover {
@@ -88,6 +88,11 @@ hr {
     font-size: 1em;
     color: rgb(163, 172, 181);
     margin-top: 1em;
+}
+
+#filtersB {
+    grid-template-columns: 1fr 1fr;
+    column-width: auto;
 }
 
 

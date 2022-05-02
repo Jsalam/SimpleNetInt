@@ -24,13 +24,16 @@ class ContextualGUI {
             ContextualGUI.edgeMenu.destroy();
         }
 
-        // Create Contextual GUI
+        // Create Contextual GUIs edges
         ContextualGUI.createEdgeMenu();
+
+        // Create Contextual GUI spaces
+        ContextualGUI.createSpacesMenu();
 
         // populate contextual menu
         ContextualGUI.edgeCategories = kinds.split(',')
-        ContextualGUI.addCheckboxes("Categories", ContextualGUI.edgeCategories)
-            //console.log('contextual menu initialized');
+        ContextualGUI.addEdgeCheckboxes("Categories", ContextualGUI.edgeCategories)
+
     }
 
     /**
@@ -42,14 +45,16 @@ class ContextualGUI {
             ContextualGUI.edgeMenu.destroy();
         }
 
-        // Create Contextual GUI
+        // Create Contextual GUI edges
         ContextualGUI.createEdgeMenu();
-        ContextualGUI.addCheckboxes("Categories", collection)
-            //console.log('contextual menu re-initialized');
+        ContextualGUI.addEdgeCheckboxes("Categories", collection);
     }
 
+    /**
+     * The menu to choose edge kinds
+     */
     static createEdgeMenu() {
-        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, gp5.height - 240, 'Edge Menu', document.getElementById('model'));
+        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, gp5.height - 240, 'Link Menu', document.getElementById('model'));
 
         // Switch it off is the checkbox is off
         if (!DOM.checkboxes.edit.checked) {
@@ -57,7 +62,24 @@ class ContextualGUI {
         }
     }
 
-    static addCheckboxes(label, items) {
+    /**
+     * The menu to toggle individual transformation spaces
+     */
+    static createSpacesMenu() {
+
+        // Check first if this already exists
+        if (!ContextualGUI.spacesMenu) {
+            ContextualGUI.spacesMenu = QuickSettings.create(gp5.width - 540, gp5.height - 240, 'Spaces Menu', document.getElementById('model'));
+        } else {
+            ContextualGUI.clearFloatingMenu(ContextualGUI.spacesMenu);
+        }
+        //Switch it off is the checkbox is off
+        if (!DOM.checkboxes.spacesMenu.checked) {
+            ContextualGUI.spacesMenu.toggleVisibility();
+        }
+    }
+
+    static addEdgeCheckboxes(label, items) {
         // the callback here is used when a new option is chosen
         ContextualGUI.edgeMenu.addDropDown(label, items, (val) => {
             ContextualGUI.edgeMenuChoice = val.value;
@@ -87,8 +109,17 @@ class ContextualGUI {
         return rtn;
     }
 
+    static clearFloatingMenu(menu) {
+        let controls = Object.entries(menu._controls)
+        for (let i = controls.length; i > 0; i--) {
+            let controlName = controls[i - 1][0];
+            menu.removeControl(controlName);
+        }
+    }
+
 }
 ContextualGUI.edgeMenu;
+ContextualGUI.spacesMenu;
 ContextualGUI.observers = [];
 ContextualGUI.edgeCategories = [];
 ContextualGUI.edgeMenuChoice;
