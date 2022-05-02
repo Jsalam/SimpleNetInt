@@ -37,13 +37,13 @@ body {
     display: none;
     width: max-content;
     padding: 0.5em 1em 0.5em 1em;
-    background-color: rgba(85, 85, 85, 0.103);
+    background-color: rgba(77, 80, 87, 0.903);
 }
 
 .customButton {
     font-size: 0.8em;
     /* border-bottom: solid 1px rgb(110, 117, 124); */
-    color: rgb(110, 117, 124);
+    color: rgb(178, 192, 203);
     padding-top: 0.2em;
     padding-left: 0.2em;
     padding-right: 0.2em;
@@ -60,7 +60,7 @@ body {
 .labelCheckbox {
     font-size: 0.8em;
     margin: 0px;
-    color: rgb(110, 117, 124);
+    color: rgb(178, 192, 203);
     width: max-content;
 }
 
