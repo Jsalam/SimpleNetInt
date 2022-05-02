@@ -39,10 +39,6 @@ Each edge is an object with these key:value pairs:
 - an {string} with the category _kind_
 - a {number} with the _weight_
 
-## **Future extensions**
-
-The final goal of this project is to develop an augmented reality visualization of networks to be used in the field of digital humanities. This proof of concept shows that scholars in the humanities come across datasets with different dimensional systems that might not be compatible across them. For instance, a timeline of scholarly publications may encompass 10 or 15 years, but the content of what is been discussed in that body of work may encompass centuries of history. Therefore, these two different temporal dimensions need to be represented in such a way that helps scholars in their interpretations. I believe that an immersive visualization may drive new questions for researchers or convey new findings to the public.
-
 ## Who do I talk to?
 
 This project is developed and maintained by Juan Salamanca (jsal@illinois.edu)
