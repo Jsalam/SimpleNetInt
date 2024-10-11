@@ -142,7 +142,7 @@ class Canvas {
         }
 
         // push transformations
-        TransFactory.pushVClusters();
+        // TransFactory.pushVClusters();
 
         // show observers
         this.observers.forEach(element => {
@@ -161,7 +161,7 @@ class Canvas {
         });
 
         // pop transformations
-        TransFactory.popVClusters();
+        // TransFactory.popVClusters();
 
         // show EdgeFactory Buffer
         if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(gp5);
@@ -179,7 +179,7 @@ class Canvas {
             this.graphics.background(this.currentBackground);
 
             // push transformations
-            TransFactory.pushVClusters();
+            // TransFactory.pushVClusters();
 
             // show observers
             this.observers.forEach(element => {
@@ -195,7 +195,7 @@ class Canvas {
             });
 
             // pop transformations
-            TransFactory.popVClusters();
+            // TransFactory.popVClusters();
 
             // show EdgeFactory Buffer. This is used to visualize the temporary edge while the user picks the target
             if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);

@@ -45,6 +45,19 @@ class Transformer {
         }
     }
 
+    updateVCluster(transition) {
+        const vC = this.vCluster;
+        for (let i = 0; i < vC.vNodes.length; i++) {
+            let vN = vC.vNodes[i];
+            let tmp = [];
+            glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], transition);
+            vN.pos.set(tmp);
+            vN.transformed = this.transformed;
+            // reposition the connectors
+            //vN.updateConnectorsCoords();
+        }
+    }
+
     pushVCluster(vCluster) {
         //  if (this.active) {
         let vC = vCluster;
@@ -139,6 +152,10 @@ class Transformer {
 
             // Get the scale factor from the resulting matrix
             this.scaleFactor = this.transform[3];
+
+            const transition = glMatrix.mat2d.create();
+            glMatrix.mat2d.multiply(transition, this.transform, this.invert);
+            this.updateVCluster(transition);
 
             // Get the invert matrix 
             this._getInvert();
