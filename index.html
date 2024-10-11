@@ -207,16 +207,16 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Add a Cluster to network</h3>
+                    <h3 class="modal-title">Add a Space</h3>
                 </div>
                 <div class="modal-body">
 
-                    <h4>Cluster name</h4>
-                    <p>Clusters are hyper-edges because they encompass nodes</b>. Be sure no other culster has the same name</p>
-                    <input id="clusterName" value="Cluster name"></input>
+                    <h4>Space name</h4>
+                    <p>Each space is an independent canvas</b>. Be sure no other space has the same name</p>
+                    <input id="clusterName" value="Space name"></input>
                     <hr>
 
-                    <h4>Cluster Subtitle</h4>
+                    <h4>Space Subtitle</h4>
                     <textarea class="form-control" rows="1" id="clusterDescription">...</textarea>
 
                 </div>
@@ -232,7 +232,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Add a node to clusters</h3>
+                    <h3 class="modal-title">Add a node</h3>
                 </div>
                 <div class="modal-body">
 
@@ -240,7 +240,7 @@
                     <h4>Node name</h4>
                     <input id="catName" value="Node name"></input>
                     <hr>
-                    <h4>Choose the cluster you want to add a node</h4>
+                    <h4>Choose the space to which you want to add a node</h4>
                     <!-- This form is populated with global method addClusterToModalFormList() in addClusterModalForm.js -->
                     <form action="" id="clusterChoice"></form>
                     <hr>
@@ -278,7 +278,6 @@
             <input type='checkbox' id="includeEdges" checked> Include edges</input>
             <hr>-->
                     <input id="exportFileSuffix" value="File name"></input>
-                    <p>This is the sufix of two separate files, one for nodes and one for edges</p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" data-dismiss="modal" id="exportNetwork">Export
