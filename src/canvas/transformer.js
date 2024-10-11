@@ -21,6 +21,9 @@ class Transformer {
 
         // ehether or not this matrix has been active for transformations
         this.active = true;
+
+        // whether the transform matrix has changed since last push
+        this.needsUpdate = false;
     }
 
     // Observing to Canvas
@@ -45,20 +48,9 @@ class Transformer {
         }
     }
 
-    updateVCluster(transition) {
-        const vC = this.vCluster;
-        for (let i = 0; i < vC.vNodes.length; i++) {
-            let vN = vC.vNodes[i];
-            let tmp = [];
-            glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], transition);
-            vN.pos.set(tmp);
-            vN.transformed = this.transformed;
-            // reposition the connectors
-            //vN.updateConnectorsCoords();
-        }
-    }
-
     pushVCluster(vCluster) {
+        if (!this.needsUpdate) return;
+
         //  if (this.active) {
         let vC = vCluster;
         // if missing parameter
@@ -67,12 +59,16 @@ class Transformer {
         for (let i = 0; i < vC.vNodes.length; i++) {
             let vN = vC.vNodes[i];
             let tmp = [];
-            glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.transform);
+            glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.invert);
+            glMatrix.vec2.transformMat2d(tmp, tmp, this.transform);
             vN.pos.set(tmp);
             vN.transformed = this.transformed;
             // reposition the connectors
             //vN.updateConnectorsCoords();
         };
+
+        this._getInvert();
+        this.needsUpdate = false;
         //  }
     }
 
@@ -149,16 +145,11 @@ class Transformer {
             glMatrix.mat2d.multiply(this.transform, toPoint, this.transform);
             glMatrix.mat2d.multiply(this.transform, scale, this.transform);
             glMatrix.mat2d.multiply(this.transform, fromPoint, this.transform);
+            this.needsUpdate = true;
 
             // Get the scale factor from the resulting matrix
             this.scaleFactor = this.transform[3];
 
-            const transition = glMatrix.mat2d.create();
-            glMatrix.mat2d.multiply(transition, this.transform, this.invert);
-            this.updateVCluster(transition);
-
-            // Get the invert matrix 
-            this._getInvert();
             // active Flag
             this.transformed = true;
         }
@@ -177,10 +168,10 @@ class Transformer {
     reset() {
         if (this.active) {
             this.transform = glMatrix.mat2d.create();
-            this.invert = glMatrix.mat2d.create();
             this.scaleFactor = 1;
             this.active = true;
             this.transformed = false;
+            this.needsUpdate = true;
         }
     }
 }

@@ -142,7 +142,7 @@ class Canvas {
         }
 
         // push transformations
-        // TransFactory.pushVClusters();
+        TransFactory.pushVClusters();
 
         // show observers
         this.observers.forEach(element => {
@@ -179,7 +179,7 @@ class Canvas {
             this.graphics.background(this.currentBackground);
 
             // push transformations
-            // TransFactory.pushVClusters();
+            TransFactory.pushVClusters();
 
             // show observers
             this.observers.forEach(element => {
