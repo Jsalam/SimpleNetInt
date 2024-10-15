@@ -166,6 +166,14 @@ class Canvas {
         this.graphicsRendered = false;
     }
 
+    static clear() {
+        this.observers.forEach(element => {
+            if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+                element.dispose();
+            }
+        });
+    }
+
     /**
      *This method applies the transformation in the class Transformer to nodes belonging to a specific cluster
      * @param {Object} element An element from the canvas.observers collection

@@ -264,6 +264,12 @@ class VEdge {
         this.labelEl.textContent = this.edge.kind;
     }
 
+    dispose() {
+        if (this.labelEl) {
+            this.labelEl.remove();
+        }
+    }
+
     getJSON() {
         let org = this.getOrgCoords(this.vSource);
         let end = this.getOrgCoords(this.vTarget);

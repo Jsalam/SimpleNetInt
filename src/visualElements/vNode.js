@@ -560,6 +560,15 @@ class VNode extends Button {
         }
     }
 
+    dispose() {
+        if (this.labelEl) {
+            this.labelEl.remove();
+        }
+        if (this.descriptionEl) {
+            this.descriptionEl.remove();
+        }
+    }
+
     getJSON() {
         let cnctrs = [];
         for (const vConnector of this.vConnectors) {
