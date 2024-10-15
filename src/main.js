@@ -26,7 +26,7 @@ var main = function(p5) {
     p5.setup = function() {
 
         // Create canvas
-        gp5.createCanvas(window.innerWidth, window.innerHeight - 80, gp5.WEBGL);
+        gp5.createCanvas(window.innerWidth, window.innerHeight - 80);
 
         gp5.pixelDensity(2);
         //gp5.createCanvas(window.innerWidth - 60, 840);
@@ -63,15 +63,8 @@ var main = function(p5) {
     // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
     p5.draw = function() {
 
-        // tranlattion coordinates used because rendered mode is WEBGL
-        let xOrg = -gp5.width / 2
-        let yOrg = -gp5.height / 2
-
         // push transformation matrix
         gp5.push();
-
-        // translating to upper left corner in WebGL mode
-        gp5.translate(xOrg, yOrg);
 
         // DOM event
         if (DOM.event) {
