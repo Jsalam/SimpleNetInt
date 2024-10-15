@@ -8,6 +8,13 @@
 
     <title>Simple NetInt Sketchpad</title>
 
+    <style>
+        @font-face {
+            font-family: Roboto;
+            src: url(./fonts/Roboto-Light.ttf);
+        }
+    </style>
+
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -67,7 +74,7 @@
 
 <body>
 
-    <div class="collapse show" id="navbarToggleExternalContent">
+    <div class="collapse show" id="navbarToggleExternalContent" style="position: relative; z-index: 1">
 
         <!-- EDITOR SECTION -->
         <div class="menu">
@@ -80,8 +87,8 @@
                     <div class="customButton">
                         <div> <label>Network from library</label></div>
                         <select id="modelChoice">
-                        <option value="0" selected>Empty canvas</option>
-                        <option value="1">Firefly & Serenity Experimental Timeline</option>
+                        <option value="0">Empty canvas</option>
+                        <option value="1" selected>Firefly & Serenity Experimental Timeline</option>
                     </select>
                     </div>
                     <hr>
@@ -200,7 +207,7 @@
     </nav>
 
     <!-- Model goes here -->
-    <div id="model"></div>
+    <div id="model" style="position: relative"></div>
 
 
     <!-- ADD CLUSTER MODAL FORM -->

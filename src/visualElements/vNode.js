@@ -280,16 +280,22 @@ class VNode extends Button {
 
             if (this.transformed) {
                 if (this.tr.scaleFactor > 0.57) {
-                    this._showLabel(renderer, fillColors.label, newPos);
+                    this._showLabel(fillColors.label, newPos);
+                } else {
+                    this._hideLabel();
                 }
             } else {
-                this._showLabel(renderer, fillColors.label, newPos);
+                this._showLabel(fillColors.label, newPos);
             }
 
             // show node description
             if (this.mouseIsOver) {
-                this._showDescription(renderer, newPos);
+                this._showDescription(newPos);
+            } else {
+                this._hideDescription();
             }
+        } else {
+            this._hideLabel();
         }
 
         // Show connectors 
@@ -307,20 +313,40 @@ class VNode extends Button {
             }
         }
     }
+    _hideLabel() {
+        if (this.labelEl) {
+            this.labelEl.style.opacity = 0;
+        }
+    }
 
-    _showLabel(renderer, color, newPos) {
+    _showLabel(color, newPos) {
+        if (!this.labelEl) {
+            this.labelEl = document.createElement('div');
+            const canvasContainerEl = document.querySelector('#model');
+            if (canvasContainerEl) {
+                this.labelEl.style.position = 'absolute';
+                this.labelEl.style.left = '0px';
+                this.labelEl.style.top = '0px';
+                this.labelEl.style.fontFamily = 'Roboto';
+                this.labelEl.style.overflow = 'hidden';
+                this.labelEl.style.pointerEvents = 'none';
+                canvasContainerEl.append(this.labelEl);
+            }
+        }
+        this.labelEl.style.opacity = 1;
+        this.labelEl.style.color = color;
+        this.labelEl.style.fontSize = (10 + 2 * this.localScale) + 'px';
         // draw the label
-        renderer.fill(color);
-        renderer.noStroke();
-        renderer.textSize(10 + 2 * this.localScale);
         if (this.propagated) {
-            renderer.textStyle(renderer.BOLD);
+            this.labelEl.style.fontStyle = 'bold';
+        } else {
+            this.labelEl.style.fontStyle = 'normal';
         }
         let labelHeight = 105 * this.localScale;
         if (this.mouseIsOver) {
             labelHeight = 145 * this.localScale;
         }
-        renderer.textAlign(renderer.CENTER, renderer.TOP);
+        this.labelEl.style.textAlign = 'center';
 
         let x = this.pos.x;
         let y = this.pos.y;
@@ -330,13 +356,16 @@ class VNode extends Button {
             y = newPos.y;
         }
 
-        renderer.text(
-            this.node.label,
-            x - 22.5, y + 8 * this.localScale + this.height / 2,
-            65 + this.localScale * 2,
-            labelHeight);
-
-    }
+        this.labelEl.textContent = this.node.label;
+        this.labelEl.style.transform = `
+            translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+            scale(${Canvas._zoom})
+            translate(${x}px, ${y + 8 * this.localScale + this.height / 2}px)
+            translateX(-50%)
+        `;
+        this.labelEl.style.width = 65 + this.localScale * 2 + 'px';
+        this.labelEl.style.height = labelHeight + 'px';
+    }t
 
     _getFillColor(_baseColor) {
 
@@ -452,8 +481,13 @@ class VNode extends Button {
         return weight;
     }
 
+    _hideDescription() {
+        if (this.descriptionEl) {
+            this.descriptionEl.style.opacity = 0;
+        }
+    }
 
-    _showDescription(renderer, newPos) {
+    _showDescription(newPos) {
 
         // Get coordinates
         let x = this.pos.x - 150;
@@ -479,22 +513,37 @@ class VNode extends Button {
         let filteredAttributes = entryList.filter(attr => attr[1] != "");
 
         // Show background
-        let boxHeight = (2 + filteredAttributes.length * 15) + 45;
-        let boxWidth = 150;
-        if (this.node.label.length * 8 > boxWidth) boxWidth = this.node.label.length * 8;
 
-        renderer.fill(0, 170);
-        renderer.rect(x, y + 5, boxWidth, -boxHeight);
+        if (!this.descriptionEl) {
+            this.descriptionEl = document.createElement('div');
+            const canvasContainerEl = document.querySelector('#model');
+            if (canvasContainerEl) {
+                this.descriptionEl.style.position = 'absolute';
+                this.descriptionEl.style.left = '0px';
+                this.descriptionEl.style.top = '0px';
+                this.descriptionEl.style.fontFamily = 'Roboto';
+                this.descriptionEl.style.lineHeight = '15px';
+                this.descriptionEl.style.overflow = 'hidden';
+                this.descriptionEl.style.pointerEvents = 'none';
+                canvasContainerEl.append(this.descriptionEl);
+            }
+        }
+        this.descriptionEl.style.opacity = 1;
+        this.descriptionEl.style.background = '#000000aa';
+        this.descriptionEl.style.transform = `
+            translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+            scale(${Canvas._zoom})
+            translate(${x}px, ${y + 5}px)
+            translateY(-100%)
+        `;
+        this.descriptionEl.style.whiteSpace = 'pre-line';
 
-        // Show texts
-        renderer.fill('#111111');
+        this.descriptionEl.style.color = '#111111';
         if (Canvas.currentBackground < 150) {
-            renderer.fill('#EEEEEE');
+            this.descriptionEl.style.color = '#EEEEEE';
         }
 
-        renderer.textAlign(renderer.LEFT, renderer.TOP);
-        renderer.noStroke();
-        renderer.textSize(11);
+        this.descriptionEl.style.fontSize = '11px';
 
         let clusterName = ClusterFactory.getCluster(this.node.idCat.cluster).label
 
@@ -503,10 +552,11 @@ class VNode extends Button {
         // renderer.text("Name: " + this.node.label, x + 5, y - 25, 650, 97);
         // renderer.text("Description: " + this.node.description, x + 5, y - 40, 650, 97);
 
-        renderer.text(textString, x + 5, y - 25, 150, 97)
+        this.descriptionEl.style.padding = '5px';
+        this.descriptionEl.textContent = '\n' + textString;
 
         for (let i = 0; i < filteredAttributes.length; i++) {
-            renderer.text(filteredAttributes[i][0] + ": " + filteredAttributes[i][1], x + 5, y - 55 - (i * 15), 450, 97);
+            this.descriptionEl.textContent = filteredAttributes[i][0] + ": " + filteredAttributes[i][1] + '\n' + this.descriptionEl.textContent
         }
     }
 
