@@ -45,8 +45,8 @@ class Canvas {
     static subscribe(obj) {
 
         if (obj instanceof VEdge) {
-            // get VEdge instances only
 
+            // get VEdge instances only
             let vEdges = this.observers.filter(function(entry) {
                 let rtn = false;
                 if (entry instanceof VEdge) {
@@ -86,9 +86,11 @@ class Canvas {
             return rtn;
         });
     }
+
     static notifyObservers(data) {
         this.observers.forEach(observer => observer.fromCanvas(data))
     }
+
     static resetObservers() {
         this.observers = [];
     }
