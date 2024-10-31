@@ -69,7 +69,8 @@ class DOM {
         DOM.lists.filtersA = document.getElementById('filtersA');
         DOM.lists.filtersB = document.getElementById('filtersB');
 
-        // Get the current status of checkboxes 
+        // Get the current status of checkboxes
+        DOM.createNativeCurrentCheckboxes()
         DOM.updateCheckboxes();
     }
 
@@ -101,13 +102,24 @@ class DOM {
         return box.value;
     }
 
+    /**
+     * The checkboxes originally designed in the HTML file.
+     */
+    static createNativeCurrentCheckboxes() {
+        for (const checkBox of Object.values(DOM.checkboxes)) {
+            let obj = { key: checkBox.id, value: checkBox.checked, native: true }
+            DOM.currentCheckboxes.push(obj);
+        }
+
+    }
+
     static updateCheckboxes(evt) {
         for (const checkBox of Object.values(DOM.checkboxes)) {
             let exists = DOM.currentCheckboxes.filter(elm => elm.key == checkBox.id)[0]
             if (exists) {
                 exists.value = checkBox.checked;
             } else {
-                let obj = { key: checkBox.id, value: checkBox.checked }
+                let obj = { key: checkBox.id, value: checkBox.checked, native: false }
                 DOM.currentCheckboxes.push(obj);
             }
         }
@@ -192,8 +204,7 @@ class DOM {
         TransFactory.init();
 
         // reset the list of edge kinds
-        DOM.textboxes.edgeKinds.textContent = "default";
-        DOM.removeChildrenOf(DOM.lists.filtersB);
+        DOM.reset();
 
         // get nodes and edges 
         let nodesTemp = data.nodes;
@@ -212,6 +223,8 @@ class DOM {
         }
 
         // add checkboxes to filters. It takes whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
+        console.log(DOM.textboxes.edgeKinds.value)
+        console.log(DOM.lists.filtersB)
         DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
 
         // initialize contextual menues
@@ -343,14 +356,37 @@ class DOM {
     static toggleInstructions() {
         DOM.showLegend = !DOM.showLegend;
     }
+
+    static resetEdgeContaxtualMenuTextboxesContent(val) {
+        DOM.textboxes.edgeKinds.value = val;
+    }
+
+    /**
+     * keep only the GUI native object in the currentCheckboxes array
+     */
+    static resetCheckboxes() {
+        DOM.currentCheckboxes = DOM.currentCheckboxes.filter(elm => elm.native == true)
+    }
+
+    static reset() {
+        // keep only the GUI native object in the currentCheckboxes array
+        DOM.resetCheckboxes();
+        // clear the list of edge kinds from the DOM contextual menu
+        DOM.resetEdgeContaxtualMenuTextboxesContent('default');
+        // remove all children from Filters dropdown in the GUI bar 
+        DOM.removeChildrenOf(DOM.lists.filtersB);
+    }
 }
 DOM.event = false;
 DOM.buttons = {};
+// the DOM input elements
 DOM.checkboxes = {};
+// the objects storing the current boolean condition
 DOM.currentCheckboxes = [];
 DOM.textboxes = {};
 DOM.dropdowns = {};
 DOM.labels = {};
 DOM.sliders = {};
+// the collection of lists of elements in the Filters dropdown in the GUI bar 
 DOM.lists = {};
 DOM.showLegend = true;

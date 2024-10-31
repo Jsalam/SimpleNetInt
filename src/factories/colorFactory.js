@@ -21,14 +21,14 @@ class ColorFactory {
                                 // console.log(3 + ", :" + ColorFactory.palettes.length);
                                 // Call the "then" function once all the palettes are completed
                                 if (thenFunction) {
-                                    thenFunction();
+                                    console.log("Color palettes instantiated")
+                                        //thenFunction();
                                 }
                             });
                         });
                     });
                 })
             );
-            console.log("Colors palettes instantiated");
         });
     }
 
@@ -44,6 +44,9 @@ class ColorFactory {
 
     static getColorFor(kind) {
         let rtn;
+        if (typeof(kind) === 'string') {
+            kind = Number(kind)
+        }
         switch (kind) {
             // Categories
             case 1:

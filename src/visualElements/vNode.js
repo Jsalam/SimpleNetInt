@@ -365,7 +365,8 @@ class VNode extends Button {
         `;
         this.labelEl.style.width = 65 + this.localScale * 2 + 'px';
         this.labelEl.style.height = labelHeight + 'px';
-    }t
+    }
+    t
 
     _getFillColor(_baseColor) {
 
