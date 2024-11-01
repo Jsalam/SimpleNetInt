@@ -95,6 +95,12 @@ hr {
     column-width: auto;
 }
 
+#version {
+    font-size: 0.6em;
+    text-align: right;
+    color: rgb(128, 142, 153);
+}
+
 
 /* P5JS CANVAS */
 
