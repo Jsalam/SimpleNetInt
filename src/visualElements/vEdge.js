@@ -107,7 +107,10 @@ class VEdge {
 
             this.showBezierArcs(renderer, strokeColor, strokeWeight);
 
+        } else {
+            if (this.labelEl) this.labelEl.style.visibility = 'hidden'
         }
+
     }
 
     _getStrokeColor(_baseColor, _alpha) {
@@ -266,6 +269,7 @@ class VEdge {
             translate(${10 + (this.controlOrg.x + this.controlEnd.x) / 2}px, ${(this.controlOrg.y + this.controlEnd.y) / 2}px)
         `
         this.labelEl.textContent = this.edge.kind;
+        this.labelEl.style.visibility = 'visible'
     }
 
     dispose() {
