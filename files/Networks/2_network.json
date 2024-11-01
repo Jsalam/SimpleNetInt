@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "clusterID": 1,
+      "clusterLabel": "main space",
+      "clusterDescription": "The default space built on initialization",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "Node name a",
+          "nodeDescription": "Node description",
+          "nodeAttributes": {
+            "attr": {
+              "Attribute A": "",
+              "Attribute B": ""
+            }
+          },
+          "connectors": [],
+          "pajekIndex": 1,
+          "vNode": {
+            "posX": 171,
+            "posY": 204,
+            "posZ": 0,
+            "color": "#253493"
+          }
+        }
+      ]
+    },
+    {
+      "clusterID": "2",
+      "clusterLabel": "b",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "Node name b",
+          "nodeDescription": "Node description",
+          "nodeAttributes": {
+            "attr": {
+              "Attribute A": "",
+              "Attribute B": ""
+            }
+          },
+          "connectors": [
+            "default",
+            "bb"
+          ],
+          "pajekIndex": 2,
+          "vNode": {
+            "posX": 296,
+            "posY": 205,
+            "posZ": 0,
+            "color": "#63eeff"
+          }
+        },
+        {
+          "id": 1,
+          "nodeLabel": "Node name b2",
+          "nodeDescription": "Node description",
+          "nodeAttributes": {
+            "attr": {
+              "Attribute A": "",
+              "Attribute B": ""
+            }
+          },
+          "connectors": [
+            "bb",
+            "cc"
+          ],
+          "pajekIndex": 4,
+          "vNode": {
+            "posX": 500,
+            "posY": 383,
+            "posZ": 0,
+            "color": "#8aadb4"
+          }
+        }
+      ]
+    },
+    {
+      "clusterID": "3",
+      "clusterLabel": "c",
+      "clusterDescription": "...",
+      "nodes": [
+        {
+          "id": 0,
+          "nodeLabel": "Node name c",
+          "nodeDescription": "Node description",
+          "nodeAttributes": {
+            "attr": {
+              "Attribute A": "",
+              "Attribute B": ""
+            }
+          },
+          "connectors": [
+            "default",
+            "cc"
+          ],
+          "pajekIndex": 3,
+          "vNode": {
+            "posX": 554,
+            "posY": 172,
+            "posZ": 0,
+            "color": "#f5c378"
+          }
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": {
+        "cluster": "2",
+        "index": 0,
+        "pajekIndex": 2
+      },
+      "target": {
+        "cluster": "3",
+        "index": 0,
+        "pajekIndex": 3
+      },
+      "kind": "default",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "2",
+        "index": 0,
+        "pajekIndex": 2
+      },
+      "target": {
+        "cluster": "2",
+        "index": 1,
+        "pajekIndex": 4
+      },
+      "kind": "bb",
+      "weight": 1
+    },
+    {
+      "source": {
+        "cluster": "3",
+        "index": 0,
+        "pajekIndex": 3
+      },
+      "target": {
+        "cluster": "2",
+        "index": 1,
+        "pajekIndex": 4
+      },
+      "kind": "cc",
+      "weight": 1
+    }
+  ]
+}

@@ -70,27 +70,6 @@ class VConnector extends Button {
             //renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
     }
 
-    showAsButton(renderer) {
-        renderer.ellipseMode(gp5.CENTER);
-        // in case the color palette runs out of colors
-        if (!this.color) {
-            this.color = '#d4d4d4';
-        }
-        renderer.fill(this.color.concat('ff'));
-        renderer.stroke(200);
-        if (this.mouseIsOver) {
-            renderer.stroke("#333333")
-        } else {
-            renderer.stroke(this.color)
-        }
-        // renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
-        renderer.ellipse(this.pos.x + this.width / 2, this.pos.y, this.width)
-        renderer.textAlign(gp5.CENTER, gp5.CENTER);
-        renderer.fill('#000000');
-        renderer.stroke('#000000');
-        renderer.text('+', this.pos.x, this.pos.y);
-    }
-
     getJSON() {
         return this.connector.kind;
     }

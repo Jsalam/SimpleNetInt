@@ -7,7 +7,7 @@ class Canvas {
 
     static makeCanvas(graphics) {
         // graphics
-        this.graphics = graphics;
+        this.graphicsw = graphics;
         this.graphicsRendered = false;
         this.renderGate = true;
         this.currentBackground = 50;
@@ -123,13 +123,9 @@ class Canvas {
      * being displayed. When the gate is open, the render is drawn on the regular p5 canvas
      */
     static render() {
-        gp5.background(this.currentBackground);
         if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
+            gp5.background(this.currentBackground);
             Canvas.renderOnP5();
-        } else {
-            //  this.graphicsRendered = false;
-            Canvas.renderOnGraphics();
-            gp5.image(this.graphics, 0, 0);
         }
         this.renderGate = false;
     }
@@ -163,7 +159,7 @@ class Canvas {
         });
 
         // pop transformations
-        TransFactory.popVClusters();
+        // TransFactory.popVClusters();
 
         // show EdgeFactory Buffer
         if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(gp5);
@@ -172,49 +168,12 @@ class Canvas {
         this.graphicsRendered = false;
     }
 
-    /**
-     *  render on custom p5.Renderer
-     */
-    static renderOnGraphics() {
-
-        if (!this.graphicsRendered) {
-            this.graphics.background(this.currentBackground);
-
-            // push transformations
-            TransFactory.pushVClusters();
-
-            // show observers
-            this.observers.forEach(element => {
-                if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
-
-                    // if (element instanceof VNode) {
-                    //     this.transformAndShowVNodes(element, this.graphics);
-                    // } else {
-                    element.show(this.graphics);
-                    //}
-
-                }
-            });
-
-            // pop transformations
-            TransFactory.popVClusters();
-
-            // show EdgeFactory Buffer. This is used to visualize the temporary edge while the user picks the target
-            if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(this.graphics);
-
-            // canvas edge
-            // this.graphics.stroke('#C0C0C0');
-            // this.graphics.noFill();
-            // this.graphics.rect(0, 0, this.graphics.width, this.graphics.height);
-
-            // grid
-            if (this.grid && this.showGrid) {
-                this.grid.show(this.graphics);
+    static clear() {
+        this.observers.forEach(element => {
+            if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+                element.dispose();
             }
-
-            // Open gp5 renderer gate
-            this.graphicsRendered = true;
-        }
+        });
     }
 
     /**
@@ -320,50 +279,98 @@ class Canvas {
         this.newOrigin = gp5.createVector(x, y);
     }
 
+    static hideValues() {
+        if (this.valuesEl) {
+            this.valuesEl.style.opacity = 0;
+        }
+    }
+
     /**
      * Show canvas values on screen
      * @param {Vector} pos 
      */
     static displayValues(pos, renderer) {
         // **** Legends
-        renderer.fill('#C0C0C0');
-        renderer.textAlign(gp5.RIGHT);
-        renderer.textSize(10);
-        renderer.text("Mouse on canvas: x: " + Canvas._mouse.x.toFixed(1) + ", y: " + Canvas._mouse.y.toFixed(2) + "' z:" + Canvas._mouse.z.toFixed(2), pos.x, pos.y + 25);
-        renderer.text("Zoom: " + this._zoom.toFixed(1), pos.x, pos.y + 35);
-        renderer.text("Offset: " + this._offset, pos.x, pos.y + 45);
-        renderer.text("startOffset: " + this._startOffset, pos.x, pos.y + 55);
-        renderer.text("endOffset: " + this._endOffset, pos.x, pos.y + 65);
-        renderer.text("Frame rate: " + gp5.nf(gp5.frameRate(), 2, 1), pos.x, pos.y + 75)
-        renderer.textAlign(gp5.CENTER);
+        if (!this.valuesEl) {
+            this.valuesEl = document.createElement('div');
+            const containerEl = document.querySelector('#model');
+            this.valuesEl.style.color = '#C0C0C0';
+            this.valuesEl.style.textAlign = 'right';
+            this.valuesEl.style.fontSize = '10px';
+            this.valuesEl.style.lineHeight = '1';
+            this.valuesEl.style.paddingTop = '15px';
+            this.valuesEl.style.whiteSpace = 'pre-line';
+            this.valuesEl.style.position = 'absolute';
+            this.valuesEl.style.left = '0px';
+            this.valuesEl.style.top = '0px';
+            this.valuesEl.style.fontFamily = 'Roboto';
+            this.valuesEl.style.pointerEvents = 'none';
+            if (containerEl) {
+                containerEl.append(this.valuesEl);
+            }
+        }
+        this.valuesEl.style.opacity = 1;
+        this.valuesEl.style.transform = `
+            translate(${pos.x}px, ${pos.y}px)
+            translateX(-100%)
+        `;
+        this.valuesEl.textContent = (
+            "Mouse on canvas: x: " + Canvas._mouse.x.toFixed(1) + ", y: " + Canvas._mouse.y.toFixed(2) + "' z:" + Canvas._mouse.z.toFixed(2) + '\n' +
+            "Zoom: " + this._zoom.toFixed(1) + '\n' +
+            "Offset: " + this._offset + '\n' +
+            "startOffset: " + this._startOffset + '\n' +
+            "endOffset: " + this._endOffset + '\n' +
+            "Frame rate: " + gp5.nf(gp5.frameRate(), 2, 1)
+        );
+    }
+
+    static hideLegend() {
+        if (this.legendEl) {
+            this.legendEl.style.opacity = 0;
+        }
     }
 
     /**
      * Show GUI instructions on screen
-     * @param {Vector} pos 
+     * @param {Vector} pos
      */
     static showLegend(pos) {
-        gp5.fill('#C0C0C0');
-        gp5.textAlign(gp5.RIGHT);
-        let copy = [
-            "ZOOM & PAN",
-            "Hold SHIFT and right mouse button to pan",
-            "use 'SHIFT + ' to zoom in the canvas, 'SHIFT -' to zoom  out the canvas",
-            "use 'SHIFT + mouse wheel' to zoom in and out clusters",
-            "Press 'SHIFT + r' to restore zoom and pan to default values",
-            " ",
-            "PROPAGATION",
-            "Press 'p' to enable propagation selection on node click",
-            " ",
-            "DELETING",
-            "Press 'SHIFT + e' to delete the last edge",
-            "Press 'd' and click on an node to delete it"
-        ]
-        for (let i = 0; i < copy.length; i++) {
-            const sentence = copy[i];
-            gp5.text(sentence, pos.x, pos.y + i * 13);
+        if (!this.legendEl) {
+            this.legendEl = document.createElement('div');
+            const containerEl = document.querySelector('#model');
+            this.legendEl.style.color = '#C0C0C0';
+            this.legendEl.style.textAlign = 'right';
+            this.legendEl.style.fontSize = '10px';
+            this.legendEl.style.lineHeight = '13px';
+            this.legendEl.style.whiteSpace = 'pre-line';
+            this.legendEl.style.position = 'absolute';
+            this.legendEl.style.left = '0px';
+            this.legendEl.style.top = '0px';
+            this.legendEl.style.fontFamily = 'Roboto';
+            this.legendEl.style.pointerEvents = 'none';
+            if (containerEl) {
+                containerEl.append(this.legendEl);
+            }
         }
-        gp5.textAlign(gp5.CENTER);
+        this.legendEl.style.opacity = 1;
+        this.legendEl.style.transform = `
+            translate(${pos.x}px, ${pos.y}px)
+            translateX(-100%)
+        `;
+        this.legendEl.textContent = (
+            "ZOOM & PAN\n" +
+            "Hold SHIFT and right mouse button to pan\n" +
+            "use 'SHIFT + ' to zoom in the canvas, 'SHIFT -' to zoom  out the canvas\n" +
+            "use 'SHIFT + mouse wheel' to zoom in and out clusters\n" +
+            "Press 'SHIFT + r' to restore zoom and pan to default values\n" +
+            " \n" +
+            "PROPAGATION\n" +
+            "Press 'p' to enable propagation selection on node click\n" +
+            " \n" +
+            "DELETING\n" +
+            "Press 'SHIFT + e' to delete the last edge\n" +
+            "Press 'd' and click on an node to delete it\n"
+        );
     }
 
     static originCrossHair() {

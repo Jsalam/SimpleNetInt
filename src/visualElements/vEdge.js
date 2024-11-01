@@ -70,7 +70,7 @@ class VEdge {
         this.controlEnd = vNode.pos;
     }
 
-    setColor(color) {
+    setColorQ(color) {
         this.color = color;
     }
 
@@ -101,7 +101,6 @@ class VEdge {
                 strokeColor.setAlpha(gp5.map(tr.scaleFactor, 1, 0.3, 140, 1));
             }
 
-            // this.showBeziers(renderer, strokeColor, strokeWeight);
             this.showBezierArcs(renderer, strokeColor, strokeWeight);
 
         }
@@ -188,66 +187,6 @@ class VEdge {
         return pos;
     }
 
-    showBeziers(renderer, color, weight) {
-
-        // line thickness
-        renderer.strokeWeight(weight);
-        renderer.stroke(color);
-        renderer.noFill();
-
-        // general properties
-        let factor = 3; // the propotion of distance between nodes
-        let org = this.getOrgCoords(this.vSource);
-        let end;
-
-
-        // If the edge does not have target yet
-        if (!this.vTarget) {
-            end = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y);
-        } else {
-            end = this.getOrgCoords(this.vTarget);;
-        }
-
-        // estimate arm length
-        let extension = 0.7;
-        let arm = factor * gp5.dist(org.x, org.y, end.x, org.y) / 5;
-
-        // set control points
-        if (end.x <= org.x) {
-            this.controlOrg = gp5.createVector(org.x - arm, org.y);
-            this.controlEnd = gp5.createVector(end.x + arm, end.y);
-            renderer.beginShape();
-            renderer.vertex(org.x, org.y);
-            renderer.vertex(this.controlOrg.x + (arm * extension), this.controlOrg.y);
-            renderer.bezierVertex(this.controlOrg.x, this.controlOrg.y, this.controlEnd.x, this.controlEnd.y, this.controlEnd.x - (arm * extension), end.y);
-            renderer.vertex(end.x, end.y);
-            renderer.endShape();
-
-        } else {
-            this.controlOrg = gp5.createVector(org.x + arm, org.y);
-            this.controlEnd = gp5.createVector(end.x - arm, end.y);
-            renderer.beginShape();
-            renderer.vertex(org.x, org.y);
-            renderer.vertex(this.controlOrg.x - (arm * extension), this.controlOrg.y);
-            renderer.bezierVertex(this.controlOrg.x, this.controlOrg.y, this.controlEnd.x, this.controlEnd.y, this.controlEnd.x + (arm * extension), end.y);
-            renderer.vertex(end.x, end.y);
-            renderer.endShape();
-        }
-
-        // controlpoints
-        renderer.strokeWeight(0.5);
-        renderer.stroke('#FF000030');
-        renderer.line(org.x, org.y, this.controlOrg.x, this.controlOrg.y);
-        renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
-
-        // edge label
-        renderer.stroke(color);
-        renderer.noFill();
-        renderer.textSize(12);
-        renderer.text(this.edge.kind, 10 + (this.controlOrg.x + this.controlEnd.x) / 2, (this.controlOrg.y + this.controlEnd.y) / 2);
-
-    }
-
     showBezierArcs(renderer, color, weight) {
 
         // line thickness
@@ -302,12 +241,33 @@ class VEdge {
         // renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
 
         // edge label
+        if (!this.labelEl) {
+            this.labelEl = document.createElement('div');
+            const canvasContainerEl = document.querySelector('#model');
+            if (canvasContainerEl) {
+                this.labelEl.style.position = 'absolute';
+                this.labelEl.style.left = '0px';
+                this.labelEl.style.top = '0px';
+                this.labelEl.style.fontFamily = 'Roboto';
+                this.labelEl.style.fontSize = '12px';
+                this.labelEl.style.overflow = 'hidden';
+                this.labelEl.style.pointerEvents = 'none';
+                canvasContainerEl.append(this.labelEl);
+            }
+        }
+        this.labelEl.style.color = color;
+        this.labelEl.style.transform = `
+            translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+            scale(${Canvas._zoom})
+            translate(${10 + (this.controlOrg.x + this.controlEnd.x) / 2}px, ${(this.controlOrg.y + this.controlEnd.y) / 2}px)
+        `
+        this.labelEl.textContent = this.edge.kind;
+    }
 
-        renderer.noStroke();
-        renderer.fill(color);
-        renderer.textAlign(renderer.LEFT, renderer.TOP);
-        renderer.textSize(12);
-        renderer.text(this.edge.kind, 10 + (this.controlOrg.x + this.controlEnd.x) / 2, (this.controlOrg.y + this.controlEnd.y) / 2);
+    dispose() {
+        if (this.labelEl) {
+            this.labelEl.remove();
+        }
     }
 
     getJSON() {

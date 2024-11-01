@@ -18,7 +18,7 @@ var main = function(p5) {
 
         // get color palette
         let paletteNames = ["palette1.txt", "palette2.txt", "palette3.txt", "palette4.txt"]
-        ColorFactory.loadPalettes('./files/colorPalettes/', paletteNames);
+        ColorFactory.loadPalettes('./files/colorPalettes/originalPalettes/', paletteNames, () => {});
     }
 
 
@@ -26,7 +26,7 @@ var main = function(p5) {
     p5.setup = function() {
 
         // Create canvas
-        gp5.createCanvas(window.innerWidth, window.innerHeight - 80, gp5.WEBGL);
+        gp5.createCanvas(window.innerWidth, window.innerHeight - 80);
 
         gp5.pixelDensity(2);
         //gp5.createCanvas(window.innerWidth - 60, 840);
@@ -36,8 +36,8 @@ var main = function(p5) {
         const canvas4KHeight = 2160
 
         // create non-iterative renderer
-        graphics = gp5.createGraphics(window.innerWidth, 840);
-        // graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
+        // graphics = gp5.createGraphics(window.innerWidth, 840);
+        graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
 
         // set text font
         gp5.textFont(myFont);
@@ -63,15 +63,8 @@ var main = function(p5) {
     // Everyting drawn on p5 canvas is coming from Canvas class. In Canvas, it shows all the subscribed visual elements.
     p5.draw = function() {
 
-        // tranlattion coordinates used because rendered mode is WEBGL
-        let xOrg = -gp5.width / 2
-        let yOrg = -gp5.height / 2
-
         // push transformation matrix
         gp5.push();
-
-        // translating to upper left corner in WebGL mode
-        gp5.translate(xOrg, yOrg);
 
         // DOM event
         if (DOM.event) {
@@ -92,13 +85,21 @@ var main = function(p5) {
 
         // draw canvas status
         if (DOM.showLegend) {
-            Canvas.showLegend(gp5.createVector(xOrg + window.innerWidth - 50, yOrg + 20), gp5);
-            Canvas.displayValues(gp5.createVector(xOrg + window.innerWidth - 50, yOrg + gp5.height - 100), gp5);
+            Canvas.showLegend(gp5.createVector(window.innerWidth - 50, 20), gp5);
+            Canvas.displayValues(gp5.createVector(window.innerWidth - 50, gp5.height - 100), gp5);
+        } else {
+            Canvas.hideLegend();
+            Canvas.hideValues();
         }
         // TransFactory.displayStatus(gp5.createVector(xOrg + gp5.width - 800, yOrg), gp5);
         // Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5);
         // Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 85), gp5);
 
+    }
+
+    window.onresize = (evt) => {
+        gp5.resizeCanvas(window.innerWidth, window.innerHeight);
+        DOM.event = evt;
     }
 }
 

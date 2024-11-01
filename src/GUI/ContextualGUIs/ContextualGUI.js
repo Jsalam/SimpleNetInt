@@ -20,8 +20,10 @@ class ContextualGUI {
      * @param {string} kinds comma separated names
      */
     static init(kinds) {
+
         if (ContextualGUI.edgeMenu && ContextualGUI.edgeMenu._content) {
             ContextualGUI.edgeMenu.destroy();
+            ContextualGUI.edgeCategories = [];
         }
 
         // Create Contextual GUIs edges
@@ -31,7 +33,10 @@ class ContextualGUI {
         ContextualGUI.createSpacesMenu();
 
         // populate contextual menu
-        ContextualGUI.edgeCategories = kinds.split(',')
+        if (kinds instanceof Array)
+            ContextualGUI.edgeCategories = kinds
+        else
+            ContextualGUI.edgeCategories = kinds.split(',')
         ContextualGUI.addEdgeCheckboxes("Categories", ContextualGUI.edgeCategories)
 
     }
@@ -54,7 +59,7 @@ class ContextualGUI {
      * The menu to choose edge kinds
      */
     static createEdgeMenu() {
-        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, gp5.height - 240, 'Link Menu', document.getElementById('model'));
+        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, gp5.height - 240, 'Edge Menu', document.getElementById('model'));
 
         // Switch it off is the checkbox is off
         if (!DOM.checkboxes.edit.checked) {

@@ -21,14 +21,14 @@ class ColorFactory {
                                 // console.log(3 + ", :" + ColorFactory.palettes.length);
                                 // Call the "then" function once all the palettes are completed
                                 if (thenFunction) {
-                                    thenFunction();
+                                    console.log("Color palettes instantiated")
+                                        //thenFunction();
                                 }
                             });
                         });
                     });
                 })
             );
-            console.log("Colors palettes instantiated");
         });
     }
 
@@ -44,6 +44,9 @@ class ColorFactory {
 
     static getColorFor(kind) {
         let rtn;
+        if (typeof(kind) === 'string') {
+            kind = Number(kind)
+        }
         switch (kind) {
             // Categories
             case 1:
@@ -67,6 +70,25 @@ class ColorFactory {
         return rtn;
     }
 
+    static makeDictionary(list, palette, name) {
+        let dic = {};
+        let arr = [];
+        if (list instanceof Array) {
+            arr = list
+        } else {
+            arr = list.split(',')
+        }
+
+        if (arr.length <= palette.length) {
+            for (let i = 0; i < arr.length; i++) {
+                dic[arr[i]] = palette[i];
+            }
+
+        }
+        ColorFactory.dictionaries[name] = dic;
+    }
+
 }
+ColorFactory.dictionaries = {};
 ColorFactory.palettes = [];
 ColorFactory.basic = { "r": '#cc0033', "g": '#00cc99', "b": '#0040ff', "y": '#ffbf00', "k": '#000000' };
