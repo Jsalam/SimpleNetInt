@@ -20,6 +20,7 @@ class ContextualGUI {
      * @param {string} kinds comma separated names
      */
     static init(kinds) {
+
         if (ContextualGUI.edgeMenu && ContextualGUI.edgeMenu._content) {
             ContextualGUI.edgeMenu.destroy();
             ContextualGUI.edgeCategories = [];
@@ -32,7 +33,10 @@ class ContextualGUI {
         ContextualGUI.createSpacesMenu();
 
         // populate contextual menu
-        ContextualGUI.edgeCategories = kinds.split(',')
+        if (kinds instanceof Array)
+            ContextualGUI.edgeCategories = kinds
+        else
+            ContextualGUI.edgeCategories = kinds.split(',')
         ContextualGUI.addEdgeCheckboxes("Categories", ContextualGUI.edgeCategories)
 
     }

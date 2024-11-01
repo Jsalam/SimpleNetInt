@@ -96,6 +96,11 @@ var main = function(p5) {
         // Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 85), gp5);
 
     }
+
+    window.onresize = (evt) => {
+        gp5.resizeCanvas(window.innerWidth, window.innerHeight);
+        DOM.event = evt;
+    }
 }
 
 var gp5 = new p5(main, "model");

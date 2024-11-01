@@ -273,7 +273,7 @@ class VNode extends Button {
 
         this.updateConnectorsCoords(newPos);
 
-        renderer.ellipse(newPos.x, newPos.y, this.diam + (this.node.connectors.length * 3));
+        renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
 
         // draw label
         if (DOM.boxChecked('showTexts')) {
@@ -302,7 +302,8 @@ class VNode extends Button {
         if (this.vConnectors.length > 0) {
             for (const vCnctr of this.vConnectors) {
 
-                let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
+                // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
+                let strokeCnctrColor = ColorFactory.dictionaries.connectors[vCnctr.connector.kind];
 
                 strokeCnctrColor = gp5.color(strokeCnctrColor);
 
@@ -327,26 +328,34 @@ class VNode extends Button {
                 this.labelEl.style.position = 'absolute';
                 this.labelEl.style.left = '0px';
                 this.labelEl.style.top = '0px';
+                this.labelEl.style.height = '20px';
+                this.labelEl.style.outline = '1px, solid, blue';
                 this.labelEl.style.fontFamily = 'Roboto';
                 this.labelEl.style.overflow = 'hidden';
                 this.labelEl.style.pointerEvents = 'none';
                 canvasContainerEl.append(this.labelEl);
             }
         }
-        this.labelEl.style.opacity = 1;
+        this.labelEl.style.opacity = 0.3 * this.localScale;
         this.labelEl.style.color = color;
         this.labelEl.style.fontSize = (10 + 2 * this.localScale) + 'px';
+
         // draw the label
         if (this.propagated) {
             this.labelEl.style.fontStyle = 'bold';
         } else {
             this.labelEl.style.fontStyle = 'normal';
         }
-        let labelHeight = 105 * this.localScale;
+
+        let labelHeight = 20; // * this.localScale;
+        let labelWidth = 65 * this.localScale;
+        this.labelEl.style.textAlign = 'left';
         if (this.mouseIsOver) {
-            labelHeight = 145 * this.localScale;
+            //     labelHeight = 20 * this.localScale;
+            //     // labelWidth = 165;
+        } else {
+
         }
-        this.labelEl.style.textAlign = 'center';
 
         let x = this.pos.x;
         let y = this.pos.y;
@@ -360,10 +369,13 @@ class VNode extends Button {
         this.labelEl.style.transform = `
             translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
             scale(${Canvas._zoom})
-            translate(${x}px, ${y + 8 * this.localScale + this.height / 2}px)
-            translateX(-50%)
+            translate(${x - 55}px, ${y + 13 + this.height / 2}px)
+            rotate(-30deg)
         `;
-        this.labelEl.style.width = 65 + this.localScale * 2 + 'px';
+        //   translateY(-150%)
+
+
+        this.labelEl.style.width = labelWidth + this.localScale * 2 + 'px';
         this.labelEl.style.height = labelHeight + 'px';
     }
     t
@@ -624,17 +636,19 @@ class VNode extends Button {
                 let bufferEdge = this.node.workOnEdgeBuffer();
 
                 // make vEdge
-                let bufferVEdge = this.workOnVEdgeBuffer(bufferEdge);
+                if (bufferEdge) {
+                    let bufferVEdge = this.workOnVEdgeBuffer(bufferEdge);
 
-                //Add buffered elements to collections
-                if (!bufferEdge.open) {
-                    EdgeFactory.pushEdge(bufferEdge);
-                    EdgeFactory.pushVEdge(bufferVEdge);
-                    EdgeFactory.clearBuffer();
-                } else {
-                    // EdgeFactory.resetBuffer();
-                    // recall connectors
-                    // unsubscribe elements from Canvas
+                    //Add buffered elements to collections
+                    if (!bufferEdge.open) {
+                        EdgeFactory.pushEdge(bufferEdge);
+                        EdgeFactory.pushVEdge(bufferVEdge);
+                        EdgeFactory.clearBuffer();
+                    } else {
+                        // EdgeFactory.resetBuffer();
+                        // recall connectors
+                        // unsubscribe elements from Canvas
+                    }
                 }
             }
         }

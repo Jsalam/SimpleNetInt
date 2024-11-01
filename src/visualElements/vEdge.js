@@ -70,7 +70,7 @@ class VEdge {
         this.controlEnd = vNode.pos;
     }
 
-    setColor(color) {
+    setColorQ(color) {
         this.color = color;
     }
 

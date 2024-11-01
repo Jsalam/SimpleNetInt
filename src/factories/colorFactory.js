@@ -70,6 +70,25 @@ class ColorFactory {
         return rtn;
     }
 
+    static makeDictionary(list, palette, name) {
+        let dic = {};
+        let arr = [];
+        if (list instanceof Array) {
+            arr = list
+        } else {
+            arr = list.split(',')
+        }
+
+        if (arr.length <= palette.length) {
+            for (let i = 0; i < arr.length; i++) {
+                dic[arr[i]] = palette[i];
+            }
+
+        }
+        ColorFactory.dictionaries[name] = dic;
+    }
+
 }
+ColorFactory.dictionaries = {};
 ColorFactory.palettes = [];
 ColorFactory.basic = { "r": '#cc0033', "g": '#00cc99', "b": '#0040ff', "y": '#ffbf00', "k": '#000000' };

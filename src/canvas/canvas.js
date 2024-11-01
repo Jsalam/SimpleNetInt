@@ -7,7 +7,7 @@ class Canvas {
 
     static makeCanvas(graphics) {
         // graphics
-        this.graphics = graphics;
+        this.graphicsw = graphics;
         this.graphicsRendered = false;
         this.renderGate = true;
         this.currentBackground = 50;

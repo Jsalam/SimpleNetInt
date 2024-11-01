@@ -317,8 +317,11 @@ class Node {
                     if (kind == undefined) {
                         kind = "default";
                     }
-                    alert("Node | New connector kind: " + kind);
-                    buffEdge = this.sproutEdge(kind);
+                    if (window.confirm("Node | New connector kind: " + kind)) {
+                        buffEdge = this.sproutEdge(kind);
+                    } else {
+                        return;
+                    }
 
                 }
             } else {
@@ -330,8 +333,11 @@ class Node {
                 if (kind == undefined) {
                     kind = "default";
                 }
-                alert("Node | New connector kind: " + kind);
-                buffEdge = this.sproutEdge(kind);
+                if (window.confirm("Node | New connector kind: " + kind)) {
+                    buffEdge = this.sproutEdge(kind);
+                } else {
+                    return;
+                }
 
             }
         }

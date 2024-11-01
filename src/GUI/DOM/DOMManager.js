@@ -190,12 +190,13 @@ class DOM {
 
     /**
      * Callback for loadJSON
-     * @param {Object} data 
+     * @param {Object} data { nodes: nodes data, edges: edges data }
      */
     static onLoadNetwork(data, evt) {
 
         // Reset canvas, factories and GUI
         Canvas.resetObservers();
+
         ClusterFactory.reset();
         EdgeFactory.reset();
 
@@ -222,19 +223,25 @@ class DOM {
             DOM.buildEdges(edgesTemp);
         }
 
-        // add checkboxes to filters. It takes whatever is in the textbox of the "Edge Categories" button and adds it to the filter list
-        console.log(DOM.textboxes.edgeKinds.value)
-        console.log(DOM.lists.filtersB)
-        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
+        // Get all the kinds of connectors added to the nodes from all clusters
+        const connectorKinds = ClusterFactory.getAllConnectorKinds();
 
-        // initialize contextual menues
-        ContextualGUI.init(DOM.textboxes.edgeKinds.value);
+        // Add checkboxes to Filters list B in the DOM
+        DOM.createCheckboxFor(connectorKinds, DOM.lists.filtersB)
 
-        // add checkboxes to space contextual menu. Contextual menu created in ContextualGUI.init()
+        DOM.resetEdgeContextualMenuInputContent(connectorKinds);
+
+        // Initialize the list of Edge Menu contextual GUI. Contextual menu created in ContextualGUI.init()
+        ContextualGUI.init(connectorKinds);
+
+        // Add checkboxes to Space Menu contextual GUI. Contextual menu created in ContextualGUI.init()
         for (const cluster of ClusterFactory.clusters) {
             let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
             ContextualGUI.spacesMenu.addBoolean(cluster.label, false, (val) => { transformerTemp.setActive(val) });
         }
+
+        // Create color dictionary for connectors
+        ColorFactory.makeDictionary(connectorKinds, ColorFactory.getPalette(1), 'connectors')
 
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
@@ -258,15 +265,6 @@ class DOM {
         EdgeFactory.buildEdges(result, ClusterFactory.clusters);
     }
 
-    static getTextBoxContent() {
-
-        // Initialize the gui with the text from the textbox on the DOM
-        ContextualGUI.init(DOM.textboxes.edgeKinds.value);
-
-        // add checkboxes to filters list B
-        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB)
-    }
-
     /**
      * Add a checkbox to a DOM element
      * @param {string} names  comma separated names
@@ -274,7 +272,12 @@ class DOM {
      */
     static createCheckboxFor(names, list) {
 
-        let items = names.split(',');
+        let items;
+        if (names instanceof Array) {
+            items = names
+        } else {
+            items = names.split(',');
+        }
 
         for (let index = 0; index < items.length; index++) {
             const name = items[index];
@@ -352,13 +355,27 @@ class DOM {
         DOM.eventTriggered(evt)
     }
 
+    static getTextBoxContent(evt) {
+        // Add checkboxes to Filters list B in the DOM
+        DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB);
+        // Initialize the list of Edge Menu contextual GUI. Contextual menu created in ContextualGUI.init()
+        ContextualGUI.init(DOM.textboxes.edgeKinds.value);
+        // Add checkboxes to Space Menu contextual GUI. Contextual menu created in ContextualGUI.init()
+        for (const cluster of ClusterFactory.clusters) {
+            let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
+            ContextualGUI.spacesMenu.addBoolean(cluster.label, false, (val) => { transformerTemp.setActive(val) });
+        }
+        // Create color dictionary for connectors
+        ColorFactory.makeDictionary(DOM.textboxes.edgeKinds.value, ColorFactory.getPalette(1), 'connectors')
+    }
+
 
     static toggleInstructions() {
         DOM.showLegend = !DOM.showLegend;
     }
 
-    static resetEdgeContaxtualMenuTextboxesContent(val) {
-        DOM.textboxes.edgeKinds.value = val;
+    static resetEdgeContextualMenuInputContent(val) {
+        DOM.textboxes.edgeKinds.value = val.toString();
     }
 
     /**
@@ -372,7 +389,7 @@ class DOM {
         // keep only the GUI native object in the currentCheckboxes array
         DOM.resetCheckboxes();
         // clear the list of edge kinds from the DOM contextual menu
-        DOM.resetEdgeContaxtualMenuTextboxesContent('default');
+        DOM.resetEdgeContextualMenuInputContent('default');
         // remove all children from Filters dropdown in the GUI bar 
         DOM.removeChildrenOf(DOM.lists.filtersB);
     }
