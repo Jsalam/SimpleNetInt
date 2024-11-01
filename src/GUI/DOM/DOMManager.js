@@ -226,6 +226,8 @@ class DOM {
         // Get all the kinds of connectors added to the nodes from all clusters
         const connectorKinds = ClusterFactory.getAllConnectorKinds();
 
+        if (connectorKinds.length == 0) connectorKinds.push('default');
+
         // Add checkboxes to Filters list B in the DOM
         DOM.createCheckboxFor(connectorKinds, DOM.lists.filtersB)
 

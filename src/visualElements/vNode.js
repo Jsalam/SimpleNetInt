@@ -305,6 +305,8 @@ class VNode extends Button {
                 // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
                 let strokeCnctrColor = ColorFactory.dictionaries.connectors[vCnctr.connector.kind];
 
+                if (!strokeCnctrColor) strokeCnctrColor = this.color;
+
                 strokeCnctrColor = gp5.color(strokeCnctrColor);
 
                 if (this.transformed) {
@@ -326,6 +328,8 @@ class VNode extends Button {
             const canvasContainerEl = document.querySelector('#model');
             if (canvasContainerEl) {
                 this.labelEl.style.position = 'absolute';
+                this.labelEl.style.display = 'flex'
+                this.labelEl.style.flexDirection = 'row-reverse'
                 this.labelEl.style.left = '0px';
                 this.labelEl.style.top = '0px';
                 this.labelEl.style.height = '20px';
@@ -333,6 +337,10 @@ class VNode extends Button {
                 this.labelEl.style.fontFamily = 'Roboto';
                 this.labelEl.style.overflow = 'hidden';
                 this.labelEl.style.pointerEvents = 'none';
+                // this.labelEl.style.outline = "1px solid white";
+                this.labelEl.style.textAlign = 'right';
+                this.labelEl.style.paddingRight = '10px';
+                this.labelEl.style.transformOrigin = 'bottom right';
                 canvasContainerEl.append(this.labelEl);
             }
         }
@@ -349,13 +357,9 @@ class VNode extends Button {
 
         let labelHeight = 20; // * this.localScale;
         let labelWidth = 65 * this.localScale;
-        this.labelEl.style.textAlign = 'left';
-        if (this.mouseIsOver) {
-            //     labelHeight = 20 * this.localScale;
-            //     // labelWidth = 165;
-        } else {
 
-        }
+        // The label content
+        this.labelEl.textContent = this.node.label;
 
         let x = this.pos.x;
         let y = this.pos.y;
@@ -365,20 +369,19 @@ class VNode extends Button {
             y = newPos.y;
         }
 
-        this.labelEl.textContent = this.node.label;
+        // the translation - labelWidth serves to reposition the labels after they are rotated
+        let translation = labelWidth;
+
         this.labelEl.style.transform = `
             translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
             scale(${Canvas._zoom})
-            translate(${x - 55}px, ${y + 13 + this.height / 2}px)
-            rotate(-30deg)
+            translate(${x - translation}px, ${y}px)
+            rotate(-45deg)
         `;
-        //   translateY(-150%)
 
-
-        this.labelEl.style.width = labelWidth + this.localScale * 2 + 'px';
+        this.labelEl.style.width = labelWidth + 'px';
         this.labelEl.style.height = labelHeight + 'px';
     }
-    t
 
     _getFillColor(_baseColor) {
 

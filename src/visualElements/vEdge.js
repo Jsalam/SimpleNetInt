@@ -59,7 +59,7 @@ class VEdge {
 
     setVSource(vNode) {
         this.vSource = vNode;
-        // this.setColor(vNode..color);
+        // this.setColor(vNode.vConnectors[0].color);
         this.controlOrg = vNode.pos;
 
     }
@@ -70,7 +70,7 @@ class VEdge {
         this.controlEnd = vNode.pos;
     }
 
-    setColorQ(color) {
+    setColor(color) {
         this.color = color;
     }
 
@@ -90,7 +90,11 @@ class VEdge {
             }
 
             // get stroke color
-            let baseColor = ColorFactory.getColorFor(this.edge.kind);
+            let baseColor = ColorFactory.dictionaries.connectors[this.edge.kind];
+
+
+            if (!baseColor) baseColor = this.vSource.color;
+
             let strokeColor = this._getStrokeColor(baseColor, alpha);
             let strokeWeight = this._getStrokeWeight();
 
@@ -114,7 +118,7 @@ class VEdge {
         let inPropagation = '#FF0000';
         let alpha;
 
-        if (_alpha) { alpha = _alpha } else { alpha = "05" }
+        if (_alpha) { alpha = _alpha } else { alpha = "10" }
 
         if (DOM.boxChecked("forward") && DOM.boxChecked("backward")) {
             if (this.source.inFwdPropagation || this.edge.target && this.edge.target.inBkwPropagation) {
