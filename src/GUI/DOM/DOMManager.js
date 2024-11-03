@@ -202,6 +202,7 @@ class DOM {
         if (nodesTemp.length == 0) {
             ClusterFactory.makeCluster({
                 clusterID: 1,
+                clusterType: "default",
                 clusterLabel: "main space",
                 clusterDescription: "The default space built on initialization"
             })

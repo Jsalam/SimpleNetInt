@@ -142,7 +142,22 @@ class Canvas {
 
         // show observers
         this.observers.forEach(element => {
-            if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+            if (element instanceof VCluster) {
+
+                // if (element instanceof VNode) {
+                //     this.transformAndShowVNodes(element, gp5);
+                // } else {
+                element.show(gp5);
+                // }
+
+            }
+            // else {
+            //     element.show(gp5);
+            // }
+        });
+
+        this.observers.forEach(element => {
+            if (element instanceof VNode || element instanceof VEdge) {
 
                 // if (element instanceof VNode) {
                 //     this.transformAndShowVNodes(element, gp5);
