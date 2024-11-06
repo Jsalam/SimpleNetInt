@@ -59,7 +59,7 @@ class VEdge {
 
     setVSource(vNode) {
         this.vSource = vNode;
-        // this.setColor(vNode..color);
+        // this.setColor(vNode.vConnectors[0].color);
         this.controlOrg = vNode.pos;
 
     }
@@ -90,7 +90,11 @@ class VEdge {
             }
 
             // get stroke color
-            let baseColor = ColorFactory.getColorFor(this.edge.kind);
+            let baseColor = ColorFactory.dictionaries.connectors[this.edge.kind];
+
+
+            if (!baseColor) baseColor = this.vSource.color;
+
             let strokeColor = this._getStrokeColor(baseColor, alpha);
             let strokeWeight = this._getStrokeWeight();
 
@@ -103,7 +107,10 @@ class VEdge {
 
             this.showBezierArcs(renderer, strokeColor, strokeWeight);
 
+        } else {
+            if (this.labelEl) this.labelEl.style.visibility = 'hidden'
         }
+
     }
 
     _getStrokeColor(_baseColor, _alpha) {
@@ -114,7 +121,7 @@ class VEdge {
         let inPropagation = '#FF0000';
         let alpha;
 
-        if (_alpha) { alpha = _alpha } else { alpha = "05" }
+        if (_alpha) { alpha = _alpha } else { alpha = "10" }
 
         if (DOM.boxChecked("forward") && DOM.boxChecked("backward")) {
             if (this.source.inFwdPropagation || this.edge.target && this.edge.target.inBkwPropagation) {
@@ -262,6 +269,7 @@ class VEdge {
             translate(${10 + (this.controlOrg.x + this.controlEnd.x) / 2}px, ${(this.controlOrg.y + this.controlEnd.y) / 2}px)
         `
         this.labelEl.textContent = this.edge.kind;
+        this.labelEl.style.visibility = 'visible'
     }
 
     dispose() {

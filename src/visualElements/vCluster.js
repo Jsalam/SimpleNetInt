@@ -82,7 +82,7 @@ class VCluster {
         })[0];
     }
 
-    setPalette(palette) {
+    setPaletteQ(palette) {
         if (palette) {
             this.palette = palette;
         }
@@ -111,8 +111,7 @@ class VCluster {
         }
     }
 
-    dispose() {
-    }
+    dispose() {}
 
     getJSON() {
         let rtn = {

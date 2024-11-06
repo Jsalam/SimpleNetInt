@@ -29,9 +29,11 @@ addClusterToModalFormList = function(id, name) {
     input.setAttribute("id", "cluster" + id);
     input.setAttribute("name", "cluster");
     input.setAttribute("value", id - 1);
+
     // Create input label
     let label = document.createElement("label");
     label.setAttribute("for", "cluster" + id);
+    label.setAttribute('class', 'labelRadioButton')
     label.innerHTML = name;
     label.textContent = name;
     // Append children

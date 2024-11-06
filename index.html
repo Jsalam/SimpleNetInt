@@ -89,16 +89,17 @@
                     <div class="customButton">
                         <div> <label>Network from library</label></div>
                         <select id="modelChoice">
-                        <option value="0">Empty canvas</option>
+                        <option value="0" >Empty canvas</option>
                         <option value="1" selected>Firefly & Serenity Experimental Timeline</option>
+                        <option value="2" >Test</option>
                     </select>
                     </div>
                     <hr>
                     <div class="customButton" data-toggle="modal" data-target="#exportNetworkModal">Save/Export file</div>
                     <div class="customButton" data-toggle="modal" data-target="#importNetworkModal">Open/Import file </div>
-                    
-
+                    <div id="version">v. 10_2024</div>
                 </div>
+
             </div>
 
             <!-- Network -->
@@ -151,7 +152,7 @@
                     <hr>
                     <div class="checkboxItem">
                         <input type="checkbox" id="edit" checked>
-                        <label class="labelCheckbox" for="edit" style=" font-size: .8em">Link menu</label>
+                        <label class="labelCheckbox" for="edit" style=" font-size: .8em">Edge menu</label>
                     </div>
                     <div class="checkboxItem">
                         <input type="checkbox" id="spaces" checked>
@@ -231,7 +232,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" id="SubmitAddClusterModal">Submit</button>
+                    <button class="btn btn-primary  btnSubmit" data-dismiss="modal" id="SubmitAddClusterModal">Submit</button>
                 </div>
             </div>
         </div>
@@ -268,7 +269,7 @@
                     <hr>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" id="SubmitAddNodeModal">Submit</button>
+                    <button class="btn btn-primary btnSubmit" data-dismiss="modal" id="SubmitAddNodeModal">Submit</button>
                 </div>
             </div>
         </div>
@@ -279,19 +280,13 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Export network</h3>
+                    <h3 class="modal-title">Save/Export file</h3>
                 </div>
                 <div class="modal-body">
-                    <!--<p>Export the current network in json format</p>
-            <input type='checkbox' id="includeNodes" checked> Include nodes</input>
-            &nbsp;
-            <input type='checkbox' id="includeEdges" checked> Include edges</input>
-            <hr>-->
-                    <input id="exportFileSuffix" value="File name"></input>
+                    <input id="exportFileSuffix" value="File name"> See file in Downloads folder with ending -network.json </input>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" id="exportNetwork">Export
-              Network</button>
+                    <button class="btn btn-primary btnSubmit" data-dismiss="modal" id="exportNetwork">Export</button>
                 </div>
             </div>
         </div>
@@ -305,18 +300,6 @@
                     <h3 class="modal-title">Import network</h3>
                 </div>
                 <div class="modal-body">
-                    <style>
-                        .droppable {
-                            background: #08c;
-                            color: #fff;
-                            padding: 50px 0;
-                            text-align: center;
-                        }
-                        
-                        .droppable.dragover {
-                            background: #00CC71;
-                        }
-                    </style>
 
                     <div class="droppable" id="dragDropNetwork">Drag and drop the <b>NETWORK</b> file here.
                         <p id="networkFileName">No file yet.</p>
@@ -324,7 +307,7 @@
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" id="importNetwork">Import network</button>
+                    <button class="btn btn-primary btnSubmit" data-dismiss="modal" id="importNetwork">Import</button>
                 </div>
             </div>
         </div>
@@ -347,7 +330,7 @@
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-dismiss="modal" id="submitEdgeKinds">Generate categories</button>
+                    <button class="btn btn-primary  btnSubmit" data-dismiss="modal" id="submitEdgeKinds">Generate categories</button>
                 </div>
             </div>
         </div>

@@ -18,7 +18,7 @@ var main = function(p5) {
 
         // get color palette
         let paletteNames = ["palette1.txt", "palette2.txt", "palette3.txt", "palette4.txt"]
-        ColorFactory.loadPalettes('./files/colorPalettes/', paletteNames);
+        ColorFactory.loadPalettes('./files/colorPalettes/originalPalettes/', paletteNames, () => {});
     }
 
 
@@ -36,8 +36,8 @@ var main = function(p5) {
         const canvas4KHeight = 2160
 
         // create non-iterative renderer
-        graphics = gp5.createGraphics(window.innerWidth, 840);
-        // graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
+        // graphics = gp5.createGraphics(window.innerWidth, 840);
+        graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
 
         // set text font
         gp5.textFont(myFont);
@@ -95,6 +95,11 @@ var main = function(p5) {
         // Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5);
         // Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 85), gp5);
 
+    }
+
+    window.onresize = (evt) => {
+        gp5.resizeCanvas(window.innerWidth, window.innerHeight);
+        DOM.event = evt;
     }
 }
 

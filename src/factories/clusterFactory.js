@@ -94,12 +94,6 @@ class ClusterFactory {
         // the JSON file or the node created by user input 
         if (data.connectors) {
             for (const connector of data.connectors) {
-                // add connector name to GUI
-                if (ContextualGUI.addEdgeCategory(connector)) {
-                    // renitialize contextual GUI
-                    ContextualGUI.init2(ContextualGUI.edgeCategories);
-                    DOM.textboxes.edgeKinds.textContent = ContextualGUI.edgeCategories.join();
-                }
                 node.addConnector(connector, node.connectors.length);
             }
         }
@@ -196,6 +190,27 @@ class ClusterFactory {
             return elem.cluster.id === id;
         })[0];
         return tmp;
+    }
+
+    /**
+     * Retrieves all the KINDS of connectors in every cluster. 
+     * To get the actual connectors us the function getConnectors
+     * of the class Cluster
+     * @returns Array of strings
+     */
+    static getAllConnectorKinds() {
+        let rtn = [];
+        for (const clust of ClusterFactory.clusters) {
+            for (const node of clust.nodes) {
+                const connectors = node.getConnectors()
+                for (let i = 0; i < connectors.length; i++) {
+                    const element = connectors[i];
+                    if (!rtn.includes(element.kind))
+                        rtn.push(element.kind)
+                }
+            }
+        }
+        return (rtn);
     }
 }
 

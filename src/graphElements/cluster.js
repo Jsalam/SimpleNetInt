@@ -26,6 +26,17 @@ class Cluster {
         return rtn;
     }
 
+    getConnectors() {
+        let rtn = [];
+        for (const node of this.nodes) {
+            const connectors = node.getConnectors()
+            for (const element of connectors) {
+                rtn.push(element)
+            }
+        }
+        return (rtn);
+    }
+
     getJSON() {
         let rtn = {
             clusterID: this.id,
