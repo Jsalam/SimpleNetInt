@@ -25,10 +25,15 @@ float warp(float r) {
     return s1 * r2 + ((s2 - s1) * (r2 - r1)) / 2.0 + s2 * (r - r2);
 }
 
+float get_z(float r) {
+    return -1.0 * exp(-0.00001 * r * r);
+}
+
 void main() {
     vColor = aVertexColor;
     vec2 v = aPosition.xy - mouse;
     float r = length(v);
     vec4 positionVec4 = vec4(mouse + warp(r) / r * v, 0.0, 1.0);
     gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+    gl_Position.z = get_z(r) * gl_Position.w;
 }

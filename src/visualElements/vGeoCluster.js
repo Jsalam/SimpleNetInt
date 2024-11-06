@@ -1,8 +1,8 @@
 const {mat4, vec4} = glMatrix;
 
 class VGeoCluster extends VCluster {
-    r1 = 5;
-    r2 = 10;
+    r1 = 10;
+    r2 = 15;
     s1 = 5;
     s2 = 1;
     theta = 0;
