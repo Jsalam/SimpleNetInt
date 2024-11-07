@@ -56,6 +56,10 @@ class DOM {
         DOM.checkboxes.magnifyingEffect.onclick = (evt) => DOM.toggleMagnifyingEffect(evt);
         DOM.checkboxes.spacesMenu.onclick = (evt) => DOM.toggleContextualSpacesMenu(evt);
 
+        // Sliders
+        DOM.sliders.edgeTickness = document.getElementById('edgeTicknessSlider')
+        DOM.sliders.edgeTickness.onchange = (evt) => DOM.eventTriggered(evt);
+
         // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");
         DOM.dropdowns.modelChoice.addEventListener('change', (evt) => {
@@ -91,6 +95,8 @@ class DOM {
     static eventTriggered(evt) {
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
+
+        console.log("here")
     }
 
     /**
@@ -116,6 +122,18 @@ class DOM {
     static updateCheckboxes(evt) {
         for (const checkBox of Object.values(DOM.checkboxes)) {
             let exists = DOM.currentCheckboxes.filter(elm => elm.key == checkBox.id)[0]
+            if (exists) {
+                exists.value = checkBox.checked;
+            } else {
+                let obj = { key: checkBox.id, value: checkBox.checked, native: false }
+                DOM.currentCheckboxes.push(obj);
+            }
+        }
+    }
+
+    static updateSliders(evt) {
+        for (const slider of Object.values(DOM.sliders)) {
+            let exists = DOM.sliders.filter(elm => elm.key == slider.id)[0]
             if (exists) {
                 exists.value = checkBox.checked;
             } else {

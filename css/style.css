@@ -74,6 +74,23 @@ body {
     background-color: rgba(109, 109, 109, 0.487);
 }
 
+.sliderItem {
+    width: 100%;
+    background-color: rgba(62, 67, 72, 0.487);
+    padding: 0px 0.5em 0px 0.2em;
+}
+
+.sliderItem:hover {
+    background-color: rgba(109, 109, 109, 0.487);
+}
+
+.labelSlider {
+    font-size: 0.6em;
+    margin: 0px;
+    color: rgb(178, 192, 203);
+    /* width: max-content; */
+}
+
 hr {
     border: 0.5px solid rgba(110, 117, 124, 0.65);
     width: 100%;

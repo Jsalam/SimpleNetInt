@@ -96,7 +96,7 @@ class VEdge {
             if (!baseColor) baseColor = this.vSource.color;
 
             let strokeColor = this._getStrokeColor(baseColor, alpha);
-            let strokeWeight = this._getStrokeWeight();
+            let strokeWeight = this._getStrokeWeight(Number(DOM.sliders.edgeTickness.value)); // the parameter attenuates the thickness
 
             strokeColor = gp5.color(strokeColor);
 
@@ -149,7 +149,12 @@ class VEdge {
         return strokeColor.concat(alpha);
     }
 
-    _getStrokeWeight() {
+    /**
+     * 
+     * @param {Numeric} factor A value between 1 and 0
+     * @returns 
+     */
+    _getStrokeWeight(factor) {
         // default color 
         let strokeWeight = 1;
         let thick = 4;
@@ -177,8 +182,9 @@ class VEdge {
         } else {
             strokeWeight = light;
         }
+        if (!factor || factor > 1) factor = 1;
 
-        return strokeWeight * this.edge.weight;
+        return (strokeWeight * this.edge.weight) * factor;
     }
 
 
