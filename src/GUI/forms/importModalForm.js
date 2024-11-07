@@ -2,16 +2,12 @@ let nodesImported;
 let edgesImported;
 
 importNetworkModalForm = function() {
-
     var networkFile = document.getElementById('dragDropNetwork');
-
     makeDroppable(networkFile, callbackNetwork);
 }
 
 getDataImport = function(evt) {
-
     Canvas.clear();
-
     DOM.onLoadNetwork({ nodes: nodesImported, edges: edgesImported }, evt)
 }
 
@@ -33,6 +29,7 @@ loadFile = function(file) {
         return function(e) {
             // Read text data and parse to JSON.
             let data = JSON.parse(e.target.result)
+
             nodesImported = data.nodes;
             edgesImported = data.edges;
         };

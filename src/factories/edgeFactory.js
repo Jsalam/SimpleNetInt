@@ -6,58 +6,79 @@ class EdgeFactory {
 
             // take the source ID: cluster, cat and polarity
             let e = edgs[index];
-
+            let source;
+            let sourceConnector;
             // get source node
-            let cluster = ClusterFactory.getCluster(e.source.cluster);
-            let source = cluster.getNode(e.source.index);
-            let sourceConnector = source.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
+            try {
+                let cluster = ClusterFactory.getCluster(e.source.cluster);
+                source = cluster.getNode(e.source.index);
+                sourceConnector = source.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
 
-            // In case the node does not have the connector. Usual case in merged networks.
-            if (!sourceConnector) {
-                sourceConnector = source.addConnector(e.kind, source.connectors.length);
-                source.vNodeObserver.addVConnector(sourceConnector);
+                // In case the node does not have the connector. Usual case in merged networks.
+                if (!sourceConnector) {
+                    sourceConnector = source.addConnector(e.kind, source.connectors.length);
+                    source.vNodeObserver.addVConnector(sourceConnector);
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Cannot retrieve the source of this edge:\n" + JSON.stringify(e))
             }
 
             // get target node
-            cluster = ClusterFactory.getCluster(e.target.cluster);
-            let target = cluster.getNode(e.target.index);
-            let targetConnector = target.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
+            let target;
+            let targetConnector
+            try {
+                let cluster = ClusterFactory.getCluster(e.target.cluster);
+                target = cluster.getNode(e.target.index);
 
-            // In case the node does not have the connector. Usual case in merged networks.
-            if (!targetConnector) {
-                targetConnector = target.addConnector(e.kind, target.connectors.length);
-                target.vNodeObserver.addVConnector(targetConnector);
+
+                targetConnector = target.connectors.filter(cnctr => cnctr.kind == e.kind)[0];
+
+                // In case the node does not have the connector. Usual case in merged networks.
+                if (!targetConnector) {
+                    targetConnector = target.addConnector(e.kind, target.connectors.length);
+                    target.vNodeObserver.addVConnector(targetConnector);
+                }
+            } catch (error) {
+                console.log(error);
+                alert("Cannot retrieve the target of this edge:\n" + JSON.stringify(e))
             }
 
-            // get vSource
-            let vSource = ClusterFactory.getVNodeOf(source)
+            // Instantiate the edge and the vEdge
+            try {
+                // get vSource
+                let vSource = ClusterFactory.getVNodeOf(source)
 
-            // get vTarget
-            let vTarget = ClusterFactory.getVNodeOf(target)
+                // get vTarget
+                let vTarget = ClusterFactory.getVNodeOf(target)
 
-            // make Edge and set target and weight
-            let edge = new Edge(source);
-            edge.setTarget(target);
-            edge.weight = e.weight;
+                // make Edge and set target and weight
+                let edge = new Edge(source);
+                edge.setTarget(target);
+                edge.weight = e.weight;
 
-            // subscribe to source and target's connector. This sets the edge kind
-            // console.log(e);
-            // console.log(source);
-            // console.log(target);
-            sourceConnector.subscribeEdgeObserver(edge);
-            targetConnector.subscribeEdgeObserver(edge);
+                // subscribe to source and target's connector. This sets the edge kind
+                // console.log(e);
+                // console.log(source);
+                // console.log(target);
+                sourceConnector.subscribeEdgeObserver(edge);
+                targetConnector.subscribeEdgeObserver(edge);
 
-            // make VEdge
-            let vEdge = new VEdge(edge);
+                // make VEdge
+                let vEdge = new VEdge(edge);
 
-            // set VNodes
-            vEdge.setVSource(vSource);
-            vEdge.setVTarget(vTarget);
+                // set VNodes
+                vEdge.setVSource(vSource);
+                vEdge.setVTarget(vTarget);
 
-            // Push Edge
-            EdgeFactory.pushEdge(edge);
-            EdgeFactory.pushVEdge(vEdge);
-            Canvas.subscribe(vEdge);
+                // Push Edge
+                EdgeFactory.pushEdge(edge);
+                EdgeFactory.pushVEdge(vEdge);
+                Canvas.subscribe(vEdge);
+            } catch (error) {
+                console.log(error)
+                    //  alert("Cannot complete the instantiation of this edge:\n" + JSON.stringify(e))
+            }
         }
     }
 

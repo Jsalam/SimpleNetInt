@@ -561,9 +561,45 @@ class VNode extends Button {
 
         this.descriptionEl.style.fontSize = '11px';
 
-        let clusterName = ClusterFactory.getCluster(this.node.idCat.cluster).label
+        let clusterName = ClusterFactory.getCluster(this.node.idCat.cluster).label;
 
-        let textString = "Name: " + this.node.label + "\n" + "Description: " + this.node.description + "\nCluster: " + clusterName;
+        let connectorsDescription = "Connectors:\n";
+
+        // connector description
+        for (const cnctr of this.node.getConnectors()) {
+            connectorsDescription += '   - ' + cnctr.kind
+
+            if (cnctr.edgeObservers.length > 0) {
+                let edgeObserverOfTheKind = cnctr.edgeObservers.filter((tempEdge) => tempEdge.kind == cnctr.kind)
+
+                let textRow = '';
+
+                for (let i = 0; i < edgeObserverOfTheKind.length; i++) {
+                    const edgeTmp = edgeObserverOfTheKind[i];
+                    // out
+                    if (edgeTmp.source.idCat.pajekIndex == this.node.idCat.pajekIndex) {
+                        textRow += ', out weight: ' + edgeTmp.weight
+                    } else {
+                        // in
+                        textRow += ', in weight: ' + edgeTmp.weight
+                    }
+                }
+
+                // trim the connector description string
+                let maxLength = 60;
+
+                if (textRow.length > maxLength) {
+                    textRow = textRow.slice(0, maxLength) + "...";
+                }
+
+                connectorsDescription += textRow + '\n'
+            }
+
+
+
+        }
+
+        let textString = "Name: " + this.node.label + "\n" + "Description: " + this.node.description + "\nCluster: " + clusterName + "\n" + connectorsDescription;
 
         // renderer.text("Name: " + this.node.label, x + 5, y - 25, 650, 97);
         // renderer.text("Description: " + this.node.description, x + 5, y - 40, 650, 97);
