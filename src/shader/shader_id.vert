@@ -2,8 +2,8 @@
 
 precision highp float;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
 
 uniform vec2 mouse;
 in vec3 aPosition;
@@ -25,15 +25,17 @@ float warp(float r) {
     return s1 * r2 + ((s2 - s1) * (r2 - r1)) / 2.0 + s2 * (r - r2);
 }
 
-float get_z(float r) {
-    return -1.0 * exp(-0.00001 * r * r);
+float zOffset(float r) {
+    return -0.01 * exp(-1e-5 * r * r);
 }
 
 void main() {
+    vec2 offset2D = aPosition.xy - mouse;
+    float r = length(offset2D);
+    vec4 position_object = vec4(mouse + warp(r) / r * offset2D, 0.0, 1.0);
+    vec4 position_camera = modelViewMatrix * position_object;
+    gl_Position = projectionMatrix * position_camera;
+    gl_Position.z += zOffset(r) * gl_Position.w;
+
     vColor = aVertexColor;
-    vec2 v = aPosition.xy - mouse;
-    float r = length(v);
-    vec4 positionVec4 = vec4(mouse + warp(r) / r * v, 0.0, 1.0);
-    gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
-    gl_Position.z = get_z(r) * gl_Position.w;
 }

@@ -1,51 +1,218 @@
-const {mat4, vec4} = glMatrix;
+const {mat4, vec4, vec3} = glMatrix;
+
 
 class VGeoCluster extends VCluster {
+    static total = 0;
+    static _pixelBuffer;
+    static _idBuffer;
+    static geometryCache = {}
+
+    static get width() {
+        return gp5.width;
+    }
+
+    static get height() {
+        return gp5.height;
+    }
+
+    static get pixelBuffer() {
+        if (!this._pixelBuffer) {
+            this._pixelBuffer = gp5.createGraphics(this.width, this.height, gp5.WEBGL);
+        }
+        return this._pixelBuffer;
+    }
+
+    static get idBuffer() {
+        if (!this._idBuffer) {
+            this._idBuffer = gp5.createGraphics(this.width, this.height, gp5.WEBGL);
+        }
+        return this._idBuffer;
+    }
+
+
+    static projectMercator(lon, lat, center = gp5.createVector(), scale = 1) {
+        const x = 1 / (2 * Math.PI) * lon * (Math.PI / 180);
+        const y = 1 / (2 * Math.PI) * (Math.PI - Math.log(Math.tan(Math.PI / 4 + lat * (Math.PI / 180) / 2)));
+        return [scale * (x - center.x), scale * (y - center.y)];
+    }
+
+    static getBoundingBox(features) {
+        let xMin = Infinity;
+        let xMax = -Infinity;
+        let yMin = Infinity;
+        let yMax = -Infinity;
+
+        function traverse(rings) {
+            if (rings.length === 0) return;
+            for (let [lon, lat] of rings[0]) {
+                const [x, y] = VGeoCluster.projectMercator(lon, lat);
+                xMin = Math.min(xMin, x);
+                xMax = Math.max(xMax, x);
+                yMin = Math.min(yMin, y);
+                yMax = Math.max(yMax, y);
+                yMax = Math.max(yMax, y);
+            }
+        }
+
+        for (let feature of features) {
+            const geom = feature.geometry;
+            if (geom.type === 'Polygon') {
+                traverse(geom.coordinates);
+            } else if (geom.type === 'MultiPolygon') {
+                for (const polygon of geom.coordinates) {
+                    traverse(polygon);
+                }
+            }
+        }
+        return [xMin, xMax, yMin, yMax];
+    }
+
+    static getCentroid(geom, center, scale) {
+        let numPoints = 0;
+        let xSum = 0;
+        let ySum = 0;
+
+        function traverse(rings) {
+            if (rings.length === 0) return;
+            for (let [lon, lat] of rings[0]) {
+                const [x, y] = VGeoCluster.projectMercator(lon, lat, center, scale);
+                numPoints++;
+                xSum += x;
+                ySum += y;
+            }
+        }
+
+        if (geom.type === 'Polygon') {
+            traverse(geom.coordinates);
+        } else if (geom.type === 'MultiPolygon') {
+            for (const polygon of geom.coordinates) {
+                traverse(polygon);
+            }
+        }
+        return gp5.createVector(xSum / numPoints, ySum / numPoints);
+    }
+
+    static drawShape(geom, center, scale) {
+        function traverse(rings) {
+            if (rings.length === 0) return;
+            VGeoCluster.pixelBuffer.beginShape();
+            for (let [lon, lat] of rings[0]) {
+                const [x, y] = VGeoCluster.projectMercator(lon, lat, center, scale);
+                VGeoCluster.pixelBuffer.vertex(x, y);
+            }
+            VGeoCluster.pixelBuffer.endShape();
+        }
+
+        if (geom.type === 'Polygon') {
+            traverse(geom.coordinates);
+        } else if (geom.type === 'MultiPolygon') {
+            for (const polygon of geom.coordinates) {
+                traverse(polygon);
+            }
+        }
+    }
+
+
+    static loadGeometry(url) {
+        if (!this.geometryCache[url]) {
+            this.geometryCache[url] = new Promise((resolve) => {
+                gp5.loadJSON(url, ({features}) => {
+                    const [xMin, xMax, yMin, yMax] = this.getBoundingBox(features);
+                    const center = gp5.createVector((xMin + xMax) / 2, (yMin + yMax) / 2);
+                    const scale = 0.8 * Math.min(this.width / (xMax - xMin), this.height / (yMax - yMin));
+                    const centroids = features.map(feature => this.getCentroid(feature.geometry, center, scale))
+                    const geometry = VGeoCluster.pixelBuffer.buildGeometry(() => {
+                        for (let [i, feature] of features.entries()) {
+                            VGeoCluster.pixelBuffer.noStroke();
+                            VGeoCluster.pixelBuffer.fill(
+                                ((i + 1) >> 16) & 0xff,
+                                ((i + 1) >> 8) & 0xff,
+                                ((i + 1) >> 0) & 0xff,
+                            );
+                            this.drawShape(feature.geometry, center, scale);
+                        }
+                    });
+                    resolve({
+                        features,
+                        centroids,
+                        geometry,
+                    })
+                });
+            });
+        }
+        return this.geometryCache[url];
+    }
+
+    static selectedFeatureId = 0;
+
+    static detectHit() {
+        // TODO: differentiate layers
+        const bytes = this.idBuffer.get(Canvas._mouse.x, Canvas._mouse.y);
+        this.selectedFeatureId = ((bytes[0] << 16) | (bytes[1] << 8) | bytes[2]);
+    }
+
+    features = [];
+    centroids = [];
+    clusterGeometry = null;
+    pixelShader = null;
+    idShader = null;
+
     r1 = 10;
     r2 = 15;
     s1 = 5;
     s2 = 1;
-    theta = 0;
 
-    features = []
-    centroids = [];
-
-    colors = ['#f3e79b', '#fac484', '#f8a07e', '#eb7f86', '#ce6693', '#a059a0', '#5c53a5']
-        .map(c => gp5.color(c).levels.map(v => v / 255)).flat();
-
-    lonCenter = -51.9253;
-    latCenter = -14.2350;
-    scale = 5000;
-    width = gp5.width;
-    height = gp5.height;
+    layerGap = 300;
+    rotationX = -1.01;
+    rotationY = -0.01;
     cameraDistance = 800;
-    s = this.cameraDistance / (this.height / 2);
 
-    pixelShader = gp5.loadShader('/src/shader/shader_color.vert', '/src/shader/shader.frag')
-    featureIdShader = gp5.loadShader('/src/shader/shader_id.vert', '/src/shader/shader.frag');
+    // tangent of 1/2 vertical field-of-view
+    tanHalfFovY = VGeoCluster.height / 2 / this.cameraDistance;
 
-    graphics = gp5.createGraphics(this.width, this.height, gp5.WEBGL);
-    hitDetectionBuf = this.graphics.createFramebuffer({textureFiltering: gp5.NEAREST});
-    geometry = null;
+    modelViewMatrix = mat4.create();
+    projectionMatrix = mat4.create();
+
+    palette = gp5.createImage(1, 1);
 
     constructor(cluster, posX, posY, width, height, palette) {
         super(cluster, posX, posY, width, height, palette);
-        gp5.loadJSON('/files/geoBoundaries-BRA-ADM2_simplified.geojson', ({features}) => {
-            this.features = features;
-            this.centroids = this.getCentroids(features);
-            this.updateVNodePositions();
-            this.geometry = this.graphics.buildGeometry(() => {
-                for (let [i, feature] of features.entries()) {
-                    this.graphics.noStroke();
-                    this.graphics.fill(
-                        ((i + 1) >> 16) & 0xff,
-                        ((i + 1) >> 8) & 0xff,
-                        ((i + 1) >> 0) & 0xff,
-                    );
-                    this.drawShape(feature.geometry);
-                }
-            });
+
+        this.index = VGeoCluster.total++;
+
+        gp5.loadShader('/src/shader/shader_color.vert', '/src/shader/shader.frag', (shader) => {
+            this.pixelShader = shader;
+        }, console.error)
+        gp5.loadShader('/src/shader/shader_id.vert', '/src/shader/shader.frag', (shader) => {
+            this.idShader = shader;
+        }, console.error);
+
+        // TODO: this will be loaded from JSON
+        const geoJsonUrl = '/files/geoBoundaries-BRA-ADM2_simplified.geojson';
+
+        // TODO: this will be loaded from JSON
+        const getColorAt = (index) => {
+            const palettes = [
+                ['#f3e79b', '#fac484', '#f8a07e', '#eb7f86', '#ce6693', '#a059a0', '#5c53a5'],
+                ['#e7f39b', '#c4fa84', '#a0f87e', '#7feb86', '#66ce93', '#59a0a0', '#535ca5'],
+                ['#e79bf3', '#c484fa', '#a07ef8', '#7f86eb', '#6693ce', '#59a0a0', '#53a55c'],
+            ];
+            const palette = palettes[this.index];
+            return gp5.color(palette[index % palette.length]);
+        }
+
+        VGeoCluster.loadGeometry(geoJsonUrl).then(data => {
+            this.features = data.features;
+            this.centroids = data.centroids;
+            this.clusterGeometry = data.geometry;
+            this.palette = gp5.createImage(this.features.length, 1);
+            this.palette.loadPixels();
+            for (let i = 0; i < this.features.length; ++i) {
+                this.palette.set(i, 0, getColorAt(i).levels);
+            }
+            this.palette.updatePixels();
         });
+
     }
 
     warp(r) {
@@ -56,156 +223,139 @@ class VGeoCluster extends VCluster {
         return this.s1 * this.r2 + ((this.s2 - this.s1) * (this.r2 - this.r1)) / 2.0 + this.s2 * (r - this.r2);
     }
 
-    updateVNodePositions() {
-        const modelMatrix = mat4.rotateX(mat4.create(), mat4.create(), -this.theta);
-        const viewMatrix = mat4.lookAt(mat4.create(), [0, 0, this.cameraDistance], [0, 0, 0], [0, 1, 0])
-        const projectionMatrix = mat4.perspective(mat4.create(), 2 * Math.atan(1 / this.s), this.width / this.height, 0.1 * 800, 10 * 800)
-        const M = mat4.create();
-        mat4.mul(M, viewMatrix, modelMatrix);
-        mat4.mul(M, projectionMatrix, M);
+    updateMatrices() {
+        const flipY = mat4.fromValues(
+            1, 0, 0, 0,
+            0, -1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        );
+        const offset = vec3.fromValues(0, 0, this.layerGap * (this.index - (VGeoCluster.total - 1) / 2));
+        const translate = mat4.fromTranslation(mat4.create(), offset);
+        const rotateX = mat4.fromXRotation(mat4.create(), this.rotationX);
+        const rotateY = mat4.fromYRotation(mat4.create(), this.rotationY);
+        const modelMatrix = mat4.create();
+        mat4.mul(modelMatrix, translate, flipY);
+        mat4.mul(modelMatrix, rotateX, modelMatrix);
+        mat4.mul(modelMatrix, rotateY, modelMatrix);
+        const viewMatrix = mat4.lookAt(mat4.create(), [0, 0, this.cameraDistance], [0, 0, 0], [0, 1, 0]);
+        this.modelViewMatrix = mat4.mul(mat4.create(), viewMatrix, modelMatrix);
+        this.projectionMatrix = mat4.perspective(
+            mat4.create(),
+            2 * Math.atan(this.tanHalfFovY), // vertical FOV
+            VGeoCluster.width / VGeoCluster.height, // aspect ratio
+            0.1 * 800, // near plane
+            10 * 800 // far plane
+        );
+    }
 
-        const vOut = vec4.create();
+    updateVNodePositions() {
+        const MVP = mat4.create();
+        mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
         for (let vNode of this.vNodes) {
-            const index = vNode.node.idCat.index + 100;
+            // TODO: this will be loaded from JSON
+            const index = vNode.node.idCat.index + 1000 * vNode.node.idCat.cluster;
+            if (index >= this.centroids.length) continue;
             const vIn = this.centroids[index].copy();
-            vIn.sub(this.mouseX, this.mouseY);
+            vIn.sub(this.mouseX_object, this.mouseY_object);
             vIn.setMag(this.warp(vIn.mag()));
-            vIn.add(this.mouseX, this.mouseY);
-            vIn.sub(this.width / 2, this.height / 2).mult(1, -1);
-            vec4.set(vOut, vIn.x, vIn.y, 0, 1);
-            vec4.transformMat4(vOut, vOut, M);
-
-            vNode.pos = gp5.createVector(vOut[0] / vOut[3], -vOut[1] / vOut[3])
-                .mult(this.width / 2, this.height / 2)
-                .add(this.width / 2, this.height / 2);
+            vIn.add(this.mouseX_object, this.mouseY_object);
+            const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
+            const position_NDC = vec4.transformMat4(vec4.create(), position_object, MVP);
+            vNode.pos = gp5.createVector(position_NDC[0] / position_NDC[3], position_NDC[1] / position_NDC[3])
+                .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
+                .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
         }
     }
 
-    projectMercator(lon, lat) {
-        const x = 1 / (2 * Math.PI) * lon * (Math.PI / 180);
-        const y = 1 / (2 * Math.PI) * (Math.PI - Math.log(Math.tan(Math.PI / 4 + lat * (Math.PI / 180) / 2)));
-        const xCenter = 1 / (2 * Math.PI) * (this.lonCenter * (Math.PI / 180));
-        const yCenter = 1 / (2 * Math.PI) * (Math.PI - Math.log(Math.tan(Math.PI / 4 + this.latCenter * (Math.PI / 180) / 2)));
-        return [
-            this.width / 2 + this.scale * (x - xCenter),
-            this.height / 2 + this.scale * (y - yCenter)
-        ]
-    }
-
-    getCentroidsOf(geom) {
-        let numPoints = 0;
-        let xSum = 0;
-        let ySum = 0;
-
-        const traverPolygon = (rings) => {
-            if (rings.length === 0) return;
-            for (let [lon, lat] of rings[0]) {
-                const [x, y] = this.projectMercator(lon, lat);
-                numPoints++;
-                xSum += x;
-                ySum += y;
-            }
-        }
-
-        if (geom.type === 'Polygon') {
-            traverPolygon(geom.coordinates);
-        } else if (geom.type === 'MultiPolygon') {
-            for (const polygon of geom.coordinates) {
-                traverPolygon(polygon);
-            }
-        }
-        return gp5.createVector(xSum / numPoints, ySum / numPoints);
-    }
-
-    getCentroids(features) {
-        const res = [];
-        for (let feature of features) {
-            res.push(this.getCentroidsOf(feature.geometry))
-        }
-        return res;
-    }
-
-
-    drawPolygon(rings) {
-        if (rings.length == 0) return;
-        this.graphics.beginShape();
-        for (let [lon, lat] of rings[0]) {
-            const [x, y] = this.projectMercator(lon, lat);
-            this.graphics.vertex(x, y);
-        }
-        this.graphics.endShape(gp5.CLOSE);
-    }
-
-
-    drawShape(geom) {
-        if (geom.type == 'Polygon') {
-            this.drawPolygon(geom.coordinates);
-        } else if (geom.type == 'MultiPolygon') {
-            for (const polygon of geom.coordinates) {
-                this.drawPolygon(polygon);
-            }
-        }
-    }
-
+    /**
+     * Determine mouse coordinates in the map plane (object space) using ray casting
+     */
     unprojectMousePosition() {
-        const modelMatrix = mat4.rotateX(mat4.create(), mat4.create(), this.theta);
-        const viewMatrix = mat4.lookAt(mat4.create(), [0, 0, this.cameraDistance], [0, 0, 0], [0, 1, 0])
-        const modelView = mat4.mul(mat4.create(), viewMatrix, modelMatrix);
-        const modelViewInverse = mat4.invert(mat4.create(), modelView);
-        const ndc = gp5.createVector(Canvas._mouse.x, Canvas._mouse.y).div(this.width, this.height).mult(2).sub(1, 1).mult(1, -1);
-        const K = this.cameraDistance * Math.cos(this.theta) / (ndc.y * Math.sin(this.theta) + this.s * Math.cos(this.theta));
-        const posCameraSpace = vec4.fromValues(this.width / this.height * ndc.x * K, ndc.y * K, -this.s * K, 1.0);
-        const posObjectSpace = vec4.transformMat4(vec4.create(), posCameraSpace, modelViewInverse);
-        this.mouseX = (posObjectSpace[0] / posCameraSpace[3]) + this.width / 2;
-        this.mouseY = (-posObjectSpace[1] / posCameraSpace[3]) + this.height / 2;
+        const normal = vec4.fromValues(0, 0, 1, 0); // direction (w=0)
+        const center = vec4.fromValues(0, 0, 0, 1); // position (w=1)
+        vec4.transformMat4(normal, normal, this.modelViewMatrix);
+        vec4.transformMat4(center, center, this.modelViewMatrix);
+
+        const ray = vec4.fromValues(
+            Canvas._mouse.x - VGeoCluster.width / 2,
+            -(Canvas._mouse.y - VGeoCluster.height / 2),
+            -(VGeoCluster.height / 2 / this.tanHalfFovY),
+            0
+        );
+        const signedDistance = vec4.dot(ray, normal);
+        if (signedDistance >= 0) {
+            // if the ray is directed away from the plane, adjust it slightly to make it directed towards the plane
+            vec4.scaleAndAdd(ray, ray, normal, -(signedDistance + 0.1));
+        }
+        const t = vec4.dot(center, normal) / vec4.dot(ray, normal);
+        const pos_camera = vec4.fromValues(ray[0] * t, ray[1] * t, ray[2] * t, 1);
+        const modelViewInverse = mat4.invert(mat4.create(), this.modelViewMatrix);
+        const pos_object = vec4.transformMat4(vec4.create(), pos_camera, modelViewInverse);
+        this.mouseX_object = pos_object[0] / pos_object[3];
+        this.mouseY_object = pos_object[1] / pos_object[3];
     }
 
 
-    update() {
-        if (gp5.keyIsDown(187)) {
-            this.s1 = gp5.constrain(this.s1 + 1, 2, 50);
+    handleEvents() {
+        if (gp5.keyIsPressed) {
+            if (gp5.key === '=') {
+                this.s1 = gp5.constrain(this.s1 + 1, 1, 50);
+            }
+            if (gp5.key === '-') {
+                this.s1 = gp5.constrain(this.s1 - 1, 1, 50);
+            }
+            if (gp5.key === 'k') {
+                this.layerGap += 10;
+            }
+            if (gp5.key === 'j') {
+                this.layerGap -= 10;
+            }
+            if (gp5.key === 'ArrowUp') {
+                this.rotationX = gp5.constrain(this.rotationX - 0.05, -Math.PI / 2, Math.PI / 2);
+            }
+            if (gp5.key === 'ArrowDown') {
+                this.rotationX = gp5.constrain(this.rotationX + 0.05, -Math.PI / 2, Math.PI / 2);
+            }
+            if (gp5.key === 'ArrowLeft') {
+                this.rotationY = gp5.constrain(this.rotationY - 0.05, -Math.PI / 2, Math.PI / 2);
+            }
+            if (gp5.key === 'ArrowRight') {
+                this.rotationY = gp5.constrain(this.rotationY + 0.05, -Math.PI / 2, Math.PI / 2);
+            }
         }
-        if (gp5.keyIsDown(189)) {
-            this.s1 = gp5.constrain(this.s1 - 1, 2, 50);
-        }
-        if (gp5.keyIsDown(gp5.UP_ARROW)) {
-            this.theta = gp5.constrain(this.theta + 0.05, 0, Math.PI / 2);
-        }
-        if (gp5.keyIsDown(gp5.DOWN_ARROW)) {
-            this.theta = gp5.constrain(this.theta - 0.05, 0, Math.PI / 2);
-        }
+        this.updateMatrices();
         this.unprojectMousePosition();
-        const [b1, b2, b3] = this.hitDetectionBuf.get(Canvas._mouse.x, Canvas._mouse.y);
-        this.selected = ((b1 << 16) | (b2 << 8) | b3);
         this.updateVNodePositions();
     }
 
-    renderToGraphics(compiledShader) {
-        this.graphics.push();
-        this.graphics.background(0, 0, 0, 0);
-        this.graphics.rotateX(this.theta);
-        this.graphics.translate(-this.width / 2, -this.height / 2);
-        this.graphics.shader(compiledShader);
-        compiledShader.setUniform('mouse', [this.mouseX, this.mouseY]);
-        compiledShader.setUniform('r1', this.r1);
-        compiledShader.setUniform('r2', this.r2);
-        compiledShader.setUniform('s1', this.s1);
-        compiledShader.setUniform('s2', this.s2);
-        compiledShader.setUniform('colors', this.colors);
-        compiledShader.setUniform('selected', this.selected);
-        this.graphics.model(this.geometry);
-        this.graphics.pop();
+    renderToBuffer(buffer, shader) {
+        buffer.shader(shader);
+        shader.setUniform('modelViewMatrix', this.modelViewMatrix);
+        shader.setUniform('projectionMatrix', this.projectionMatrix);
+        shader.setUniform('mouse', [this.mouseX_object, this.mouseY_object]);
+        shader.setUniform('r1', this.r1);
+        shader.setUniform('r2', this.r2);
+        shader.setUniform('s1', this.s1);
+        shader.setUniform('s2', this.s2);
+        shader.setUniform('palette', this.palette);
+        shader.setUniform('paletteSize', this.palette.width);
+        shader.setUniform('selected', VGeoCluster.selectedFeatureId);
+        buffer.model(this.clusterGeometry);
     }
 
     show(renderer) {
         super.show(renderer);
-        if (!this.geometry) return;
-        this.update();
-        this.renderToGraphics(this.pixelShader);
-        this.hitDetectionBuf.begin();
-        this.renderToGraphics(this.featureIdShader);
-        this.hitDetectionBuf.end();
-        renderer.image(this.graphics, 0, 0);
+        this.handleEvents();
+        if (this.clusterGeometry) {
+            if (this.pixelShader) {
+                VGeoCluster.pixelBuffer.texture(this.palette);
+                this.renderToBuffer(VGeoCluster.pixelBuffer, this.pixelShader);
+            }
+            if (this.idShader) {
+                this.renderToBuffer(VGeoCluster.idBuffer, this.idShader);
+            }
+        }
     }
 }
