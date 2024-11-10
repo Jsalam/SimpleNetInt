@@ -10,7 +10,7 @@ importNetworkModalForm = function() {
 
 getDataImport = function(evt) {
 
-    Canvas.clear();
+    VirtualElementPool.clear();
 
     DOM.onLoadNetwork({ nodes: nodesImported, edges: edgesImported }, evt)
 }

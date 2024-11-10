@@ -111,8 +111,6 @@ class VCluster {
         }
     }
 
-    dispose() {}
-
     getJSON() {
         let rtn = {
             clusterID: this.cluster.id,

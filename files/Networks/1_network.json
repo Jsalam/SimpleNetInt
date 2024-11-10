@@ -1,7 +1,6 @@
 {
     "nodes": [{
             "clusterID": "1",
-            "clusterType": "geo",
             "clusterLabel": "Media Type",
             "clusterDescription": "Cluster description",
             "nodes": [{
@@ -1877,7 +1876,6 @@
         },
         {
             "clusterID": "2",
-            "clusterType": "geo",
             "clusterLabel": "Location",
             "clusterDescription": "Cluster description",
             "nodes": [{
@@ -5867,7 +5865,6 @@
         },
         {
             "clusterID": "3",
-            "clusterType": "geo",
             "clusterLabel": "Publication",
             "clusterDescription": "Cluster description",
             "nodes": [{

@@ -177,7 +177,7 @@ class DOM {
      * @param {String} value prefix of the file. Usually a digit. 
      */
     static switchModel(value, evt) {
-        Canvas.clear();
+        VirtualElementPool.clear();
 
         console.log("Switching to " + value + " network");
 

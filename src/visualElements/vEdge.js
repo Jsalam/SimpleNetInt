@@ -108,7 +108,7 @@ class VEdge {
             this.showBezierArcs(renderer, strokeColor, strokeWeight);
 
         } else {
-            if (this.labelEl) this.labelEl.style.visibility = 'hidden'
+            VirtualElementPool.hide(this, 'label');
         }
 
     }
@@ -248,34 +248,17 @@ class VEdge {
         // renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
 
         // edge label
-        if (!this.labelEl) {
-            this.labelEl = document.createElement('div');
-            const canvasContainerEl = document.querySelector('#model');
-            if (canvasContainerEl) {
-                this.labelEl.style.position = 'absolute';
-                this.labelEl.style.left = '0px';
-                this.labelEl.style.top = '0px';
-                this.labelEl.style.fontFamily = 'Roboto';
-                this.labelEl.style.fontSize = '12px';
-                this.labelEl.style.overflow = 'hidden';
-                this.labelEl.style.pointerEvents = 'none';
-                canvasContainerEl.append(this.labelEl);
-            }
-        }
-        this.labelEl.style.color = color;
-        this.labelEl.style.transform = `
-            translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
-            scale(${Canvas._zoom})
-            translate(${10 + (this.controlOrg.x + this.controlEnd.x) / 2}px, ${(this.controlOrg.y + this.controlEnd.y) / 2}px)
-        `
-        this.labelEl.textContent = this.edge.kind;
-        this.labelEl.style.visibility = 'visible'
-    }
-
-    dispose() {
-        if (this.labelEl) {
-            this.labelEl.remove();
-        }
+        VirtualElementPool.show(this, 'edge-label', this.edge.kind, {
+            fontFamily: 'Roboto',
+            fontSize: '12px',
+            overflow: 'hidden',
+            color: color,
+            transform: `
+                translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+                scale(${Canvas._zoom})
+                translate(${10 + (this.controlOrg.x + this.controlEnd.x) / 2}px, ${(this.controlOrg.y + this.controlEnd.y) / 2}px)
+            `
+        });
     }
 
     getJSON() {

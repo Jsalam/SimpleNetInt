@@ -25,12 +25,12 @@ class ClusterFactory {
             let palette = ColorFactory.getPalette(index);
 
             // vCluster instantiation
-            if (cluster.type === "default") {
-                let tmp = new VCluster(cluster, posX, posY, width, height, palette);
+            if (cluster.type === "geo") {
+                let tmp = new VGeoCluster(cluster, posX, posY, width, height, palette);
                 Canvas.subscribe(tmp);
                 ClusterFactory.vClusters.push(tmp);
-            } else if (cluster.type === "geo") {
-                let tmp = new VGeoCluster(cluster, posX, posY, width, height, palette);
+            } else {
+                let tmp = new VCluster(cluster, posX, posY, width, height, palette);
                 Canvas.subscribe(tmp);
                 ClusterFactory.vClusters.push(tmp);
             }

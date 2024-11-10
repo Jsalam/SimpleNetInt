@@ -7,6 +7,8 @@ class VGeoCluster extends VCluster {
     static _idBuffer;
     static geometryCache = {}
 
+    static MAP_SIZE = 0.75;
+
     static get width() {
         return gp5.width;
     }
@@ -112,6 +114,15 @@ class VGeoCluster extends VCluster {
         }
     }
 
+    static computeCentroids(features, center, scale) {
+        const index = {};
+        for (const feature of features) {
+            const geocode = feature.properties.GEOCODIGO;
+            index[geocode] = this.getCentroid(feature.geometry, center, scale);
+        }
+        return index;
+    }
+
 
     static loadGeometry(url) {
         if (!this.geometryCache[url]) {
@@ -119,8 +130,8 @@ class VGeoCluster extends VCluster {
                 gp5.loadJSON(url, ({features}) => {
                     const [xMin, xMax, yMin, yMax] = this.getBoundingBox(features);
                     const center = gp5.createVector((xMin + xMax) / 2, (yMin + yMax) / 2);
-                    const scale = 0.8 * Math.min(this.width / (xMax - xMin), this.height / (yMax - yMin));
-                    const centroids = features.map(feature => this.getCentroid(feature.geometry, center, scale))
+                    const scale = VGeoCluster.MAP_SIZE * Math.min(this.width / (xMax - xMin), this.height / (yMax - yMin));
+                    const centroidByGeocode = this.computeCentroids(features, center, scale);
                     const geometry = VGeoCluster.pixelBuffer.buildGeometry(() => {
                         for (let [i, feature] of features.entries()) {
                             VGeoCluster.pixelBuffer.noStroke();
@@ -134,7 +145,7 @@ class VGeoCluster extends VCluster {
                     });
                     resolve({
                         features,
-                        centroids,
+                        centroidByGeocode,
                         geometry,
                     })
                 });
@@ -151,8 +162,8 @@ class VGeoCluster extends VCluster {
         this.selectedFeatureId = ((bytes[0] << 16) | (bytes[1] << 8) | bytes[2]);
     }
 
+    centroidByGeocode = {};
     features = [];
-    centroids = [];
     clusterGeometry = null;
     pixelShader = null;
     idShader = null;
@@ -162,9 +173,9 @@ class VGeoCluster extends VCluster {
     s1 = 5;
     s2 = 1;
 
-    layerGap = 300;
-    rotationX = -1.01;
-    rotationY = -0.01;
+    layerGap = 500;
+    rotationX = -0.51;
+    rotationY = 0.51;
     cameraDistance = 800;
 
     // tangent of 1/2 vertical field-of-view
@@ -188,13 +199,13 @@ class VGeoCluster extends VCluster {
         }, console.error);
 
         // TODO: this will be loaded from JSON
-        const geoJsonUrl = '/files/geoBoundaries-BRA-ADM2_simplified.geojson';
+        const geoJsonUrl = '/files/Brazil_ADM2.geojson';
 
         // TODO: this will be loaded from JSON
         const getColorAt = (index) => {
             const palettes = [
-                ['#f3e79b', '#fac484', '#f8a07e', '#eb7f86', '#ce6693', '#a059a0', '#5c53a5'],
                 ['#e7f39b', '#c4fa84', '#a0f87e', '#7feb86', '#66ce93', '#59a0a0', '#535ca5'],
+                ['#f3e79b', '#fac484', '#f8a07e', '#eb7f86', '#ce6693', '#a059a0', '#5c53a5'],
                 ['#e79bf3', '#c484fa', '#a07ef8', '#7f86eb', '#6693ce', '#59a0a0', '#53a55c'],
             ];
             const palette = palettes[this.index];
@@ -203,7 +214,7 @@ class VGeoCluster extends VCluster {
 
         VGeoCluster.loadGeometry(geoJsonUrl).then(data => {
             this.features = data.features;
-            this.centroids = data.centroids;
+            this.centroidByGeocode = data.centroidByGeocode;
             this.clusterGeometry = data.geometry;
             this.palette = gp5.createImage(this.features.length, 1);
             this.palette.loadPixels();
@@ -249,20 +260,27 @@ class VGeoCluster extends VCluster {
         );
     }
 
+    get focusRadius() {
+        return this.s1 * this.r1
+    }
+
     updateVNodePositions() {
         const MVP = mat4.create();
         mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
         for (let vNode of this.vNodes) {
-            // TODO: this will be loaded from JSON
-            const index = vNode.node.idCat.index + 1000 * vNode.node.idCat.cluster;
-            if (index >= this.centroids.length) continue;
-            const vIn = this.centroids[index].copy();
+            const geocode =  vNode.node.attributes.attRaw.geocode;
+            if (!this.centroidByGeocode[geocode]) continue;
+
+            const vIn = this.centroidByGeocode[geocode].copy();
             vIn.sub(this.mouseX_object, this.mouseY_object);
-            vIn.setMag(this.warp(vIn.mag()));
+            const r = this.warp(vIn.mag())
+            vIn.setMag(r);
             vIn.add(this.mouseX_object, this.mouseY_object);
             const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
             const position_NDC = vec4.transformMat4(vec4.create(), position_object, MVP);
+
+            vNode.shouldShowText = r < this.focusRadius;
             vNode.pos = gp5.createVector(position_NDC[0] / position_NDC[3], position_NDC[1] / position_NDC[3])
                 .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
                 .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
