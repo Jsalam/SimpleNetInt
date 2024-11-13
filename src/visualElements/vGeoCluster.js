@@ -7,7 +7,7 @@ class VGeoCluster extends VCluster {
     static _idBuffer;
     static geometryCache = {}
 
-    static MAP_SIZE = 0.75;
+    static MAP_SIZE = 0.6;
 
     static get width() {
         return gp5.width;

@@ -142,7 +142,7 @@ class Canvas {
         // push transformations
         TransFactory.pushVClusters();
 
-        // VGeoCluster.detectHit(); // TODO: test performance
+        VGeoCluster.detectHit(); // TODO: test performance
         VGeoCluster.pixelBuffer.background(0, 0, 0, 0);
         VGeoCluster.idBuffer.background(0, 0, 0, 0);
 
