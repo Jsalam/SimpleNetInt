@@ -26,7 +26,7 @@ class VGeoCluster extends VCluster {
 
     static get idBuffer() {
         if (!this._idBuffer) {
-            this._idBuffer = gp5.createGraphics(this.width, this.height, gp5.WEBGL);
+            this._idBuffer = this.pixelBuffer.createFramebuffer();
         }
         return this._idBuffer;
     }
@@ -158,7 +158,7 @@ class VGeoCluster extends VCluster {
 
     static detectHit() {
         // TODO: differentiate layers
-        const bytes = this.idBuffer.get(Canvas._mouse.x, Canvas._mouse.y);
+        const bytes = this.idBuffer.get(Canvas._mouse.x, VGeoCluster.height - Canvas._mouse.y);
         this.selectedFeatureId = ((bytes[0] << 16) | (bytes[1] << 8) | bytes[2]);
     }
 
@@ -269,7 +269,7 @@ class VGeoCluster extends VCluster {
         mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
         for (let vNode of this.vNodes) {
-            const geocode =  vNode.node.attributes.attRaw.geocode;
+            const geocode = vNode.node.attributes.attRaw.geocode;
             if (!this.centroidByGeocode[geocode]) continue;
 
             const vIn = this.centroidByGeocode[geocode].copy();
@@ -372,7 +372,10 @@ class VGeoCluster extends VCluster {
                 this.renderToBuffer(VGeoCluster.pixelBuffer, this.pixelShader);
             }
             if (this.idShader) {
-                this.renderToBuffer(VGeoCluster.idBuffer, this.idShader);
+                VGeoCluster.idBuffer.begin();
+                VGeoCluster.pixelBuffer.fill(0);
+                this.renderToBuffer(VGeoCluster.pixelBuffer, this.idShader);
+                VGeoCluster.idBuffer.end();
             }
         }
     }
