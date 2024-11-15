@@ -3,8 +3,8 @@ const {mat4, vec4, vec3} = glMatrix;
 
 class VGeoCluster extends VCluster {
     static total = 0;
-    static _pixelBuffer;
-    static _idBuffer;
+    static _pixelTarget;
+    static _idTarget;
     static geometryCache = {}
 
     static MAP_SIZE = 0.6;
@@ -17,18 +17,18 @@ class VGeoCluster extends VCluster {
         return gp5.height;
     }
 
-    static get pixelBuffer() {
-        if (!this._pixelBuffer) {
-            this._pixelBuffer = gp5.createGraphics(this.width, this.height, gp5.WEBGL);
+    static get pixelTarget() {
+        if (!this._pixelTarget) {
+            this._pixelTarget = gp5.createGraphics(this.width, this.height, gp5.WEBGL);
         }
-        return this._pixelBuffer;
+        return this._pixelTarget;
     }
 
-    static get idBuffer() {
-        if (!this._idBuffer) {
-            this._idBuffer = this.pixelBuffer.createFramebuffer();
+    static get idTarget() {
+        if (!this._idTarget) {
+            this._idTarget = gp5.createGraphics(this.width, this.height, gp5.WEBGL);
         }
-        return this._idBuffer;
+        return this._idTarget;
     }
 
 
@@ -97,12 +97,12 @@ class VGeoCluster extends VCluster {
     static drawShape(geom, center, scale) {
         function traverse(rings) {
             if (rings.length === 0) return;
-            VGeoCluster.pixelBuffer.beginShape();
+            VGeoCluster.pixelTarget.beginShape();
             for (let [lon, lat] of rings[0]) {
                 const [x, y] = VGeoCluster.projectMercator(lon, lat, center, scale);
-                VGeoCluster.pixelBuffer.vertex(x, y);
+                VGeoCluster.pixelTarget.vertex(x, y);
             }
-            VGeoCluster.pixelBuffer.endShape();
+            VGeoCluster.pixelTarget.endShape();
         }
 
         if (geom.type === 'Polygon') {
@@ -132,10 +132,10 @@ class VGeoCluster extends VCluster {
                     const center = gp5.createVector((xMin + xMax) / 2, (yMin + yMax) / 2);
                     const scale = VGeoCluster.MAP_SIZE * Math.min(this.width / (xMax - xMin), this.height / (yMax - yMin));
                     const centroidByGeocode = this.computeCentroids(features, center, scale);
-                    const geometry = VGeoCluster.pixelBuffer.buildGeometry(() => {
+                    const geometry = VGeoCluster.pixelTarget.buildGeometry(() => {
                         for (let [i, feature] of features.entries()) {
-                            VGeoCluster.pixelBuffer.noStroke();
-                            VGeoCluster.pixelBuffer.fill(
+                            VGeoCluster.pixelTarget.noStroke();
+                            VGeoCluster.pixelTarget.fill(
                                 ((i + 1) >> 16) & 0xff,
                                 ((i + 1) >> 8) & 0xff,
                                 ((i + 1) >> 0) & 0xff,
@@ -154,12 +154,37 @@ class VGeoCluster extends VCluster {
         return this.geometryCache[url];
     }
 
+    static idBuffer = new Uint8Array(4)
     static selectedFeatureId = 0;
 
-    static detectHit() {
-        // TODO: differentiate layers
-        const bytes = this.idBuffer.get(Canvas._mouse.x, VGeoCluster.height - Canvas._mouse.y);
-        this.selectedFeatureId = ((bytes[0] << 16) | (bytes[1] << 8) | bytes[2]);
+    static detectHitAsync() {
+        const gl = this.idTarget.drawingContext;
+        const sampleCount = 2;
+        const x = Canvas._mouse.x * sampleCount
+        const y = (VGeoCluster.height - Canvas._mouse.y) * sampleCount;
+        const idPBO = gl.createBuffer();
+        gl.bindBuffer(gl.PIXEL_PACK_BUFFER, idPBO);
+        gl.bufferData(gl.PIXEL_PACK_BUFFER, 4, gl.STREAM_READ);
+        gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
+
+        const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+        const checkSyncStatus = () => {
+            switch (gl.clientWaitSync(sync, 0, 0)) {
+                case gl.WAIT_FAILED:
+                    return;
+                case gl.TIMEOUT_EXPIRED:
+                    setTimeout(checkSyncStatus, 5);
+                    return;
+                default:
+                    gl.deleteSync(sync);
+                    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, idPBO);
+                    gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, this.idBuffer);
+                    gl.deleteBuffer(idPBO);
+                    // TODO: differentiate layers
+                    this.selectedFeatureId = ((this.idBuffer[0] << 16) | (this.idBuffer[1] << 8) | this.idBuffer[2]);
+            }
+        };
+        checkSyncStatus();
     }
 
     centroidByGeocode = {};
@@ -368,14 +393,11 @@ class VGeoCluster extends VCluster {
         this.handleEvents();
         if (this.clusterGeometry) {
             if (this.pixelShader) {
-                VGeoCluster.pixelBuffer.texture(this.palette);
-                this.renderToBuffer(VGeoCluster.pixelBuffer, this.pixelShader);
+                VGeoCluster.pixelTarget.texture(this.palette);
+                this.renderToBuffer(VGeoCluster.pixelTarget, this.pixelShader);
             }
             if (this.idShader) {
-                VGeoCluster.idBuffer.begin();
-                VGeoCluster.pixelBuffer.fill(0);
-                this.renderToBuffer(VGeoCluster.pixelBuffer, this.idShader);
-                VGeoCluster.idBuffer.end();
+                this.renderToBuffer(VGeoCluster.idTarget, this.idShader);
             }
         }
     }

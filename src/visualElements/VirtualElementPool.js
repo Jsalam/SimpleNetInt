@@ -19,10 +19,10 @@ class VirtualElementPool {
         }
     }
 
-    static capacity = 500;
+    static capacity = 100;
     static allElements = [];
     static activeElements = new Map();
-    static freeElements = [];
+    static freeElements = new Map();
 
     static get containerEl() {
         return document.querySelector('#model');
@@ -70,11 +70,18 @@ class VirtualElementPool {
         }
     }
 
-    static getOwnElements(client) {
-        if (!this.activeElements.has(client)) {
-            this.activeElements.set(client, new Map());
+    static getActiveElementsByType(type) {
+        if (!this.activeElements.has(type)) {
+            this.activeElements.set(type, new Map());
         }
-        return this.activeElements.get(client);
+        return this.activeElements.get(type);
+    }
+
+    static getFreeElementsByType(type) {
+        if (!this.freeElements.has(type)) {
+            this.freeElements.set(type, []);
+        }
+        return this.freeElements.get(type);
     }
 
     static createElement() {
@@ -83,57 +90,47 @@ class VirtualElementPool {
         return ve;
     }
 
-    static evictElement(client, key) {
-        // Preferentially evict an element that matches the client type and requested key
-        for (const [owner, ownElements] of this.activeElements) {
-            if (Object.getPrototypeOf(owner) === Object.getPrototypeOf(client) && ownElements.has(key)) {
-                const element = ownElements.get(key);
-                ownElements.delete(key);
-                return element;
-            }
+    static allocateElement(type) {
+        const freeElements = this.getFreeElementsByType(type);
+        if (freeElements.length > 0) {
+            return freeElements.pop();
         }
-        // If no such element is available, evict the first active element
-        for (const [owner, ownElements] of this.activeElements) {
-            if (ownElements.size > 0) {
-                const [firstKey, firstElement] = ownElements.entries().next().value;
-                ownElements.delete(firstKey);
-                return firstElement;
-            }
-        }
-    }
-
-    static allocateElement(client, key) {
-        if (this.freeElements.length > 0) {
-            return this.freeElements.pop();
-        }
-        if (this.allElements.length < this.capacity) {
+        const activeElements = this.getActiveElementsByType(type);
+        if (activeElements.size < this.capacity) {
             return this.createElement();
         }
-        return this.evictElement(client, key);
+        const [firstClient, firstElement] = activeElements.entries().next().value;
+        activeElements.delete(firstClient);
+        return firstElement;
     }
 
-    static show(client, key, textContent, style) {
-        const ownElements = this.getOwnElements(client);
-        if (!ownElements.has(key)) {
-            const ve = this.allocateElement(client, key);
-            ownElements.set(key, ve);
+    static getElementFor(client, type) {
+        const activeElements = this.getActiveElementsByType(type);
+        if (activeElements.has(client)) {
+            return activeElements.get(client);
         }
-        const ve = ownElements.get(key);
+        const ve = this.allocateElement(type);
+        activeElements.set(client, ve);
+        return ve;
+    }
+
+    static show(client, type, textContent, style) {
+        const ve = this.getElementFor(client, type);
         ve.nextTextContent = textContent;
         ve.nextStyle = style;
         VirtualElementPool.scheduleUpdate();
     }
 
-    static hide(client, key) {
-        const ownElements = this.getOwnElements(client);
-        if (ownElements.has(key)) {
-            const ve = ownElements.get(key);
+    static hide(client, type) {
+        const activeElements = this.getActiveElementsByType(type);
+        if (activeElements.has(client)) {
+            const ve = activeElements.get(client);
             // Move it out of screen
             ve.nextStyle = {...ve.style, transform: 'translate(-999px, -999px)'};
             ve.nextTextContent = '';
             VirtualElementPool.scheduleUpdate();
-            ownElements.delete(key);
-            this.freeElements.push(ve);
+            activeElements.delete(client);
+            this.getFreeElementsByType(type).push(ve);
         }
     }
 
