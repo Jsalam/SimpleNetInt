@@ -87,14 +87,16 @@
                     <div class="customButton">
                         <div> <label>Network from library</label></div>
                         <select id="modelChoice">
-                        <option value="0" >Empty canvas</option>
-                        <option value="1" selected>Firefly & Serenity Experimental Timeline</option>
-                        <option value="2" >Test</option>
-                    </select>
+                            <option value="0">Empty canvas</option>
+                            <option value="1">Firefly & Serenity Experimental Timeline</option>
+                            <option value="2" selected>Test</option>
+                        </select>
                     </div>
                     <hr>
-                    <div class="customButton" data-toggle="modal" data-target="#exportNetworkModal">Save/Export file</div>
-                    <div class="customButton" data-toggle="modal" data-target="#importNetworkModal">Open/Import file </div>
+                    <div class="customButton" data-toggle="modal" data-target="#exportNetworkModal">Save/Export file
+                    </div>
+                    <div class="customButton" data-toggle="modal" data-target="#importNetworkModal">Open/Import file
+                    </div>
                     <div id="version">v. 10_2024</div>
                 </div>
 
@@ -125,20 +127,40 @@
                         <input type="checkbox" id="showTexts" checked>
                         <label class="labelCheckbox" for="showTexts">Show labels</label><br>
                     </div>
+                    <hr>
+                    <!-- NODES -->
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="showInEdges" checked>
+                        <label class="labelCheckbox" for="showInEdges">Show in-links</label><br>
+                    </div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="showOutEdges" checked>
+                        <label class="labelCheckbox" for="showOutEdges">Show out-links</label><br>
+                    </div>
+
+                    <div class="sliderItem">
+                        <input type="range" id="nodeConnectorFilter" min="0" max="10" step="1" value="0" />
+                        <label class="labelSlider" for="nodeConnectorFilter">Node connector filter</label>
+                        <label class="labelSlider" for="nodeConnectorFilter">0</label>
+                    </div>
+                    <div class="sliderItem">
+                        <input type="range" id="nodeDegreeFilter" min="0" max="10" step="1" value="0" />
+                        <label class="labelSlider" for="nodeDegreeFilter">Node degree filter</label>
+                        <label class="labelSlider" for="nodeDegreeFilter">0</label>
+                    </div>
+                    <hr>
+                    <!-- EDGES -->
                     <div class="checkboxItem">
                         <input type="checkbox" id="showEdges" checked>
                         <label class="labelCheckbox" for="showEdges">Show links</label><br>
                     </div>
                     <div class="sliderItem">
-                        <input type="range" id="edgeTicknessSlider" name="volume" min="0.1" max="1" step="0.1" value="1" />
-                        <label class="labelSlider" for="edgeTicknessSlider">Edge tickness</label>
-                    </div>
-
-                    <div class="checkboxItem">
-                        <input type="checkbox" id="filterLinked">
-                        <label class="labelCheckbox" for="filterLinked">Linked nodes only</label><br>
+                        <input type="range" id="edgeTickness" min="0.1" max="1" step="0.1" value="0.8" />
+                        <label class="labelSlider" for="edgeTickness">Edge tickness</label>
+                        <label class="labelSlider" for="edgeTickness">0</label>
                     </div>
                     <hr>
+                    <!-- OTHER -->
                     <div class="checkboxItem">
                         <input type="checkbox" id="toggle_instructions" checked>
                         <label class="labelCheckbox" for="toggle_instructions">Instructions legend</label><br>
@@ -193,7 +215,9 @@
     <!-- Navigation Bar -->
     <nav>
         <!-- <div class="d-inline-flex flex-row-reverse" style="align-items: initial;"> -->
-        <div onclick="toggle_visibility('navbarHideableHeader')" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+        <div onclick="toggle_visibility('navbarHideableHeader')" data-toggle="collapse"
+            data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
+            aria-label="Toggle navigation">
 
             <div id="navbarHideableHeader">
                 <div id="menuButton">menu</div>
@@ -216,7 +240,8 @@
 
 
     <!-- ADD CLUSTER MODAL FORM -->
-    <div class="modal fade" id="addClusterModal" tabindex="-1" role="dialog" aria-labelledby="addClusterModal" aria-hidden="true">
+    <div class="modal fade" id="addClusterModal" tabindex="-1" role="dialog" aria-labelledby="addClusterModal"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -234,14 +259,16 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary  btnSubmit" data-dismiss="modal" id="SubmitAddClusterModal">Submit</button>
+                    <button class="btn btn-primary  btnSubmit" data-dismiss="modal"
+                        id="SubmitAddClusterModal">Submit</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ADD NODE MODAL FORM -->
-    <div class="modal fade" id="addNodeModal" tabindex="-1" role="dialog" aria-labelledby="addNodeModal" aria-hidden="true">
+    <div class="modal fade" id="addNodeModal" tabindex="-1" role="dialog" aria-labelledby="addNodeModal"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -271,21 +298,24 @@
                     <hr>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary btnSubmit" data-dismiss="modal" id="SubmitAddNodeModal">Submit</button>
+                    <button class="btn btn-primary btnSubmit" data-dismiss="modal"
+                        id="SubmitAddNodeModal">Submit</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- EXPORT NETWORK MODAL FORM -->
-    <div class="modal fade" id="exportNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exportNetworkModal" aria-hidden="true">
+    <div class="modal fade" id="exportNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exportNetworkModal"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title">Save/Export file</h3>
                 </div>
                 <div class="modal-body">
-                    <input id="exportFileSuffix" value="File name"> See file in Downloads folder with ending -network.json </input>
+                    <input id="exportFileSuffix" value="File name"> See file in Downloads folder with ending
+                    -network.json </input>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary btnSubmit" data-dismiss="modal" id="exportNetwork">Export</button>
@@ -295,7 +325,8 @@
     </div>
 
     <!-- IMPORT NETWORK MODAL FORM -->
-    <div class="modal fade" id="importNetworkModal" tabindex="-1" role="dialog" aria-labelledby="importNetworkModal" aria-hidden="true">
+    <div class="modal fade" id="importNetworkModal" tabindex="-1" role="dialog" aria-labelledby="importNetworkModal"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -316,7 +347,8 @@
     </div>
 
     <!-- ADD EDGE CATEGORIES / KIND -->
-    <div class="modal fade" id="addKindModal" tabindex="-1" role="dialog" aria-labelledby="addKindModal" aria-hidden="true">
+    <div class="modal fade" id="addKindModal" tabindex="-1" role="dialog" aria-labelledby="addKindModal"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -325,14 +357,19 @@
                 <div class="modal-body">
 
                     <h4>Description</h4>
-                    <p>Categories are classes of links. For instance the "friend" category represents the friendship between nodes A and B. Another link of the class "classmates" can connect the same nodes. In Simple Networks there is a category for every
+                    <p>Categories are classes of links. For instance the "friend" category represents the friendship
+                        between nodes A and B. Another link of the class "classmates" can connect the same nodes. In
+                        Simple Networks there is a category for every
                         kind of relationship between nodes. </p>
-                    <p>Enter the categories you want to use in this network separated by comas. For example: <b>friend,classmate,partner,relative</b> </p>
+                    <p>Enter the categories you want to use in this network separated by comas. For example:
+                        <b>friend,classmate,partner,relative</b>
+                    </p>
                     <textarea class="form-control" rows="1" id="edgeKinds">default</textarea>
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary  btnSubmit" data-dismiss="modal" id="submitEdgeKinds">Generate categories</button>
+                    <button class="btn btn-primary  btnSubmit" data-dismiss="modal" id="submitEdgeKinds">Generate
+                        categories</button>
                 </div>
             </div>
         </div>

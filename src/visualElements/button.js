@@ -14,6 +14,7 @@ class Button {
         // this is true when the Transformer has affected the coordinates of this object. It turns to false when the Tranformer has been reset.
         this.transformed = false;
         this.localScale = 1;
+        this.visible = true;
 
     }
 

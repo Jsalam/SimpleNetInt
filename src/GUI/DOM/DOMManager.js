@@ -4,7 +4,7 @@
 
 class DOM {
     // This constructor is not needed, but it is here because the documentation generatior requires it to format the documentation
-    constructor() {}
+    constructor() { }
 
     /** Initializes all the GUI elements created in the HTML
      */
@@ -30,34 +30,38 @@ class DOM {
         DOM.buttons.submitEdgeKinds.onclick = DOM.getTextBoxContent;
         DOM.buttons.toggle_instructions.onclick = DOM.toggleInstructions;
 
-
-
-
         // Checkboxes
         DOM.checkboxes.edit = document.getElementById('edit');
         DOM.checkboxes.forward = document.getElementById('forward');
         DOM.checkboxes.backward = document.getElementById('backward');
-        DOM.checkboxes.filterLinked = document.getElementById('filterLinked');
         DOM.checkboxes.backgroundContrast = document.getElementById('backgroundContrast');
         DOM.checkboxes.grid = document.getElementById('grid');
         DOM.checkboxes.showTexts = document.getElementById('showTexts');
         DOM.checkboxes.showEdges = document.getElementById('showEdges');
+        DOM.checkboxes.showInEdges = document.getElementById('showInEdges');
+        DOM.checkboxes.showOutEdges = document.getElementById('showOutEdges');
         DOM.checkboxes.magnifyingEffect = document.getElementById('magnifyingEffect');
         DOM.checkboxes.spacesMenu = document.getElementById('spaces');
 
         DOM.checkboxes.edit.onclick = (evt) => DOM.toggleContextualEdgeMenu(evt);
         DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.backward.onclick = (evt) => DOM.checkPropagation(evt);
-        DOM.checkboxes.filterLinked.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.backgroundContrast.onclick = (evt) => DOM.switchBkgnd(evt);
         DOM.checkboxes.grid.onclick = (evt) => DOM.switchGrid(evt);
         DOM.checkboxes.showTexts.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.showEdges.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.showInEdges.onclick = (evt) => DOM.eventTriggered(evt);
+        DOM.checkboxes.showOutEdges.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.magnifyingEffect.onclick = (evt) => DOM.toggleMagnifyingEffect(evt);
         DOM.checkboxes.spacesMenu.onclick = (evt) => DOM.toggleContextualSpacesMenu(evt);
 
         // Sliders
-        DOM.sliders.edgeTickness = document.getElementById('edgeTicknessSlider')
+        DOM.sliders.nodeConnectorFilter = document.getElementById('nodeConnectorFilter');
+        DOM.sliders.nodeDegreeFilter = document.getElementById('nodeDegreeFilter');
+        DOM.sliders.edgeTickness = document.getElementById('edgeTickness');
+
+        DOM.sliders.nodeConnectorFilter.onchange = (evt) => DOM.eventTriggered(evt);
+        DOM.sliders.nodeDegreeFilter.onchange = (evt) => DOM.eventTriggered(evt);
         DOM.sliders.edgeTickness.onchange = (evt) => DOM.eventTriggered(evt);
 
         // Dropdowns
@@ -76,7 +80,10 @@ class DOM {
         // Get the current status of checkboxes
         DOM.createNativeCurrentCheckboxes()
         DOM.updateCheckboxes();
-        
+
+        // update sliders
+        DOM.updateSliders();
+
     }
 
     /**
@@ -95,6 +102,7 @@ class DOM {
      */
     static eventTriggered(evt) {
         DOM.updateCheckboxes(evt);
+        DOM.updateSliders(evt);
         DOM.event = evt;
     }
 
@@ -131,15 +139,10 @@ class DOM {
     }
 
     static updateSliders(evt) {
-        for (const slider of Object.values(DOM.sliders)) {
-            let exists = DOM.sliders.filter(elm => elm.key == slider.id)[0]
-            if (exists) {
-                exists.value = checkBox.checked;
-            } else {
-                let obj = { key: checkBox.id, value: checkBox.checked, native: false }
-                DOM.currentCheckboxes.push(obj);
-            }
-        }
+        for (const key of Object.keys(DOM.sliders)) {
+            let element = DOM.sliders[key]
+            if (element.labels[1]) element.labels[1].innerText = element.value;
+        };
     }
 
     /**
@@ -417,6 +420,7 @@ DOM.event = false;
 DOM.buttons = {};
 // the DOM input elements
 DOM.checkboxes = {};
+DOM.sliders = {};
 // the objects storing the current boolean condition
 DOM.currentCheckboxes = [];
 DOM.textboxes = {};

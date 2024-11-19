@@ -25,7 +25,7 @@ class VNode extends Button {
 
     unsubscribe(obj) {
         console.log(obj);
-        this.vConnectors = this.vConnectors.filter(function(subscriber) {
+        this.vConnectors = this.vConnectors.filter(function (subscriber) {
             let rtn = true;
             // Filter vConnectors
             if (subscriber instanceof VConnector) {
@@ -50,7 +50,7 @@ class VNode extends Button {
     }
 
     removeVConnector(conn) {
-        this.vConnectors = this.vConnectors.filter(function(vCnctr) {
+        this.vConnectors = this.vConnectors.filter(function (vCnctr) {
             let rtn = true;
             if (vCnctr.connector.equals(conn)) {
 
@@ -243,77 +243,90 @@ class VNode extends Button {
     /*** SHOW FUNCTIONS */
     show(renderer) {
 
-        // *** TRANSFORMATIONS ***
-        this.tr = TransFactory.getTransformerByVClusterID(this.node.idCat.cluster);
-
-        // *** FILTER ***
-        // Check if any of this Node connectors matches User GUI inputs
-        this.node.filterConnectors();
-
-        // get the visual properties
-        let fillColors = this._getFillColor(ColorFactory.getColorFor(this.node.idCat.cluster));
-        this.strokeColor = this._getStrokeColor(ColorFactory.getColorFor(this.node.idCat.cluster));
-        let strokeWeight = this._getStrokeWeight();
-
-        // assign colors
-        renderer.fill(fillColors.fill);
-        renderer.stroke(this.strokeColor);
-        renderer.strokeWeight(strokeWeight);
-        // draw shape
-        renderer.ellipseMode(gp5.CENTER);
-
-        // set diameter
-        this.diam = this.width * this.localScale;
-
-        // Ajust diameter to global transformation 
-        if (this.transformed) {
-            this.diam = this.width * this.tr.scaleFactor * this.localScale;
+        // Do not show the nodes with no connectors if the user make that choice in the GUI
+        if (this.vConnectors.length < DOM.sliders.nodeConnectorFilter.value || this.node.getDegree() < DOM.sliders.nodeDegreeFilter.value){
+            this.visible = false;
+        } else{
+            this.visible = true;
+            if (this.labelEl) this.labelEl.style.visibility = 'visible'
         }
-        let newPos = p5.Vector.add(this.pos, this.shiftPos);
 
-        this.updateConnectorsCoords(newPos);
+        if (this.visible) {
 
-        renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
+            // *** TRANSFORMATIONS ***
+            this.tr = TransFactory.getTransformerByVClusterID(this.node.idCat.cluster);
 
-        // draw label
-        if (DOM.boxChecked('showTexts')) {
+            // *** FILTER ***
+            // Check if any of this Node's connectors matches User GUI Filters
+            this.node.filterConnectors();
 
+            // get the visual properties
+            let fillColors = this._getFillColor(ColorFactory.getColorFor(this.node.idCat.cluster));
+            this.strokeColor = this._getStrokeColor(ColorFactory.getColorFor(this.node.idCat.cluster));
+            let strokeWeight = this._getStrokeWeight();
+
+            // assign colors
+            renderer.fill(fillColors.fill);
+            renderer.stroke(this.strokeColor);
+            renderer.strokeWeight(strokeWeight);
+            // draw shape
+            renderer.ellipseMode(gp5.CENTER);
+
+            // set diameter
+            this.diam = this.width * this.localScale;
+
+            // Ajust diameter to global transformation 
             if (this.transformed) {
-                if (this.tr.scaleFactor > 0.57) {
-                    this._showLabel(fillColors.label, newPos);
-                } else {
-                    this._hideLabel();
-                }
-            } else {
-                this._showLabel(fillColors.label, newPos);
+                this.diam = this.width * this.tr.scaleFactor * this.localScale;
             }
+            let newPos = p5.Vector.add(this.pos, this.shiftPos);
 
-            // show node description
-            if (this.mouseIsOver) {
-                this._showDescription(newPos);
-            } else {
-                this._hideDescription();
-            }
-        } else {
-            this._hideLabel();
-        }
+            this.updateConnectorsCoords(newPos);
 
-        // Show connectors 
-        if (this.vConnectors.length > 0) {
-            for (const vCnctr of this.vConnectors) {
+            renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
 
-                // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
-                let strokeCnctrColor = ColorFactory.dictionaries.connectors[vCnctr.connector.kind];
-
-                if (!strokeCnctrColor) strokeCnctrColor = this.color;
-
-                strokeCnctrColor = gp5.color(strokeCnctrColor);
+            // draw label
+            if (DOM.boxChecked('showTexts')) {
 
                 if (this.transformed) {
-                    strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
+                    if (this.tr.scaleFactor > 0.57) {
+                        this._showLabel(fillColors.label, newPos);
+                    } else {
+                        this._hideLabel();
+                    }
+                } else {
+                    this._showLabel(fillColors.label, newPos);
                 }
-                vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
+
+                // show node description
+                if (this.mouseIsOver) {
+                    this._showDescription(newPos);
+                } else {
+                    this._hideDescription();
+                }
+            } else {
+                this._hideLabel();
             }
+
+            // Show connectors 
+            if (this.vConnectors.length > 0) {
+                for (const vCnctr of this.vConnectors) {
+
+                    // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
+                    let strokeCnctrColor = ColorFactory.dictionaries.connectors[vCnctr.connector.kind];
+
+                    if (!strokeCnctrColor) strokeCnctrColor = this.color;
+
+                    strokeCnctrColor = gp5.color(strokeCnctrColor);
+
+                    if (this.transformed) {
+                        strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
+                    }
+                    vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
+                }
+            }
+        }else {
+            if (this.labelEl) this.labelEl.style.visibility = 'hidden'
         }
     }
     _hideLabel() {
@@ -427,7 +440,7 @@ class VNode extends Button {
 
         // *** DIM COLOR  ***
         // *** Linked FILTER
-        if ((this.vConnectors.length < 1) && DOM.boxChecked("filterLinked")) {
+        if ((this.vConnectors.length < 1) && this.visible) {
             fillColor = baseColor.concat(dimmed);
             labelColor = labelColor.concat(dimmed);
         }
@@ -489,7 +502,7 @@ class VNode extends Button {
         // Highlight 
         if (this.propagated) {
             weight = 2;
-        } else if ((this.vConnectors.length > 0) && DOM.boxChecked("filterLinked")) {
+        } else if ((this.vConnectors.length > 0) && this.visible) {
             weight = 1;
         } else {
             weight = 1;

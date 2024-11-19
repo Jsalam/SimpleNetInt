@@ -16,11 +16,27 @@ class Node {
         this.inBkwPropagation = false;
         this.vNodeObserver;
         this.importedVNodeData;
+        // get the degrees using the getDegree, getInDegree and getOutDegree functions
     }
 
     /**** OBSERVER ****/
     subscribe(vNode) {
         this.vNodeObserver = vNode;
+    }
+
+    /**
+     * Returns true if the ID is equal to another node
+     * @param {Node} node 
+     * @returns 
+     */
+    equals(node) {
+        let rtn = false;
+        if (this.idCat.cluster == node.idCat.cluster &&
+            this.idCat.index == node.idCat.index &&
+            this.idCat.pajekIndex == node.idCat.pajekIndex) {
+            rtn = true;
+        }
+        return rtn;
     }
 
     /**** FILTERS *****/
@@ -31,7 +47,7 @@ class Node {
      */
     filterConnectors() {
         // on a DOM Event (similar to contextualGUI)/ this should be handled by the VNode subcribed to this node
-        let filteredConnectors = this.connectors.filter(function(cnctr) {
+        let filteredConnectors = this.connectors.filter(function (cnctr) {
             let rtn = false;
 
             // mark vConnector as unselected
@@ -92,7 +108,7 @@ class Node {
      * @param {Connector} conn the connector to be removed
      */
     removeConnector(conn) {
-        this.connectors = this.connectors.filter(function(cnctr) {
+        this.connectors = this.connectors.filter(function (cnctr) {
             let rtn = true;
             if (cnctr.equals(conn)) {
                 if (cnctr.edgeObservers.length <= 1) {
@@ -134,6 +150,30 @@ class Node {
 
     setImportedVNodeData(obj) {
         this.importedVNodeData = obj;
+    }
+
+    getDegree() {
+        let degree = 0;
+        for (let connector of this.connectors) {
+            degree += connector.edgeObservers.length;
+        }
+        return degree;
+    }
+
+    getInDegree() {
+        let inDegree = 0;
+        for (let connector of this.connectors) {
+            if (connector.edgeObservers[0].target.equals(this)) inDegree += connector.edgeObservers.length;
+        }
+        return inDegree;
+    }
+
+    getOutDegree() {
+        let outDegree = 0;
+        for (let connector of this.connectors) {
+            if (connector.edgeObservers[0].source.equals(this)) outDegree += connector.edgeObservers.length;
+        }
+        return outDegree;
     }
 
     /**** PROPAGATION ****/
@@ -380,7 +420,7 @@ class Node {
         if (connector) {
             // if the connector is linked to no more than one edges
             if (connector.edgeObservers.length <= 1)
-            // pop the connector and the vConnector
+                // pop the connector and the vConnector
                 console.log("delete connector " + connector.kind);
             this.removeConnector(connector);
         }
@@ -395,7 +435,7 @@ class Node {
         if (connector) {
             // if the connector is linked to no more than one edges
             if (connector.edgeObservers.length <= 1)
-            // pop the connector and the vConnector
+                // pop the connector and the vConnector
                 this.removeConnector(connector);
         }
     }
