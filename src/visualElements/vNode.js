@@ -93,7 +93,7 @@ class VNode extends Button {
                     Canvas.update();
                 }
                 // MAGNIFYING EFFECT
-                if (DOM.boxChecked("magnifyingEffect") && this.getDistToMouse() < 200) {
+                if (DOM.boxChecked("magnifyingEffect")) { //&& this.getDistToMouse() < 200) {
                     this.computeMagnifyingEffect();
                     Canvas.update();
                 }

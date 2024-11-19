@@ -48,7 +48,6 @@
     <script src="src/GUI/forms/exportModalForm.js"></script>
     <script src="src/GUI/forms/importModalForm.js"></script>
 
-
     <!-- Model -->
     <script src="src/graphElements/node.js"></script>
     <script src="src/graphElements/connector.js"></script>
@@ -65,6 +64,7 @@
     <script src="src/visualElements/vConnector.js"></script>
     <script src="src/visualElements/vEdge.js"></script>
     <script src="src/visualElements/vCluster.js"></script>
+    <script src="src/visualElements/layouts/layout.js"></script>
     <script src="src/canvas/grid.js"></script>
 
     <!-- Utils-->
@@ -87,8 +87,8 @@
                     <div class="customButton">
                         <div> <label>Network from library</label></div>
                         <select id="modelChoice">
-                        <option value="0" selected>Empty canvas</option>
-                        <option value="1" >Firefly & Serenity Experimental Timeline</option>
+                        <option value="0" >Empty canvas</option>
+                        <option value="1" selected>Firefly & Serenity Experimental Timeline</option>
                         <option value="2" >Test</option>
                     </select>
                     </div>
@@ -189,7 +189,6 @@
         </div>
 
     </div>
-
 
     <!-- Navigation Bar -->
     <nav>

@@ -1,8 +1,6 @@
-class VCluster {
+class VCluster extends Button{
     constructor(cluster, x, y, width, height, palette) {
-        this.pos = gp5.createVector(x, y);
-        this.width = width;
-        this.height = height;
+        super(x,y,width,height)
         this.vNodes = [];
         this.cluster = cluster;
         this.palette = palette;
@@ -10,6 +8,8 @@ class VCluster {
         //   this.setPalette();
         // instantiate a tranformer for this vCluster
         TransFactory.initTransformer(this);
+        // instantiate a layout
+        this.layout = new Layout();
     }
 
     // Observing to Canvas
@@ -82,7 +82,7 @@ class VCluster {
         })[0];
     }
 
-    setPaletteQ(palette) {
+    setPalette(palette) {
         if (palette) {
             this.palette = palette;
         }
@@ -114,10 +114,14 @@ class VCluster {
     dispose() {}
 
     getJSON() {
+        let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);
         let rtn = {
             clusterID: this.cluster.id,
             clusterLabel: this.cluster.label,
             clusterDescription: this.cluster.description,
+            // The latest values of the transformer linked to this vCluster
+            scaleFactor: trans.scaleFactor,
+            matrixComponents: JSON.stringify(trans.transform),
             nodes: []
         }
 

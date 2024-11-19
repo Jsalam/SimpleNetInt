@@ -161,7 +161,6 @@ class Transformer {
     }
 
     setActive(val) {
-        console.log(this);
         this.active = val;
     }
 
@@ -173,5 +172,22 @@ class Transformer {
             this.transformed = false;
             this.needsUpdate = true;
         }
+    }
+
+    initFromDataValues(data) {
+        let rtn = false;
+
+        if (data.matrixComponents) {
+            let comp = JSON.parse(data.matrixComponents);
+            glMatrix.mat2d.set(this.transform, comp[0], comp[1], comp[2], comp[3], comp[4], comp[5])
+            this._getInvert();
+            this.transformed = true;
+            rtn = true;
+        }
+        if (data.scaleFactor) {
+            this.scaleFactor = data.scaleFactor;
+            rtn = true;
+        }
+        return rtn;
     }
 }

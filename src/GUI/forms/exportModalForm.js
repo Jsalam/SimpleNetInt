@@ -1,5 +1,4 @@
 saveJSON = function() {
-
     let fileSuffix = document.getElementById("exportFileSuffix").value;
 
     if (fileSuffix) {

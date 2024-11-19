@@ -26,6 +26,16 @@ class ClusterFactory {
 
             // vCluster instantiation
             let tmp = new VCluster(cluster, posX, posY, width, height, palette);
+
+            // set the VCluster transformer from data imported
+            if (TransFactory.getTransformerByVClusterID(ClusterFactory.clusters[index].id).initFromDataValues(data[index])) {
+
+                // set the transformed values VCluster transformer from data imported
+                for (const vNode of tmp.vNodes) {
+                    vNode.transformed = true;
+                }
+            }
+
             Canvas.subscribe(tmp);
             ClusterFactory.vClusters.push(tmp);
         }
@@ -123,7 +133,7 @@ class ClusterFactory {
         }
     }
 
-    /**This is not the function used by the exportModalFrom */
+    /**This is not the function used by the exportModalFrom. Look for the getJSON() function in VCluster class */
     static recordJSON(suffix) {
         let filename = "nodes.json";
         if (suffix) {
@@ -213,4 +223,5 @@ ClusterFactory.vClusters = [];
 ClusterFactory.countCat = 1;
 ClusterFactory.wdth = 10;
 ClusterFactory.hght = 10;
+// The distance between vClusters origin
 ClusterFactory.gutter = 150;

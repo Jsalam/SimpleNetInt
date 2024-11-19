@@ -297,7 +297,7 @@ class EdgeFactory {
     }
 
 
-    /**This is not the function used by the exportModalFrom */
+    /**This is not the function used by the exportModalFrom. Look for the getJSON() function in VEdge class */
     static recordJSON(suffix) {
         let filename = "vEdges.json";
         if (suffix) {

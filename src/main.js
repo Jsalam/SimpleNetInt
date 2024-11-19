@@ -26,17 +26,15 @@ var main = function(p5) {
     p5.setup = function() {
 
         // Create canvas
-        gp5.createCanvas(window.innerWidth, window.innerHeight - 80);
+        gp5.createCanvas(window.innerWidth, window.innerHeight);
 
         gp5.pixelDensity(2);
-        //gp5.createCanvas(window.innerWidth - 60, 840);
 
         // set pixel density based on display
         const canvas4KWidth = 3840;
         const canvas4KHeight = 2160
 
         // create non-iterative renderer
-        // graphics = gp5.createGraphics(window.innerWidth, 840);
         graphics = gp5.createGraphics(canvas4KWidth, canvas4KHeight);
 
         // set text font
@@ -86,7 +84,7 @@ var main = function(p5) {
         // draw canvas status
         if (DOM.showLegend) {
             Canvas.showLegend(gp5.createVector(window.innerWidth - 50, 20), gp5);
-            Canvas.displayValues(gp5.createVector(window.innerWidth - 50, gp5.height - 100), gp5);
+            Canvas.displayValues(gp5.createVector(window.innerWidth - 50, window.innerHeight - 150), gp5);
         } else {
             Canvas.hideLegend();
             Canvas.hideValues();

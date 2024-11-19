@@ -76,6 +76,7 @@ class DOM {
         // Get the current status of checkboxes
         DOM.createNativeCurrentCheckboxes()
         DOM.updateCheckboxes();
+        
     }
 
     /**
@@ -95,8 +96,6 @@ class DOM {
     static eventTriggered(evt) {
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
-
-        console.log("here")
     }
 
     /**
