@@ -60,9 +60,9 @@ class DOM {
         DOM.sliders.nodeDegreeFilter = document.getElementById('nodeDegreeFilter');
         DOM.sliders.edgeTickness = document.getElementById('edgeTickness');
 
-        DOM.sliders.nodeConnectorFilter.onchange = (evt) => DOM.eventTriggered(evt);
-        DOM.sliders.nodeDegreeFilter.onchange = (evt) => DOM.eventTriggered(evt);
-        DOM.sliders.edgeTickness.onchange = (evt) => DOM.eventTriggered(evt);
+        DOM.sliders.nodeConnectorFilter.oninput = (evt) => DOM.eventTriggered(evt);
+        DOM.sliders.nodeDegreeFilter.oninput = (evt) => DOM.eventTriggered(evt);
+        DOM.sliders.edgeTickness.oninput = (evt) => DOM.eventTriggered(evt);
 
         // Dropdowns
         DOM.dropdowns.modelChoice = document.getElementById("modelChoice");

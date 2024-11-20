@@ -49,12 +49,14 @@ class Button {
     }
 
     mouseOver() {
-
-        if (Canvas._mouse.x > this.pos.x - this.width * this.localScale / 2 &&
-            Canvas._mouse.x < this.pos.x + this.width * this.localScale / 2 &&
-            Canvas._mouse.y > this.pos.y - this.height * this.localScale / 2 &&
-            Canvas._mouse.y < this.pos.y + this.height * this.localScale / 2) {
-            this.mouseIsOver = true;
+        if (this.visible) {
+            this.mouseIsOver = false;
+            if (Canvas._mouse.x > this.pos.x - this.width * this.localScale / 2 &&
+                Canvas._mouse.x < this.pos.x + this.width * this.localScale / 2 &&
+                Canvas._mouse.y > this.pos.y - this.height * this.localScale / 2 &&
+                Canvas._mouse.y < this.pos.y + this.height * this.localScale / 2) {
+                this.mouseIsOver = true;
+            }
         } else {
             this.mouseIsOver = false;
         }

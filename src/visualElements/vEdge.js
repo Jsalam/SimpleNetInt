@@ -23,7 +23,7 @@ class VEdge {
                 // get the checkbox
                 let DOMelementID = data.event.target.id;
                 let DOMChecked = data.event.target.checked;
-                let elements = EdgeFactory._vEdges.filter(function(vE) {
+                let elements = EdgeFactory._vEdges.filter(function (vE) {
                     if (vE.edge.kind == DOMelementID) {
                         return true
                     };
@@ -37,7 +37,7 @@ class VEdge {
                         targets: elements,
                         riseFactor: rise,
                         easing: 'easeInOutSine',
-                        update: function() {
+                        update: function () {
                             Canvas.update()
                         }
                     });
@@ -75,7 +75,38 @@ class VEdge {
     }
 
     show(renderer) {
-        if (DOM.boxChecked('showEdges')) {
+
+        let displayEdge = false;
+        let alpha;
+        // visible only iof the sourec and target are visible
+        let sourceTargetVisible;
+        if (this.vTarget) {
+            sourceTargetVisible = this.vSource.visible && this.vTarget.visible;
+        } else {
+            sourceTargetVisible = true
+        }
+        // Visible on mouse over source
+        if (this.vSource.mouseIsOver) {
+            displayEdge = true;
+            alpha = '85';
+        }
+
+        // Visible on mouse over target
+        if (this.vTarget) {
+            if (this.vTarget.mouseIsOver) {
+                displayEdge = true;
+                alpha = '85';
+            }
+        }
+
+        // Visible when the connector is selected (propagation)
+        let vCnctrSource = this.vSource.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
+        if (vCnctrSource.selected) {
+            displayEdge = true;
+            alpha = '85';
+        }
+
+        if (sourceTargetVisible && DOM.boxChecked('showEdges') || displayEdge) {
             let vCnctrSource = this.vSource.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
             //let vCnctrTarget = this.vTarget.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
 

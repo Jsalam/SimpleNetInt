@@ -558,13 +558,13 @@ class VNode extends Button {
             }
         }
         this.descriptionEl.style.opacity = 1;
-        this.descriptionEl.style.background = '#000000aa';
-        this.descriptionEl.style.transform = `
-            translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
-            scale(${Canvas._zoom})
-            translate(${x}px, ${y + 5}px)
-            translateY(-100%)
-        `;
+        this.descriptionEl.style.background = '#00000033';
+        // this.descriptionEl.style.transform = `
+        //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+        //     scale(${Canvas._zoom})
+        //     translate(${x}px, ${y + 5}px)
+        //     translateY(-100%)
+        // `;
         this.descriptionEl.style.whiteSpace = 'pre-line';
 
         this.descriptionEl.style.color = '#111111';
