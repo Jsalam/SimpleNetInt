@@ -80,11 +80,11 @@ class VEdge {
         let alpha;
 
         // visible only iof the sourec and target are visible
-        let sourceTargetVisible;
+        let sourceTargetVisible = false;
         if (this.vTarget) {
             sourceTargetVisible = this.vSource.visible && this.vTarget.visible;
         } else {
-            sourceTargetVisible = true
+            sourceTargetVisible = this.vSource.visible;
         }
         // Visible on mouse over source and the outEdges is selected
         if (this.vSource.mouseIsOver && DOM.boxChecked('showOutEdges')) {
@@ -100,10 +100,10 @@ class VEdge {
             }
         }
 
-        // Visible when the connector is selected (propagation)
+        // Highligted when the source connector is selected in the GUI menu 
         let vCnctrSource = this.vSource.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
         if (vCnctrSource.selected) {
-            displayEdge = true;
+            // displayEdge = true;
             alpha = '85';
         }
 

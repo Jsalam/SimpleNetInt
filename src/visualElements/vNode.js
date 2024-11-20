@@ -548,8 +548,8 @@ class VNode extends Button {
             const canvasContainerEl = document.querySelector('#model');
             if (canvasContainerEl) {
                 this.descriptionEl.style.position = 'absolute';
-                this.descriptionEl.style.left = '0px';
-                this.descriptionEl.style.top = '0px';
+                this.descriptionEl.style.left = '10px';
+                this.descriptionEl.style.top = '10px';
                 this.descriptionEl.style.fontFamily = 'Roboto';
                 this.descriptionEl.style.lineHeight = '15px';
                 this.descriptionEl.style.overflow = 'hidden';
@@ -558,7 +558,7 @@ class VNode extends Button {
             }
         }
         this.descriptionEl.style.opacity = 1;
-        this.descriptionEl.style.background = '#00000033';
+        this.descriptionEl.style.background = '#00000066';
         // this.descriptionEl.style.transform = `
         //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
         //     scale(${Canvas._zoom})
