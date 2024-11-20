@@ -78,6 +78,7 @@ class VEdge {
 
         let displayEdge = false;
         let alpha;
+
         // visible only iof the sourec and target are visible
         let sourceTargetVisible;
         if (this.vTarget) {
@@ -85,15 +86,15 @@ class VEdge {
         } else {
             sourceTargetVisible = true
         }
-        // Visible on mouse over source
-        if (this.vSource.mouseIsOver) {
+        // Visible on mouse over source and the outEdges is selected
+        if (this.vSource.mouseIsOver && DOM.boxChecked('showOutEdges')) {
             displayEdge = true;
             alpha = '85';
         }
 
-        // Visible on mouse over target
+        // Visible on mouse over target and the inEdges is selected
         if (this.vTarget) {
-            if (this.vTarget.mouseIsOver) {
+            if (this.vTarget.mouseIsOver && DOM.boxChecked('showInEdges')) {
                 displayEdge = true;
                 alpha = '85';
             }
@@ -107,18 +108,18 @@ class VEdge {
         }
 
         if (sourceTargetVisible && DOM.boxChecked('showEdges') || displayEdge) {
-            let vCnctrSource = this.vSource.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
+            //let vCnctrSource = this.vSource.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
             //let vCnctrTarget = this.vTarget.vConnectors.filter(vCnctr => vCnctr.connector.kind == this.edge.kind)[0];
 
-            let alpha;
+            // let alpha;
 
-            if (this.vSource.mouseIsOver || vCnctrSource.selected) {
-                alpha = '85';
-            } else if (this.vTarget) {
-                if (this.vTarget.mouseIsOver) {
-                    alpha = '85';
-                }
-            }
+            // if (this.vSource.mouseIsOver || vCnctrSource.selected) {
+            //     alpha = '85';
+            // } else if (this.vTarget) {
+            //     if (this.vTarget.mouseIsOver) {
+            //         alpha = '85';
+            //     }
+            // }
 
             // get stroke color
             let baseColor = ColorFactory.dictionaries.connectors[this.edge.kind];
