@@ -59,7 +59,7 @@ class ContextualGUI {
      * The menu to choose edge kinds
      */
     static createEdgeMenu() {
-        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, gp5.height - 240, 'Edge Menu', document.getElementById('model'));
+        ContextualGUI.edgeMenu = QuickSettings.create(gp5.width - 240, gp5.height - 240, 'Link Categories', document.getElementById('model'));
 
         // Switch it off is the checkbox is off
         if (!DOM.checkboxes.edit.checked) {

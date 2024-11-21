@@ -219,7 +219,7 @@
             aria-label="Toggle navigation">
 
             <div id="navbarHideableHeader">
-                <div id="menuButton">menu</div>
+                <div class="menuButton" id="menuButton">menu</div>
             </div>
         </div>
 
@@ -234,8 +234,43 @@
         </script>
     </nav>
 
-    <!-- Model goes here -->
-    <div id="model" style="position: relative"></div>
+    <!-- Model and Menu Panel go here -->
+    <div class="wrapper">
+
+        <!-- Menu Panel -->
+        <div class="menuPanel" id="menuPanel">
+            <div class='menuWrapper' id="menuWrapperSpaces">
+                <div class="menuContent" id='spacesMenuContent'>
+                    <hr>
+                    <div class='sidePanelItem'>The second episode of the 
+                    </div>
+                    <hr>
+                    <div>Space B</div>
+                    <hr>
+                </div>
+
+
+                <div class="sideMenuButton" id="spacesMenuButton">Spaces</div>
+            </div>
+            <div class='menuWrapper' id='menuWrapperCategories'>
+                <div class="menuContent" id="categoriesMenuContent">
+                    <hr>
+                    <div>Space A</div>
+                    <hr>
+                    <div>Space B</div>
+                    <hr>
+                </div>
+
+
+                <div class="sideMenuButton" id="categoriesMenuButton">Link Categories</div>
+            </div>
+        </div>
+
+        <!-- Model goes here -->
+        <div class="modelPanel">
+            <div id="model" style="position: relative"></div>
+        </div>
+    </div>
 
 
     <!-- ADD CLUSTER MODAL FORM -->

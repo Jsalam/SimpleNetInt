@@ -21,6 +21,8 @@ class DOM {
         DOM.buttons.importNetwork = document.getElementById("importNetwork");
         DOM.buttons.submitEdgeKinds = document.getElementById("submitEdgeKinds");
         DOM.buttons.toggle_instructions = document.getElementById("toggle_instructions");
+        DOM.buttons.spacesMenuButton = document.getElementById("spacesMenuButton")
+        DOM.buttons.categoriesMenuButton = document.getElementById("categoriesMenuButton")
 
         DOM.buttons.clearEdges.onclick = (evt) => DOM.clearEdges(evt);
         DOM.buttons.submitAddClusterModal.onclick = getDataCluster;
@@ -29,6 +31,8 @@ class DOM {
         DOM.buttons.importNetwork.onclick = getDataImport;
         DOM.buttons.submitEdgeKinds.onclick = DOM.getTextBoxContent;
         DOM.buttons.toggle_instructions.onclick = DOM.toggleInstructions;
+        DOM.buttons.spacesMenuButton.onclick = (evt) => DOM.toggleSideMenu(evt);
+        DOM.buttons.categoriesMenuButton.onclick = (evt) => DOM.toggleSideMenu(evt);
 
         // Checkboxes
         DOM.checkboxes.edit = document.getElementById('edit');
@@ -76,6 +80,12 @@ class DOM {
         // lists
         DOM.lists.filtersA = document.getElementById('filtersA');
         DOM.lists.filtersB = document.getElementById('filtersB');
+
+        // Elements
+        DOM.elements.menuContents = document.getElementsByClassName('menuContent');
+        // DOM.elements.categoriesMenuContent = document.getElementById('categoriesMenuContent');
+        DOM.elements.menuPanel = document.getElementById('menuPanel')
+        DOM.elements.modelPanel = document.getElementById('model');
 
         // Get the current status of checkboxes
         DOM.createNativeCurrentCheckboxes()
@@ -400,6 +410,25 @@ class DOM {
         DOM.textboxes.edgeKinds.value = val.toString();
     }
 
+    static toggleSideMenu(evt) {
+
+        for (const content of DOM.elements.menuContents){
+            if (content.clientWidth > 0) {
+                content.style.display = 'none'
+                DOM.elements.menuPanel.style.flex = 0
+
+            } else {
+                content.style.display = 'block'
+                DOM.elements.menuPanel.style.flex = 1
+            }
+        }
+
+        let modelPanelWidth = window.innerWidth - DOM.buttons.spacesMenuButton.clientWidth
+        // resize the canvas
+        gp5.resizeCanvas(modelPanelWidth, window.innerHeight);
+        DOM.eventTriggered(evt);
+    }
+
     /**
      * keep only the GUI native object in the currentCheckboxes array
      */
@@ -430,3 +459,4 @@ DOM.sliders = {};
 // the collection of lists of elements in the Filters dropdown in the GUI bar 
 DOM.lists = {};
 DOM.showLegend = true;
+DOM.elements = {}

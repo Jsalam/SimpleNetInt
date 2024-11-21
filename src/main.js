@@ -12,7 +12,6 @@ var main = function(p5) {
 
     // Preload
     p5.preload = function() {
-
         // get font
         myFont = gp5.loadFont("./fonts/Roboto-Light.ttf");
 
@@ -25,9 +24,11 @@ var main = function(p5) {
     // Setup variables
     p5.setup = function() {
 
-        // Create canvas
-        gp5.createCanvas(window.innerWidth, window.innerHeight);
+        // Connect with GUIs
+        DOM.init();
 
+        // Create canvas
+        gp5.createCanvas(DOM.elements.modelPanel.clientWidth, window.innerHeight);
         gp5.pixelDensity(2);
 
         // set pixel density based on display
@@ -48,7 +49,7 @@ var main = function(p5) {
         Canvas.initGrid(gp5.createVector(0, 630), 64, 10, 64, 10, 45);
 
         // Connect with GUIs
-        DOM.init();
+      //  DOM.init();
 
         // load the first selected model by default
         DOM.switchModel(DOM.dropdowns.modelChoice.value);
@@ -83,8 +84,8 @@ var main = function(p5) {
 
         // draw canvas status
         if (DOM.showLegend) {
-            Canvas.showLegend(gp5.createVector(window.innerWidth - 50, 20), gp5);
-            Canvas.displayValues(gp5.createVector(window.innerWidth - 50, window.innerHeight - 150), gp5);
+            Canvas.showLegend(gp5.createVector(DOM.elements.modelPanel.clientWidth - 50, 20), gp5);
+            Canvas.displayValues(gp5.createVector(DOM.elements.modelPanel.clientWidth - 50, window.innerHeight - 150), gp5);
         } else {
             Canvas.hideLegend();
             Canvas.hideValues();
@@ -96,7 +97,8 @@ var main = function(p5) {
     }
 
     window.onresize = (evt) => {
-        gp5.resizeCanvas(window.innerWidth, window.innerHeight);
+        let modelPanelWidth = window.innerWidth - DOM.buttons.spacesMenuButton.clientWidth
+        gp5.resizeCanvas(modelPanelWidth, window.innerHeight);
         DOM.event = evt;
     }
 }

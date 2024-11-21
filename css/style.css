@@ -141,7 +141,7 @@ hr {
     padding: 0.4em 1em 0.3em 0em;
 }
 
-#menuButton {
+.menuButton {
     font-size: 0.8em;
     margin-left: auto;
     color: #888c8f;
@@ -171,4 +171,74 @@ hr {
     background-color: rgb(127, 141, 1);
 }
 
-/* Node */
+/* SIDE MENU */
+
+.wrapper {
+    display: flex;
+    width: 100vw;
+    height: 93vh;
+    /* border: 1px solid violet; */
+}
+
+.menuPanel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    color: pink;
+    padding: 0.5em;
+    font-size: 0.8em;
+    /* border: 1px solid green; */
+}
+
+.modelPanel {
+    flex: 11;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    /* border: 1px solid green; */
+    /* width: fit-content; */
+}
+
+.menuWrapper {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    /* border: 1px solid turquoise; */
+}
+
+#menuWrapperSpaces {
+    flex: 2
+}
+
+#menuWrapperCategories {
+    flex: 1
+}
+
+.menuContent {
+    flex: 9;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    /* border: 1px solid pink; */
+}
+
+.sideMenuButton {
+    /* flex: 1; */
+    font-size: 0.8em;
+    color: rgb(158, 175, 1);
+    background-color: rgba(65, 70, 70);
+    writing-mode: vertical-lr;
+    cursor: pointer;
+    padding: 0.4em;
+     margin-left: 2px;
+    /* border: 1px solid pink; */
+
+}
+
+.sidePanelItem {
+    width:130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
