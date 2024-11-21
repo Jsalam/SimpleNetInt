@@ -292,7 +292,7 @@
                     <h4>Attributes</h4>
                     <p>Add attributes in comma separated "key":"value" pairs. </p>
                     <textarea class="form-control" rows="3" id="catAttributesOther">
-"Attribute A":"", "Attribute B":""
+                    "Attribute A":"", "Attribute B":""
                     </textarea>
                     <hr>
                 </div>
@@ -351,15 +351,19 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Add Categories of edges</h3>
+                    <h3 class="modal-title">Add link categories</h3>
                 </div>
                 <div class="modal-body">
 
                     <h4>Description</h4>
-                    <p>Categories are classes of links. For instance the "friend" category represents the friendship
-                        between nodes A and B. Another link of the class "classmates" can connect the same nodes. In
-                        Simple Networks there is a category for every
-                        kind of relationship between nodes. </p>
+                    <p>Categories are kinds of links. For instance two individuals may have different links. The
+                        "friend" category represents the friendship between the nodes. The "classmate" category
+                        represents beign in the academic course.</p>
+
+                    <p>In Simple NetInt every link between nodes must belong to a category. The links are directional.
+                        If you want to represent bidirectional relatioships you need to create a link in each direction.
+                    </p>
+
                     <p>Enter the categories you want to use in this network separated by comas. For example:
                         <b>friend,classmate,partner,relative</b>
                     </p>

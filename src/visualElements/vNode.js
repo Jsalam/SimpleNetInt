@@ -244,9 +244,9 @@ class VNode extends Button {
     show(renderer) {
 
         // Do not show the nodes with no connectors if the user make that choice in the GUI
-        if (this.vConnectors.length < DOM.sliders.nodeConnectorFilter.value || this.node.getDegree() < DOM.sliders.nodeDegreeFilter.value){
+        if (this.vConnectors.length < DOM.sliders.nodeConnectorFilter.value || this.node.getDegree() < DOM.sliders.nodeDegreeFilter.value) {
             this.visible = false;
-        } else{
+        } else {
             this.visible = true;
             if (this.labelEl) this.labelEl.style.visibility = 'visible'
         }
@@ -325,7 +325,7 @@ class VNode extends Button {
                     vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
                 }
             }
-        }else {
+        } else {
             if (this.labelEl) this.labelEl.style.visibility = 'hidden'
         }
     }
@@ -338,6 +338,7 @@ class VNode extends Button {
     _showLabel(color, newPos) {
         if (!this.labelEl) {
             this.labelEl = document.createElement('div');
+            this.labelEl.className = 'vNodeLabel';
             const canvasContainerEl = document.querySelector('#model');
             if (canvasContainerEl) {
                 this.labelEl.style.position = 'absolute';
@@ -346,7 +347,7 @@ class VNode extends Button {
                 this.labelEl.style.left = '0px';
                 this.labelEl.style.top = '0px';
                 this.labelEl.style.height = '20px';
-                this.labelEl.style.outline = '1px, solid, blue';
+                //  this.labelEl.style.outline = '1px, solid, blue';
                 this.labelEl.style.fontFamily = 'Roboto';
                 this.labelEl.style.overflow = 'hidden';
                 this.labelEl.style.pointerEvents = 'none';
