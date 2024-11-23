@@ -38,6 +38,7 @@
     <!-- GUI -->
     <script src="src/GUI/DOM/DOMManager.js"></script>
     <script src="src/GUI/ContextualGUIs/ContextualGUI.js"></script>
+    <script src="src/GUI/sideMenu/sideMenu.js"></script>
 
     <!-- Control -->
     <script src="src/main.js"></script>
@@ -106,11 +107,11 @@
             <div class="dropdown">
                 <div class="dropdownTitle" id="networkTitle">Network</div>
                 <div class="dropdownContent" id="networkSection">
-
-                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add space</div>
+                    <!-- 
+                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add space</div> -->
                     <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
                     <hr>
-                    <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
+                    <!-- <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div> -->
                     <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
                 </div>
             </div>
@@ -241,12 +242,9 @@
         <div class="menuPanel" id="menuPanel">
             <div class='menuWrapper' id="menuWrapperSpaces">
                 <div class="menuContent" id='spacesMenuContent'>
+                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add space</div>
                     <hr>
-                    <div class='sidePanelItem'>The second episode of the 
-                    </div>
-                    <hr>
-                    <div>Space B</div>
-                    <hr>
+                 
                 </div>
 
 
@@ -254,11 +252,9 @@
             </div>
             <div class='menuWrapper' id='menuWrapperCategories'>
                 <div class="menuContent" id="categoriesMenuContent">
+                    <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
                     <hr>
-                    <div>Space A</div>
-                    <hr>
-                    <div>Space B</div>
-                    <hr>
+                    
                 </div>
 
 

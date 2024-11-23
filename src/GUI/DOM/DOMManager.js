@@ -83,7 +83,8 @@ class DOM {
 
         // Elements
         DOM.elements.menuContents = document.getElementsByClassName('menuContent');
-        // DOM.elements.categoriesMenuContent = document.getElementById('categoriesMenuContent');
+        DOM.elements.categoriesMenuContent = document.getElementById('categoriesMenuContent');
+        DOM.elements.spacesMenuContent = document.getElementById('spacesMenuContent');
         DOM.elements.menuPanel = document.getElementById('menuPanel')
         DOM.elements.modelPanel = document.getElementById('model');
 
@@ -259,7 +260,7 @@ class DOM {
         if (connectorKinds.length == 0) connectorKinds.push('default');
 
         // Add checkboxes to Filters list B in the DOM
-        DOM.createCheckboxFor(connectorKinds, DOM.lists.filtersB)
+        DOM.createCheckboxFor(connectorKinds, DOM.lists.filtersB);
 
         DOM.resetEdgeContextualMenuInputContent(connectorKinds);
 
@@ -459,4 +460,5 @@ DOM.sliders = {};
 // the collection of lists of elements in the Filters dropdown in the GUI bar 
 DOM.lists = {};
 DOM.showLegend = true;
-DOM.elements = {}
+DOM.elements = {};
+DOM.sideMenu;
