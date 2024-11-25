@@ -139,7 +139,8 @@ class VEdge {
 
             this.showBezierArcs(renderer, strokeColor, strokeWeight);
 
-        } else {
+         } 
+        else {
             VirtualElementPool.hide(this, 'label');
         }
 
@@ -290,6 +291,7 @@ class VEdge {
             fontFamily: 'Roboto',
             fontSize: '12px',
             overflow: 'hidden',
+            display: 'block',
             color: color,
             transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)

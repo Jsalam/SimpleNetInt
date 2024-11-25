@@ -1,4 +1,19 @@
+/**
+ * This class manages a pool of DOM elements that can be used to display
+ * text labels on the screen. This is useful to avoid creating and destroying
+ * DOM elements for each label, which can be expensive.
+ * 
+ * The pool has a fixed capacity, and will reuse elements that are not in use. 
+ * It can be used to show and hide labels for different clients.
+ * 
+ * The pool will automatically apply the necessary changes to the DOM when
+ * the `scheduleUpdate` method is called.
+ */
 class VirtualElementPool {
+
+    /**
+     * Represents a void DOM element.
+     */
     static VirtualElement = class {
         constructor() {
             this.native = this.createNativeElement();
@@ -13,13 +28,16 @@ class VirtualElementPool {
             el.style.position = 'absolute';
             el.style.left = '0px';
             el.style.top = '0px';
-            el.style.transform = 'translateX(-999px, -999px)';
+            // Move it out of screen
+            //  el.style.transform = 'translateX(-999px, -999px)';
+            // Hide the element
+            el.style.display = 'none';
             el.style.pointerEvents = 'none';
             return el;
         }
     }
 
-    static capacity = 100;
+    static capacity = 400;
     static allElements = [];
     static activeElements = new Map();
     static freeElements = new Map();
@@ -61,6 +79,9 @@ class VirtualElementPool {
         }
     }
 
+    /**
+     * Schedule an update to apply the changes to the DOM.
+     */
     static scheduleUpdate() {
         if (!this.updateScheduled) {
             this.updateScheduled = true;
@@ -70,6 +91,11 @@ class VirtualElementPool {
         }
     }
 
+    /**
+     * Explain the logic of the function ****************************************************
+     * @param {*} type 
+     * @returns 
+     */
     static getActiveElementsByType(type) {
         if (!this.activeElements.has(type)) {
             this.activeElements.set(type, new Map());
@@ -90,6 +116,11 @@ class VirtualElementPool {
         return ve;
     }
 
+    /**
+     * Explain the logic of the function ****************************************************
+     * @param {*} type 
+     * @returns 
+     */
     static allocateElement(type) {
         const freeElements = this.getFreeElementsByType(type);
         if (freeElements.length > 0) {
@@ -104,6 +135,12 @@ class VirtualElementPool {
         return firstElement;
     }
 
+    /**
+     * This function ************************************
+     * @param {*} client 
+     * @param {*} type 
+     * @returns 
+     */
     static getElementFor(client, type) {
         const activeElements = this.getActiveElementsByType(type);
         if (activeElements.has(client)) {
@@ -115,6 +152,7 @@ class VirtualElementPool {
     }
 
     static show(client, type, textContent, style) {
+        // console.log("VirtualElementPool.show");
         const ve = this.getElementFor(client, type);
         ve.nextTextContent = textContent;
         ve.nextStyle = style;
@@ -126,7 +164,9 @@ class VirtualElementPool {
         if (activeElements.has(client)) {
             const ve = activeElements.get(client);
             // Move it out of screen
-            ve.nextStyle = {...ve.style, transform: 'translate(-999px, -999px)'};
+            // ve.nextStyle = { ...ve.style, transform: 'translate(-999px, -999px)' };
+            // Hide the element
+            ve.nextStyle = { ...ve.style, display: 'none' };
             ve.nextTextContent = '';
             VirtualElementPool.scheduleUpdate();
             activeElements.delete(client);
@@ -140,6 +180,7 @@ class VirtualElementPool {
                 element.native.remove();
             }
         }
+        this.allElements=[];
         this.activeElements.clear();
     }
 }

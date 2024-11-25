@@ -123,11 +123,11 @@ class Canvas {
      * being displayed. When the gate is open, the render is drawn on the regular p5 canvas
      */
     static render() {
-        // if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
+         if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
             gp5.background(this.currentBackground);
             Canvas.renderOnP5();
-        // }
-        // this.renderGate = false;
+         }
+         this.renderGate = false;
     }
 
     /**
@@ -142,8 +142,8 @@ class Canvas {
         // push transformations
         TransFactory.pushVClusters();
 
-        VGeoCluster.pixelTarget.background(0, 0, 0, 0);
-        VGeoCluster.idTarget.background(0, 0, 0, 0);
+        // VGeoCluster.pixelTarget.background(0, 0, 0, 0);
+        // VGeoCluster.idTarget.background(0, 0, 0, 0);
 
         // show observers
         this.observers.forEach(element => {
@@ -161,8 +161,8 @@ class Canvas {
             // }
         });
 
-        gp5.image(VGeoCluster.pixelTarget, 0, 0);
-        VGeoCluster.detectHitAsync();
+        // gp5.image(VGeoCluster.pixelTarget, 0, 0);
+        // VGeoCluster.detectHitAsync();
 
         this.observers.forEach(element => {
             if (element instanceof VNode || element instanceof VEdge) {
@@ -235,7 +235,7 @@ class Canvas {
      * Updated canvas */
     static update() {
         this.renderGate = true;
-        // Canvas.render();
+      //  Canvas.render();
     }
 
     /**

@@ -18,15 +18,15 @@ class Button {
 
     }
 
-    show() {
-        if (!this.mouseIsOver) {
-            gp5.noFill();
-        } else {
-            gp5.fill("#F0F0F080");
-        }
+    // show() {
+    //     if (!this.mouseIsOver) {
+    //         gp5.noFill();
+    //     } else {
+    //         gp5.fill("#F0F0F080");
+    //     }
 
-        gp5.rect(this.pos.x, this.pos.y, this.width, this.height);
-    }
+    //     gp5.rect(this.pos.x, this.pos.y, this.width, this.height);
+    // }
 
     setPos(pos) {
         this.pos = pos;

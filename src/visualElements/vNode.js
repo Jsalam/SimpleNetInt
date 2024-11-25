@@ -250,7 +250,7 @@ class VNode extends Button {
             this.visible = false;
         } else {
             this.visible = true;
-            if (this.labelEl) this.labelEl.style.visibility = 'visible'
+            // if (this.labelEl) this.labelEl.style.visibility = 'visible'
         }
 
         if (this.visible) {
@@ -287,19 +287,19 @@ class VNode extends Button {
 
             renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
 
-        // draw label
-        VirtualElementPool.hide(this, 'node-description');
-        VirtualElementPool.hide(this, 'node-label')
+            // draw label
+           VirtualElementPool.hide(this, 'node-description');
+           VirtualElementPool.hide(this, 'node-label')
 
 
-        if (DOM.boxChecked('showTexts') && this.shouldShowText) {
-            if (this.transformed) {
-                if (this.tr.scaleFactor > 0.57) {
+            if (DOM.boxChecked('showTexts') && this.shouldShowText) {
+                if (this.transformed) {
+                    if (this.tr.scaleFactor > 0.57) {
+                        this._showLabel(fillColors.label, newPos);
+                    }
+                } else {
                     this._showLabel(fillColors.label, newPos);
                 }
-            } else {
-                this._showLabel(fillColors.label, newPos);
-            }
 
                 // show node description
                 if (this.mouseIsOver) {
@@ -322,53 +322,31 @@ class VNode extends Button {
 
                     strokeCnctrColor = gp5.color(strokeCnctrColor);
 
-                if (this.transformed) {
-                    strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
+                    if (this.transformed) {
+                        strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
+                    }
+                    vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
                 }
-                vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
             }
         }
     }
+
     _hideLabel() {
         if (this.labelEl) {
-            this.labelEl.style.opacity = 0;
+            this.labelEl.style.display = 'none';
         }
     }
 
     _showLabel(color, newPos) {
-        if (!this.labelEl) {
-            this.labelEl = document.createElement('div');
-            this.labelEl.className = 'vNodeLabel';
-            const canvasContainerEl = document.querySelector('#model');
-            if (canvasContainerEl) {
-                this.labelEl.style.position = 'absolute';
-                this.labelEl.style.display = 'flex'
-                this.labelEl.style.flexDirection = 'row-reverse'
-                this.labelEl.style.left = '0px';
-                this.labelEl.style.top = '0px';
-                this.labelEl.style.height = '20px';
-                //  this.labelEl.style.outline = '1px, solid, blue';
-                this.labelEl.style.fontFamily = 'Roboto';
-                this.labelEl.style.overflow = 'hidden';
-                this.labelEl.style.pointerEvents = 'none';
-                // this.labelEl.style.outline = "1px solid white";
-                this.labelEl.style.textAlign = 'right';
-                this.labelEl.style.paddingRight = '10px';
-                this.labelEl.style.transformOrigin = 'bottom right';
-                canvasContainerEl.append(this.labelEl);
-            }
-        }
-        this.labelEl.style.opacity = 0.3 * this.localScale;
-        this.labelEl.style.color = color;
-        this.labelEl.style.fontSize = (10 + 2 * this.localScale) + 'px';
-
-        // draw the label
+        // label dimensions
         let labelHeight = 20; // * this.localScale;
         let labelWidth = 65 * this.localScale;
 
+        // get coordinates
         let x = this.pos.x;
         let y = this.pos.y;
 
+        // if there is a new position
         if (newPos) {
             x = newPos.x;
             y = newPos.y;
@@ -377,6 +355,7 @@ class VNode extends Button {
         // the translation - labelWidth serves to reposition the labels after they are rotated
         let translation = labelWidth;
 
+        // show label
         VirtualElementPool.show(this, 'node-label', this.node.label, {
             width: labelWidth + 'px',
             height: labelHeight + 'px',
@@ -516,6 +495,12 @@ class VNode extends Button {
         return weight;
     }
 
+    _hideDescription() {
+        if (this.descriptionEl) {
+            this.descriptionEl.style.opacity = 0;
+        }
+    }
+
     _showDescription(newPos) {
 
         // Get coordinates
@@ -543,36 +528,36 @@ class VNode extends Button {
 
         // Show background
 
-        if (!this.descriptionEl) {
-            this.descriptionEl = document.createElement('div');
-            const canvasContainerEl = document.querySelector('#model');
-            if (canvasContainerEl) {
-                this.descriptionEl.style.position = 'absolute';
-                this.descriptionEl.style.left = '10px';
-                this.descriptionEl.style.top = '10px';
-                this.descriptionEl.style.fontFamily = 'Roboto';
-                this.descriptionEl.style.lineHeight = '15px';
-                this.descriptionEl.style.overflow = 'hidden';
-                this.descriptionEl.style.pointerEvents = 'none';
-                canvasContainerEl.append(this.descriptionEl);
-            }
-        }
-        this.descriptionEl.style.opacity = 1;
-        this.descriptionEl.style.background = '#00000066';
-        // this.descriptionEl.style.transform = `
-        //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
-        //     scale(${Canvas._zoom})
-        //     translate(${x}px, ${y + 5}px)
-        //     translateY(-100%)
-        // `;
-        this.descriptionEl.style.whiteSpace = 'pre-line';
+        // if (!this.descriptionEl) {
+        //     this.descriptionEl = document.createElement('div');
+        //     const canvasContainerEl = document.querySelector('#model');
+        //     if (canvasContainerEl) {
+        //         this.descriptionEl.style.position = 'absolute';
+        //         this.descriptionEl.style.left = '10px';
+        //         this.descriptionEl.style.top = '10px';
+        //         this.descriptionEl.style.fontFamily = 'Roboto';
+        //         this.descriptionEl.style.lineHeight = '15px';
+        //         this.descriptionEl.style.overflow = 'hidden';
+        //         this.descriptionEl.style.pointerEvents = 'none';
+        //         canvasContainerEl.append(this.descriptionEl);
+        //     }
+        // }
+        // this.descriptionEl.style.opacity = 1;
+        // this.descriptionEl.style.background = '#00000066';
+        // // this.descriptionEl.style.transform = `
+        // //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+        // //     scale(${Canvas._zoom})
+        // //     translate(${x}px, ${y + 5}px)
+        // //     translateY(-100%)
+        // // `;
+        // this.descriptionEl.style.whiteSpace = 'pre-line';
 
-        this.descriptionEl.style.color = '#111111';
-        if (Canvas.currentBackground < 150) {
-            this.descriptionEl.style.color = '#EEEEEE';
-        }
+        // this.descriptionEl.style.color = '#111111';
+        // if (Canvas.currentBackground < 150) {
+        //     this.descriptionEl.style.color = '#EEEEEE';
+        // }
 
-        this.descriptionEl.style.fontSize = '11px';
+        // this.descriptionEl.style.fontSize = '11px';
 
         let clusterName = ClusterFactory.getCluster(this.node.idCat.cluster).label;
 
@@ -607,9 +592,6 @@ class VNode extends Button {
 
                 connectorsDescription += textRow + '\n'
             }
-
-
-
         }
 
         let textString = "Name: " + this.node.label + "\n" + "Description: " + this.node.description + "\nCluster: " + clusterName + "\n" + connectorsDescription;
@@ -617,14 +599,15 @@ class VNode extends Button {
         // renderer.text("Name: " + this.node.label, x + 5, y - 25, 650, 97);
         // renderer.text("Description: " + this.node.description, x + 5, y - 40, 650, 97);
 
-        this.descriptionEl.style.padding = '5px';
-        this.descriptionEl.textContent = '\n' + textString;
+        // this.descriptionEl.style.padding = '5px';
+        // this.descriptionEl.textContent = '\n' + textString;
 
-        for (let i = 0; i < filteredAttributes.length; i++) {
-            description = filteredAttributes[i][0] + ": " + filteredAttributes[i][1] + '\n' + description;
-        }
+        // for (let i = 0; i < filteredAttributes.length; i++) {
+        //     this.descriptionEl.description = filteredAttributes[i][0] + ": " + filteredAttributes[i][1] + '\n' + textString;
+        // }
 
-        VirtualElementPool.show(this, 'node-description', description, {
+        VirtualElementPool.show(this, 'node-description', textString, {
+            display: 'block',
             fontFamily: 'Roboto',
             lineHeight: '15px',
             overflow: 'hidden',
@@ -634,12 +617,12 @@ class VNode extends Button {
             fontSize: '11px',
             padding: '5px',
             color: Canvas.currentBackground < 150 ? '#EEEEEE' : '#111111',
-            transform: `
-                translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
-                scale(${Canvas._zoom})
-                translate(${x}px, ${y + 5}px)
-                translateY(-100%)
-            `,
+            // transform: `
+            //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+            //     scale(${Canvas._zoom})
+            //     translate(${x}px, ${y + 5}px)
+            //     translateY(-100%)
+            // `,
         });
     }
 

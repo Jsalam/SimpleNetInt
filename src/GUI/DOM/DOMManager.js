@@ -189,6 +189,7 @@ class DOM {
         Canvas.resetVEdges();
         Canvas.resetVConnectors();
         ClusterFactory.resetAllConnectors();
+        VirtualElementPool.clear();
         DOM.event = evt;
     }
 
