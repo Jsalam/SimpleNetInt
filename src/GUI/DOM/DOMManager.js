@@ -197,7 +197,7 @@ class DOM {
      * @param {String} value prefix of the file. Usually a digit. 
      */
     static switchModel(value, evt) {
-        Canvas.clear();
+        VirtualElementPool.clear();
 
         console.log("Switching to " + value + " network");
 
@@ -234,6 +234,7 @@ class DOM {
         if (nodesTemp.length == 0) {
             ClusterFactory.makeCluster({
                 clusterID: 1,
+                clusterType: "default",
                 clusterLabel: "main space",
                 clusterDescription: "The default space built on initialization"
             })

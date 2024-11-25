@@ -111,8 +111,6 @@ class VCluster extends Button{
         }
     }
 
-    dispose() {}
-
     getJSON() {
         let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);
         let rtn = {

@@ -25,6 +25,13 @@ class ClusterFactory {
             let palette = ColorFactory.getPalette(index);
 
             // vCluster instantiation
+            
+            if (cluster.type === "geo") {
+                let tmp = new VGeoCluster(cluster, posX, posY, width, height, palette);
+                Canvas.subscribe(tmp);
+                ClusterFactory.vClusters.push(tmp);
+            } else {
+
             let tmp = new VCluster(cluster, posX, posY, width, height, palette);
 
             // set the VCluster transformer from data imported
@@ -34,7 +41,7 @@ class ClusterFactory {
                 for (const vNode of tmp.vNodes) {
                     vNode.transformed = true;
                 }
-            }
+            }}
 
             Canvas.subscribe(tmp);
             ClusterFactory.vClusters.push(tmp);
@@ -67,7 +74,7 @@ class ClusterFactory {
     }
 
     static instantiateCluster(data) {
-        let cluster = new Cluster(data.clusterID);
+        let cluster = new Cluster(data.clusterID, data.clusterType);
         cluster.setLabel(data.clusterLabel);
         cluster.setDescription(data.clusterDescription);
         this.makeNodes(cluster, data);

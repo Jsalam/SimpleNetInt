@@ -1,9 +1,10 @@
 class Cluster {
-    constructor(id) {
+    constructor(id, type) {
         this.label;
         this.description;
         this.nodes = [];
         this.id = id;
+        this.type = type;
     }
 
     addNode(cat) {

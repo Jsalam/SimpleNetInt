@@ -123,11 +123,11 @@ class Canvas {
      * being displayed. When the gate is open, the render is drawn on the regular p5 canvas
      */
     static render() {
-        if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
+        // if (this.renderGate || EdgeFactory.isThereOpenEdge()) {
             gp5.background(this.currentBackground);
             Canvas.renderOnP5();
-        }
-        this.renderGate = false;
+        // }
+        // this.renderGate = false;
     }
 
     /**
@@ -142,9 +142,30 @@ class Canvas {
         // push transformations
         TransFactory.pushVClusters();
 
+        VGeoCluster.pixelTarget.background(0, 0, 0, 0);
+        VGeoCluster.idTarget.background(0, 0, 0, 0);
+
         // show observers
         this.observers.forEach(element => {
-            if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
+            if (element instanceof VCluster) {
+
+                // if (element instanceof VNode) {
+                //     this.transformAndShowVNodes(element, gp5);
+                // } else {
+                element.show(gp5);
+                // }
+
+            }
+            // else {
+            //     element.show(gp5);
+            // }
+        });
+
+        gp5.image(VGeoCluster.pixelTarget, 0, 0);
+        VGeoCluster.detectHitAsync();
+
+        this.observers.forEach(element => {
+            if (element instanceof VNode || element instanceof VEdge) {
 
                 // if (element instanceof VNode) {
                 //     this.transformAndShowVNodes(element, gp5);
@@ -166,14 +187,6 @@ class Canvas {
 
         // Close gp5 render gate and set condition for grahics renderer
         this.graphicsRendered = false;
-    }
-
-    static clear() {
-        this.observers.forEach(element => {
-            if (element instanceof VCluster || element instanceof VNode || element instanceof VEdge) {
-                element.dispose();
-            }
-        });
     }
 
     /**

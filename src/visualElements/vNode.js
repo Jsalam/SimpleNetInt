@@ -1,4 +1,6 @@
 class VNode extends Button {
+    shouldShowText = true;
+
     constructor(node, width, height) {
         super(0, 0, width, height);
         this.node = node;
@@ -285,18 +287,19 @@ class VNode extends Button {
 
             renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
 
-            // draw label
-            if (DOM.boxChecked('showTexts')) {
+        // draw label
+        VirtualElementPool.hide(this, 'node-description');
+        VirtualElementPool.hide(this, 'node-label')
 
-                if (this.transformed) {
-                    if (this.tr.scaleFactor > 0.57) {
-                        this._showLabel(fillColors.label, newPos);
-                    } else {
-                        this._hideLabel();
-                    }
-                } else {
+
+        if (DOM.boxChecked('showTexts') && this.shouldShowText) {
+            if (this.transformed) {
+                if (this.tr.scaleFactor > 0.57) {
                     this._showLabel(fillColors.label, newPos);
                 }
+            } else {
+                this._showLabel(fillColors.label, newPos);
+            }
 
                 // show node description
                 if (this.mouseIsOver) {
@@ -319,14 +322,11 @@ class VNode extends Button {
 
                     strokeCnctrColor = gp5.color(strokeCnctrColor);
 
-                    if (this.transformed) {
-                        strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
-                    }
-                    vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
+                if (this.transformed) {
+                    strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
                 }
+                vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
             }
-        } else {
-            if (this.labelEl) this.labelEl.style.visibility = 'hidden'
         }
     }
     _hideLabel() {
@@ -363,17 +363,8 @@ class VNode extends Button {
         this.labelEl.style.fontSize = (10 + 2 * this.localScale) + 'px';
 
         // draw the label
-        if (this.propagated) {
-            this.labelEl.style.fontStyle = 'bold';
-        } else {
-            this.labelEl.style.fontStyle = 'normal';
-        }
-
         let labelHeight = 20; // * this.localScale;
         let labelWidth = 65 * this.localScale;
-
-        // The label content
-        this.labelEl.textContent = this.node.label;
 
         let x = this.pos.x;
         let y = this.pos.y;
@@ -386,15 +377,29 @@ class VNode extends Button {
         // the translation - labelWidth serves to reposition the labels after they are rotated
         let translation = labelWidth;
 
-        this.labelEl.style.transform = `
-            translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
-            scale(${Canvas._zoom})
-            translate(${x - translation}px, ${y}px)
-            rotate(-45deg)
-        `;
+        VirtualElementPool.show(this, 'node-label', this.node.label, {
+            width: labelWidth + 'px',
+            height: labelHeight + 'px',
+            display: 'flex',
+            flexDirection: 'row-reverse',
+            outline: '1px, solid, blue',
+            fontFamily: 'Roboto',
+            overflow: 'hidden',
+            textAlign: 'right',
+            paddingRight: '10px',
+            transformOrigin: 'bottom right',
+            opacity: 0.3 * this.localScale,
+            color: color,
+            fontSize: (10 + 2 * this.localScale) + 'px',
+            fontStyle: this.propagated ? 'bold' : 'normal',
+            transform: `
+                translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+                scale(${Canvas._zoom})
+                translate(${x - translation}px, ${y}px)
+                rotate(-45deg)
+            `
+        });
 
-        this.labelEl.style.width = labelWidth + 'px';
-        this.labelEl.style.height = labelHeight + 'px';
     }
 
     _getFillColor(_baseColor) {
@@ -511,12 +516,6 @@ class VNode extends Button {
         return weight;
     }
 
-    _hideDescription() {
-        if (this.descriptionEl) {
-            this.descriptionEl.style.opacity = 0;
-        }
-    }
-
     _showDescription(newPos) {
 
         // Get coordinates
@@ -622,17 +621,26 @@ class VNode extends Button {
         this.descriptionEl.textContent = '\n' + textString;
 
         for (let i = 0; i < filteredAttributes.length; i++) {
-            this.descriptionEl.textContent = filteredAttributes[i][0] + ": " + filteredAttributes[i][1] + '\n' + this.descriptionEl.textContent
+            description = filteredAttributes[i][0] + ": " + filteredAttributes[i][1] + '\n' + description;
         }
-    }
 
-    dispose() {
-        if (this.labelEl) {
-            this.labelEl.remove();
-        }
-        if (this.descriptionEl) {
-            this.descriptionEl.remove();
-        }
+        VirtualElementPool.show(this, 'node-description', description, {
+            fontFamily: 'Roboto',
+            lineHeight: '15px',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+            background: '#000000aa',
+            whiteSpace: 'pre-line',
+            fontSize: '11px',
+            padding: '5px',
+            color: Canvas.currentBackground < 150 ? '#EEEEEE' : '#111111',
+            transform: `
+                translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+                scale(${Canvas._zoom})
+                translate(${x}px, ${y + 5}px)
+                translateY(-100%)
+            `,
+        });
     }
 
     getJSON() {
