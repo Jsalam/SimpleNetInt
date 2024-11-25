@@ -26,7 +26,7 @@ class ClusterFactory {
 
             // vCluster instantiation
             if (cluster.type === "geo") {
-                let tmp = new VGeoCluster(cluster, posX, posY, width, height, palette);
+                let tmp = new VGeoCluster(cluster, posX, posY, width, height, palette, data[index].keyAttribute);
                 Canvas.subscribe(tmp);
                 ClusterFactory.vClusters.push(tmp);
             } else {

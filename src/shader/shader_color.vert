@@ -54,6 +54,6 @@ void main() {
     vec3 color = texture(uSampler, toTexCoord(index)).rgb;
     float intensity = selected == index
         ? 0.8
-        : exp(-(1.5 / CAMERA_DIST / CAMERA_DIST) * position_camera.z * position_camera.z);
+        : exp(-(0.5 / CAMERA_DIST / CAMERA_DIST) * position_camera.z * position_camera.z);
     vColor = vec4(color * intensity, 1.0);
 }

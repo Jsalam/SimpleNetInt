@@ -13,6 +13,8 @@ uniform float r2;
 uniform float s1;
 uniform float s2;
 
+uniform int layerId;
+
 out vec4 vColor;
 in vec4 aVertexColor;
 
@@ -37,5 +39,5 @@ void main() {
     gl_Position = projectionMatrix * position_camera;
     gl_Position.z += zOffset(r) * gl_Position.w;
 
-    vColor = aVertexColor;
+    vColor = vec4(float(layerId) / 255.0, aVertexColor.gb, 1.0);
 }
