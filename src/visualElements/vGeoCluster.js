@@ -125,6 +125,7 @@ class VGeoCluster extends VCluster {
 
 
     static loadGeometry(url) {
+        console.log("Loading geometry from", url);
         if (!this.geometryCache[url]) {
             this.geometryCache[url] = new Promise((resolve) => {
                 gp5.loadJSON(url, ({features}) => {
@@ -156,6 +157,7 @@ class VGeoCluster extends VCluster {
 
     static idBuffer = new Uint8Array(4)
     static selectedFeatureId = 0;
+
 
     static detectHitAsync() {
         const gl = this.idTarget.drawingContext;
@@ -206,6 +208,7 @@ class VGeoCluster extends VCluster {
     // tangent of 1/2 vertical field-of-view
     tanHalfFovY = VGeoCluster.height / 2 / this.cameraDistance;
 
+    
     modelViewMatrix = mat4.create();
     projectionMatrix = mat4.create();
 
@@ -219,12 +222,14 @@ class VGeoCluster extends VCluster {
         gp5.loadShader('/src/shader/shader_color.vert', '/src/shader/shader.frag', (shader) => {
             this.pixelShader = shader;
         }, console.error)
+
         gp5.loadShader('/src/shader/shader_id.vert', '/src/shader/shader.frag', (shader) => {
             this.idShader = shader;
         }, console.error);
 
         // TODO: this will be loaded from JSON
-        const geoJsonUrl = '/files/Brazil_ADM2.geojson';
+        // const geoJsonUrl = '/files/Brazil_ADM2.geojson';
+        const geoJsonUrl = '/files/Brazil_Amazon.geojson';
 
         // TODO: this will be loaded from JSON
         const getColorAt = (index) => {
@@ -238,6 +243,8 @@ class VGeoCluster extends VCluster {
         }
 
         VGeoCluster.loadGeometry(geoJsonUrl).then(data => {
+            console.log("Geometry already loaded from", geoJsonUrl);
+            Canvas.update();
             this.features = data.features;
             this.centroidByGeocode = data.centroidByGeocode;
             this.clusterGeometry = data.geometry;

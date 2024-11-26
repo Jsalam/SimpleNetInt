@@ -43,7 +43,6 @@ class ClusterFactory {
                 }
             }
 
-
             Canvas.subscribe(tmp);
             ClusterFactory.vClusters.push(tmp);
         }
