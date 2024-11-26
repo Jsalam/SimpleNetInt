@@ -79,7 +79,7 @@ class VEdge {
         let displayEdge = false;
         let alpha;
 
-        // visible only iof the sourec and target are visible
+        // visible only of the source and target are visible
         let sourceTargetVisible = false;
         if (this.vTarget) {
             sourceTargetVisible = this.vSource.visible && this.vTarget.visible;
@@ -141,7 +141,7 @@ class VEdge {
 
          } 
         else {
-            VirtualElementPool.hide(this, 'label');
+            VirtualElementPool.hide(this, 'edge-label');
         }
 
     }

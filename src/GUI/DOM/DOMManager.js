@@ -198,12 +198,14 @@ class DOM {
      * @param {String} value prefix of the file. Usually a digit. 
      */
     static switchModel(value, evt) {
+        // Discard the DOM elements in the pool
         VirtualElementPool.clear();
+        // reposition canvas to the origin
+        Canvas.reset();
 
         console.log("Switching to " + value + " network");
 
         gp5.loadJSON(DOM.pathNetworks + value + '_network.json', (data) => {
-
             DOM.onLoadNetwork(data, evt);
         });
 
