@@ -58,10 +58,12 @@ class DOM {
         // Sliders
         DOM.sliders.nodeConnectorFilter = document.getElementById('nodeConnectorFilter');
         DOM.sliders.nodeDegreeFilter = document.getElementById('nodeDegreeFilter');
+        DOM.sliders.nodeSizeFactor = document.getElementById('nodeSizeFactor');
         DOM.sliders.edgeTickness = document.getElementById('edgeTickness');
 
         DOM.sliders.nodeConnectorFilter.oninput = (evt) => DOM.eventTriggered(evt);
         DOM.sliders.nodeDegreeFilter.oninput = (evt) => DOM.eventTriggered(evt);
+        DOM.sliders.nodeSizeFactor.oninput = (evt) => DOM.eventTriggered(evt);
         DOM.sliders.edgeTickness.oninput = (evt) => DOM.eventTriggered(evt);
 
         // Dropdowns

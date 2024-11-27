@@ -45,6 +45,7 @@ class VConnector extends Button {
     updateCoords(pos, sequence, height) {
         this.setPos(gp5.createVector(pos.x - this.width, pos.y + (sequence * height)));
         this.setHeight(height);
+        this.setWidth(width);
     }
 
     updateCoordsByAngle(center, angle, radius) {
@@ -61,6 +62,8 @@ class VConnector extends Button {
         renderer.stroke(fillColor);
         if (strokeColor) renderer.stroke(strokeColor);
         //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
+       // let radius =  * Number(DOM.sliders.nodeSizeFactor.value);
+        // if (radius < 3) radius = 3;
         renderer.ellipse(this.pos.x, this.pos.y, this.width)
             // label
             // renderer.textSize(5);

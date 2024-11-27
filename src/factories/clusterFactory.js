@@ -28,10 +28,7 @@ class ClusterFactory {
             let tmp;
             if (cluster.type === "geo") {
                 tmp = new VGeoCluster(cluster, posX, posY, width, height, palette);
-                Canvas.subscribe(tmp);
-                ClusterFactory.vClusters.push(tmp);
             } else {
-
                 tmp = new VCluster(cluster, posX, posY, width, height, palette);
             }
             // set the VCluster transformer from data imported

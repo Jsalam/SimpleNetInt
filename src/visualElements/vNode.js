@@ -216,25 +216,28 @@ class VNode extends Button {
         this.updateConnectorsCoords();
     }
 
-    updateConnectorsCoords(newPos) {
+    updateConnectorsCoords(newPos, nodeSize) {
 
         let counter = 1;
         let angle = (Math.PI * 2) / this.node.connectors.length;
 
         this.vConnectors.forEach(vConnector => {
-            //vConnector.updateCoords(this.pos, counter, this.vConnectorsGap);
-            if (this.node.connectors.length < 2) {
+
+            vConnector.setWidth((nodeSize * Number(DOM.sliders.nodeSizeFactor.value)));
+
+            // When there is only one connector
+            if (this.node.connectors.length <= 1) {
                 if (newPos) {
                     vConnector.updateCoordsByAngle(newPos, 0, vConnector.width / 2);
                 } else {
                     vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
                 }
-
+                // When there two or more connectors
             } else {
                 if (newPos) {
-                    vConnector.updateCoordsByAngle(newPos, angle * counter, this.vConnectorsGap);
+                    vConnector.updateCoordsByAngle(newPos, angle * counter, vConnector.width + 1);
                 } else {
-                    vConnector.updateCoordsByAngle(this.pos, angle * counter, this.vConnectorsGap);
+                    vConnector.updateCoordsByAngle(this.pos, angle * counter, vConnector.width + 1);
                 }
 
             }
@@ -250,7 +253,6 @@ class VNode extends Button {
             this.visible = false;
         } else {
             this.visible = true;
-            // if (this.labelEl) this.labelEl.style.visibility = 'visible'
         }
 
         if (this.visible) {
@@ -275,7 +277,7 @@ class VNode extends Button {
             renderer.ellipseMode(gp5.CENTER);
 
             // set diameter
-            this.diam = this.width * this.localScale;
+            this.diam = this.width * this.localScale * Number(DOM.sliders.nodeSizeFactor.value);
 
             // Ajust diameter to global transformation 
             if (this.transformed) {
@@ -283,13 +285,13 @@ class VNode extends Button {
             }
             let newPos = p5.Vector.add(this.pos, this.shiftPos);
 
-            this.updateConnectorsCoords(newPos);
+            this.updateConnectorsCoords(newPos, this.width);
 
             renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
 
             // draw label
-           VirtualElementPool.hide(this, 'node-description');
-           VirtualElementPool.hide(this, 'node-label')
+            VirtualElementPool.hide(this, 'node-description');
+            VirtualElementPool.hide(this, 'node-label')
 
 
             if (DOM.boxChecked('showTexts') && this.shouldShowText) {

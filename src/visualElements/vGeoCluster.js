@@ -7,7 +7,7 @@ class VGeoCluster extends VCluster {
     static _idTarget;
     static geometryCache = {}
 
-    static MAP_SIZE = 0.6;
+    static MAP_SIZE = 0.4;
 
     static get width() {
         return gp5.width;
@@ -94,6 +94,12 @@ class VGeoCluster extends VCluster {
         return gp5.createVector(xSum / numPoints, ySum / numPoints);
     }
 
+    /**
+     * Creates a shape from coordinates projected on the mercator projection ans stores it in the pixelTarget buffer
+     * @param {*} geom 
+     * @param {*} center 
+     * @param {*} scale 
+     */
     static drawShape(geom, center, scale) {
         function traverse(rings) {
             if (rings.length === 0) return;
@@ -203,7 +209,7 @@ class VGeoCluster extends VCluster {
     layerGap = 500;
     rotationX = -0.51;
     rotationY = 0.51;
-    cameraDistance = 800;
+    cameraDistance = 900;
 
     // tangent of 1/2 vertical field-of-view
     tanHalfFovY = VGeoCluster.height / 2 / this.cameraDistance;
@@ -228,8 +234,8 @@ class VGeoCluster extends VCluster {
         }, console.error);
 
         // TODO: this will be loaded from JSON
-        // const geoJsonUrl = '/files/Brazil_ADM2.geojson';
-        const geoJsonUrl = '/files/Brazil_Amazon.geojson';
+        // const geoJsonUrl = '/files/Cartographies/Brazil_ADM2.geojson';
+        const geoJsonUrl = '/files/Cartographies/Brazil_Amazon.geojson';
 
         // TODO: this will be loaded from JSON
         const getColorAt = (index) => {
@@ -396,7 +402,7 @@ class VGeoCluster extends VCluster {
     }
 
     show(renderer) {
-        super.show(renderer);
+        // super.show(renderer);
         this.handleEvents();
         if (this.clusterGeometry) {
             if (this.pixelShader) {

@@ -60,7 +60,7 @@
     <script src="src/factories/transformerFactory.js"></script>
 
     <!-- View -->
-    <script src="src/visualElements/VirtualElementPool.js"></script> 
+    <script src="src/visualElements/VirtualElementPool.js"></script>
     <script src="src/visualElements/button.js"></script>
     <script src="src/visualElements/vNode.js"></script>
     <script src="src/visualElements/vConnector.js"></script>
@@ -90,11 +90,11 @@
                     <div class="customButton">
                         <div> <label>Network from library</label></div>
                         <select id="modelChoice">
-                        <option value="0" >Empty canvas</option>
-                        <option value="1" >Firefly & Serenity Experimental Timeline</option>
-                        <option value="2" selected>Test</option>
-                        <option value="3" >VGeoCluster</option>
-                    </select>
+                            <option value="0">Empty canvas</option>
+                            <option value="1">Firefly & Serenity Experimental Timeline</option>
+                            <option value="2" selected>Test</option>
+                            <option value="3">VGeoCluster</option>
+                        </select>
                     </div>
                     <hr>
                     <div class="customButton" data-toggle="modal" data-target="#exportNetworkModal">Save/Export file
@@ -142,6 +142,11 @@
                         <input type="range" id="nodeDegreeFilter" min="0" max="10" step="1" value="0" />
                         <label class="labelSlider" for="nodeDegreeFilter">Node degree filter</label>
                         <label class="labelSlider" for="nodeDegreeFilter">0</label>
+                    </div>
+                    <div class="sliderItem">
+                        <input type="range" id="nodeSizeFactor" min="0" max="1" step="0.1" value="1" />
+                        <label class="labelSlider" for="nodeSizeFactor">Node size factor</label>
+                        <label class="labelSlider" for="nodeSizeFactor">0</label>
                     </div>
                     <hr>
                     <!-- EDGES -->

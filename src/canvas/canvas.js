@@ -142,8 +142,8 @@ class Canvas {
         // push transformations
         TransFactory.pushVClusters();
 
-        // VGeoCluster.pixelTarget.background(0, 0, 0, 0);
-        // VGeoCluster.idTarget.background(0, 0, 0, 0);
+        VGeoCluster.pixelTarget.background(0, 0, 0, 0);
+        VGeoCluster.idTarget.background(0, 0, 0, 0);
 
         // show observers
         this.observers.forEach(element => {
@@ -161,8 +161,8 @@ class Canvas {
             // }
         });
 
-        // gp5.image(VGeoCluster.pixelTarget, 0, 0);
-        // VGeoCluster.detectHitAsync();
+        gp5.image(VGeoCluster.pixelTarget, 0, 0);
+        VGeoCluster.detectHitAsync();
 
         this.observers.forEach(element => {
             if (element instanceof VNode || element instanceof VEdge) {
