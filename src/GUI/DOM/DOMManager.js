@@ -211,6 +211,7 @@ class DOM {
             DOM.onLoadNetwork(data, evt);
         });
 
+        
     }
 
     /**

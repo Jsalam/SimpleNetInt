@@ -1,4 +1,4 @@
-const {mat4, vec4, vec3} = glMatrix;
+const { mat4, vec4, vec3 } = glMatrix;
 
 
 class VGeoCluster extends VCluster {
@@ -134,7 +134,7 @@ class VGeoCluster extends VCluster {
         console.log("Loading geometry from", url);
         if (!this.geometryCache[url]) {
             this.geometryCache[url] = new Promise((resolve) => {
-                gp5.loadJSON(url, ({features}) => {
+                gp5.loadJSON(url, ({ features }) => {
                     const [xMin, xMax, yMin, yMax] = this.getBoundingBox(features);
                     const center = gp5.createVector((xMin + xMax) / 2, (yMin + yMax) / 2);
                     const scale = VGeoCluster.MAP_SIZE * Math.min(this.width / (xMax - xMin), this.height / (yMax - yMin));
@@ -214,13 +214,23 @@ class VGeoCluster extends VCluster {
     // tangent of 1/2 vertical field-of-view
     tanHalfFovY = VGeoCluster.height / 2 / this.cameraDistance;
 
-    
+
     modelViewMatrix = mat4.create();
     projectionMatrix = mat4.create();
 
     palette = gp5.createImage(1, 1);
 
-    constructor(cluster, posX, posY, width, height, palette) {
+    /**
+     * ************************** constructor **************************
+     * @param {Cluster} cluster The cluster object with nodes and edges
+     * @param {Number} posX 
+     * @param {Number} posY 
+     * @param {Number} width 
+     * @param {Number} height 
+     * @param {Object} palette Retrieved from the ColorFactory collection of palettes
+     * @param {String} cartography The URL of the GeoJSON file 
+     */
+    constructor(cluster, posX, posY, width, height, palette, cartography) {
         super(cluster, posX, posY, width, height, palette);
 
         this.index = VGeoCluster.total++;
@@ -234,18 +244,42 @@ class VGeoCluster extends VCluster {
         }, console.error);
 
         // TODO: this will be loaded from JSON
-        // const geoJsonUrl = '/files/Cartographies/Brazil_ADM2.geojson';
-        const geoJsonUrl = '/files/Cartographies/Brazil_Amazon.geojson';
+        const geoJsonUrl = cartography;
 
         // TODO: this will be loaded from JSON
         const getColorAt = (index) => {
             const palettes = [
+                // ColorBrewwer sequntial color palettes
+                // 9-class BuGn
+                ["#f7fcfd", "#e5f5f9", "#ccece6", "#99d8c9", "#66c2a4", "#41ae76", "#238b45", "#006d2c", "#00441b"],
+                // 9-class BuPu
+                ["#f7fcfd", "#e0ecf4", "#bfd3e6", "#9ebcda", "#8c96c6", "#8c6bb1", "#88419d", "#810f7c", "#4d004b"],
+                // 9-class GnBu
+                ["#f7fcf0", "#e0f3db", "#ccebc5", "#a8ddb5", "#7bccc4", "#4eb3d3", "#2b8cbe", "#0868ac", "#084081"],
+                // 9-class OrRd
+                ["#fff7ec", "#fee8c8", "#fdd49e", "#fdbb84", "#fc8d59", "#ef6548", "#d7301f", "#b30000", "#7f0000"],
+                // 9-class PuBu
+                ["#fff7fb", "#ece7f2", "#d0d1e6", "#a6bddb", "#74a9cf", "#3690c0", "#0570b0", "#045a8d", "#023858"],
+                // 9-class RdPu
+                ["#fff7f3", "#fde0dd", "#fcc5c0", "#fa9fb5", "#f768a1", "#dd3497", "#ae017e", "#7a0177", "#49006a"],
+                // 9-class PuBuGn
+                ["#fff7fb", "#ece2f0", "#d0d1e6", "#a6bddb", "#67a9cf", "#3690c0", "#02818a", "#016c59", "#014636"],
+                // 9-class PuRd
+                ["#f7f4f9", "#e7e1ef", "#d4b9da", "#c994c7", "#df65b0", "#e7298a", "#ce1256", "#980043", "#67001f"],
+
+
                 ['#e7f39b', '#c4fa84', '#a0f87e', '#7feb86', '#66ce93', '#59a0a0', '#535ca5'],
                 ['#f3e79b', '#fac484', '#f8a07e', '#eb7f86', '#ce6693', '#a059a0', '#5c53a5'],
                 ['#e79bf3', '#c484fa', '#a07ef8', '#7f86eb', '#6693ce', '#59a0a0', '#53a55c'],
             ];
-            const palette = palettes[this.index];
-            return gp5.color(palette[index % palette.length]);
+               const palette = palettes[this.index];
+              return gp5.color(palette[index % palette.length]);
+
+            // const colorIndex = index % ColorFactory.baseColors.length;
+            // const palette = ColorFactory.generateMonochromaticSwatches(ColorFactory.baseColors[colorIndex], 7);
+            // const col = ColorFactory.getColor(palette, index)
+
+            // return gp5.color(col);
         }
 
         VGeoCluster.loadGeometry(geoJsonUrl).then(data => {

@@ -22,7 +22,7 @@ class ColorFactory {
                                 // Call the "then" function once all the palettes are completed
                                 if (thenFunction) {
                                     console.log("Color palettes instantiated")
-                                        //thenFunction();
+                                    //thenFunction();
                                 }
                             });
                         });
@@ -30,6 +30,12 @@ class ColorFactory {
                 })
             );
         });
+    }
+
+    static colorBrewerPaletes = {
+        sequential: {},
+        divergent:{},
+        qualitative:{}
     }
 
     static getPalette(n) {
@@ -44,7 +50,7 @@ class ColorFactory {
 
     static getColorFor(kind) {
         let rtn;
-        if (typeof(kind) === 'string') {
+        if (typeof (kind) === 'string') {
             kind = Number(kind)
         }
         switch (kind) {
@@ -88,7 +94,45 @@ class ColorFactory {
         ColorFactory.dictionaries[name] = dic;
     }
 
+    // GEMINI Nov 27, 2024
+    static generateMonochromaticSwatches(baseColor, numShades) {
+        const colors = [];
+        const baseRGB = ColorFactory.hexToRgb(baseColor);
+
+        for (let i = 0; i < numShades; i++) {
+            const shade = Math.round(i * 255 / (numShades - 1));
+            const r = Math.round(baseRGB.r * shade / 255);
+            const g = Math.round(baseRGB.g * shade / 255);
+            const b = Math.round(baseRGB.b * shade / 255);
+            colors.push([r, g, b, baseRGB.a]);
+        }
+        return colors;
+    }
+
+    // GEMINI Nov 27, 2024
+    static hexToRgb(hex) {
+        let rgba = { r: 0, g: 0, b: 0, a: 255 }
+
+        // Remove the '#' symbol if present
+        hex = hex.replace('#', '');
+
+        // Extract the red, green, and blue components
+        rgba.r = parseInt(hex.substring(0, 2), 16);
+        rgba.g = parseInt(hex.substring(2, 4), 16);
+        rgba.b = parseInt(hex.substring(4, 6), 16);
+        if (hex.length > 6)
+            rgba.a = parseInt(hex.substring(6, 8), 16);
+
+
+        return rgba
+    }
+
+    // GEMINI Nov 27, 2024
+    static rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
 }
 ColorFactory.dictionaries = {};
 ColorFactory.palettes = [];
 ColorFactory.basic = { "r": '#cc0033', "g": '#00cc99', "b": '#0040ff', "y": '#ffbf00', "k": '#000000' };
+ColorFactory.baseColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#808080", "#FFA500", "#800080", "#008000"];

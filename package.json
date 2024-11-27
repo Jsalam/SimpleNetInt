@@ -1,0 +1,22 @@
+{
+  "name": "simplenetworks",
+  "version": "1.0.0",
+  "description": "Network Visualization",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jsalam/SimpleNetInt.git"
+  },
+  "author": "Juan Salamanca",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jsalam/SimpleNetInt/issues"
+  },
+  "homepage": "https://github.com/Jsalam/SimpleNetInt#readme",
+  "dependencies": {
+    "chroma-js": "^3.1.2"
+  }
+}
