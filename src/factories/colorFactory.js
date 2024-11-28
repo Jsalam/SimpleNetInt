@@ -130,16 +130,17 @@ class ColorFactory {
 
         try {
             let entry = ColorFactory.dictionaries[key1];
-           // console.log(entry)
             let rtn;
+            // if the key2 is not empty, it means that the dictionary is a dictionary of arrays
             if (key2 !== "") {
+                // get the color at the index position from the internal array named with key2
                 rtn = entry[key2][index % entry[key2].length];
             } else {
-              //  console.log('here')
+                // get the color at the index position from the array of colors if the key2 is not provided
                 rtn = entry[Object.keys(entry)[index % Object.keys(entry).length]];
             }
 
-           // console.log(rtn)
+            // return white if the color is not defined
             if (rtn === undefined) {
                 return '#FFFFFF';
             } else {
