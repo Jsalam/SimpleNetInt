@@ -63,17 +63,13 @@ class Transformer {
             glMatrix.vec2.transformMat2d(tmp, tmp, this.transform);
             vN.pos.set(tmp);
             vN.transformed = this.transformed;
-            // reposition the connectors
-            //vN.updateConnectorsCoords();
         };
 
         this._getInvert();
         this.needsUpdate = false;
-        //  }
     }
 
     popVCluster(vCluster) {
-        //   if (this.active) {
         let vC = vCluster;
         // if missing parameter
         if (!vC) vC = this.vCluster;
@@ -84,7 +80,6 @@ class Transformer {
             glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.invert);
             vN.pos.set(tmp);
         };
-        //  }
     }
 
     /** Applies the last computed tranformation to the given vectors */

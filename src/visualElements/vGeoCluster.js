@@ -131,7 +131,8 @@ class VGeoCluster extends VCluster {
 
 
     static loadGeometry(url) {
-        console.log("Loading geometry from", url);
+        //console.log("Loading geometry from", url);
+        DOM.showMessage (`Loading geometry from\n${url} ...`);
         if (!this.geometryCache[url]) {
             this.geometryCache[url] = new Promise((resolve) => {
                 gp5.loadJSON(url, ({ features }) => {
@@ -271,6 +272,7 @@ class VGeoCluster extends VCluster {
 
         VGeoCluster.loadGeometry(geoJsonUrl).then(data => {
             console.log("GEOMETRY LOADED from", geoJsonUrl);
+            DOM.hideMessage()
 
             // store propreties of this VGeoCluster
             this.features = data.features;
@@ -292,7 +294,7 @@ class VGeoCluster extends VCluster {
             this.palette = gp5.createImage(this.features.length, 1);
             this.palette.loadPixels();
             for (let i = 0; i < this.features.length; ++i) {
-                let color = ColorFactory.getColorFromDictionary("clusters", this.features[i].properties.UF, 6); // entry name, field name, index
+                let color = ColorFactory.getColorFromDictionary("clusters", this.features[i].properties.UF, 5 + Math.floor(Math.random() * 3)); // entry name, field name, index
                 // this.palette.set(i, 0, getColorAt(i).levels);
                 this.palette.set(i, 0, gp5.color(color).levels);
             }
@@ -348,7 +350,12 @@ class VGeoCluster extends VCluster {
         return this.s1 * this.r1
     }
 
+    /**
+     * Update the position of the VNodes and each of its vConnectors based on the current rotation and zoom level
+     * *************** TODO This method should be modified and use the TransFactory class.***************
+     */
     updateVNodePositions() {
+        //This matrix should be stored in the TransFactory class
         const MVP = mat4.create();
         mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
@@ -362,17 +369,22 @@ class VGeoCluster extends VCluster {
             vIn.setMag(r);
             vIn.add(this.mouseX_object, this.mouseY_object);
             const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
+            
             const position_NDC = vec4.transformMat4(vec4.create(), position_object, MVP);
 
             vNode.shouldShowText = r < this.focusRadius;
             vNode.pos = gp5.createVector(position_NDC[0] / position_NDC[3], position_NDC[1] / position_NDC[3])
                 .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
                 .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
+
+            // Update the internal connectors
+            vNode.updateConnectorsCoords();
         }
     }
 
     /**
-     * Determine mouse coordinates in the map plane (object space) using ray casting
+     * Determine mouse coordinates in the map plane (object space) using ray casting.
+     * The result is stored in internal properties this.mouseX_object and this.mouseY_object
      */
     unprojectMousePosition() {
         const normal = vec4.fromValues(0, 0, 1, 0); // direction (w=0)

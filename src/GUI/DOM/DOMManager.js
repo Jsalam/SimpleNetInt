@@ -79,6 +79,9 @@ class DOM {
         DOM.lists.filtersA = document.getElementById('filtersA');
         DOM.lists.filtersB = document.getElementById('filtersB');
 
+        // Elements
+        DOM.elements.screenMessage = document.getElementById('screenMessage');
+
         // Get the current status of checkboxes
         DOM.createNativeCurrentCheckboxes()
         DOM.updateCheckboxes();
@@ -115,6 +118,24 @@ class DOM {
     static boxChecked(id) {
         let box = DOM.currentCheckboxes.filter(elm => elm.key == id)[0];
         return box.value;
+    }
+
+    /**
+     * Displays a message on the screen
+     * @param {*} message 
+     */
+    static showMessage(message) {
+        DOM.elements.screenMessage.innerText = message;
+        DOM.elements.screenMessage.style.left = (window.innerWidth - DOM.elements.screenMessage.offsetWidth) / 2 + "px";
+        DOM.elements.screenMessage.style.display = "block";
+    }
+
+    /**
+     * Hides the message displayed on the screen
+     */
+    static hideMessage() {
+        DOM.elements.screenMessage.innerText = "";
+        DOM.elements.screenMessage.style.display = "none";
     }
 
     /**
@@ -437,3 +458,4 @@ DOM.sliders = {};
 // the collection of lists of elements in the Filters dropdown in the GUI bar 
 DOM.lists = {};
 DOM.showLegend = true;
+DOM.elements = {};

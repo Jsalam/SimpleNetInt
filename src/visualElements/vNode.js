@@ -775,12 +775,9 @@ class VNode extends Button {
 
             // update values
             this.localScale = factor;
-            //  this.shiftPos.set(dNormalized * 30, 0);
-
 
         } else {
             this.localScale = 1;
-            //this.shiftPos.setMag(0);
         }
     }
 }

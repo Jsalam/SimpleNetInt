@@ -171,4 +171,16 @@ hr {
     background-color: rgb(127, 141, 1);
 }
 
-/* Node */
+/* SCREEN MESSAGES */
+#screenMessage {
+    position: absolute;
+    display:none;
+    color: rgb(178, 192, 203);
+    width: fit-content;
+    border: 1px solid rgb(127, 141, 1);
+    border-radius: 5px;
+    padding: 1em;
+    top: 50vh;
+    left: 50vw;
+    text-align: center;
+}

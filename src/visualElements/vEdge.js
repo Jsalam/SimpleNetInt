@@ -139,7 +139,7 @@ class VEdge {
 
             this.showBezierArcs(renderer, strokeColor, strokeWeight);
 
-         } 
+        }
         else {
             VirtualElementPool.hide(this, 'edge-label');
         }
@@ -287,18 +287,23 @@ class VEdge {
         // renderer.line(end.x, end.y, this.controlEnd.x, this.controlEnd.y);
 
         // edge label
-        VirtualElementPool.show(this, 'edge-label', this.edge.kind, {
-            fontFamily: 'Roboto',
-            fontSize: '12px',
-            overflow: 'hidden',
-            display: 'block',
-            color: color,
-            transform: `
+        if (DOM.boxChecked('showTexts') || this.vSource.mouseIsOver || this.vTarget && this.vTarget.mouseIsOver) {
+
+            VirtualElementPool.show(this, 'edge-label', this.edge.kind, {
+                fontFamily: 'Roboto',
+                fontSize: '12px',
+                overflow: 'hidden',
+                display: 'block',
+                color: color,
+                transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
                 scale(${Canvas._zoom})
                 translate(${10 + (this.controlOrg.x + this.controlEnd.x) / 2}px, ${(this.controlOrg.y + this.controlEnd.y) / 2}px)
             `
-        });
+            });
+        } else{
+            VirtualElementPool.hide(this, 'edge-label');
+        }
     }
 
     getJSON() {
