@@ -121,10 +121,16 @@ class ColorFactory {
     }
 
     /**
-     * 
-     * @param {*} key 
-     * @param {*} index 
-     * @returns the color of the palete in the the index position
+     * A public collection of colors stored in an object one or more key:value pairs. 
+     * The key is the name of the entry and the value is an object that contains either 
+     * a color or an array of colors. Colors are stored in hex format.
+     * @param {*} key1 The key for the entry in the dictionary object
+     * @param {*} key2 This is used when the dictionary entry contains an object of 
+     * key:array pairs. The key of the internal array of colors if any. 
+     * @param {*} index The index of the color in the dictionary entry. If key2 id provided, 
+     * this is the index in the array of colors. 
+     * @returns the color of the palete in the the index position. White if the color is 
+     * not defined or there is an error.
      */
     static getColorFromDictionary(key1, key2 = "", index = 0) {
 
