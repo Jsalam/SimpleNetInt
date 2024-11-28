@@ -1,6 +1,7 @@
 class ClusterFactory {
 
     static makeClusters(data) {
+       
         ClusterFactory.initParameters();
         ClusterFactory.clusters = [];
         this.vClusters = [];
@@ -15,7 +16,6 @@ class ClusterFactory {
         //** Visual cluster section
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         for (let index = 0; index < ClusterFactory.clusters.length; index++) {
-
             //  vCluster parameters
             let cluster = ClusterFactory.clusters[index];
             let posX = 25 + x * index;
@@ -50,6 +50,7 @@ class ClusterFactory {
      * @param {Object} data cluster attributes. Usually entered with a form
      */
     static makeCluster(data) {
+     
         this.instantiateCluster(data);
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         let index = ClusterFactory.clusters.length - 1;
@@ -188,14 +189,14 @@ class ClusterFactory {
 
     static getCluster(id) {
         const tmp = ClusterFactory.clusters.filter(elem => {
-            return elem.id === id;
+            return elem.id == id;
         })[0];
         return tmp;
     }
 
     static getVCluster(id) {
         const tmp = ClusterFactory.vClusters.filter(elem => {
-            return elem.cluster.id === id;
+            return elem.cluster.id == id;
         })[0];
         return tmp;
     }

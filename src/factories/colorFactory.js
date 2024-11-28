@@ -109,15 +109,18 @@ class ColorFactory {
         }
         if (!Object.keys(ColorFactory.dictionaries).includes(name)) {
             ColorFactory.dictionaries[name] = dic;
-        } else {
-            // ColorFactory.updateDictionary(name)
-            console.log("TODO update dictionary")
+        }  else {
+             ColorFactory.updateDictionary(name, dic)
+           // console.log("TODO update dictionary")
         }
     }
 
-    static updateDictionary(name) {
-        //TODO: update dictionary
-        console.log("TODO: update dictionary " + name)
+    /**
+     * This was intended to update the dictionary of colors. It is not working yet.
+     * @param {*} name 
+     */
+    static updateDictionary(name, dic) {
+        ColorFactory.dictionaries[name] = dic
     }
 
     /**

@@ -405,6 +405,10 @@ class DOM {
         DOM.eventTriggered(evt)
     }
 
+    /**
+     * Invoked when the user clicks the submit button in the Edge Kinds textbox
+     * @param {*} evt 
+     */
     static getTextBoxContent(evt) {
         // Add checkboxes to Filters list B in the DOM
         DOM.createCheckboxFor(DOM.textboxes.edgeKinds.value, DOM.lists.filtersB);

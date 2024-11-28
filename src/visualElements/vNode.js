@@ -565,38 +565,50 @@ class VNode extends Button {
 
         let connectorsDescription = "Connectors:\n";
 
+        //trim the connector description string
+        function trimText(textEntry, maxLength) {
+            return textEntry//.length > maxLength ? textEntry.slice(0, maxLength) + "..." : textEntry;
+        }
+
         // connector description
         for (const cnctr of this.node.getConnectors()) {
-            connectorsDescription += '   - ' + cnctr.kind
+            connectorsDescription += '   - ' + cnctr.kind + ':\n';
 
             if (cnctr.edgeObservers.length > 0) {
                 let edgeObserverOfTheKind = cnctr.edgeObservers.filter((tempEdge) => tempEdge.kind == cnctr.kind)
 
-                let textRow = '';
+                let textRow = "";
 
                 for (let i = 0; i < edgeObserverOfTheKind.length; i++) {
                     const edgeTmp = edgeObserverOfTheKind[i];
+
+                    let otherCluster = {'source':'', 'target':''};
+
+                    if (this.node.idCat.cluster != edgeTmp.id.source.cluster) {
+                        otherCluster.source = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id.source.cluster).label;
+                    }
+
+                    if (this.node.idCat.cluster != edgeTmp.id.target.cluster) {
+                        otherCluster.target = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id.target.cluster).label;
+                    }
+
+                  //  console.log(otherCluster['source']);
+
                     // out
                     if (edgeTmp.source.idCat.pajekIndex == this.node.idCat.pajekIndex) {
-                        textRow += ', out weight: ' + edgeTmp.weight
+                        textRow += 'Out w ' + edgeTmp.weight + " - TO " + trimText(edgeTmp.target.label, 25) + ". " + otherCluster.target + "\n";
                     } else {
                         // in
-                        textRow += ', in weight: ' + edgeTmp.weight
+                        textRow += 'In w ' + edgeTmp.weight + " - FROM " + trimText(edgeTmp.source.label, 25) + ". " + otherCluster.source + "\n";
                     }
-                }
-
-                // trim the connector description string
-                let maxLength = 60;
-
-                if (textRow.length > maxLength) {
-                    textRow = textRow.slice(0, maxLength) + "...";
                 }
 
                 connectorsDescription += textRow + '\n'
             }
         }
 
-        let textString = "Name: " + this.node.label + "\n" + "Description: " + this.node.description + "\nCluster: " + clusterName + "\n" + connectorsDescription;
+        let textString = "Name: " + this.node.label + "\n" + "Description: "
+            + this.node.description + "\nCluster: " + clusterName + "\n" + connectorsDescription;
 
         // renderer.text("Name: " + this.node.label, x + 5, y - 25, 650, 97);
         // renderer.text("Description: " + this.node.description, x + 5, y - 40, 650, 97);
@@ -613,11 +625,13 @@ class VNode extends Button {
             fontFamily: 'Roboto',
             lineHeight: '15px',
             overflow: 'hidden',
+            marginLeft: '10px',
             pointerEvents: 'none',
-            background: '#000000aa',
+            background: '#00000066',
             whiteSpace: 'pre-line',
             fontSize: '11px',
             padding: '5px',
+            width: '220px',
             color: Canvas.currentBackground < 150 ? '#EEEEEE' : '#111111',
             // transform: `
             //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
