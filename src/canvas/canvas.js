@@ -521,7 +521,6 @@ class Canvas {
             if (Canvas.mouseDown) {
                 gp5.cursor(gp5.ARROW)
             }
-
         }
 
         // Escape key

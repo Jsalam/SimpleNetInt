@@ -14,9 +14,9 @@ class VCluster extends Button{
 
     // Observing to Canvas
     fromCanvas(data) {
-        if (data instanceof MouseEvent) {
+        if (data.event instanceof MouseEvent) {
             // do something
-        } else if (data instanceof KeyboardEvent) {
+        } else if (data.event instanceof KeyboardEvent) {
             // do something
         } else {
             // do something

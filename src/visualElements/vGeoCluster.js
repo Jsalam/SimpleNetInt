@@ -249,31 +249,18 @@ class VGeoCluster extends VCluster {
         // TODO: this will be loaded from JSON
         const getColorAt = (index) => {
             const palettes = [
-                // ColorBrewwer sequntial color palettes
-                // 9-class BuGn
-                ["#f7fcfd", "#e5f5f9", "#ccece6", "#99d8c9", "#66c2a4", "#41ae76", "#238b45", "#006d2c", "#00441b"],
-                // 9-class BuPu
-                ["#f7fcfd", "#e0ecf4", "#bfd3e6", "#9ebcda", "#8c96c6", "#8c6bb1", "#88419d", "#810f7c", "#4d004b"],
-                // 9-class GnBu
-                ["#f7fcf0", "#e0f3db", "#ccebc5", "#a8ddb5", "#7bccc4", "#4eb3d3", "#2b8cbe", "#0868ac", "#084081"],
-                // 9-class OrRd
-                ["#fff7ec", "#fee8c8", "#fdd49e", "#fdbb84", "#fc8d59", "#ef6548", "#d7301f", "#b30000", "#7f0000"],
-                // 9-class PuBu
-                ["#fff7fb", "#ece7f2", "#d0d1e6", "#a6bddb", "#74a9cf", "#3690c0", "#0570b0", "#045a8d", "#023858"],
-                // 9-class RdPu
-                ["#fff7f3", "#fde0dd", "#fcc5c0", "#fa9fb5", "#f768a1", "#dd3497", "#ae017e", "#7a0177", "#49006a"],
-                // 9-class PuBuGn
-                ["#fff7fb", "#ece2f0", "#d0d1e6", "#a6bddb", "#67a9cf", "#3690c0", "#02818a", "#016c59", "#014636"],
-                // 9-class PuRd
-                ["#f7f4f9", "#e7e1ef", "#d4b9da", "#c994c7", "#df65b0", "#e7298a", "#ce1256", "#980043", "#67001f"],
-
-
                 ['#e7f39b', '#c4fa84', '#a0f87e', '#7feb86', '#66ce93', '#59a0a0', '#535ca5'],
                 ['#f3e79b', '#fac484', '#f8a07e', '#eb7f86', '#ce6693', '#a059a0', '#5c53a5'],
                 ['#e79bf3', '#c484fa', '#a07ef8', '#7f86eb', '#6693ce', '#59a0a0', '#53a55c'],
             ];
-               const palette = palettes[this.index];
-              return gp5.color(palette[index % palette.length]);
+            // const palette = palettes[this.index];
+            // return gp5.color(palette[index % palette.length]);
+
+            const paletteName = ColorFactory.brewerNames[index % ColorFactory.brewerNames.length];
+            const palette = ColorFactory.getPalette(paletteName);
+            // console.log(paletteName)
+            // console.log(palette)
+            return gp5.color(palette[index % palette.length]);
 
             // const colorIndex = index % ColorFactory.baseColors.length;
             // const palette = ColorFactory.generateMonochromaticSwatches(ColorFactory.baseColors[colorIndex], 7);
@@ -283,17 +270,42 @@ class VGeoCluster extends VCluster {
         }
 
         VGeoCluster.loadGeometry(geoJsonUrl).then(data => {
-            console.log("Geometry already loaded from", geoJsonUrl);
-            Canvas.update();
+            console.log("GEOMETRY LOADED from", geoJsonUrl);
+
+            // store propreties of this VGeoCluster
             this.features = data.features;
             this.centroidByGeocode = data.centroidByGeocode;
             this.clusterGeometry = data.geometry;
+
+            // Get the list of UF from the attributes. Note: UF is the abbreviation of the states in Brazil.
+            // This should be the cluster names in the future 
+            let UFs = [];
+            for (let i = 0; i < this.features.length; ++i) {
+                if (!UFs.includes(this.features[i].properties.UF)) {
+                    UFs.push(this.features[i].properties.UF);
+                }
+            }
+            // assign a color palete to each UF
+            ColorFactory.makeDictionary(UFs, ColorFactory.brewerNames, "clusters");
+
+            // update the colors of each UF in the map
             this.palette = gp5.createImage(this.features.length, 1);
             this.palette.loadPixels();
             for (let i = 0; i < this.features.length; ++i) {
-                this.palette.set(i, 0, getColorAt(i).levels);
+                let color = ColorFactory.getColorFromDictionary("clusters", this.features[i].properties.UF, 6); // entry name, field name, index
+                // this.palette.set(i, 0, getColorAt(i).levels);
+                this.palette.set(i, 0, gp5.color(color).levels);
             }
             this.palette.updatePixels();
+
+            // Refresh canvas and reposition nodes
+            this.updateMatrices();
+            this.unprojectMousePosition();
+            this.updateVNodePositions();
+
+            // update the canvas with the new drawings
+            Canvas.update();
+
         });
 
     }
@@ -387,37 +399,53 @@ class VGeoCluster extends VCluster {
         this.mouseY_object = pos_object[1] / pos_object[3];
     }
 
+    /**
+     * Receives events from the canvas and updates the VGeoCluster accordingly.
+     * This replaces the former handleEvents method in this class.
+     * @param {*} data the event sent by the canvas to its observers.
+     */
+    fromCanvas(data) {
+        if (data.event instanceof MouseEvent) {
+            this.updateMatrices();
+            this.unprojectMousePosition();
+            this.updateVNodePositions();
+        } else if (data.event instanceof KeyboardEvent) {
+            if (data.event.type == "keydown") {
+                switch (data.event.key) {
+                    case 'ArrowUp':
+                        this.rotationX = gp5.constrain(this.rotationX - 0.05, -Math.PI / 2, Math.PI / 2);
+                        break;
+                    case 'ArrowDown':
+                        this.rotationX = gp5.constrain(this.rotationX + 0.05, -Math.PI / 2, Math.PI / 2);
+                        break;
+                    case 'ArrowLeft':
+                        this.rotationY = gp5.constrain(this.rotationY - 0.05, -Math.PI / 2, Math.PI / 2);
+                        break;
+                    case 'ArrowRight':
+                        this.rotationY = gp5.constrain(this.rotationY + 0.05, -Math.PI / 2, Math.PI / 2);
+                        break;
+                    case '=':
+                        this.s1 = gp5.constrain(this.s1 + 1, 1, 50);
+                        break;
+                    case '-':
+                        this.s1 = gp5.constrain(this.s1 - 1, 1, 50);
+                        break;
+                    case 'k':
+                        this.layerGap += 10;
+                        break;
+                    case 'j':
+                        this.layerGap -= 10;
+                        break;
+                    default:
 
-    handleEvents() {
-        if (gp5.keyIsPressed) {
-            if (gp5.key === '=') {
-                this.s1 = gp5.constrain(this.s1 + 1, 1, 50);
+                }
+                this.updateMatrices();
+                this.unprojectMousePosition();
+                this.updateVNodePositions();
             }
-            if (gp5.key === '-') {
-                this.s1 = gp5.constrain(this.s1 - 1, 1, 50);
-            }
-            if (gp5.key === 'k') {
-                this.layerGap += 10;
-            }
-            if (gp5.key === 'j') {
-                this.layerGap -= 10;
-            }
-            if (gp5.key === 'ArrowUp') {
-                this.rotationX = gp5.constrain(this.rotationX - 0.05, -Math.PI / 2, Math.PI / 2);
-            }
-            if (gp5.key === 'ArrowDown') {
-                this.rotationX = gp5.constrain(this.rotationX + 0.05, -Math.PI / 2, Math.PI / 2);
-            }
-            if (gp5.key === 'ArrowLeft') {
-                this.rotationY = gp5.constrain(this.rotationY - 0.05, -Math.PI / 2, Math.PI / 2);
-            }
-            if (gp5.key === 'ArrowRight') {
-                this.rotationY = gp5.constrain(this.rotationY + 0.05, -Math.PI / 2, Math.PI / 2);
-            }
+        } else {
+            // do something
         }
-        this.updateMatrices();
-        this.unprojectMousePosition();
-        this.updateVNodePositions();
     }
 
     renderToBuffer(buffer, shader) {
@@ -437,7 +465,7 @@ class VGeoCluster extends VCluster {
 
     show(renderer) {
         // super.show(renderer);
-        this.handleEvents();
+        // this.handleEvents();
         if (this.clusterGeometry) {
             if (this.pixelShader) {
                 VGeoCluster.pixelTarget.texture(this.palette);

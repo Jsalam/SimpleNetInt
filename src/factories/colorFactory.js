@@ -1,3 +1,4 @@
+// This class makes use of chroma.js to generate some color palettes
 class ColorFactory {
 
     static loadPalettes(path, names, thenFunction) {
@@ -32,15 +33,25 @@ class ColorFactory {
         });
     }
 
-    static colorBrewerPaletes = {
-        sequential: {},
-        divergent:{},
-        qualitative:{}
-    }
-
+    /**
+     * Returns a palette of colors in hex format
+     * @param {*} n If a number it retrieves the palette from the native list, if a string it retrieves the palette from chroma.brewer.
+     * N can take these values: 'OrRd', 'PuBu', 'BuPu', 'Oranges', 'BuGn', 'YlOrBr', 'YlGn', 'Reds', 'RdPu', 'Greens', 'YlGnBu', 'Purples',
+     * 'GnBu', 'Greys', 'YlOrRd', 'PuRd', 'Blues', 'PuBuGn', 'Viridis', 'Spectral', 'RdYlGn', 'RdBu', 'PiYG', 'PRGn', 'RdYlBu', 'BrBG',
+     * 'RdGy', 'PuOr', 'Set2', 'Accent', 'Set1', 'Set3', 'Dark2', 'Paired', 'Pastel2', 'Pastel1'
+     * @returns the color palette. If the parameter does not match anly palete, it returns the default palete (first of the native ones).
+     */
     static getPalette(n) {
-        let tempIndex = n % ColorFactory.palettes.length;
-        return ColorFactory.palettes[tempIndex];
+        // let tempIndex = n % ColorFactory.palettes.length;
+        // return ColorFactory.palettes[tempIndex];
+        if (typeof n === 'number') {
+            let tempIndex = n % ColorFactory.palettes.length;
+            return ColorFactory.palettes[tempIndex];
+        }
+        else if (typeof n === 'string') {
+            return chroma.brewer[n];
+        }
+        //else return ColorFactory.palettes[0];
     }
 
     static getColor(palette, index) {
@@ -87,52 +98,60 @@ class ColorFactory {
 
         if (arr.length <= palette.length) {
             for (let i = 0; i < arr.length; i++) {
-                dic[arr[i]] = palette[i];
+
+                // if the palete is a name of the colorBrewer insert the array of colors
+                if (ColorFactory.brewerNames.includes(palette[i])) {
+                    dic[arr[i]] = chroma.brewer[palette[i]];
+                } else {
+                    dic[arr[i]] = palette[i];
+                }
+            }
+        }
+        if (!Object.keys(ColorFactory.dictionaries).includes(name)) {
+            ColorFactory.dictionaries[name] = dic;
+        } else {
+            // ColorFactory.updateDictionary(name)
+            console.log("TODO update dictionary")
+        }
+    }
+
+    static updateDictionary(name) {
+        //TODO: update dictionary
+        console.log("TODO: update dictionary " + name)
+    }
+
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} index 
+     * @returns the color of the palete in the the index position
+     */
+    static getColorFromDictionary(key1, key2 = "", index = 0) {
+
+        try {
+            let entry = ColorFactory.dictionaries[key1];
+           // console.log(entry)
+            let rtn;
+            if (key2 !== "") {
+                rtn = entry[key2][index % entry[key2].length];
+            } else {
+              //  console.log('here')
+                rtn = entry[Object.keys(entry)[index % Object.keys(entry).length]];
             }
 
+           // console.log(rtn)
+            if (rtn === undefined) {
+                return '#FFFFFF';
+            } else {
+                return rtn;
+            }
+        } catch (error) {
+            return '#FFFFFF';
         }
-        ColorFactory.dictionaries[name] = dic;
-    }
-
-    // GEMINI Nov 27, 2024
-    static generateMonochromaticSwatches(baseColor, numShades) {
-        const colors = [];
-        const baseRGB = ColorFactory.hexToRgb(baseColor);
-
-        for (let i = 0; i < numShades; i++) {
-            const shade = Math.round(i * 255 / (numShades - 1));
-            const r = Math.round(baseRGB.r * shade / 255);
-            const g = Math.round(baseRGB.g * shade / 255);
-            const b = Math.round(baseRGB.b * shade / 255);
-            colors.push([r, g, b, baseRGB.a]);
-        }
-        return colors;
-    }
-
-    // GEMINI Nov 27, 2024
-    static hexToRgb(hex) {
-        let rgba = { r: 0, g: 0, b: 0, a: 255 }
-
-        // Remove the '#' symbol if present
-        hex = hex.replace('#', '');
-
-        // Extract the red, green, and blue components
-        rgba.r = parseInt(hex.substring(0, 2), 16);
-        rgba.g = parseInt(hex.substring(2, 4), 16);
-        rgba.b = parseInt(hex.substring(4, 6), 16);
-        if (hex.length > 6)
-            rgba.a = parseInt(hex.substring(6, 8), 16);
-
-
-        return rgba
-    }
-
-    // GEMINI Nov 27, 2024
-    static rgbToHex(r, g, b) {
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
 }
 ColorFactory.dictionaries = {};
 ColorFactory.palettes = [];
 ColorFactory.basic = { "r": '#cc0033', "g": '#00cc99', "b": '#0040ff', "y": '#ffbf00', "k": '#000000' };
-ColorFactory.baseColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#808080", "#FFA500", "#800080", "#008000"];
+ColorFactory.brewerNames = Object.keys(chroma.brewer);
+ColorFactory.chroma = chroma;

@@ -4,13 +4,13 @@ class UtilitiesNetworkJSON {
 
     /**
      * Customized for Brazil network files
-     * @param {*} network 
+     * @param {*} JSONnetwork the file URL
+     * @param {*} clusterID the index of the cluster in the nodes object 
      */
-    static splitNetworkJSON(network, clusterID, keepOriginal = false) {
+    static splitNetwork(JSONnetwork, clusterID, keepOriginal = false) {
         let tempClusts = new Map();
-        let rslt = "nothing";
         // get networks
-        gp5.loadJSON(network, (data) => {
+        gp5.loadJSON(JSONnetwork, (data) => {
             console.log(data);
             data.nodes[clusterID].nodes.forEach(node => {
                 // console.log(node.nodeAttributes.attRaw.state_abbrev)
