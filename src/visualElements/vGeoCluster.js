@@ -132,7 +132,7 @@ class VGeoCluster extends VCluster {
 
     static loadGeometry(url) {
         //console.log("Loading geometry from", url);
-        DOM.showMessage (`Loading geometry from\n${url} ...`);
+        DOM.showMessage(`Loading geometry from\n${url} ...`);
         if (!this.geometryCache[url]) {
             this.geometryCache[url] = new Promise((resolve) => {
                 gp5.loadJSON(url, ({ features }) => {
@@ -156,7 +156,7 @@ class VGeoCluster extends VCluster {
                         centroidByGeocode,
                         geometry,
                     })
-                });
+                }, (err) => { console.error(err), DOM.showMessage(`Wrong URL\n${url} ...`); });
             });
         }
         return this.geometryCache[url];
@@ -233,7 +233,7 @@ class VGeoCluster extends VCluster {
      * @param {Number} width 
      * @param {Number} height 
      * @param {Object} palette Retrieved from the ColorFactory collection of palettes
-     * @param {String} keyAttribute The URL of the GeoJSON file 
+     * @param {String} keyAttribute The attribute of the cluster 
      * @param {String} cartography The URL of the GeoJSON file 
      */
     constructor(cluster, posX, posY, width, height, palette, keyAttribute, cartography) {
@@ -253,7 +253,7 @@ class VGeoCluster extends VCluster {
         }, console.error);
 
         // TODO: this will be loaded from JSON
-        const geoJsonUrl = cartography;
+        const geoJsonUrl = '/files/Cartographies/' + cartography;
 
         // TODO: this will be loaded from JSON
         const getColorAt = (index) => {
@@ -467,10 +467,10 @@ class VGeoCluster extends VCluster {
             vIn.setMag(r);
             vIn.add(this.mouseX_object, this.mouseY_object);
             const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
-            
+
             const position_NDC = vec4.transformMat4(vec4.create(), position_object, MVP);
 
-            vNode.shouldShowText =  r < this.focusRadius && r < this.focusRadius;
+            vNode.shouldShowText = r < this.focusRadius && r < this.focusRadius;
             vNode.shouldShowButton = r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
 
             vNode.pos = gp5.createVector(position_NDC[0] / position_NDC[3], position_NDC[1] / position_NDC[3], position_NDC[3])

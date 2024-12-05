@@ -27,7 +27,7 @@ class ClusterFactory {
             // vCluster instantiation
             let tmp;
             if (cluster.type === "geo") {
-                let tmp = new VGeoCluster(cluster, posX, posY, width, height, palette, data[index].keyAttribute);
+                tmp = new VGeoCluster(cluster, posX, posY, width, height, palette, data[index].keyAttribute, data[index].mapName);//  /files/Cartographies/Brazil_Amazon.geojson
             } else {
                 tmp = new VCluster(cluster, posX, posY, width, height, palette);
             }
