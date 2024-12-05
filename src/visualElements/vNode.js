@@ -1,5 +1,6 @@
 class VNode extends Button {
     shouldShowText = true;
+    shouldShowButton = true;
 
     constructor(node, width, height) {
         super(0, 0, width, height);
@@ -287,7 +288,9 @@ class VNode extends Button {
 
             this.updateConnectorsCoords(newPos, this.width);
 
+        if (this.shouldShowButton) {
             renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
+        }
 
             // draw label
             VirtualElementPool.hide(this, 'node-description');
