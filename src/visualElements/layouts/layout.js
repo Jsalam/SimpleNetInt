@@ -8,7 +8,11 @@ class Layout {
         this.margin = { left: 0, top: 0, right: 0, bottom: 0 };
         // the layout area excluding margins
         this.area = this.setArea();
+        this.vNodes;
+    }
 
+    subscribeVNodes(vNodes) {
+        this.vNodes = vNodes;
     }
 
     setWidth(wdth) {
@@ -37,14 +41,14 @@ class Layout {
     }
 
 
-    linearArray(vNodes, stepX, stepY) {
+    linearArray(stepX, stepY) {
 
         const xCapacity = this.area.width / stepX;
 
         let xPos = 0;
         let yPos = 0;
 
-        for (let i = 0; i < vNodes.length; i++) {
+        for (let i = 0; i < this.vNodes.length; i++) {
 
             if (i > 0 && i % xCapacity == 0) {
                 xPos = 0;
@@ -52,17 +56,16 @@ class Layout {
             }
             xPos += stepX;
 
-            vNodes[i].setX(xPos);
-            vNodes[i].setY(yPos);
+            this.vNodes[i].setX(xPos);
+            this.vNodes[i].setY(yPos);
         }
     }
 
     /**
      * Based on NetInt Concentric Layouts. https://github.com/LeonardoResearchGroup/NetInt/blob/master/Java/CommunityVisualizationJUNG/src/netInt/containers/layout/ConcentricLayout.java
-     * @param {Array} vNodes 
      * @param {Number} maxRadius 
      */
-    concentricArray(vNodes, maxRadius, gapFactor) {
+    concentricArray(maxRadius, gapFactor) {
 
         let accLength = 0;
         let maxCircumference = this._getCircumference(maxRadius);
@@ -74,7 +77,7 @@ class Layout {
         // Temporary collection of nodes
         let tempVNodes = [];
 
-        for (const vNode of vNodes) {
+        for (const vNode of this.vNodes) {
             let nodeDiam = gapFactor * vNode.diam;
             accLength += nodeDiam;
 
@@ -128,10 +131,10 @@ class Layout {
       //  return rings;
     }
 
-    setLocations(vNodes, totalLength, lastRadius, gapFactor) {
+    setLocations(totalLength, lastRadius, gapFactor) {
 
         // Distribute all possible angles in all length units
-        let angleFraction = (Math.PI * 2) / vNodes.length; //totalLength;
+        let angleFraction = (Math.PI * 2) / this.vNodes.length; //totalLength;
 
         // Calculate the tier's radius
         let radius = totalLength / (Math.PI * 2);
@@ -149,9 +152,9 @@ class Layout {
         // Accumulated length
         let accLength = 0;
 
-        for (let i = 0; i < vNodes.length; i++) {
+        for (let i = 0; i < this.vNodes.length; i++) {
 
-            let nodeLength = gapFactor * vNodes[i].diam;
+            let nodeLength = gapFactor * this.vNodes[i].diam;
 
             let angle = i * angleFraction;
 
@@ -160,8 +163,8 @@ class Layout {
             let posX = Math.cos(angle) * radius;
             let posY = Math.sin(angle) * radius;
 
-            vNodes[i].setX(posX);
-            vNodes[i].setY(posY);
+            this.vNodes[i].setX(posX);
+            this.vNodes[i].setY(posY);
         }
 
         return radius;

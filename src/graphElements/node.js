@@ -443,7 +443,8 @@ class Node {
     closeEdge(buffEdge) {
         // set target
         if (buffEdge.setTarget(this)) {
-            this.sproutConnector(buffEdge.kind);
+           let connector = this.sproutConnector(buffEdge.kind);
+           connector.subscribeEdgeObserver(buffEdge);
             // close edge
             buffEdge.open = false;
         } else {

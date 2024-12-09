@@ -71,6 +71,7 @@ class Edge {
     setTarget(target) {
         this.target = target;
         this.id = { 'source': this.source.idCat, 'target': this.target.idCat };
+        this.open = false;
         return true;
     }
 

@@ -288,9 +288,9 @@ class VNode extends Button {
 
             this.updateConnectorsCoords(newPos, this.width);
 
-        if (this.shouldShowButton) {
-            renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
-        }
+            if (this.shouldShowButton) {
+                renderer.ellipse(newPos.x, newPos.y, this.diam + 7 + (this.node.connectors.length * 3));
+            }
 
             // draw label
             VirtualElementPool.hide(this, 'node-description');
@@ -585,24 +585,27 @@ class VNode extends Button {
                 for (let i = 0; i < edgeObserverOfTheKind.length; i++) {
                     const edgeTmp = edgeObserverOfTheKind[i];
 
-                    let otherCluster = {'source':'', 'target':''};
+                    let otherCluster = { 'source': '', 'target': '' };
 
-                    if (this.node.idCat.cluster != edgeTmp.id.source.cluster) {
-                        otherCluster.source = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id.source.cluster).label;
-                    }
+                    // Do not do these opeartions if the edge is open
+                    if (!edgeTmp.open) {
+                        if (this.node.idCat.cluster != edgeTmp.id.source.cluster) {
+                            otherCluster.source = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id.source.cluster).label;
+                        }
 
-                    if (this.node.idCat.cluster != edgeTmp.id.target.cluster) {
-                        otherCluster.target = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id.target.cluster).label;
-                    }
+                        if (this.node.idCat.cluster != edgeTmp.id.target.cluster) {
+                            otherCluster.target = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id.target.cluster).label;
+                        }
 
-                  //  console.log(otherCluster['source']);
+                        //console.log(otherCluster['source']);
 
-                    // out
-                    if (edgeTmp.source.idCat.pajekIndex == this.node.idCat.pajekIndex) {
-                        textRow += 'Out w ' + edgeTmp.weight + " - TO " + trimText(edgeTmp.target.label, 25) + ". " + otherCluster.target + "\n";
-                    } else {
-                        // in
-                        textRow += 'In w ' + edgeTmp.weight + " - FROM " + trimText(edgeTmp.source.label, 25) + ". " + otherCluster.source + "\n";
+                        // out
+                        if (edgeTmp.source.idCat.pajekIndex == this.node.idCat.pajekIndex) {
+                            textRow += 'Out w ' + edgeTmp.weight + " - TO " + trimText(edgeTmp.target.label, 25) + ". " + otherCluster.target + "\n";
+                        } else {
+                            // in
+                            textRow += 'In w ' + edgeTmp.weight + " - FROM " + trimText(edgeTmp.source.label, 25) + ". " + otherCluster.source + "\n";
+                        }
                     }
                 }
 

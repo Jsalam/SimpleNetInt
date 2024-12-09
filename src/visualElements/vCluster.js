@@ -4,12 +4,13 @@ class VCluster extends Button{
         this.vNodes = [];
         this.cluster = cluster;
         this.palette = palette;
+        // instantiate a layout
+        this.layout = new Layout();
         this.populateVNodes(cluster);
         //   this.setPalette();
         // instantiate a tranformer for this vCluster
         TransFactory.initTransformer(this);
-        // instantiate a layout
-        this.layout = new Layout();
+
     }
 
     // Observing to Canvas
@@ -58,6 +59,7 @@ class VCluster extends Button{
             // add to colecction
             this.addVNode(vNodeTemp, node.importedVNodeData);
         }
+        this.layout.subscribeVNodes(this.vNodes);
     }
 
     addVNode(vNode, data) {
