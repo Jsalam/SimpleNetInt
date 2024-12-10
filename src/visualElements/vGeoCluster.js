@@ -244,16 +244,16 @@ class VGeoCluster extends VCluster {
 
         this.computeStatistics();
 
-        gp5.loadShader('/src/shader/shader_color.vert', '/src/shader/shader.frag', (shader) => {
+        gp5.loadShader('./src/shader/shader_color.vert', './src/shader/shader.frag', (shader) => {
             this.pixelShader = shader;
         }, console.error)
 
-        gp5.loadShader('/src/shader/shader_id.vert', '/src/shader/shader.frag', (shader) => {
+        gp5.loadShader('./src/shader/shader_id.vert', './src/shader/shader.frag', (shader) => {
             this.idShader = shader;
         }, console.error);
 
         // TODO: this will be loaded from JSON
-        const geoJsonUrl = '/files/Cartographies/' + cartography;
+        const geoJsonUrl = './files/Cartographies/' + cartography;
 
         // TODO: this will be loaded from JSON
         const getColorAt = (index) => {
