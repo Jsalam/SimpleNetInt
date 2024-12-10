@@ -365,51 +365,6 @@ class VGeoCluster extends VCluster {
         );
     }
 
-    computeStatistics() {
-        let n = 0;
-        let total = 0;
-        for (const node of this.cluster.nodes) {
-            this.nodeByGeocode[node.attributes.attRaw.geocode] = node;
-            const attrValue = Number(node.attributes.attRaw[this.keyAttribute]);
-            if (Number.isNaN(attrValue)) continue;
-            ++n;
-            total += attrValue;
-        }
-        this.keyAttributeMean = total / n;
-
-        let SSD = 0;
-        for (const node of this.cluster.nodes) {
-            this.nodeByGeocode[node.attributes.attRaw.geocode] = node;
-            const attrValue = Number(node.attributes.attRaw[this.keyAttribute]);
-            if (Number.isNaN(attrValue)) continue;
-            SSD += (attrValue - this.keyAttributeMean) ** 2;
-        }
-        this.keyAttributeStdev = Math.sqrt(SSD / n);
-    }
-
-    colorFor(geocode) {
-        if (!this.nodeByGeocode[geocode]) {
-            return gp5.color(200);
-        }
-        const attrValue = Number(this.nodeByGeocode[geocode]?.attributes.attRaw?.[this.keyAttribute]) || 0;
-        const start = this.keyAttributeMean - 1.5 * this.keyAttributeStdev;
-        const end = this.keyAttributeMean + 1.5 * this.keyAttributeStdev;
-        // TODO: this will be loaded from JSON
-        const [r1, g1, b1] = [
-            [7, 64, 80],
-            [255, 198, 196]
-        ][this.index];
-        const [r2, g2, b2] = [
-            [211, 242, 163],
-            [103, 32, 68]
-        ][this.index];
-        return gp5.color(
-            gp5.map(attrValue, start, end, r1, r2, true),
-            gp5.map(attrValue, start, end, g1, g2, true),
-            gp5.map(attrValue, start, end, b1, b2, true),
-        );
-    }
-
     warp(r) {
         if (r < this.r1) return this.s1 * r;
         if (r < this.r2) {
