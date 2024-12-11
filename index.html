@@ -48,9 +48,11 @@
     <script src="src/canvas/canvas.js"></script>
     <script src='src/canvas/transformer.js'></script>
     <script src="src/GUI/forms/addClusterModalForm.js"></script>
+    <script src="src/GUI/forms/addEdgeCategoriesModalForm.js"></script>
     <script src="src/GUI/forms/addNodeModalForm.js"></script>
     <script src="src/GUI/forms/exportModalForm.js"></script>
     <script src="src/GUI/forms/importModalForm.js"></script>
+    
 
     <!-- Model -->
     <script src="src/graphElements/node.js"></script>
@@ -98,6 +100,7 @@
                             <option value="1">Firefly & Serenity Experimental Timeline</option>
                             <option value="2" selected>Test</option>
                             <option value="3">VGeoCluster</option>
+                            <option value="4">New Loading Test</option>
                         </select>
                     </div>
                     <hr>
@@ -252,8 +255,7 @@
 
 
     <!-- ADD CLUSTER MODAL FORM -->
-    <div class="modal fade" id="addClusterModal" tabindex="-1" role="dialog" aria-labelledby="addClusterModal"
-        aria-hidden="true">
+    <div class="modal fade" id="addClusterModal" tabindex="-1" role="dialog" aria-labelledby="addClusterModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -279,8 +281,7 @@
     </div>
 
     <!-- ADD NODE MODAL FORM -->
-    <div class="modal fade" id="addNodeModal" tabindex="-1" role="dialog" aria-labelledby="addNodeModal"
-        aria-hidden="true">
+    <div class="modal fade" id="addNodeModal" tabindex="-1" role="dialog" aria-labelledby="addNodeModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -318,8 +319,7 @@
     </div>
 
     <!-- EXPORT NETWORK MODAL FORM -->
-    <div class="modal fade" id="exportNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exportNetworkModal"
-        aria-hidden="true">
+    <div class="modal fade" id="exportNetworkModal" tabindex="-1" role="dialog" aria-labelledby="exportNetworkModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -337,8 +337,7 @@
     </div>
 
     <!-- IMPORT NETWORK MODAL FORM -->
-    <div class="modal fade" id="importNetworkModal" tabindex="-1" role="dialog" aria-labelledby="importNetworkModal"
-        aria-hidden="true">
+    <div class="modal fade" id="importNetworkModal" tabindex="-1" role="dialog" aria-labelledby="importNetworkModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -346,7 +345,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <div class="droppable" id="dragDropNetwork">Drag and drop the <b>NETWORK</b> file here.
+                    <div class="droppable" id="dragDropNetwork">Drag and drop the <b>NETWORK</b> file or click here.
                         <p id="networkFileName">No file yet.</p>
                     </div>
                     <br>
@@ -359,8 +358,7 @@
     </div>
 
     <!-- ADD EDGE CATEGORIES / KIND -->
-    <div class="modal fade" id="addKindModal" tabindex="-1" role="dialog" aria-labelledby="addKindModal"
-        aria-hidden="true">
+    <div class="modal fade" id="addKindModal" tabindex="-1" role="dialog" aria-labelledby="addKindModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -396,6 +394,8 @@
         <div> Something</div>
         <div class="dot-flashing"></div>
     </div>
+
+    <!-- SCRIPTS -->
 </body>
 
 </html>

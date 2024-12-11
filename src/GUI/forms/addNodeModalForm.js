@@ -42,3 +42,11 @@ getData = function() {
     }
 
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    $("#addNodeModal").on('hide.bs.modal', function () {
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+    });
+});

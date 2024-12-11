@@ -3,6 +3,15 @@
 //     document.getElementById("SubmitAddClusterModal").onclick = getDataCluster
 // }
 
+// Prevent focus on form close
+document.addEventListener('DOMContentLoaded', function () {
+    $("#addClusterModal").on('hide.bs.modal', function () {
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+    });
+});
+
 getDataCluster = function() {
     let name = document.getElementById("clusterName").value
     let description = document.getElementById("clusterDescription").value

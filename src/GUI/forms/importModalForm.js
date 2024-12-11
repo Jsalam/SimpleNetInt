@@ -1,33 +1,35 @@
 let nodesImported;
 let edgesImported;
 
-importNetworkModalForm = function() {
+importNetworkModalForm = function () {
     var networkFile = document.getElementById('dragDropNetwork');
     makeDroppable(networkFile, callbackNetwork);
 }
 
-getDataImport = function(evt) {
+getDataImport = function (evt) {
     VirtualElementPool.clear();
-    Canvas.clear();
+    // Canvas.clear();
     DOM.onLoadNetwork({ nodes: nodesImported, edges: edgesImported }, evt)
+
+
 }
 
-callbackNetwork = function(files) {
+callbackNetwork = function (files) {
     //Only process json files.
     if (files[0].type.endsWith('json')) {
         document.getElementById('networkFileName').innerHTML = files[0].name
         loadFile(files[0]);
 
     } else {
-        alert("Wrong file format. Must be a JSON file")
+        alert("Wrong file extension. Must be a JSON file")
     }
 }
 
-loadFile = function(file) {
+loadFile = function (file) {
     let reader = new FileReader();
     // Closure to capture the file information.
-    reader.onload = (function(theFile) {
-        return function(e) {
+    reader.onload = (function (theFile) {
+        return function (e) {
             // Read text data and parse to JSON.
             let data = JSON.parse(e.target.result)
 
@@ -39,13 +41,13 @@ loadFile = function(file) {
     reader.readAsText(file);
 }
 
-callback = function(files) {
+callback = function (files) {
     console.log("both")
     console.log(files.getData());
 }
 
 //source: https://bitwiser.in/2015/08/08/creating-dropzone-for-drag-drop-file.html
-makeDroppable = function(element, callback) {
+makeDroppable = function (element, callback) {
 
     var input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -55,26 +57,26 @@ makeDroppable = function(element, callback) {
     input.addEventListener('change', triggerCallback);
     element.appendChild(input);
 
-    element.addEventListener('dragover', function(e) {
+    element.addEventListener('dragover', function (e) {
         e.preventDefault();
         e.stopPropagation();
         element.classList.add('dragover');
     });
 
-    element.addEventListener('dragleave', function(e) {
+    element.addEventListener('dragleave', function (e) {
         e.preventDefault();
         e.stopPropagation();
         element.classList.remove('dragover');
     });
 
-    element.addEventListener('drop', function(e) {
+    element.addEventListener('drop', function (e) {
         e.preventDefault();
         e.stopPropagation();
         element.classList.remove('dragover');
         triggerCallback(e);
     });
 
-    element.addEventListener('click', function() {
+    element.addEventListener('click', function () {
         input.value = null;
         input.click();
     });
@@ -90,15 +92,24 @@ makeDroppable = function(element, callback) {
     }
 }
 
+// Prevent focus on form close
+document.addEventListener('DOMContentLoaded', function () {
+    $("#importNetworkModal").on('hide.bs.modal', function () {
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+    });
+});
+
 /** deprecated */
-buildClustersImport = function(result) {
+buildClustersImport = function (result) {
     Canvas.resetObservers();
     ClusterFactory.reset();
     ClusterFactory.makeClusters(result);
 }
 
 /** deprecated */
-buildEdgesImport = function(result) {
+buildEdgesImport = function (result) {
     EdgeFactory.reset();
     EdgeFactory.buildEdges(result, ClusterFactory.clusters)
 }

@@ -1,4 +1,4 @@
-saveJSON = function() {
+saveJSON = function () {
     let fileSuffix = document.getElementById("exportFileSuffix").value;
 
     if (fileSuffix) {
@@ -23,3 +23,11 @@ saveJSON = function() {
     }
 
 }
+// Prevent focus on form close
+document.addEventListener('DOMContentLoaded', function () {
+    $("#exportNetworkModal").on('hide.bs.modal', function () {
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+    });
+});
