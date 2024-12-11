@@ -232,7 +232,7 @@ class DOM {
             DOM.onLoadNetwork(data, evt);
         });
 
-        
+
     }
 
     /**
@@ -271,7 +271,7 @@ class DOM {
             DOM.buildEdges(edgesTemp);
         }
 
-       
+
 
         // Get all the kinds of connectors added to the nodes from all clusters
         const connectorKinds = ClusterFactory.getAllConnectorKinds();
@@ -410,6 +410,14 @@ class DOM {
 
     static toggleInstructions() {
         DOM.showLegend = !DOM.showLegend;
+    }
+
+    static toggle_visibility(id) {
+        let e = document.getElementById(id);
+        if (window.getComputedStyle(e).opacity == 1) {
+            e.style.opacity = 0.3;
+        } else
+            e.style.opacity = 1;
     }
 
     static resetEdgeContextualMenuInputContent(val) {

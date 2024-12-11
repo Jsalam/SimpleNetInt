@@ -100,7 +100,6 @@
                             <option value="1">Firefly & Serenity Experimental Timeline</option>
                             <option value="2" selected>Test</option>
                             <option value="3">VGeoCluster</option>
-                            <option value="4">New Loading Test</option>
                         </select>
                     </div>
                     <hr>
@@ -230,7 +229,7 @@
     <!-- Navigation Bar -->
     <nav>
         <!-- <div class="d-inline-flex flex-row-reverse" style="align-items: initial;"> -->
-        <div onclick="toggle_visibility('navbarHideableHeader')" data-toggle="collapse"
+        <div onclick="DOM.toggle_visibility('navbarHideableHeader')" data-toggle="collapse"
             data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
             aria-label="Toggle navigation">
 
@@ -238,16 +237,6 @@
                 <div id="menuButton">menu</div>
             </div>
         </div>
-
-        <script type="text/javascript">
-            function toggle_visibility(id) {
-                let e = document.getElementById(id);
-                if (window.getComputedStyle(e).opacity == 1) {
-                    e.style.opacity = 0.3;
-                } else
-                    e.style.opacity = 1;
-            }
-        </script>
     </nav>
 
     <!-- Model goes here -->
