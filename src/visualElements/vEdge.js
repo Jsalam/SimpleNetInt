@@ -55,6 +55,7 @@ class VEdge {
         } else {
 
         }
+        return false;
     }
 
     setVSource(vNode) {

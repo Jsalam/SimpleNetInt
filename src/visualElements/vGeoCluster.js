@@ -26,6 +26,7 @@ class VGeoCluster extends VCluster {
     fromCanvas(data) {
         this.glProgram.fromCanvas(data);
         this.layout.cartographic(this.glProgram);
+        return false;
     }
 
 

@@ -28,6 +28,7 @@ class Transformer {
 
     // Observing to Canvas
     fromCanvas(data) {
+        let handled = false;
 
         // MouseEvents
         if (data.event instanceof MouseEvent) {
@@ -42,10 +43,12 @@ class Transformer {
             if (data.type == "keydown") {
                 if (data.event.key == this.vCluster.cluster.id) {
                     this.active = !this.active;
+                    handled = true;
                 }
             }
             if (data.type == "keyup") {}
         }
+        return handled;
     }
 
     pushVCluster(vCluster) {
@@ -58,12 +61,16 @@ class Transformer {
 
         for (let i = 0; i < vC.vNodes.length; i++) {
             let vN = vC.vNodes[i];
+            // A VNode can belong to multiple VClusters, but it only transforms with its current "parent"
+            if (vN.parentVCluster != null && vN.parentVCluster !== vC) {
+                continue;
+            }
             let tmp = [];
             glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.invert);
             glMatrix.vec2.transformMat2d(tmp, tmp, this.transform);
             vN.pos.set(tmp);
             vN.transformed = this.transformed;
-        };
+        }
 
         this._getInvert();
         this.needsUpdate = false;
