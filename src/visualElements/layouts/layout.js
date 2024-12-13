@@ -175,4 +175,10 @@ class Layout {
         return result;
     }
 
+    /**
+     * @param {CartoGL} glProgram
+     */
+    cartographic(glProgram) {
+        glProgram.layout(this.vNodes);
+    }
 }

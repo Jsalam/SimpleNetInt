@@ -142,9 +142,6 @@ class Canvas {
         // push transformations
         TransFactory.pushVClusters();
 
-        VGeoCluster.pixelTarget.background(0, 0, 0, 0);
-        VGeoCluster.idTarget.background(0, 0, 0, 0);
-
         // show observers
         this.observers.forEach(element => {
             if (element instanceof VCluster) {
@@ -160,9 +157,6 @@ class Canvas {
             //     element.show(gp5);
             // }
         });
-
-        gp5.image(VGeoCluster.pixelTarget, 0, 0);
-        VGeoCluster.detectHitAsync();
 
         this.observers.forEach(element => {
             if (element instanceof VNode || element instanceof VEdge) {
