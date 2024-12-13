@@ -88,7 +88,13 @@ class Canvas {
     }
 
     static notifyObservers(data) {
-        this.observers.forEach(observer => observer.fromCanvas(data))
+        let handled = false;
+        this.observers.forEach(observer => {
+            if (observer.fromCanvas(data)) {
+                handled = true;
+            }
+        })
+        return handled;
     }
 
     static resetObservers() {
@@ -128,6 +134,7 @@ class Canvas {
             Canvas.renderOnP5();
          }
          this.renderGate = false;
+         ClusterFactory.showSelectedArea();
     }
 
     /**
@@ -141,9 +148,6 @@ class Canvas {
 
         // push transformations
         TransFactory.pushVClusters();
-
-        VGeoCluster.pixelTarget.background(0, 0, 0, 0);
-        VGeoCluster.idTarget.background(0, 0, 0, 0);
 
         // show observers
         this.observers.forEach(element => {
@@ -160,9 +164,6 @@ class Canvas {
             //     element.show(gp5);
             // }
         });
-
-        gp5.image(VGeoCluster.pixelTarget, 0, 0);
-        VGeoCluster.detectHitAsync();
 
         this.observers.forEach(element => {
             if (element instanceof VNode || element instanceof VEdge) {
@@ -428,7 +429,9 @@ class Canvas {
         if (Canvas.shiftDown) {
             gp5.cursor('grab')
         }
-        Canvas.notifyObservers({ event: evt, type: "mousedown", pos: Canvas._mouse });
+        if (!Canvas.notifyObservers({ event: evt, type: "mousedown", pos: Canvas._mouse })) {
+            ClusterFactory.selectionStart = Canvas._mouse;
+        }
     }
 
     /** Mouse left button released */
@@ -436,12 +439,13 @@ class Canvas {
         Canvas.mouseDown = false;
         this.renderGate = false;
         gp5.cursor(gp5.ARROW)
-        Canvas.notifyObservers({ event: evt, type: "mouseup", pos: Canvas._mouse });
+        if (!Canvas.notifyObservers({ event: evt, type: "mouseup", pos: Canvas._mouse })) {
+            ClusterFactory.createSelection();
+        }
     }
 
     /** Mouse dragged */
     static mDragged(evt) {
-
         if (Canvas.mouseDown) {
             this.renderGate = true;
             // if mouse move & down & key shift
@@ -457,10 +461,14 @@ class Canvas {
                 this._canvasBeingTransformed = false;
             }
             // if mouse move & down
-            Canvas.notifyObservers({ event: evt, type: "mousedrag", pos: Canvas._mouse });
+            if (!Canvas.notifyObservers({ event: evt, type: "mousedrag", pos: Canvas._mouse })) {
+                ClusterFactory.selectionEnd = Canvas._mouse;
+            }
         } else {
             // if mouse move
-            Canvas.notifyObservers({ event: evt, type: "mousemove", pos: Canvas._mouse });
+            if (!Canvas.notifyObservers({ event: evt, type: "mousemove", pos: Canvas._mouse })) {
+                ClusterFactory.selectionEnd = Canvas._mouse;
+            }
         }
     }
 

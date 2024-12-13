@@ -1,6 +1,7 @@
 class VNode extends Button {
     shouldShowText = true;
     shouldShowButton = true;
+    parentVCluster = null;
 
     constructor(node, width, height) {
         super(0, 0, width, height);
@@ -125,6 +126,8 @@ class VNode extends Button {
                 }
             }
         }
+        // A VNode can handle a (mouse) event iff the mouse is over it
+        return this.mouseIsOver;
     }
 
     // Observer node
