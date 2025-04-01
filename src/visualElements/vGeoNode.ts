@@ -1,3 +1,1 @@
-class VGeoNode extends VNode {
-
-}
+class VGeoNode extends VNode {}
