@@ -1,9 +1,17 @@
+import {Transformer} from "../canvas/transformer";
+import {ClusterFactory} from "./clusterFactory";
+import {Canvas} from "../canvas/canvas";
+import {VCluster} from "../visualElements/vCluster";
+import p5 from "p5";
+
 /**
  * This class manages all the transformation matrices used in the visualization, except for the native matrices used by p5.js
  * The matrices are usually associated to vClusters
  */
 
-class TransFactory {
+export class TransFactory {
+  static transformers: Transformer[];
+
   static init() {
     // clean elements
     TransFactory.transformers = [];
@@ -14,7 +22,7 @@ class TransFactory {
     }
   }
 
-  static initTransformer(vC) {
+  static initTransformer(vC: VCluster) {
     let temp = new Transformer(vC);
 
     // disable transformations
@@ -27,13 +35,13 @@ class TransFactory {
     Canvas.subscribe(temp);
   }
 
-  static zoom(amnt) {
+  static zoom(amnt: number) {
     for (const tr of TransFactory.transformers) {
       tr.zoom(amnt);
     }
   }
 
-  static crissCross(amnt) {
+  static crissCross(amnt: number) {
     for (let index = 0; index < TransFactory.transformers.length; index++) {
       const transformer = TransFactory.transformers[index];
       if (index % 2 == 0) {
@@ -62,13 +70,13 @@ class TransFactory {
     }
   }
 
-  static getTransformerByVClusterID(id) {
+  static getTransformerByVClusterID(id: unknown) {
     return TransFactory.transformers.filter(
       (tr) => tr.vCluster.cluster.id == id,
     )[0];
   }
 
-  static displayStatus(pos, renderer) {
+  static displayStatus(pos: p5.Vector, renderer: p5) {
     renderer.textSize(12);
     renderer.noStroke();
     renderer.fill(255, 255, 255);
@@ -97,5 +105,11 @@ class TransFactory {
     renderer.text(outputString, pos.x + 10, pos.y + 35);
     renderer.stroke(255);
   }
+
+  static get(__UNKNOWN_ARG__: unknown): Transformer | undefined {
+    // FIXME: NO IMPLEMENTATION
+    return undefined;
+  }
 }
+
 TransFactory.transformers = [];

@@ -1,8 +1,14 @@
-saveJSON = function () {
-  let fileSuffix = document.getElementById("exportFileSuffix").value;
+import { ClusterFactory } from "../../factories/clusterFactory";
+import { EdgeFactory } from "../../factories/edgeFactory";
+import { gp5 } from "../../main";
+
+export function saveJSON() {
+  let fileSuffix = (
+    document.getElementById("exportFileSuffix") as HTMLInputElement
+  ).value;
 
   if (fileSuffix) {
-    let output = [];
+    let output: object = [];
     let nodes = [];
     let edges = [];
     for (let index = 0; index < ClusterFactory.clusters.length; index++) {
@@ -21,12 +27,13 @@ saveJSON = function () {
   } else {
     alert("Missing file name");
   }
-};
+}
+
 // Prevent focus on form close
 document.addEventListener("DOMContentLoaded", function () {
   $("#exportNetworkModal").on("hide.bs.modal", function () {
     if (document.activeElement) {
-      document.activeElement.blur();
+      (document.activeElement as HTMLInputElement).blur();
     }
   });
 });

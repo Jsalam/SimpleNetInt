@@ -1,5 +1,13 @@
-class Cluster {
-  constructor(id, type) {
+import { Node } from "./node";
+
+export class Cluster {
+  label: string | undefined;
+  description: string | undefined;
+  nodes: Node[];
+  id: string;
+  type: string;
+
+  constructor(id: string, type: string) {
     this.label;
     this.description;
     this.nodes = [];
@@ -7,19 +15,19 @@ class Cluster {
     this.type = type;
   }
 
-  addNode(cat) {
+  addNode(cat: Node) {
     this.nodes.push(cat);
   }
 
-  setLabel(label) {
+  setLabel(label: string) {
     this.label = label;
   }
 
-  setDescription(text) {
+  setDescription(text: string) {
     this.description = text;
   }
 
-  getNode(index) {
+  getNode(index: number) {
     let rtn = this.nodes.filter((n) => {
       return n.idCat.index === index;
     })[0];
@@ -42,7 +50,7 @@ class Cluster {
       clusterID: this.id,
       clusterLabel: this.label,
       clusterDescription: this.description,
-      nodes: [],
+      nodes: [] as unknown[],
     };
     this.nodes.forEach((element) => {
       let tmpN = element.getJSON();

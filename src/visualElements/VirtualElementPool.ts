@@ -1,3 +1,30 @@
+type CSSPropertyName = {
+  [K in keyof CSSStyleDeclaration]: CSSStyleDeclaration[K] extends string
+    ? K
+    : never;
+}[keyof CSSStyleDeclaration];
+
+class VirtualElement {
+  native = this.createNativeElement();
+  textContent = "";
+  style: Partial<CSSStyleDeclaration> = {};
+  nextTextContent = "";
+  nextStyle: Partial<CSSStyleDeclaration> = {};
+
+  createNativeElement() {
+    const el = document.createElement("div");
+    el.style.position = "absolute";
+    el.style.left = "0px";
+    el.style.top = "0px";
+    // Move it out of screen
+    //  el.style.transform = 'translateX(-999px, -999px)';
+    // Hide the element
+    el.style.display = "none";
+    el.style.pointerEvents = "none";
+    return el;
+  }
+}
+
 /**
  * This class manages a pool of DOM elements that can be used to display
  * text labels on the screen. This is useful to avoid creating and destroying
@@ -13,31 +40,9 @@ class VirtualElementPool {
   /**
    * Represents a void DOM element.
    */
-  static VirtualElement = class {
-    constructor() {
-      this.native = this.createNativeElement();
-      this.textContent = "";
-      this.style = {};
-      this.nextTextContent = "";
-      this.nextStyle = {};
-    }
-
-    createNativeElement() {
-      const el = document.createElement("div");
-      el.style.position = "absolute";
-      el.style.left = "0px";
-      el.style.top = "0px";
-      // Move it out of screen
-      //  el.style.transform = 'translateX(-999px, -999px)';
-      // Hide the element
-      el.style.display = "none";
-      el.style.pointerEvents = "none";
-      return el;
-    }
-  };
 
   static capacity = 400;
-  static allElements = [];
+  static allElements: VirtualElement[] = [];
   static activeElements = new Map();
   static freeElements = new Map();
 
@@ -53,12 +58,12 @@ class VirtualElementPool {
   static commitUpdate() {
     this.updateScheduled = false;
     for (const ve of this.allElements) {
-      for (let prop of Object.keys(ve.nextStyle)) {
+      for (let prop of Object.keys(ve.nextStyle) as CSSPropertyName[]) {
         if (ve.nextStyle[prop] !== ve.style[prop]) {
-          ve.native.style[prop] = ve.nextStyle[prop];
+          ve.native.style[prop] = ve.nextStyle[prop]!;
         }
       }
-      for (let prop of Object.keys(ve.style)) {
+      for (let prop of Object.keys(ve.style) as CSSPropertyName[]) {
         if (!ve.nextStyle.hasOwnProperty(prop)) {
           ve.native.style[prop] = "";
         }
@@ -95,14 +100,14 @@ class VirtualElementPool {
    * @param {*} type
    * @returns
    */
-  static getActiveElementsByType(type) {
+  static getActiveElementsByType(type: string) {
     if (!this.activeElements.has(type)) {
       this.activeElements.set(type, new Map());
     }
     return this.activeElements.get(type);
   }
 
-  static getFreeElementsByType(type) {
+  static getFreeElementsByType(type: string) {
     if (!this.freeElements.has(type)) {
       this.freeElements.set(type, []);
     }
@@ -110,7 +115,7 @@ class VirtualElementPool {
   }
 
   static createElement() {
-    const ve = new VirtualElementPool.VirtualElement();
+    const ve = new VirtualElement();
     VirtualElementPool.allElements.push(ve);
     return ve;
   }
@@ -120,7 +125,7 @@ class VirtualElementPool {
    * @param {*} type
    * @returns
    */
-  static allocateElement(type) {
+  static allocateElement(type: string) {
     const freeElements = this.getFreeElementsByType(type);
     if (freeElements.length > 0) {
       return freeElements.pop();
@@ -140,7 +145,7 @@ class VirtualElementPool {
    * @param {*} type
    * @returns
    */
-  static getElementFor(client, type) {
+  static getElementFor(client: unknown, type: string) {
     const activeElements = this.getActiveElementsByType(type);
     if (activeElements.has(client)) {
       return activeElements.get(client);
@@ -150,7 +155,12 @@ class VirtualElementPool {
     return ve;
   }
 
-  static show(client, type, textContent, style) {
+  static show(
+    client: unknown,
+    type: string,
+    textContent: string,
+    style: Partial<CSSStyleDeclaration>,
+  ) {
     // console.log("VirtualElementPool.show");
     const ve = this.getElementFor(client, type);
     ve.nextTextContent = textContent;
@@ -158,7 +168,7 @@ class VirtualElementPool {
     VirtualElementPool.scheduleUpdate();
   }
 
-  static hide(client, type) {
+  static hide(client: unknown, type: string) {
     const activeElements = this.getActiveElementsByType(type);
     if (activeElements.has(client)) {
       const ve = activeElements.get(client);

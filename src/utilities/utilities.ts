@@ -1,11 +1,31 @@
-class Utilities {
+import { gp5 } from "../main";
+import { EdgeInit } from "../graphElements/edge";
+import { ClusterInit } from "../factories/clusterFactory";
+
+export interface JSONFile {
+  nodes: Array<ClusterInit>;
+  edges: Array<EdgeInit>;
+}
+
+export interface MergedJSONFile {
+  network?: JSONFile;
+  n: number;
+  weighted: boolean;
+}
+
+export class Utilities {
+  static mergedJSON: JSONFile = {
+    nodes: [],
+    edges: [],
+  };
+
   /**
    * Converts a network file exported from BipartiteNetworks in a json format into a pajek file. Output file saved in downloads folder
    *
    * @param {Object} jsonFile The network json file with nodes and edges
    * @param {String} name The name of the output file without extension
    */
-  static convertJSONtoPajek(jsonFile, name) {
+  static convertJSONtoPajek(jsonFile: JSONFile, name: string) {
     let clusters = jsonFile.nodes;
     let edges = jsonFile.edges;
     let pajekNodes = [];
@@ -13,9 +33,9 @@ class Utilities {
 
     // get nodes
     for (let i = 0; i < clusters.length; i++) {
-      for (let j = 0; j < clusters[i].nodes.length; j++) {
-        let nodeSeq = clusters[i].nodes[j].pajekIndex;
-        let nodeLab = clusters[i].nodes[j].nodeLabel;
+      for (let j = 0; j < clusters[i].nodes!.length; j++) {
+        let nodeSeq = clusters[i].nodes![j].pajekIndex;
+        let nodeLab = clusters[i].nodes![j].nodeLabel;
         pajekNodes.push(nodeSeq + " " + '\"' + nodeLab + '\"');
       }
     }
@@ -46,8 +66,8 @@ class Utilities {
    * The edge weight increase could be weighted by the number of networks merged
    * @param {Object} data
    */
-  static mergeJSON(data) {
-    let jsonFile = data.network;
+  static mergeJSON(data: MergedJSONFile) {
+    let jsonFile = data.network!;
     let nFiles = data.n;
     let weighted = data.weighted;
 
@@ -71,17 +91,17 @@ class Utilities {
             console.log(clustersNew[i].clusterID);
             console.log(Utilities.mergedJSON.nodes[j].clusterID);
             console.log("happy");
-            for (let k = 0; k < clustersNew[i].nodes.length; k++) {
+            for (let k = 0; k < clustersNew[i].nodes!.length; k++) {
               let doesNotExist = true;
-              let newNode = clustersNew[i].nodes[k];
+              let newNode = clustersNew[i].nodes![k];
               console.log(newNode.nodeLabel);
 
               for (
                 let l = 0;
-                l < Utilities.mergedJSON.nodes[j].nodes.length;
+                l < Utilities.mergedJSON.nodes[j].nodes!.length;
                 l++
               ) {
-                let oldNode = Utilities.mergedJSON.nodes[j].nodes[l];
+                let oldNode = Utilities.mergedJSON.nodes[j].nodes![l];
                 console.log("compared to : " + oldNode.nodeLabel);
 
                 if (newNode.id === oldNode.id) {
@@ -96,7 +116,7 @@ class Utilities {
                 // console.log(clustersNew[i].clusterID)
                 // console.log(Utilities.mergedJSON.nodes[j].clusterID)
                 // console.log(newNode.id)
-                Utilities.mergedJSON.nodes[j].nodes.push(newNode);
+                Utilities.mergedJSON.nodes[j].nodes!.push(newNode);
               }
             }
           }
@@ -140,7 +160,7 @@ class Utilities {
     }
   }
 
-  static addEdge(e1, weighted, weight) {
+  static addEdge(e1: EdgeInit, weighted: boolean, weight: number) {
     console.log("**** added ****");
     if (weighted) {
       e1.weight = weight;
@@ -150,14 +170,16 @@ class Utilities {
     Utilities.mergedJSON.edges.push(e1);
   }
 
-  static loadJsonNetworks(path, fileNames) {
-    let temp = { n: fileNames.length, weighted: true };
+  static loadJsonNetworks(path: string, fileNames: string[]) {
+    let temp: MergedJSONFile = { n: fileNames.length, weighted: true };
     for (let i = 0; i < fileNames.length; i++) {
-      gp5.loadJSON(path + fileNames[i] + "_network.json", function (cb) {
-        temp.network = cb;
-        Utilities.mergeJSON(temp);
-      });
+      gp5.loadJSON(
+        path + fileNames[i] + "_network.json",
+        function (cb: JSONFile) {
+          temp.network = cb;
+          Utilities.mergeJSON(temp);
+        },
+      );
     }
   }
 }
-Utilities.mergedJSON = { nodes: [], edges: [] };

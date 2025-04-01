@@ -1,5 +1,17 @@
+import {gp5} from "../main";
+import p5, {Vector} from "p5";
+
 /** Class for adding a grid on top of the canvas */
-class Grid {
+export class Grid {
+  org: Vector;
+  width: number;
+  height: number;
+  hStep: number;
+  vStep: number;
+  stroke: string;
+  scaleFactor: number;
+  visible: boolean;
+
   /**
    *
    * @param {vector} org vector with origin coordinate system
@@ -9,7 +21,14 @@ class Grid {
    * @param {numeric} vPartitions number of steps
    * @param {numeric} scaleFactor the cell width or height representing an output unit scale. E.g., scaleFactor = 100 at width=50 meters and step=5 meter means that 100 pixels represent 10 meters (50/5) output units
    */
-  constructor(org, width, height, hPartitions, vPartitions, scaleFactor) {
+  constructor(
+    org: Vector,
+    width: number,
+    height: number,
+    hPartitions: number,
+    vPartitions: number,
+    scaleFactor: number,
+  ) {
     this.org = org;
     this.width = width * scaleFactor;
     this.height = height * scaleFactor;
@@ -22,7 +41,7 @@ class Grid {
     this.visible = true;
   }
 
-  show(renderer) {
+  show(renderer: p5) {
     if (this.visible) {
       renderer.strokeWeight(1);
       renderer.stroke(this.stroke);
@@ -46,7 +65,7 @@ class Grid {
     }
   }
 
-  showScale(renderer, x, y) {
+  showScale(renderer: p5, x: number, y: number) {
     // areas
     renderer.strokeWeight(0.5);
     renderer.noFill();
@@ -71,7 +90,7 @@ class Grid {
     renderer.text("1 m", x + meter + 3, y + 12);
   }
 
-  _feetToMeters(val) {
+  _feetToMeters(val: number) {
     const factor = 3.28084;
     return val / factor;
   }
@@ -81,7 +100,7 @@ class Grid {
     return this.hStep * factor;
   }
 
-  _inchesToCentimeters(val) {
+  _inchesToCentimeters(val: number) {
     const factor = 0.393701;
     return val / factor;
   }

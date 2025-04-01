@@ -1,9 +1,22 @@
 /** The connector is an anchor within the node that holds edges linked to this node.
  * There might be diverse kinds of connectors in a node, thus there are diverse kind of edges.
  * The Edges kind is the same as the source connector's kind*/
+import { VConnector } from "../visualElements/vConnector";
+import { Identifier } from "../types";
+import { Edge } from "./edge";
 
-class Connector {
-  constructor(id, _kind, _index) {
+export class Connector {
+  vConnectorObserver: VConnector | null = null;
+  id: {
+    cluster: unknown;
+    cat: unknown;
+    index: unknown;
+    pajekIndex: unknown;
+  };
+  kind: string;
+  edgeObservers: Edge[];
+
+  constructor(id: Identifier, _kind: string, _index: number) {
     this.id = {
       cluster: id.cluster,
       cat: id.index,
@@ -16,7 +29,7 @@ class Connector {
     this.edgeObservers = [];
   }
 
-  equals(conn) {
+  equals(conn: Connector) {
     let rtn = false;
     if (
       this.id.cluster == conn.id.cluster &&
@@ -31,17 +44,17 @@ class Connector {
     return rtn;
   }
 
-  subscribeEdgeObserver(edge) {
+  subscribeEdgeObserver(edge: Edge) {
     edge.kind = this.kind;
     this.edgeObservers.push(edge);
   }
 
-  subscribeVConnector(observer) {
+  subscribeVConnector(observer: VConnector) {
     this.vConnectorObserver = observer;
   }
 
-  notifyVConnector(data) {
-    this.vConnectorObserver.getData(data);
+  notifyVConnector(data: unknown) {
+    this.vConnectorObserver!.getData(data);
   }
 
   getJSON() {

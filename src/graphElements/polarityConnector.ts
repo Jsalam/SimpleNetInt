@@ -1,7 +1,33 @@
+import {Edge} from "./edge";
+import {EdgeFactory} from "../factories/edgeFactory";
+import {VConnector} from "../visualElements/vConnector";
+import {CustomEvent} from "../types";
+import {Node} from "./node";
+
 /** These are connectors with different a polarity either true or false. These connectors can only take edges coming from connectors with opposite polarity
  */
 class PolarityConnector {
-  constructor(id, _index, polarity, _count) {
+  polarity: unknown;
+  taken: boolean;
+  nodeObserver: Node | undefined;
+  vConnectorObserver: VConnector | undefined;
+  id: {
+    cluster: unknown;
+    cat: unknown;
+    index: unknown;
+    polarity: unknown;
+    pajekIndex: number;
+  };
+
+  constructor(
+    id: {
+      cluster: unknown;
+      index: unknown;
+    },
+    _index: number,
+    polarity: unknown,
+    _count: number,
+  ) {
     this.polarity = polarity;
     this.id = {
       cluster: id.cluster,
@@ -16,29 +42,32 @@ class PolarityConnector {
     this.vConnectorObserver;
   }
 
-  subscribeNode(observer) {
+  subscribeNode(observer: Node) {
     this.nodeObserver = observer;
   }
 
-  subscribeVConnector(observer) {
+  subscribeVConnector(observer: VConnector) {
     this.vConnectorObserver = observer;
   }
 
-  notifyObserver(data) {
+  notifyObserver(data: CustomEvent) {
     if (data instanceof Edge) {
+      // @ts-ignore FIXME: method does not exist
       this.nodeObserver.splitConnectors(data);
     }
   }
 
   popThisConnector() {
+    // @ts-ignore FIXME: method does not exist
     this.nodeObserver.popLastConnector(this.polarity);
   }
 
   workOnLastEdge() {
     let lastEdge;
-    if (document.getElementById("edit").checked) {
+    if ((document.getElementById("edit") as HTMLInputElement).checked) {
       if (!this.taken) {
         // get the last edge in edges collection.
+        // @ts-ignore FIXME: `EDGES` does not exist
         lastEdge = EdgeFactory.EDGES.slice(-1)[0];
 
         // If there is at least one edge
@@ -63,17 +92,21 @@ class PolarityConnector {
 
   sproutEdge() {
     // create a new one
+    // @ts-ignore FIXME: wrong argument type
     let tmpEdge = new Edge(this);
+    // @ts-ignore FIXME: `edges` does not exist
     EdgeFactory.edges.push(tmpEdge);
     // dissable this connector
     this.taken = true;
     return tmpEdge;
   }
 
-  closeEdge(lastEdge) {
+  closeEdge(lastEdge: Edge) {
     // evaluate source and target cluster difference
+    // @ts-ignore FIXME: type of `.id`
     if (lastEdge.source.id.polarity != this.id.polarity) {
       // set target
+      // @ts-ignore FIXME: wrong argument type
       if (lastEdge.setTarget(this)) {
         // disable connector
         this.taken = true;
@@ -93,10 +126,11 @@ class PolarityConnector {
     }
   }
 
-  recallEdge(lastEdge) {
+  recallEdge(lastEdge: Edge) {
     // Enable source connector
     lastEdge.source.taken = false;
     // remove temporary edge
+    // @ts-ignore FIXME: `.edges` doesn't exist
     EdgeFactory.edges.pop();
     //vEdges.pop();
     this.taken = false;

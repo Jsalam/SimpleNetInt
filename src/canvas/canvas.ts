@@ -1,10 +1,45 @@
+import p5, {Graphics, Vector} from "p5";
+import {gp5} from "../main";
+import {Observer} from "../types";
+import {Edge} from "../graphElements/edge";
+import {VNode} from "../visualElements/vNode";
+import {EdgeFactory} from "../factories/edgeFactory";
+import {VEdge} from "../visualElements/vEdge";
+import {TransFactory, TransFactory as TransformerFactory,} from "../factories/transformerFactory";
+import {VConnector} from "../visualElements/vConnector";
+import {Grid} from "./grid";
+import {VCluster} from "../visualElements/vCluster";
+import {VGeoCluster} from "../visualElements/vGeoCluster";
+
 /**
  * Adaptation of NetInt Canvas class
  *
  *gp5 is a global instance of p5 object
  */
-class Canvas {
-  static makeCanvas(graphics) {
+export class Canvas {
+  static shiftDown = false;
+  static mouseDown = false;
+
+  static graphicsw: Graphics;
+  static graphicsRendered: boolean;
+  static renderGate: boolean;
+  static currentBackground: number;
+  static _zoom: number;
+  static _offset: Vector;
+  static _startOffset: Vector;
+  static _endOffset: Vector;
+  static _mouse: Vector;
+  static _newOrigin: Vector;
+  static grid: Grid;
+  static showGrid: boolean;
+  static observers: Observer[];
+  static _canvasBeingTransformed: unknown;
+  static newOrigin: Vector;
+
+  static valuesEl: HTMLElement | undefined;
+  static legendEl: HTMLElement | undefined;
+
+  static makeCanvas(graphics: Graphics) {
     // graphics
     this.graphicsw = graphics;
     this.graphicsRendered = false;
@@ -41,10 +76,10 @@ class Canvas {
     Canvas.keyEvents();
   }
 
-  static subscribe(obj) {
+  static subscribe(obj: Observer) {
     if (obj instanceof VEdge) {
       // get VEdge instances only
-      let vEdges = this.observers.filter(function (entry) {
+      let vEdges = this.observers.filter(function (entry): entry is VEdge {
         let rtn = false;
         if (entry instanceof VEdge) {
           rtn = true;
@@ -65,7 +100,7 @@ class Canvas {
     Canvas.update();
   }
 
-  static unsubscribe(obj) {
+  static unsubscribe(obj: Observer) {
     this.observers = this.observers.filter(function (subscriber) {
       let rtn = true;
       // Filter edges
@@ -73,7 +108,7 @@ class Canvas {
         (obj instanceof VEdge && subscriber instanceof VEdge) ||
         subscriber instanceof Edge
       ) {
-        if (EdgeFactory.compareEdges(subscriber, obj)) {
+        if (EdgeFactory.compareEdges(subscriber, obj as VEdge)) {
           rtn = false;
         }
       }
@@ -82,7 +117,7 @@ class Canvas {
         (obj instanceof VNode && subscriber instanceof VNode) ||
         subscriber instanceof Node
       ) {
-        if (obj.node.idCat === subscriber.node.idCat) {
+        if ((obj as VNode).node.idCat === (subscriber as VNode).node.idCat) {
           rtn = false;
         }
       }
@@ -90,8 +125,8 @@ class Canvas {
     });
   }
 
-  static notifyObservers(data) {
-    this.observers.forEach((observer) => observer.fromCanvas(data));
+  static notifyObservers(data: unknown) {
+    this.observers.forEach((observer) => observer.fromCanvas?.(data));
   }
 
   static resetObservers() {
@@ -114,7 +149,14 @@ class Canvas {
     });
   }
 
-  static initGrid(org, width, height, hPartitions, vPartitions, scaleFactor) {
+  static initGrid(
+    org: Vector,
+    width: number,
+    height: number,
+    hPartitions: number,
+    vPartitions: number,
+    scaleFactor: number,
+  ) {
     this.grid = new Grid(
       org,
       width,
@@ -201,18 +243,18 @@ class Canvas {
    * @param {Object} renderer either gp5 or this.graphics
    * @param {Integer} clusterID the cluster id
    */
-  static transformAndShowVNodes(element, renderer) {
-    let transformer = TransformerFactory.get(element.node.idCat.cluster);
+  static transformAndShowVNodes(element: VNode, renderer: p5) {
+    let transformer = TransformerFactory.get(element.node.idCat.cluster)!;
 
     let vN = element;
 
     // Applies transformation on the node
-    transformer.pushTo([vN.pos]);
+    transformer.pushTo([vN.pos!]);
 
     vN.show(renderer);
 
     // Applies inverse transformation on the node
-    transformer.popTo([vN.pos]);
+    transformer.popTo([vN.pos!]);
   }
 
   /**
@@ -249,8 +291,10 @@ class Canvas {
     this._zoom = 1;
     this._offset.set(0, 0, 0);
     TransFactory.reset();
+    // @ts-ignore FIXME: should be `.length`
     for (let i = 0; i < Canvas.observers; i++) {
       let element = Canvas.observers[i];
+      // FIXME: unnecessary runtime type check
       if (element instanceof VNode) {
         element.transformed = false;
       }
@@ -261,7 +305,7 @@ class Canvas {
    * Zoom_in keyboard
    * @param val
    */
-  static zoomIn(val) {
+  static zoomIn(val: number) {
     this._zoom += val;
   }
 
@@ -269,7 +313,7 @@ class Canvas {
    * Zoom out keyboard
    * @param val
    */
-  static zoomOut(val) {
+  static zoomOut(val: number) {
     this._zoom -= val;
     if (this._zoom < 0.1) {
       this._zoom = 0.1;
@@ -292,13 +336,13 @@ class Canvas {
     return Canvas._mouse;
   }
 
-  static translateOrigin(x, y) {
+  static translateOrigin(x: number, y: number) {
     this.newOrigin = gp5.createVector(x, y);
   }
 
   static hideValues() {
     if (this.valuesEl) {
-      this.valuesEl.style.opacity = 0;
+      this.valuesEl.style.opacity = "0";
     }
   }
 
@@ -306,7 +350,7 @@ class Canvas {
    * Show canvas values on screen
    * @param {Vector} pos
    */
-  static displayValues(pos, renderer) {
+  static displayValues(pos: Vector, __UNUSED_ARG__: unknown) {
     // **** Legends
     if (!this.valuesEl) {
       this.valuesEl = document.createElement("div");
@@ -326,7 +370,7 @@ class Canvas {
         containerEl.append(this.valuesEl);
       }
     }
-    this.valuesEl.style.opacity = 1;
+    this.valuesEl.style.opacity = "1";
     this.valuesEl.style.transform = `
             translate(${pos.x}px, ${pos.y}px)
             translateX(-100%)
@@ -357,7 +401,7 @@ class Canvas {
 
   static hideLegend() {
     if (this.legendEl) {
-      this.legendEl.style.opacity = 0;
+      this.legendEl.style.opacity = "0";
     }
   }
 
@@ -365,7 +409,7 @@ class Canvas {
    * Show GUI instructions on screen
    * @param {Vector} pos
    */
-  static showLegend(pos) {
+  static showLegend(pos: Vector, __UNUSED_ARG__: unknown) {
     if (!this.legendEl) {
       this.legendEl = document.createElement("div");
       const containerEl = document.querySelector("#model");
@@ -383,6 +427,7 @@ class Canvas {
         containerEl.append(this.legendEl);
       }
     }
+    // @ts-ignore FIXME: should be string
     this.legendEl.style.opacity = 1;
     this.legendEl.style.transform = `
             translate(${pos.x}px, ${pos.y}px)
@@ -421,7 +466,7 @@ class Canvas {
 
   // *** Events registration
   static mouseEvents() {
-    let htmlCanvas = document.getElementById("model");
+    let htmlCanvas = document.getElementById("model")!;
     htmlCanvas.addEventListener("mousedown", Canvas.mPressed.bind(this));
     htmlCanvas.addEventListener("mouseup", Canvas.mReleased.bind(this));
     htmlCanvas.addEventListener("mousemove", Canvas.mDragged.bind(this));
@@ -437,7 +482,7 @@ class Canvas {
   // *** Event related methods
 
   /** Mouse left button pressed */
-  static mPressed(evt) {
+  static mPressed(evt: MouseEvent) {
     this._startOffset.set(gp5.mouseX, gp5.mouseY, 0);
     Canvas.mouseDown = true;
     this.renderGate = true;
@@ -453,7 +498,7 @@ class Canvas {
   }
 
   /** Mouse left button released */
-  static mReleased(evt) {
+  static mReleased(evt: MouseEvent) {
     Canvas.mouseDown = false;
     this.renderGate = false;
     gp5.cursor(gp5.ARROW);
@@ -461,7 +506,7 @@ class Canvas {
   }
 
   /** Mouse dragged */
-  static mDragged(evt) {
+  static mDragged(evt: MouseEvent) {
     if (Canvas.mouseDown) {
       this.renderGate = true;
       // if mouse move & down & key shift
@@ -493,7 +538,7 @@ class Canvas {
   }
 
   /** Mouse clicked */
-  static mClicked(evt) {
+  static mClicked(evt: MouseEvent) {
     Canvas.notifyObservers({
       event: evt,
       type: "mouseclick",
@@ -503,7 +548,7 @@ class Canvas {
   }
 
   /** Mouse wheel */
-  static mWheel(evt) {
+  static mWheel(evt: WheelEvent) {
     Canvas.notifyObservers({
       event: evt,
       type: "mousewheel",
@@ -520,7 +565,7 @@ class Canvas {
     this.renderGate = true;
   }
 
-  static kPressed(k) {
+  static kPressed(k: KeyboardEvent) {
     // open the gate to refresh graphics
     this.renderGate = true;
     // evaluate
@@ -547,7 +592,7 @@ class Canvas {
     Canvas.notifyObservers({ event: k, type: "keydown" });
   }
 
-  static kReleased(k) {
+  static kReleased(k: KeyboardEvent) {
     // open the gate to refresh graphics
     this.renderGate = true;
     if (k.key == "Shift") {
@@ -559,7 +604,7 @@ class Canvas {
 
     // Escape key
     if (k.key == "Escape") {
-      Canvas.unsubscribe(EdgeFactory._vEdgeBuffer);
+      Canvas.unsubscribe(EdgeFactory._vEdgeBuffer!);
       EdgeFactory.recallBuffer();
       EdgeFactory.clearBuffer();
     }
@@ -567,5 +612,3 @@ class Canvas {
     Canvas.notifyObservers({ event: k, type: "keyup" });
   }
 }
-Canvas.shiftDown = false;
-Canvas.mouseDown = false;

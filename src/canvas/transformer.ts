@@ -1,9 +1,28 @@
 /**
  * This example uses glmatrix.js to perform efficient matrix operations. See http://glmatrix.net/
  */
+import * as glMatrix from "gl-matrix";
+import { mat2d, vec2 } from "gl-matrix";
+import { Vector } from "p5";
+import { VCluster } from "../visualElements/vCluster";
+import { CustomEvent } from "../types";
+import { Canvas } from "./canvas";
 
-class Transformer {
-  constructor(vCluster) {
+export interface TransformerInit {
+  matrixComponents?: string;
+  scaleFactor?: number;
+}
+
+export class Transformer {
+  vCluster: VCluster;
+  transform: mat2d;
+  invert: mat2d;
+  scaleFactor: number;
+  transformed: boolean;
+  active: boolean;
+  needsUpdate: boolean;
+
+  constructor(vCluster: VCluster) {
     // The cluster this transformer is associated with
     this.vCluster = vCluster;
 
@@ -27,7 +46,7 @@ class Transformer {
   }
 
   // Observing to Canvas
-  fromCanvas(data) {
+  fromCanvas(data: CustomEvent) {
     // MouseEvents
     if (data.event instanceof MouseEvent) {
       if (data.type == "mouseclick") {
@@ -54,7 +73,7 @@ class Transformer {
     }
   }
 
-  pushVCluster(vCluster) {
+  pushVCluster(vCluster?: VCluster) {
     if (!this.needsUpdate) return;
 
     //  if (this.active) {
@@ -64,10 +83,14 @@ class Transformer {
 
     for (let i = 0; i < vC.vNodes.length; i++) {
       let vN = vC.vNodes[i];
-      let tmp = [];
-      glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.invert);
-      glMatrix.vec2.transformMat2d(tmp, tmp, this.transform);
-      vN.pos.set(tmp);
+      let tmp: number[] = [];
+      glMatrix.vec2.transformMat2d(
+        tmp as vec2,
+        [vN.pos!.x, vN.pos!.y],
+        this.invert,
+      );
+      glMatrix.vec2.transformMat2d(tmp as vec2, tmp as vec2, this.transform);
+      vN.pos!.set(tmp);
       vN.transformed = this.transformed;
     }
 
@@ -75,38 +98,50 @@ class Transformer {
     this.needsUpdate = false;
   }
 
-  popVCluster(vCluster) {
+  popVCluster(vCluster?: VCluster) {
     let vC = vCluster;
     // if missing parameter
     if (!vC) vC = this.vCluster;
 
     for (let i = 0; i < vC.vNodes.length; i++) {
       let vN = vC.vNodes[i];
-      let tmp = [];
-      glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.invert);
-      vN.pos.set(tmp);
+      let tmp: number[] = [];
+      glMatrix.vec2.transformMat2d(
+        tmp as vec2,
+        [vN.pos!.x, vN.pos!.y],
+        this.invert,
+      );
+      vN.pos!.set(tmp);
     }
   }
 
   /** Applies the last computed tranformation to the given vectors */
-  pushTo(p5vectors) {
+  pushTo(p5vectors: Vector[]) {
     if (this.active) {
       for (let i = 0; i < p5vectors.length; i++) {
-        let tmp = [];
+        let tmp: number[] = [];
         const vector = p5vectors[i];
-        glMatrix.vec2.transformMat2d(tmp, [vector.x, vector.y], this.transform);
+        glMatrix.vec2.transformMat2d(
+          tmp as vec2,
+          [vector.x, vector.y],
+          this.transform,
+        );
         vector.set(tmp);
       }
     }
   }
 
   /** Restores the given vectors to the invert of the transformation */
-  popTo(p5vectors) {
+  popTo(p5vectors: Vector[]) {
     if (this.active) {
       for (let i = 0; i < p5vectors.length; i++) {
         const vector = p5vectors[i];
-        let tmp = [];
-        glMatrix.vec2.transformMat2d(tmp, [vector.x, vector.y], this.invert);
+        let tmp: number[] = [];
+        glMatrix.vec2.transformMat2d(
+          tmp as vec2,
+          [vector.x, vector.y],
+          this.invert,
+        );
         vector.set(tmp);
       }
     }
@@ -116,7 +151,7 @@ class Transformer {
   // Zoom the world by amount about position.
   // @param amount The amount to zoom (e.g. 1.1 to zoom in by 110%).
   // @param point The position to zoom about as a vec2.
-  zoom(amount, _point) {
+  zoom(amount: number, _point?: vec2) {
     let point = _point;
 
     if (!point) {
@@ -166,7 +201,7 @@ class Transformer {
     glMatrix.mat2d.invert(this.invert, this.transform);
   }
 
-  setActive(val) {
+  setActive(val: boolean) {
     this.active = val;
   }
 
@@ -180,7 +215,7 @@ class Transformer {
     }
   }
 
-  initFromDataValues(data) {
+  initFromDataValues(data: TransformerInit) {
     let rtn = false;
 
     if (data.matrixComponents) {

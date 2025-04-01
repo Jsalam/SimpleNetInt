@@ -1,5 +1,39 @@
-class ClusterFactory {
-  static makeClusters(data) {
+import { ColorFactory } from "./colorFactory";
+import { VCluster } from "../visualElements/vCluster";
+import { Cluster } from "../graphElements/cluster";
+import {
+  addClusterToModalFormList,
+  clearClusterModalFormList,
+} from "../GUI/forms/addClusterModalForm";
+import { TransFactory } from "./transformerFactory";
+import { Node, NodeInit } from "../graphElements/node";
+import { EdgeFactory } from "./edgeFactory";
+import { VGeoCluster } from "../visualElements/vGeoCluster";
+import { TransformerInit } from "../canvas/transformer";
+import { Canvas } from "../canvas/canvas";
+import { VNode } from "../visualElements/vNode";
+import { gp5 } from "../main";
+
+export interface ClusterInit extends TransformerInit {
+  clusterID: string;
+  clusterType?: string;
+  clusterLabel: string;
+  clusterDescription: string;
+  keyAttribute?: string;
+  mapName?: string;
+  nodes?: NodeInit[];
+}
+
+export class ClusterFactory {
+  static clusters: Cluster[];
+  static vClusters: VCluster[];
+  static countCat = 1;
+  static wdth = 10;
+  static hght = 10;
+  // The distance between vClusters origin
+  static gutter = 150;
+
+  static makeClusters(data: ClusterInit[]) {
     ClusterFactory.initParameters();
     ClusterFactory.clusters = [];
     this.vClusters = [];
@@ -31,12 +65,21 @@ class ClusterFactory {
           posY,
           width,
           height,
-          palette,
-          data[index].keyAttribute,
-          data[index].mapName,
+          // @ts-ignore FIXME: wrong argument type
+          palette as string[],
+          data[index].keyAttribute!,
+          data[index].mapName!,
         ); //  /files/Cartographies/Brazil_Amazon.geojson
       } else {
-        tmp = new VCluster(cluster, posX, posY, width, height, palette);
+        // @ts-ignore FIXME: wrong argument type
+        tmp = new VCluster(
+          cluster,
+          posX,
+          posY,
+          width,
+          height,
+          palette as string[],
+        );
       }
       // set the VCluster transformer from data imported
       if (
@@ -59,7 +102,7 @@ class ClusterFactory {
    * This function is used to create a new cluster in addition to the ones loaded from the imported json network
    * @param {Object} data cluster attributes. Usually entered with a form
    */
-  static makeCluster(data) {
+  static makeCluster(data: ClusterInit) {
     this.instantiateCluster(data);
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
     let index = ClusterFactory.clusters.length - 1;
@@ -69,7 +112,8 @@ class ClusterFactory {
       10,
       ClusterFactory.wdth,
       ClusterFactory.hght,
-      ColorFactory.getPalette(index),
+      // FIXME: wrong argument type
+      ColorFactory.getPalette(index) as string[],
     );
     Canvas.subscribe(tmp);
     ClusterFactory.vClusters.push(tmp);
@@ -87,8 +131,8 @@ class ClusterFactory {
     ClusterFactory.gutter = 110;
   }
 
-  static instantiateCluster(data) {
-    let cluster = new Cluster(data.clusterID, data.clusterType);
+  static instantiateCluster(data: ClusterInit) {
+    let cluster = new Cluster(data.clusterID, data.clusterType!);
     cluster.setLabel(data.clusterLabel);
     cluster.setDescription(data.clusterDescription);
     this.makeNodes(cluster, data);
@@ -98,7 +142,7 @@ class ClusterFactory {
     //console.log("Cluster added. Total: " + ClusterFactory.clusters.length)
   }
 
-  static makeNodes(cluster, data) {
+  static makeNodes(cluster: Cluster, data: ClusterInit) {
     if (data.nodes) {
       // create Nodes
       for (let index = 0; index < data.nodes.length; index++) {
@@ -108,12 +152,12 @@ class ClusterFactory {
     }
   }
 
-  static makeNode(cluster, data) {
+  static makeNode(cluster: Cluster, data: NodeInit) {
     let node = new Node(cluster.id, data.id, this.countCat);
     node.setLabel(data.nodeLabel);
     node.setDescription(data.nodeDescription);
     node.setAttributes(data.nodeAttributes);
-    node.setImportedVNodeData(data.vNode);
+    node.setImportedVNodeData(data.vNode!);
     ClusterFactory.countCat++;
     // create connectors if data comes with that info. Data usually comes from
     // the JSON file or the node created by user input
@@ -125,7 +169,7 @@ class ClusterFactory {
     return node;
   }
 
-  static deleteNode(vNode) {
+  static deleteNode(vNode: VNode) {
     console.log("delete node " + JSON.stringify(vNode.node.idCat));
     for (let vC of vNode.vConnectors) {
       for (let edgeObs of vC.connector.edgeObservers) {
@@ -154,7 +198,7 @@ class ClusterFactory {
   }
 
   /**This is not the function used by the exportModalFrom. Look for the getJSON() function in VCluster class */
-  static recordJSON(suffix) {
+  static recordJSON(suffix: string) {
     let filename = "nodes.json";
     if (suffix) {
       filename = suffix + "_" + filename;
@@ -172,7 +216,7 @@ class ClusterFactory {
     ClusterFactory.countCat = 1;
   }
 
-  static getVClusterOf(cluster) {
+  static getVClusterOf(cluster: Cluster) {
     for (const vClust of ClusterFactory.vClusters) {
       if (vClust.cluster.id == cluster.id) return vClust;
     }
@@ -196,19 +240,19 @@ class ClusterFactory {
     }
   }
 
-  static getVNodeOf(node) {
+  static getVNodeOf(node: Node) {
     let vCluster = ClusterFactory.getVCluster(node.idCat.cluster);
     return vCluster.getVNode(node);
   }
 
-  static getCluster(id) {
+  static getCluster(id: string) {
     const tmp = ClusterFactory.clusters.filter((elem) => {
       return elem.id == id;
     })[0];
     return tmp;
   }
 
-  static getVCluster(id) {
+  static getVCluster(id: string) {
     const tmp = ClusterFactory.vClusters.filter((elem) => {
       return elem.cluster.id == id;
     })[0];
@@ -222,7 +266,7 @@ class ClusterFactory {
    * @returns Array of strings
    */
   static getAllConnectorKinds() {
-    let rtn = [];
+    let rtn: string[] = [];
     for (const clust of ClusterFactory.clusters) {
       for (const node of clust.nodes) {
         const connectors = node.getConnectors();
@@ -235,11 +279,3 @@ class ClusterFactory {
     return rtn;
   }
 }
-
-ClusterFactory.clusters = [];
-ClusterFactory.vClusters = [];
-ClusterFactory.countCat = 1;
-ClusterFactory.wdth = 10;
-ClusterFactory.hght = 10;
-// The distance between vClusters origin
-ClusterFactory.gutter = 150;

@@ -1,8 +1,46 @@
-class VNode extends Button {
+import p5, { Vector } from "p5";
+import { gp5 } from "../main";
+import { VConnector } from "./vConnector";
+import { Canvas } from "../canvas/canvas";
+import { Connector } from "../graphElements/connector";
+import { Node } from "../graphElements/node";
+import { DOM } from "../GUI/DOM/DOMManager";
+import { Button } from "./button";
+import { ClusterFactory } from "../factories/clusterFactory";
+import { CustomEvent } from "../types";
+import { Edge } from "../graphElements/edge";
+import { TransFactory } from "../factories/transformerFactory";
+import { ColorFactory } from "../factories/colorFactory";
+import { Transformer } from "../canvas/transformer";
+import { EdgeFactory } from "../factories/edgeFactory";
+import { VEdge } from "./vEdge";
+
+export interface VNodeInit {
+  posX: number;
+  posY: number;
+  posZ: number;
+  color: string;
+}
+
+export class VNode extends Button {
   shouldShowText = true;
   shouldShowButton = true;
+  node: Node;
+  color: string | undefined;
+  strokeColor: string | p5.Color | undefined;
+  paddingTop: number;
+  diam: number;
+  shiftPos: Vector;
+  vConnectors: VConnector[];
+  vConnectorsGap: number;
+  keyP_Down: boolean;
+  keyD_Down: boolean;
+  tr: Transformer | undefined;
+  labelEl: HTMLElement | undefined;
+  descriptionEl: HTMLElement | undefined;
+  propagated: boolean | undefined;
 
-  constructor(node, width, height) {
+  constructor(node: Node, width: number, height: number) {
     super(0, 0, width, height);
     this.node = node;
     this.color;
@@ -22,11 +60,11 @@ class VNode extends Button {
     this.tr;
   }
 
-  subscribe(obj) {
+  subscribe(obj: VConnector) {
     if (obj instanceof VConnector) this.vConnectors.push(obj);
   }
 
-  unsubscribe(obj) {
+  unsubscribe(obj: VConnector) {
     console.log(obj);
     this.vConnectors = this.vConnectors.filter(function (subscriber) {
       let rtn = true;
@@ -50,11 +88,11 @@ class VNode extends Button {
     // Call the static method from the cluster Factory
   }
 
-  notifyObservers(data) {
+  notifyObservers(data: CustomEvent) {
     this.vConnectors.forEach((observer) => observer.fromVNode(data));
   }
 
-  removeVConnector(conn) {
+  removeVConnector(conn: Connector) {
     this.vConnectors = this.vConnectors.filter(function (vCnctr) {
       let rtn = true;
       if (vCnctr.connector.equals(conn)) {
@@ -68,7 +106,7 @@ class VNode extends Button {
   }
 
   // Observing to Canvas
-  fromCanvas(data) {
+  fromCanvas(data: CustomEvent) {
     // notify observers
     for (const vConn of this.vConnectors) {
       vConn.fromVNode(data);
@@ -125,16 +163,16 @@ class VNode extends Button {
   }
 
   // Observer node
-  fromNode(data) {
+  fromNode(data: Connector) {
     if (data instanceof Connector) {
       this.addVConnector(data);
     }
   }
 
-  addVConnector(connector) {
+  addVConnector(connector: Connector) {
     //console.log('new V connector');
     let tmpVConnector = new VConnector(connector);
-    tmpVConnector.setColor(this.color);
+    tmpVConnector.setColor(this.color!);
     this.subscribe(tmpVConnector);
     this.updateConnectorsCoords();
     // return tmpVConnector;
@@ -148,7 +186,7 @@ class VNode extends Button {
    * Remove a connector by its kind
    * @param {} kind
    */
-  popVConnector(kind) {
+  popVConnector(kind: string) {
     // find the vConnector observer of the parameter and remove it from the collection
     let vConnector = this.vConnectors.filter((vCnctr) => {
       return vCnctr.connector.kind == kind;
@@ -171,7 +209,7 @@ class VNode extends Button {
    * Remove a connector regardless of the number of linked edges
    * @param {} kind
    */
-  destroyVConnector(edge) {
+  destroyVConnector(edge: Edge) {
     this.node.disconnectEdge(edge);
 
     // find the vConnector observer of the parameter and remove it from the collection
@@ -183,7 +221,7 @@ class VNode extends Button {
       // check if there are no edges linked to this connector
       if (vConnector.connector.edgeObservers.length == 0) {
         // popConnectors from nodes
-        this.node.popConnector(edge.kind);
+        this.node.popConnector(edge.kind!);
 
         // unsubscribe connector
         this.unsubscribe(vConnector);
@@ -192,18 +230,18 @@ class VNode extends Button {
     }
   }
 
-  setColor(color) {
+  setColor(color: string) {
     this.color = color;
     this.setColorConnectors(this.color);
   }
 
-  setColorConnectors(color) {
+  setColorConnectors(color: string) {
     this.vConnectors.forEach((connector) => {
       connector.setColor(color);
     });
   }
 
-  updateCoords(pos, sequence) {
+  updateCoords(pos: Vector, sequence: number) {
     this.setPos(
       gp5.createVector(
         pos.x,
@@ -213,19 +251,19 @@ class VNode extends Button {
     this.updateConnectorsCoords();
   }
 
-  updateConnectorsCoords(newPos, nodeSize) {
+  updateConnectorsCoords(newPos?: Vector, nodeSize?: number) {
     let counter = 1;
     let angle = (Math.PI * 2) / this.node.connectors.length;
 
     this.vConnectors.forEach((vConnector) => {
-      vConnector.setWidth(nodeSize * Number(DOM.sliders.nodeSizeFactor.value));
+      vConnector.setWidth(nodeSize! * Number(DOM.sliders.nodeSizeFactor.value));
 
       // When there is only one connector
       if (this.node.connectors.length <= 1) {
         if (newPos) {
           vConnector.updateCoordsByAngle(newPos, 0, vConnector.width / 2);
         } else {
-          vConnector.updateCoordsByAngle(this.pos, 0, vConnector.width / 2);
+          vConnector.updateCoordsByAngle(this.pos!, 0, vConnector.width / 2);
         }
         // When there two or more connectors
       } else {
@@ -237,7 +275,7 @@ class VNode extends Button {
           );
         } else {
           vConnector.updateCoordsByAngle(
-            this.pos,
+            this.pos!,
             angle * counter,
             vConnector.width + 1,
           );
@@ -248,10 +286,12 @@ class VNode extends Button {
   }
 
   /*** SHOW FUNCTIONS */
-  show(renderer) {
+  show(renderer: p5) {
     // Do not show the nodes with no connectors if the user make that choice in the GUI
     if (
+      // @ts-ignore FIXME: type mismatch
       this.vConnectors.length < DOM.sliders.nodeConnectorFilter.value ||
+      // @ts-ignore FIXME: type mismatch
       this.node.getDegree() < DOM.sliders.nodeDegreeFilter.value
     ) {
       this.visible = false;
@@ -280,20 +320,22 @@ class VNode extends Button {
 
       // assign colors
       renderer.fill(fillColors.fill);
-      renderer.stroke(this.strokeColor);
+      renderer.stroke(this.strokeColor!);
       renderer.strokeWeight(strokeWeight);
       // draw shape
       renderer.ellipseMode(gp5.CENTER);
 
       // set diameter
       this.diam =
-        this.width * this.localScale * Number(DOM.sliders.nodeSizeFactor.value);
+        this.width *
+        this.localScale! *
+        Number(DOM.sliders.nodeSizeFactor.value);
 
       // Ajust diameter to global transformation
       if (this.transformed) {
-        this.diam = this.width * this.tr.scaleFactor * this.localScale;
+        this.diam = this.width * this.tr.scaleFactor * this.localScale!;
       }
-      let newPos = p5.Vector.add(this.pos, this.shiftPos);
+      let newPos = p5.Vector.add(this.pos!, this.shiftPos);
 
       this.updateConnectorsCoords(newPos, this.width);
 
@@ -332,11 +374,12 @@ class VNode extends Button {
       if (this.vConnectors.length > 0) {
         for (const vCnctr of this.vConnectors) {
           // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
-          let strokeCnctrColor =
+          let strokeCnctrColor: string | string[] | p5.Color =
             ColorFactory.dictionaries.connectors[vCnctr.connector.kind];
 
-          if (!strokeCnctrColor) strokeCnctrColor = this.color;
+          if (!strokeCnctrColor) strokeCnctrColor = this.color!;
 
+          // @ts-ignore FIXME: fix signature of `color()`
           strokeCnctrColor = gp5.color(strokeCnctrColor);
 
           if (this.transformed) {
@@ -356,14 +399,14 @@ class VNode extends Button {
     }
   }
 
-  _showLabel(color, newPos) {
+  _showLabel(color: string | p5.Color, newPos: p5.Vector) {
     // label dimensions
     let labelHeight = 20; // * this.localScale;
-    let labelWidth = 65 * this.localScale;
+    let labelWidth = 65 * this.localScale!;
 
     // get coordinates
-    let x = this.pos.x;
-    let y = this.pos.y;
+    let x = this.pos!.x;
+    let y = this.pos!.y;
 
     // if there is a new position
     if (newPos) {
@@ -386,9 +429,10 @@ class VNode extends Button {
       textAlign: "right",
       paddingRight: "10px",
       transformOrigin: "bottom right",
-      opacity: 0.3 * this.localScale,
+      opacity: String(0.3 * this.localScale!),
+      // @ts-ignore FIXME: wrong argument type. must be string
       color: color,
-      fontSize: 10 + 2 * this.localScale + "px",
+      fontSize: 10 + 2 * this.localScale! + "px",
       fontStyle: this.propagated ? "bold" : "normal",
       transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
@@ -399,7 +443,7 @@ class VNode extends Button {
     });
   }
 
-  _getFillColor(_baseColor) {
+  _getFillColor(_baseColor: string) {
     let baseColor = _baseColor;
 
     if (this.color) {
@@ -407,8 +451,8 @@ class VNode extends Button {
     }
 
     // default color
-    let fillColor = baseColor;
-    let labelColor = "#111111";
+    let fillColor: string | p5.Color = baseColor;
+    let labelColor: string | p5.Color = "#111111";
     if (Canvas.currentBackground < 150) {
       labelColor = "#EEEEEE";
     }
@@ -459,21 +503,21 @@ class VNode extends Button {
     fillColor = gp5.color(fillColor);
     labelColor = gp5.color(labelColor);
 
-    labelColor.setAlpha(gp5.map(this.localScale, 2, 1, 255, 150));
+    labelColor.setAlpha(gp5.map(this.localScale!, 2, 1, 255, 150));
 
     if (this.transformed) {
-      fillColor.setAlpha(gp5.map(this.tr.scaleFactor, 3, 0.3, 255, 1));
-      labelColor.setAlpha(gp5.map(this.tr.scaleFactor, 1, 0.5, 255, 1));
+      fillColor.setAlpha(gp5.map(this.tr!.scaleFactor, 3, 0.3, 255, 1));
+      labelColor.setAlpha(gp5.map(this.tr!.scaleFactor, 1, 0.5, 255, 1));
     }
 
     return { fill: fillColor, label: labelColor };
   }
 
-  _getStrokeColor(_baseColor) {
+  _getStrokeColor(_baseColor: string) {
     let baseColor = _baseColor;
 
     // default color
-    let strokeColor = baseColor;
+    let strokeColor: string | p5.Color = baseColor;
     let inPropagation = "#FF0000";
     let dimmed = "#FFFFFF33"; // 20% white
     let filtered = "#b400b4";
@@ -496,7 +540,7 @@ class VNode extends Button {
     strokeColor = gp5.color(strokeColor);
 
     if (this.transformed) {
-      strokeColor.setAlpha(gp5.map(this.tr.scaleFactor, 3, 0.1, 255, 1));
+      strokeColor.setAlpha(gp5.map(this.tr!.scaleFactor, 3, 0.1, 255, 1));
     } else {
       strokeColor.setAlpha(125);
     }
@@ -518,14 +562,14 @@ class VNode extends Button {
 
   _hideDescription() {
     if (this.descriptionEl) {
-      this.descriptionEl.style.opacity = 0;
+      this.descriptionEl.style.opacity = "0";
     }
   }
 
-  _showDescription(newPos) {
+  _showDescription(newPos: p5.Vector) {
     // Get coordinates
-    let x = this.pos.x - 150;
-    let y = this.pos.y;
+    let x = this.pos!.x - 150;
+    let y = this.pos!.y;
 
     if (newPos) {
       x = newPos.x - 150;
@@ -537,7 +581,7 @@ class VNode extends Button {
     let entryList = [];
 
     // This nested structure flattens the nested structure of attribute objects to filter out the keys with void value
-    for (const midLevel of Object.entries(this.node.attributes)) {
+    for (const midLevel of Object.entries(this.node.attributes!)) {
       for (const innerLevel of Object.entries(midLevel[1])) {
         entryList.push(innerLevel);
       }
@@ -584,7 +628,7 @@ class VNode extends Button {
     let connectorsDescription = "Connectors:\n";
 
     //trim the connector description string
-    function trimText(textEntry, maxLength) {
+    function trimText(textEntry: string, maxLength: number) {
       return textEntry; //.length > maxLength ? textEntry.slice(0, maxLength) + "..." : textEntry;
     }
 
@@ -606,16 +650,16 @@ class VNode extends Button {
 
           // Do not do these opeartions if the edge is open
           if (!edgeTmp.open) {
-            if (this.node.idCat.cluster != edgeTmp.id.source.cluster) {
+            if (this.node.idCat.cluster != edgeTmp.id!.source.cluster) {
               otherCluster.source =
                 "Cluster: " +
-                ClusterFactory.getCluster(edgeTmp.id.source.cluster).label;
+                ClusterFactory.getCluster(edgeTmp.id!.source.cluster).label;
             }
 
-            if (this.node.idCat.cluster != edgeTmp.id.target.cluster) {
+            if (this.node.idCat.cluster != edgeTmp.id!.target.cluster) {
               otherCluster.target =
                 "Cluster: " +
-                ClusterFactory.getCluster(edgeTmp.id.target.cluster).label;
+                ClusterFactory.getCluster(edgeTmp.id!.target.cluster).label;
             }
 
             //console.log(otherCluster['source']);
@@ -626,7 +670,7 @@ class VNode extends Button {
                 "Out w " +
                 edgeTmp.weight +
                 " - TO " +
-                trimText(edgeTmp.target.label, 25) +
+                trimText(edgeTmp.target!.label, 25) +
                 ". " +
                 otherCluster.target +
                 "\n";
@@ -705,9 +749,9 @@ class VNode extends Button {
       connectors: cnctrs,
       pajekIndex: this.node.idCat.pajekIndex,
       vNode: {
-        posX: this.pos.x,
-        posY: this.pos.y,
-        posZ: this.pos.z,
+        posX: this.pos!.x,
+        posY: this.pos!.y,
+        posZ: this.pos!.z,
         color: this.color,
       },
     };
@@ -722,8 +766,8 @@ class VNode extends Button {
     }
     if (this.mouseIsOver) {
       this.dragged = true;
-      this.pos.x = Canvas._mouse.x - this.delta.x;
-      this.pos.y = Canvas._mouse.y - this.delta.y;
+      this.pos!.x = Canvas._mouse.x - this.delta.x;
+      this.pos!.y = Canvas._mouse.y - this.delta.y;
       this.updateConnectorsCoords();
     }
   }
@@ -751,7 +795,7 @@ class VNode extends Button {
           //Add buffered elements to collections
           if (!bufferEdge.open) {
             EdgeFactory.pushEdge(bufferEdge);
-            EdgeFactory.pushVEdge(bufferVEdge);
+            EdgeFactory.pushVEdge(bufferVEdge!);
             EdgeFactory.clearBuffer();
           } else {
             // EdgeFactory.resetBuffer();
@@ -769,7 +813,7 @@ class VNode extends Button {
    * @param {Edge} edge might come open or closed
    */
 
-  workOnVEdgeBuffer(edge) {
+  workOnVEdgeBuffer(edge: Edge) {
     let vEdge;
     if (DOM.boxChecked("edit")) {
       // if the edge does not have a target
@@ -787,7 +831,7 @@ class VNode extends Button {
     return vEdge;
   }
 
-  sproutVEdge(edge) {
+  sproutVEdge(edge: Edge) {
     // generate a new vEdge
     let lastVEdge = new VEdge(edge);
 
@@ -799,7 +843,7 @@ class VNode extends Button {
 
   closeBufferedVEdge() {
     // take the current VEdge
-    let currentVEdge = EdgeFactory.getBufferVEdge();
+    let currentVEdge = EdgeFactory.getBufferVEdge()!;
 
     // set the target
     currentVEdge.setVTarget(this);
@@ -825,7 +869,7 @@ class VNode extends Button {
 
       //** GET POSITION CHANGE */
       //this.shiftPos.set(Math.sin(radians) * 20, 0);
-      let xDist = Canvas._mouse.x - this.pos.x;
+      let xDist = Canvas._mouse.x - this.pos!.x;
       let dNormalized = gp5.map(Math.abs(xDist), effectWidth, 0, 1, 0);
 
       // Invert sign

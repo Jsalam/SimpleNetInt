@@ -1,3 +1,25 @@
+import { Connector } from "./connector";
+import { VNode, VNodeInit } from "../visualElements/vNode";
+import { EdgeFactory } from "../factories/edgeFactory";
+import { Edge } from "./edge";
+import { ContextualGUI } from "../GUI/ContextualGUIs/ContextualGUI";
+import { DOM } from "../GUI/DOM/DOMManager";
+
+export interface NodeAttributes {
+  attr: unknown;
+  attRaw?: Record<string, any>;
+}
+
+export interface NodeInit {
+  id: number;
+  nodeLabel: string;
+  nodeDescription: string;
+  nodeAttributes: NodeAttributes;
+  connectors?: string[];
+  pajekIndex?: number;
+  vNode?: VNodeInit;
+}
+
 /**
  * The node has connectors. each connector is of a different type, so each kind of connectors have its own collection,
  * grouped in a single collection
@@ -5,8 +27,30 @@
  * @param _indexInCluster: the index in this cluster
  * @param _count: the pajekIndex
  */
-class Node {
-  constructor(clusterID, _indexInCluster, _count) {
+export class Node {
+  id: unknown;
+  idCat: {
+    cluster: string;
+    index: unknown;
+    pajekIndex: number;
+  };
+  connectors: Connector[];
+  label: string;
+  description: string;
+  attributes: NodeInit["nodeAttributes"] | undefined;
+  inFwdPropagation: boolean;
+  inBkwPropagation: boolean;
+  vNodeObserver: VNode | undefined;
+  importedVNodeData: VNodeInit | undefined;
+
+  // TODO: verify these are correct
+  cluster: string | undefined;
+  index: number | undefined;
+
+  polarity: unknown;
+  taken: boolean | undefined;
+
+  constructor(clusterID: string, _indexInCluster: number, _count: number) {
     this.idCat = {
       cluster: clusterID,
       index: _indexInCluster,
@@ -24,7 +68,7 @@ class Node {
   }
 
   /**** OBSERVER ****/
-  subscribe(vNode) {
+  subscribe(vNode: VNode) {
     this.vNodeObserver = vNode;
   }
 
@@ -33,7 +77,7 @@ class Node {
    * @param {Node} node
    * @returns
    */
-  equals(node) {
+  equals(node: Node) {
     let rtn = false;
     if (
       this.idCat.cluster == node.idCat.cluster &&
@@ -57,7 +101,7 @@ class Node {
       let rtn = false;
 
       // mark vConnector as unselected
-      cnctr.vConnectorObserver.selected = false;
+      cnctr.vConnectorObserver!.selected = false;
 
       // iterate over the gui checkboxes
       for (const ckbx of DOM.currentCheckboxes) {
@@ -66,16 +110,16 @@ class Node {
         if (ckbx.value == true && cnctr.kind == ckbx.key) {
           rtn = true;
           // mark this Vconnector observer as selected
-          cnctr.vConnectorObserver.selected = true;
+          cnctr.vConnectorObserver!.selected = true;
         }
       }
       return rtn;
     });
     // Switch the vNode selected to true
     if (filteredConnectors.length > 0) {
-      this.vNodeObserver.selected = true;
+      this.vNodeObserver!.selected = true;
     } else {
-      this.vNodeObserver.selected = false;
+      this.vNodeObserver!.selected = false;
     }
     return filteredConnectors;
   }
@@ -85,7 +129,7 @@ class Node {
    * @param {String} kind kind of connector
    * @param {Number} index index for connector ID
    */
-  addConnector(kind, index) {
+  addConnector(kind: string, index: number) {
     let tmpConnector = new Connector(this.idCat, kind, index);
     this.connectors.push(tmpConnector);
     return tmpConnector;
@@ -94,7 +138,7 @@ class Node {
   /** Finds an edge and removes it from the collection of connectors observers
    * @param {Edge} edge the edge to be removed
    */
-  disconnectEdge(edge) {
+  disconnectEdge(edge: Edge) {
     // for each connector
     for (const conn of this.connectors) {
       // go over the edgeObservers collection
@@ -112,7 +156,7 @@ class Node {
   /** Removes a connector matching the given connector from the connectors observers
    * @param {Connector} conn the connector to be removed
    */
-  removeConnector(conn) {
+  removeConnector(conn: Connector) {
     this.connectors = this.connectors.filter(function (cnctr) {
       let rtn = true;
       if (cnctr.equals(conn)) {
@@ -137,23 +181,23 @@ class Node {
    */
   resetConnectors() {
     this.connectors = [];
-    this.vNodeObserver.resetVConnectors();
+    this.vNodeObserver!.resetVConnectors();
   }
 
   /**** ATTRIBUTES ****/
-  setLabel(label) {
+  setLabel(label: string) {
     this.label = label;
   }
 
-  setDescription(description) {
+  setDescription(description: string) {
     this.description = description;
   }
 
-  setAttributes(attributes) {
+  setAttributes(attributes: NodeAttributes) {
     this.attributes = attributes;
   }
 
-  setImportedVNodeData(obj) {
+  setImportedVNodeData(obj: VNodeInit) {
     this.importedVNodeData = obj;
   }
 
@@ -168,7 +212,7 @@ class Node {
   getInDegree() {
     let inDegree = 0;
     for (let connector of this.connectors) {
-      if (connector.edgeObservers[0].target.equals(this))
+      if (connector.edgeObservers[0].target!.equals(this))
         inDegree += connector.edgeObservers.length;
     }
     return inDegree;
@@ -184,7 +228,7 @@ class Node {
   }
 
   /**** PROPAGATION ****/
-  propagate(node, clicked) {
+  propagate(node: Node, clicked: boolean) {
     console.log("__ From __ " + this.label);
     this.propagateForward2(node, clicked);
     this.propagateBackward2(node, clicked);
@@ -201,7 +245,7 @@ class Node {
     }
   }
 
-  propagateForward2(cat, clicked) {
+  propagateForward2(cat: Node, clicked: boolean) {
     //console.log("____ cat: " + cat.label + " fwd_Prop: " + cat.inFwdPropagation + " clicked: " + clicked)
 
     if (clicked) {
@@ -225,7 +269,7 @@ class Node {
                 obs.propagateForward2(obs, clicked);
               } else {
                 // in case this node is in propagation but was also clicked
-                if (obs.vNodeObserver.clicked) {
+                if (obs.vNodeObserver!.clicked) {
                   console.log(
                     "Forward propagation stopped at node " +
                       obs.label +
@@ -244,7 +288,7 @@ class Node {
           });
         }
       } catch (error) {
-        if (error.name == "Recursion") {
+        if ((error as any).name == "Recursion") {
           alert(
             "** RECURSIVE PROPAGATION **\nThere is a closed loop of successors that might crash the application. Successors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)",
           );
@@ -260,7 +304,8 @@ class Node {
           box = "";
         } else {
           console.log(
-            error.name + " Warning: error catched in forward propagation",
+            (error as any).name +
+              " Warning: error catched in forward propagation",
           );
         }
       }
@@ -270,10 +315,11 @@ class Node {
       try {
         let edgesTmp = this.getForwardEdges(cat);
         edgesTmp.forEach((edg) => {
-          let obs = edg.target;
+          let obs = edg.target!;
           obs.propagateForward2(obs, false);
         });
       } catch {
+        // @ts-ignore FIXME: `error` is undefined
         if (error.name == "Recursion") {
           console.log(
             " ** End of prop for cat: " +
@@ -288,7 +334,7 @@ class Node {
     }
   }
 
-  propagateBackward2(cat, clicked) {
+  propagateBackward2(cat: Node, clicked: boolean) {
     //console.log("____ cat: " + cat.label + " fwd_Prop: " + cat.inFwdPropagation + " clicked: " + clicked)
 
     if (clicked) {
@@ -311,7 +357,7 @@ class Node {
                 obs.propagateBackward2(obs, clicked);
               } else {
                 // in case this node is in propagation but was also clicked
-                if (obs.vNodeObserver.clicked) {
+                if (obs.vNodeObserver!.clicked) {
                   console.log(
                     "Backward propagation stopped at node" +
                       obs.label +
@@ -334,7 +380,7 @@ class Node {
           });
         }
       } catch (error) {
-        if (error.name == "Recursion") {
+        if ((error as any).name == "Recursion") {
           alert(
             "** RECURSIVE PROPAGATION **\nThere is a closed loop of predecessors that might crash the application. Predecessors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)",
           );
@@ -350,7 +396,8 @@ class Node {
           box = "";
         } else {
           console.log(
-            error.name + " Warning: error catched in backward propagation",
+            (error as any).name +
+              " Warning: error catched in backward propagation",
           );
         }
       }
@@ -364,6 +411,7 @@ class Node {
           obs.propagateBackward2(obs, false);
         });
       } catch {
+        // @ts-ignore FIXME: `error` is undefined
         if (error.name == "Recursion") {
           console.log(
             " ** End of prop for cat: " +
@@ -425,7 +473,7 @@ class Node {
     return buffEdge;
   }
 
-  sproutEdge(kind) {
+  sproutEdge(kind: string) {
     // create a new one
     let buffEdge = new Edge(this);
     EdgeFactory.setBufferEdge(buffEdge);
@@ -436,7 +484,7 @@ class Node {
     return buffEdge;
   }
 
-  sproutConnector(kind) {
+  sproutConnector(kind: string) {
     // look if there is a connector of this kind
     let connectorList = this.connectors.filter((cnctr) => cnctr.kind === kind);
     let connector = connectorList[0];
@@ -447,12 +495,12 @@ class Node {
       let index = this.connectors.length;
       connector = this.addConnector(kind, index);
       // Notify vNode to create vConnector (and vEdge?)
-      this.vNodeObserver.fromNode(connector);
+      this.vNodeObserver!.fromNode(connector);
     }
     return connector;
   }
 
-  popConnector(kind) {
+  popConnector(kind: string) {
     // look if there is a connector of this kind
     let connectorList = this.connectors.filter((cnctr) => cnctr.kind === kind);
     let connector = connectorList[0];
@@ -467,7 +515,7 @@ class Node {
     }
   }
 
-  destroyConnector(kind) {
+  destroyConnector(kind: string) {
     // look if there is a connector of this kind
     let connectorList = this.connectors.filter((cnctr) => cnctr.kind === kind);
     let connector = connectorList[0];
@@ -481,10 +529,10 @@ class Node {
     }
   }
 
-  closeEdge(buffEdge) {
+  closeEdge(buffEdge: Edge) {
     // set target
     if (buffEdge.setTarget(this)) {
-      let connector = this.sproutConnector(buffEdge.kind);
+      let connector = this.sproutConnector(buffEdge.kind!);
       connector.subscribeEdgeObserver(buffEdge);
       // close edge
       buffEdge.open = false;
@@ -501,8 +549,8 @@ class Node {
     this.taken = false;
   }
 
-  getForwardEdges(cat) {
-    let edgesTmp = [];
+  getForwardEdges(cat: Node) {
+    let edgesTmp: Edge[] = [];
     EdgeFactory._edges.forEach((edg) => {
       let obs = edg.source;
       if (obs.idCat === cat.idCat) {
@@ -513,10 +561,10 @@ class Node {
     return edgesTmp;
   }
 
-  getBackwardEdges(cat) {
-    let edgesTmp = [];
+  getBackwardEdges(cat: Node) {
+    let edgesTmp: Edge[] = [];
     EdgeFactory._edges.forEach((edg) => {
-      let obs = edg.target;
+      let obs = edg.target!;
       if (obs.idCat === cat.idCat) {
         // console.log(obs.label);
         edgesTmp.push(edg);

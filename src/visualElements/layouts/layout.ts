@@ -1,7 +1,24 @@
+import {gp5} from "../../main";
+import {VNode} from "../vNode";
+
 /**
  * Instances of this class are associated with VClusters
  */
-class Layout {
+export class Layout {
+  width: number;
+  height: number;
+  margin: {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  };
+  area: {
+    width: number;
+    height: number;
+  };
+  vNodes: VNode[] | undefined;
+
   constructor() {
     this.width = gp5.width;
     this.height = gp5.height;
@@ -11,21 +28,21 @@ class Layout {
     this.vNodes;
   }
 
-  subscribeVNodes(vNodes) {
+  subscribeVNodes(vNodes: VNode[]) {
     this.vNodes = vNodes;
   }
 
-  setWidth(wdth) {
+  setWidth(wdth: number) {
     this.width = wdth;
     this.area = this.setArea(wdth, this.height);
   }
 
-  setHeight(hght) {
+  setHeight(hght: number) {
     this.height = hght;
     this.area = this.setArea(this.width, hght);
   }
 
-  setArea(wdth, hght) {
+  setArea(wdth?: number, hght?: number) {
     let w, h;
     if (!wdth) {
       w = this.width - this.margin.left - this.margin.right;
@@ -40,21 +57,21 @@ class Layout {
     return { width: w, height: h };
   }
 
-  linearArray(stepX, stepY) {
+  linearArray(stepX: number, stepY: number) {
     const xCapacity = this.area.width / stepX;
 
     let xPos = 0;
     let yPos = 0;
 
-    for (let i = 0; i < this.vNodes.length; i++) {
+    for (let i = 0; i < this.vNodes!.length; i++) {
       if (i > 0 && i % xCapacity == 0) {
         xPos = 0;
         yPos += stepY;
       }
       xPos += stepX;
 
-      this.vNodes[i].setX(xPos);
-      this.vNodes[i].setY(yPos);
+      this.vNodes![i].setX(xPos);
+      this.vNodes![i].setY(yPos);
     }
   }
 
@@ -62,7 +79,7 @@ class Layout {
    * Based on NetInt Concentric Layouts. https://github.com/LeonardoResearchGroup/NetInt/blob/master/Java/CommunityVisualizationJUNG/src/netInt/containers/layout/ConcentricLayout.java
    * @param {Number} maxRadius
    */
-  concentricArray(maxRadius, gapFactor) {
+  concentricArray(maxRadius: number, gapFactor: number) {
     let accLength = 0;
     let maxCircumference = this._getCircumference(maxRadius);
     let largest = 0;
@@ -73,7 +90,7 @@ class Layout {
     // Temporary collection of nodes
     let tempVNodes = [];
 
-    for (const vNode of this.vNodes) {
+    for (const vNode of this.vNodes!) {
       let nodeDiam = gapFactor * vNode.diam;
       accLength += nodeDiam;
 
@@ -88,6 +105,7 @@ class Layout {
       } else {
         // Set the locations for nodes in the collection and get the tier radius
         lastRadius = this.setLocations(
+          // @ts-ignore FIXME: wrong argument type
           tempVNodes,
           maxCircumference,
           lastRadius,
@@ -118,6 +136,7 @@ class Layout {
     }
 
     // Set the locations for nodes in the collection
+    // @ts-ignore FIXME: wrong argument type
     this.setLocations(tempVNodes, maxCircumference, lastRadius, gapFactor);
 
     // Adds the very last tier's collection to rings
@@ -130,9 +149,14 @@ class Layout {
     //  return rings;
   }
 
-  setLocations(totalLength, lastRadius, gapFactor) {
+  setLocations(
+    totalLength: number,
+    lastRadius: number,
+    gapFactor: number,
+    __UNUSED_ARG__: unknown,
+  ) {
     // Distribute all possible angles in all length units
-    let angleFraction = (Math.PI * 2) / this.vNodes.length; //totalLength;
+    let angleFraction = (Math.PI * 2) / this.vNodes!.length; //totalLength;
 
     // Calculate the tier's radius
     let radius = totalLength / (Math.PI * 2);
@@ -150,8 +174,8 @@ class Layout {
     // Accumulated length
     let accLength = 0;
 
-    for (let i = 0; i < this.vNodes.length; i++) {
-      let nodeLength = gapFactor * this.vNodes[i].diam;
+    for (let i = 0; i < this.vNodes!.length; i++) {
+      let nodeLength = gapFactor * this.vNodes![i].diam;
 
       let angle = i * angleFraction;
 
@@ -160,14 +184,14 @@ class Layout {
       let posX = Math.cos(angle) * radius;
       let posY = Math.sin(angle) * radius;
 
-      this.vNodes[i].setX(posX);
-      this.vNodes[i].setY(posY);
+      this.vNodes![i].setX(posX);
+      this.vNodes![i].setY(posY);
     }
 
     return radius;
   }
 
-  _getCircumference(radius) {
+  _getCircumference(radius: number) {
     let result = 2 * Math.PI * radius;
     return result;
   }

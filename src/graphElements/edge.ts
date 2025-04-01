@@ -1,5 +1,30 @@
-class Edge {
-  constructor(source) {
+import { Node } from "./node";
+
+export interface EdgeInit {
+  weight: number;
+  source: {
+    pajekIndex: number;
+  };
+  target: {
+    pajekIndex: number;
+  };
+}
+
+export class Edge {
+  source: Node;
+  kind: string | undefined;
+  target: Node | undefined;
+  id:
+    | {
+        source: Node["idCat"];
+        target: Node["idCat"];
+        polarity?: unknown;
+      }
+    | undefined;
+  open: boolean;
+  weight: number;
+
+  constructor(source: Node) {
     this.source = source;
     // the kind is set in connector class where the edge is subscribed to the connector
     this.kind;
@@ -9,7 +34,7 @@ class Edge {
     this.weight = 1;
   }
 
-  equals(edgeA) {
+  equals(edgeA: Edge) {
     let A, B;
     let rtn = false;
 
@@ -32,7 +57,7 @@ class Edge {
     return rtn;
   }
 
-  setWeight(val) {
+  setWeight(val: number) {
     this.weight = val;
   }
 
@@ -68,7 +93,7 @@ class Edge {
     }
   }
 
-  setTarget(target) {
+  setTarget(target: Node) {
     this.target = target;
     this.id = { source: this.source.idCat, target: this.target.idCat };
     this.open = false;
@@ -78,7 +103,7 @@ class Edge {
   getJSON() {
     let rtn = {
       source: this.source.idCat,
-      target: this.target.idCat,
+      target: this.target!.idCat,
       kind: this.kind,
       weight: this.weight,
     };

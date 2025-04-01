@@ -1,10 +1,28 @@
+import * as glMatrix from "gl-matrix";
+import { gp5 } from "../main";
+import p5, { Vector } from "p5";
+import { ColorFactory } from "../factories/colorFactory";
+import { DOM } from "../GUI/DOM/DOMManager";
+import { Canvas } from "../canvas/canvas";
+import { Cluster } from "../graphElements/cluster";
+import { VCluster } from "./vCluster";
+import { Feature, FeatureCollection, Geometry, Position } from "geojson";
+import { Node } from "../graphElements/node";
+import { CustomEvent } from "../types";
+
 const { mat4, vec4, vec3 } = glMatrix;
 
-class VGeoCluster extends VCluster {
+type GeometryCache = {
+  features: Feature[];
+  centroidByGeocode: Record<string, Vector>;
+  geometry: p5.Geometry;
+};
+
+export class VGeoCluster extends VCluster {
   static total = 0;
-  static _pixelTarget;
-  static _idTarget;
-  static geometryCache = {};
+  static _pixelTarget: p5.Graphics;
+  static _idTarget: p5.Graphics;
+  static geometryCache: Record<string, Promise<GeometryCache>> = {};
 
   static MAP_SIZE = 0.4;
 
@@ -34,7 +52,12 @@ class VGeoCluster extends VCluster {
     return this._idTarget;
   }
 
-  static projectMercator(lon, lat, center = gp5.createVector(), scale = 1) {
+  static projectMercator(
+    lon: number,
+    lat: number,
+    center = gp5.createVector(),
+    scale = 1,
+  ) {
     const x = (1 / (2 * Math.PI)) * lon * (Math.PI / 180);
     const y =
       (1 / (2 * Math.PI)) *
@@ -42,13 +65,13 @@ class VGeoCluster extends VCluster {
     return [scale * (x - center.x), scale * (y - center.y)];
   }
 
-  static getBoundingBox(features) {
+  static getBoundingBox(features: Feature[]) {
     let xMin = Infinity;
     let xMax = -Infinity;
     let yMin = Infinity;
     let yMax = -Infinity;
 
-    function traverse(rings) {
+    function traverse(rings: Position[][]) {
       if (rings.length === 0) return;
       for (let [lon, lat] of rings[0]) {
         const [x, y] = VGeoCluster.projectMercator(lon, lat);
@@ -73,12 +96,12 @@ class VGeoCluster extends VCluster {
     return [xMin, xMax, yMin, yMax];
   }
 
-  static getCentroid(geom, center, scale) {
+  static getCentroid(geom: Geometry, center: Vector, scale: number) {
     let numPoints = 0;
     let xSum = 0;
     let ySum = 0;
 
-    function traverse(rings) {
+    function traverse(rings: Position[][]) {
       if (rings.length === 0) return;
       for (let [lon, lat] of rings[0]) {
         const [x, y] = VGeoCluster.projectMercator(lon, lat, center, scale);
@@ -104,8 +127,8 @@ class VGeoCluster extends VCluster {
    * @param {*} center
    * @param {*} scale
    */
-  static drawShape(geom, center, scale) {
-    function traverse(rings) {
+  static drawShape(geom: Geometry, center: Vector, scale: number) {
+    function traverse(rings: Position[][]) {
       if (rings.length === 0) return;
       VGeoCluster.pixelTarget.beginShape();
       for (let [lon, lat] of rings[0]) {
@@ -124,23 +147,23 @@ class VGeoCluster extends VCluster {
     }
   }
 
-  static computeCentroids(features, center, scale) {
-    const index = {};
+  static computeCentroids(features: Feature[], center: Vector, scale: number) {
+    const index: Record<string, Vector> = {};
     for (const feature of features) {
-      const geocode = feature.properties.GEOCODIGO;
+      const geocode = feature.properties!.GEOCODIGO;
       index[geocode] = this.getCentroid(feature.geometry, center, scale);
     }
     return index;
   }
 
-  static loadGeometry(url) {
+  static loadGeometry(url: string) {
     //console.log("Loading geometry from", url);
     DOM.showMessage(`Loading geometry from\n${url} ...`);
     if (!this.geometryCache[url]) {
-      this.geometryCache[url] = new Promise((resolve) => {
+      this.geometryCache[url] = new Promise<GeometryCache>((resolve) => {
         gp5.loadJSON(
           url,
-          ({ features }) => {
+          ({ features }: FeatureCollection) => {
             const [xMin, xMax, yMin, yMax] = this.getBoundingBox(features);
             const center = gp5.createVector(
               (xMin + xMax) / 2,
@@ -154,17 +177,20 @@ class VGeoCluster extends VCluster {
               center,
               scale,
             );
-            const geometry = VGeoCluster.pixelTarget.buildGeometry(() => {
-              for (let [i, feature] of features.entries()) {
-                VGeoCluster.pixelTarget.noStroke();
-                VGeoCluster.pixelTarget.fill(
-                  0, // ((i + 1) >> 16) & 0xff,
-                  ((i + 1) >> 8) & 0xff,
-                  ((i + 1) >> 0) & 0xff,
-                );
-                this.drawShape(feature.geometry, center, scale);
-              }
-            });
+            // @ts-ignore FIXME: add type for `buildGeometry`
+            const geometry: p5.Geometry = VGeoCluster.pixelTarget.buildGeometry(
+              () => {
+                for (let [i, feature] of features.entries()) {
+                  VGeoCluster.pixelTarget.noStroke();
+                  VGeoCluster.pixelTarget.fill(
+                    0, // ((i + 1) >> 16) & 0xff,
+                    ((i + 1) >> 8) & 0xff,
+                    ((i + 1) >> 0) & 0xff,
+                  );
+                  this.drawShape(feature.geometry, center, scale);
+                }
+              },
+            );
             resolve({
               features,
               centroidByGeocode,
@@ -216,12 +242,12 @@ class VGeoCluster extends VCluster {
 
   keyAttributeMean = Infinity;
   keyAttributeStdev = -Infinity;
-  nodeByGeocode = {};
-  centroidByGeocode = {};
-  features = [];
-  clusterGeometry = null;
-  pixelShader = null;
-  idShader = null;
+  nodeByGeocode: Record<string, Node> = {};
+  centroidByGeocode: Record<string, Vector> = {};
+  features: Feature[] = [];
+  clusterGeometry: p5.Geometry | null = null;
+  pixelShader: p5.Shader | null = null;
+  idShader: p5.Shader | null = null;
 
   r1 = 10;
   r2 = 15;
@@ -239,7 +265,13 @@ class VGeoCluster extends VCluster {
   modelViewMatrix = mat4.create();
   projectionMatrix = mat4.create();
 
-  palette = gp5.createImage(1, 1);
+  _palette = gp5.createImage(1, 1);
+
+  mouseX_object: number | undefined;
+  mouseY_object: number | undefined;
+
+  index: number;
+  keyAttribute: string;
 
   /**
    * ************************** constructor **************************
@@ -253,14 +285,14 @@ class VGeoCluster extends VCluster {
    * @param {String} cartography The URL of the GeoJSON file
    */
   constructor(
-    cluster,
-    posX,
-    posY,
-    width,
-    height,
-    palette,
-    keyAttribute,
-    cartography,
+    cluster: Cluster,
+    posX: number,
+    posY: number,
+    width: number,
+    height: number,
+    palette: string[],
+    keyAttribute: string,
+    cartography: string,
   ) {
     super(cluster, posX, posY, width, height, palette);
 
@@ -291,7 +323,7 @@ class VGeoCluster extends VCluster {
     const geoJsonUrl = "./files/Cartographies/" + cartography;
 
     // TODO: this will be loaded from JSON
-    const getColorAt = (index) => {
+    const getColorAt = (index: number) => {
       const palettes = [
         [
           "#e7f39b",
@@ -326,7 +358,7 @@ class VGeoCluster extends VCluster {
 
       const paletteName =
         ColorFactory.brewerNames[index % ColorFactory.brewerNames.length];
-      const palette = ColorFactory.getPalette(paletteName);
+      const palette = ColorFactory.getPalette(paletteName)!;
       // console.log(paletteName)
       // console.log(palette)
       return gp5.color(palette[index % palette.length]);
@@ -349,28 +381,29 @@ class VGeoCluster extends VCluster {
 
       // Get the list of UF from the attributes. Note: UF is the abbreviation of the states in Brazil.
       // This should be the cluster names in the future
-      let UFs = [];
+      let UFs: string[] = [];
       for (let i = 0; i < this.features.length; ++i) {
-        if (!UFs.includes(this.features[i].properties.UF)) {
-          UFs.push(this.features[i].properties.UF);
+        if (!UFs.includes(this.features[i].properties!.UF)) {
+          UFs.push(this.features[i].properties!.UF);
         }
       }
       // assign a color palete to each UF
       ColorFactory.makeDictionary(UFs, ColorFactory.brewerNames, "clusters");
 
       // update the colors of each UF in the map
-      this.palette = gp5.createImage(this.features.length, 1);
-      this.palette.loadPixels();
+      this._palette = gp5.createImage(this.features.length, 1);
+      this._palette.loadPixels();
       for (let i = 0; i < this.features.length; ++i) {
         let color = ColorFactory.getColorFromDictionary(
           "clusters",
-          this.features[i].properties.UF,
+          this.features[i].properties!.UF,
           5 + Math.floor(Math.random() * 3),
         ); // entry name, field name, index
         // this.palette.set(i, 0, getColorAt(i).levels);
-        this.palette.set(i, 0, gp5.color(color).levels);
+        // @ts-ignore FIXME: `.levels` does not exist
+        this._palette.set(i, 0, gp5.color(color).levels);
       }
-      this.palette.updatePixels();
+      this._palette.updatePixels();
 
       // Refresh canvas and reposition nodes
       this.updateMatrices();
@@ -386,8 +419,8 @@ class VGeoCluster extends VCluster {
     let n = 0;
     let total = 0;
     for (const node of this.cluster.nodes) {
-      this.nodeByGeocode[node.attributes.attRaw.geocode] = node;
-      const attrValue = Number(node.attributes.attRaw[this.keyAttribute]);
+      this.nodeByGeocode[node.attributes!.attRaw!.geocode] = node;
+      const attrValue = Number(node.attributes!.attRaw![this.keyAttribute]);
       if (Number.isNaN(attrValue)) continue;
       ++n;
       total += attrValue;
@@ -396,21 +429,21 @@ class VGeoCluster extends VCluster {
 
     let SSD = 0;
     for (const node of this.cluster.nodes) {
-      this.nodeByGeocode[node.attributes.attRaw.geocode] = node;
-      const attrValue = Number(node.attributes.attRaw[this.keyAttribute]);
+      this.nodeByGeocode[node.attributes!.attRaw!.geocode] = node;
+      const attrValue = Number(node.attributes!.attRaw![this.keyAttribute]);
       if (Number.isNaN(attrValue)) continue;
       SSD += (attrValue - this.keyAttributeMean) ** 2;
     }
     this.keyAttributeStdev = Math.sqrt(SSD / n);
   }
 
-  colorFor(geocode) {
+  colorFor(geocode: string) {
     if (!this.nodeByGeocode[geocode]) {
       return gp5.color(200);
     }
     const attrValue =
       Number(
-        this.nodeByGeocode[geocode]?.attributes.attRaw?.[this.keyAttribute],
+        this.nodeByGeocode[geocode]?.attributes!.attRaw?.[this.keyAttribute],
       ) || 0;
     const start = this.keyAttributeMean - 1.5 * this.keyAttributeStdev;
     const end = this.keyAttributeMean + 1.5 * this.keyAttributeStdev;
@@ -430,55 +463,7 @@ class VGeoCluster extends VCluster {
     );
   }
 
-  computeStatistics() {
-    let n = 0;
-    let total = 0;
-    for (const node of this.cluster.nodes) {
-      this.nodeByGeocode[node.attributes.attRaw.geocode] = node;
-      const attrValue = Number(node.attributes.attRaw[this.keyAttribute]);
-      if (Number.isNaN(attrValue)) continue;
-      ++n;
-      total += attrValue;
-    }
-    this.keyAttributeMean = total / n;
-
-    let SSD = 0;
-    for (const node of this.cluster.nodes) {
-      this.nodeByGeocode[node.attributes.attRaw.geocode] = node;
-      const attrValue = Number(node.attributes.attRaw[this.keyAttribute]);
-      if (Number.isNaN(attrValue)) continue;
-      SSD += (attrValue - this.keyAttributeMean) ** 2;
-    }
-    this.keyAttributeStdev = Math.sqrt(SSD / n);
-  }
-
-  colorFor(geocode) {
-    if (!this.nodeByGeocode[geocode]) {
-      return gp5.color(200);
-    }
-    const attrValue =
-      Number(
-        this.nodeByGeocode[geocode]?.attributes.attRaw?.[this.keyAttribute],
-      ) || 0;
-    const start = this.keyAttributeMean - 1.5 * this.keyAttributeStdev;
-    const end = this.keyAttributeMean + 1.5 * this.keyAttributeStdev;
-    // TODO: this will be loaded from JSON
-    const [r1, g1, b1] = [
-      [7, 64, 80],
-      [255, 198, 196],
-    ][this.index];
-    const [r2, g2, b2] = [
-      [211, 242, 163],
-      [103, 32, 68],
-    ][this.index];
-    return gp5.color(
-      gp5.map(attrValue, start, end, r1, r2, true),
-      gp5.map(attrValue, start, end, g1, g2, true),
-      gp5.map(attrValue, start, end, b1, b2, true),
-    );
-  }
-
-  warp(r) {
+  warp(r: number) {
     if (r < this.r1) return this.s1 * r;
     if (r < this.r2) {
       return (
@@ -555,14 +540,14 @@ class VGeoCluster extends VCluster {
     mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
     for (let vNode of this.vNodes) {
-      const geocode = vNode.node.attributes.attRaw.geocode;
+      const geocode = vNode.node.attributes!.attRaw!.geocode;
       if (!this.centroidByGeocode[geocode]) continue;
 
       const vIn = this.centroidByGeocode[geocode].copy();
-      vIn.sub(this.mouseX_object, this.mouseY_object);
+      vIn.sub(this.mouseX_object!, this.mouseY_object);
       const r = this.warp(vIn.mag());
       vIn.setMag(r);
-      vIn.add(this.mouseX_object, this.mouseY_object);
+      vIn.add(this.mouseX_object!, this.mouseY_object);
       const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
 
       const position_NDC = vec4.transformMat4(
@@ -627,7 +612,7 @@ class VGeoCluster extends VCluster {
    * This replaces the former handleEvents method in this class.
    * @param {*} data the event sent by the canvas to its observers.
    */
-  fromCanvas(data) {
+  fromCanvas(data: CustomEvent) {
     if (data.event instanceof MouseEvent) {
       this.updateMatrices();
       this.unprojectMousePosition();
@@ -686,28 +671,30 @@ class VGeoCluster extends VCluster {
     }
   }
 
-  renderToBuffer(buffer, shader) {
+  renderToBuffer(buffer: p5.Graphics, shader: p5.Shader) {
     buffer.shader(shader);
-    shader.setUniform("modelViewMatrix", this.modelViewMatrix);
-    shader.setUniform("projectionMatrix", this.projectionMatrix);
-    shader.setUniform("mouse", [this.mouseX_object, this.mouseY_object]);
+    // @ts-ignore FIXME: fix signature of `setUniform`
+    shader.setUniform("modelViewMatrix", this.modelViewMatrix!);
+    // @ts-ignore FIXME: fix signature of `setUniform`
+    shader.setUniform("projectionMatrix", this.projectionMatrix!);
+    shader.setUniform("mouse", [this.mouseX_object!, this.mouseY_object!]);
     shader.setUniform("layerId", this.index + 1);
     shader.setUniform("r1", this.r1);
     shader.setUniform("r2", this.r2);
     shader.setUniform("s1", this.s1);
     shader.setUniform("s2", this.s2);
-    shader.setUniform("palette", this.palette);
-    shader.setUniform("paletteSize", this.palette.width);
+    shader.setUniform("palette", this._palette);
+    shader.setUniform("paletteSize", this._palette.width);
     shader.setUniform("selected", VGeoCluster.selectedFeatureId);
-    buffer.model(this.clusterGeometry);
+    buffer.model(this.clusterGeometry!);
   }
 
-  show(renderer) {
+  show(renderer: p5) {
     // super.show(renderer);
     // this.handleEvents();
     if (this.clusterGeometry) {
       if (this.pixelShader) {
-        VGeoCluster.pixelTarget.texture(this.palette);
+        VGeoCluster.pixelTarget.texture(this._palette);
         this.renderToBuffer(VGeoCluster.pixelTarget, this.pixelShader);
       }
       if (this.idShader) {

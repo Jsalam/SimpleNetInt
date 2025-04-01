@@ -1,5 +1,29 @@
-class VCluster extends Button {
-  constructor(cluster, x, y, width, height, palette) {
+import { VNode } from "./vNode";
+import { Layout } from "./layouts/layout";
+import { TransFactory } from "../factories/transformerFactory";
+import { Button } from "./button";
+import { CustomEvent, Observer } from "../types";
+import p5 from "p5";
+import { gp5 } from "../main";
+import { Cluster } from "../graphElements/cluster";
+import { ColorFactory } from "../factories/colorFactory";
+import { Canvas } from "../canvas/canvas";
+import { Node } from "../graphElements/node";
+
+export class VCluster extends Button implements Observer {
+  vNodes: VNode[];
+  cluster: Cluster;
+  palette: string[];
+  layout: Layout;
+
+  constructor(
+    cluster: Cluster,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    palette: string[],
+  ) {
     super(x, y, width, height);
     this.vNodes = [];
     this.cluster = cluster;
@@ -13,7 +37,7 @@ class VCluster extends Button {
   }
 
   // Observing to Canvas
-  fromCanvas(data) {
+  fromCanvas(data: CustomEvent) {
     if (data.event instanceof MouseEvent) {
       // do something
     } else if (data.event instanceof KeyboardEvent) {
@@ -23,12 +47,12 @@ class VCluster extends Button {
     }
   }
 
-  populateVNodes(cluster) {
+  populateVNodes(cluster: Cluster) {
     for (let index = 0; index < cluster.nodes.length; index++) {
       const node = cluster.nodes[index];
 
       // Create vNode
-      let vNodeTemp;
+      let vNodeTemp: VNode | undefined;
       if (node instanceof Node) {
         // node size
         let vNodeW = 10;
@@ -42,29 +66,37 @@ class VCluster extends Button {
       }
 
       // set color if the data from JSON does not have color info
-      if (!node.importedVNodeData.color) {
+      if (!node.importedVNodeData!.color) {
         if (!this.palette) {
-          vNodeTemp.setColor("#adadad");
+          vNodeTemp!.setColor("#adadad");
         } else if (this.palette.length < 1) {
-          vNodeTemp.setColor(ColorFactory.getColor(this.palette, 0));
+          vNodeTemp!.setColor(ColorFactory.getColor(this.palette, 0));
         } else {
-          vNodeTemp.setColor(ColorFactory.getColor(this.palette, index));
+          vNodeTemp!.setColor(ColorFactory.getColor(this.palette, index));
         }
       }
 
       // add to colecction
-      this.addVNode(vNodeTemp, node.importedVNodeData);
+      this.addVNode(vNodeTemp!, node.importedVNodeData!);
     }
     this.layout.subscribeVNodes(this.vNodes);
   }
 
-  addVNode(vNode, data) {
+  addVNode(
+    vNode: VNode,
+    data?: {
+      posX: number;
+      posY: number;
+      posZ: number;
+      color: string;
+    },
+  ) {
     if (data) {
       const pos = gp5.createVector(data.posX, data.posY, data.posZ);
       vNode.updateCoords(pos, 0);
       vNode.setColor(data.color);
     } else {
-      vNode.updateCoords(this.pos, this.vNodes.length + 1);
+      vNode.updateCoords(this.pos!, this.vNodes.length + 1);
       vNode.setColor(
         ColorFactory.getColor(this.palette, this.cluster.nodes.length),
       );
@@ -76,13 +108,13 @@ class VCluster extends Button {
     this.vNodes.push(vNode);
   }
 
-  getVNode(node) {
+  getVNode(node: Node) {
     return this.vNodes.filter((vN) => {
       return vN.node.idCat === node.idCat;
     })[0];
   }
 
-  setPalette(palette) {
+  setPalette(palette: string[]) {
     if (palette) {
       this.palette = palette;
     }
@@ -99,14 +131,14 @@ class VCluster extends Button {
     }
   }
 
-  show(renderer) {
+  show(renderer: p5) {
     renderer.textAlign(gp5.LEFT, gp5.TOP);
     if (this.cluster.label) {
       renderer.textSize(12);
       renderer.fill(100);
       renderer.noStroke();
       renderer.textLeading(12);
-      renderer.text(this.cluster.label, this.pos.x, this.pos.y, 140);
+      renderer.text(this.cluster.label, this.pos!.x, this.pos!.y, 140);
     }
   }
 
@@ -119,7 +151,7 @@ class VCluster extends Button {
       // The latest values of the transformer linked to this vCluster
       scaleFactor: trans.scaleFactor,
       matrixComponents: JSON.stringify(trans.transform),
-      nodes: [],
+      nodes: [] as unknown[],
     };
 
     this.vNodes.forEach((vNode) => {

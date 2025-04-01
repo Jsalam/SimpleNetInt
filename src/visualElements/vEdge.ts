@@ -1,5 +1,28 @@
-class VEdge {
-  constructor(edge) {
+import { Edge } from "../graphElements/edge";
+import { Node } from "../graphElements/node";
+import { VNode } from "./vNode";
+import { EdgeFactory } from "../factories/edgeFactory";
+import { DOM } from "../GUI/DOM/DOMManager";
+import anime from "animejs";
+import { Canvas } from "../canvas/canvas";
+import { CustomEvent, Observer } from "../types";
+import p5, { Vector } from "p5";
+import { ColorFactory } from "../factories/colorFactory";
+import { gp5 } from "../main";
+import { TransFactory } from "../factories/transformerFactory";
+
+export class VEdge implements Observer {
+  edge: Edge;
+  source: Node;
+  target: Node | undefined;
+  vSource: VNode | undefined;
+  vTarget: VNode | undefined;
+  color: unknown;
+  riseFactor: number;
+  controlOrg: Vector | undefined;
+  controlEnd: Vector | undefined;
+
+  constructor(edge: Edge) {
     this.edge = edge;
     this.source = edge.source;
     this.target;
@@ -16,13 +39,13 @@ class VEdge {
   }
 
   // Observing to Canvas
-  fromCanvas(data) {
+  fromCanvas(data: CustomEvent) {
     if (data.event instanceof MouseEvent) {
       // DOM event
       if (data.type == "DOMEvent") {
         // get the checkbox
-        let DOMelementID = data.event.target.id;
-        let DOMChecked = data.event.target.checked;
+        let DOMelementID = (data.event.target as HTMLInputElement).id;
+        let DOMChecked = (data.event.target as HTMLInputElement).checked;
         let elements = EdgeFactory._vEdges.filter(function (vE) {
           if (vE.edge.kind == DOMelementID) {
             return true;
@@ -59,35 +82,35 @@ class VEdge {
     }
   }
 
-  setVSource(vNode) {
+  setVSource(vNode: VNode) {
     this.vSource = vNode;
     // this.setColor(vNode.vConnectors[0].color);
     this.controlOrg = vNode.pos;
   }
 
-  setVTarget(vNode) {
+  setVTarget(vNode: VNode) {
     this.vTarget = vNode;
     // vConctr.setColor(this.color);
     this.controlEnd = vNode.pos;
   }
 
-  setColor(color) {
+  setColor(color: p5.Color) {
     this.color = color;
   }
 
-  show(renderer) {
+  show(renderer: p5) {
     let displayEdge = false;
-    let alpha;
+    let alpha: string;
 
     // visible only of the source and target are visible
     let sourceTargetVisible = false;
     if (this.vTarget) {
-      sourceTargetVisible = this.vSource.visible && this.vTarget.visible;
+      sourceTargetVisible = this.vSource!.visible! && this.vTarget.visible!;
     } else {
-      sourceTargetVisible = this.vSource.visible;
+      sourceTargetVisible = this.vSource!.visible!;
     }
     // Visible on mouse over source and the outEdges is selected
-    if (this.vSource.mouseIsOver && DOM.boxChecked("showOutEdges")) {
+    if (this.vSource!.mouseIsOver && DOM.boxChecked("showOutEdges")) {
       displayEdge = true;
       alpha = "85";
     }
@@ -101,7 +124,7 @@ class VEdge {
     }
 
     // Highligted when the source connector is selected in the GUI menu
-    let vCnctrSource = this.vSource.vConnectors.filter(
+    let vCnctrSource = this.vSource!.vConnectors.filter(
       (vCnctr) => vCnctr.connector.kind == this.edge.kind,
     )[0];
     if (vCnctrSource.selected) {
@@ -124,15 +147,19 @@ class VEdge {
       // }
 
       // get stroke color
-      let baseColor = ColorFactory.dictionaries.connectors[this.edge.kind];
+      let baseColor = ColorFactory.dictionaries.connectors[this.edge.kind!];
 
-      if (!baseColor) baseColor = this.vSource.color;
+      if (!baseColor) baseColor = this.vSource!.color!;
 
-      let strokeColor = this._getStrokeColor(baseColor, alpha);
+      let strokeColor: string | string[] | p5.Color = this._getStrokeColor(
+        baseColor,
+        alpha!,
+      );
       let strokeWeight = this._getStrokeWeight(
         Number(DOM.sliders.edgeTickness.value),
       ); // the parameter attenuates the thickness
 
+      // @ts-ignore FIXME: check argument type
       strokeColor = gp5.color(strokeColor);
 
       if (vCnctrSource.selected) {
@@ -148,7 +175,7 @@ class VEdge {
     }
   }
 
-  _getStrokeColor(_baseColor, _alpha) {
+  _getStrokeColor(_baseColor: string | string[], _alpha: string) {
     let baseColor = _baseColor;
 
     // default color
@@ -195,7 +222,7 @@ class VEdge {
    * @param {Numeric} factor A value between 1 and 0
    * @returns
    */
-  _getStrokeWeight(factor) {
+  _getStrokeWeight(factor: number) {
     // default color
     let strokeWeight = 1;
     let thick = 4;
@@ -230,21 +257,21 @@ class VEdge {
     return strokeWeight * this.edge.weight * factor;
   }
 
-  getOrgCoords(vNode, _kind) {
-    let pos, kind;
+  getOrgCoords(vNode: VNode, _kind?: string) {
+    let pos: Vector, kind: string;
 
     if (!_kind) {
-      kind = this.edge.kind;
+      kind = this.edge.kind!;
     }
 
     let vConnector = vNode.vConnectors.filter(
       (vCnctr) => vCnctr.connector.kind == kind,
     )[0];
-    pos = gp5.createVector(vConnector.pos.x, vConnector.pos.y);
+    pos = gp5.createVector(vConnector.pos!.x, vConnector.pos!.y);
     return pos;
   }
 
-  showBezierArcs(renderer, color, weight) {
+  showBezierArcs(renderer: p5, color: p5.Color, weight: number) {
     // line thickness
     renderer.strokeWeight(weight);
     renderer.stroke(color);
@@ -252,7 +279,7 @@ class VEdge {
 
     // general properties
     let factor = 1 / 2;
-    let org = this.getOrgCoords(this.vSource);
+    let org = this.getOrgCoords(this.vSource!);
     let end;
 
     // If the edge does not have target yet
@@ -318,14 +345,15 @@ class VEdge {
     // edge label
     if (
       DOM.boxChecked("showTexts") ||
-      this.vSource.mouseIsOver ||
+      this.vSource!.mouseIsOver ||
       (this.vTarget && this.vTarget.mouseIsOver)
     ) {
-      VirtualElementPool.show(this, "edge-label", this.edge.kind, {
+      VirtualElementPool.show(this, "edge-label", this.edge.kind!, {
         fontFamily: "Roboto",
         fontSize: "12px",
         overflow: "hidden",
         display: "block",
+        // @ts-ignore FIXME: wrong argument type. must be string
         color: color,
         transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
@@ -339,17 +367,25 @@ class VEdge {
   }
 
   getJSON() {
-    let org = this.getOrgCoords(this.vSource);
-    let end = this.getOrgCoords(this.vTarget);
+    let org = this.getOrgCoords(this.vSource!);
+    let end = this.getOrgCoords(this.vTarget!);
 
     let rtn = {
       edge: this.edge.getJSON(),
-      vSource: this.vSource.getJSON(),
-      vTarget: this.vTarget.getJSON(),
+      vSource: this.vSource!.getJSON(),
+      vTarget: this.vTarget!.getJSON(),
       controlPoints: {
         org: [org.x, org.y, org.z],
-        orgControl: [this.controlOrg.x, this.controlOrg.y, this.controlOrg.z],
-        endControl: [this.controlEnd.x, this.controlEnd.y, this.controlEnd.z],
+        orgControl: [
+          this.controlOrg!.x,
+          this.controlOrg!.y,
+          this.controlOrg!.z,
+        ],
+        endControl: [
+          this.controlEnd!.x,
+          this.controlEnd!.y,
+          this.controlEnd!.z,
+        ],
         end: [end.x, end.y, end.z],
       },
     };

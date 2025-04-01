@@ -1,5 +1,14 @@
-class VConnector extends Button {
-  constructor(connector) {
+import { Connector } from "../graphElements/connector";
+import { Button } from "./button";
+import { CustomEvent } from "../types";
+import p5, { Vector } from "p5";
+import { gp5 } from "../main";
+
+export class VConnector extends Button {
+  connector: Connector;
+  color: string;
+
+  constructor(connector: Connector) {
     super(0, 0, 10, 10);
     this.connector = connector;
     this.color = "#d4d4d4";
@@ -7,12 +16,12 @@ class VConnector extends Button {
   }
 
   // Observing connector
-  getData(data) {
+  getData(data: unknown) {
     // do domething
   }
 
   // Observing to Canvas
-  fromVNode(data) {
+  fromVNode(data: CustomEvent) {
     if (data.event instanceof MouseEvent) {
       if (data.type == "mouseup") {
         // do something
@@ -36,34 +45,42 @@ class VConnector extends Button {
     }
   }
 
-  setColor(color) {
+  setColor(color: string) {
     this.color = color;
   }
 
-  updateCoords(pos, sequence, height) {
+  updateCoords(pos: Vector, sequence: number, height: number) {
     this.setPos(
       gp5.createVector(pos.x - this.width, pos.y + sequence * height),
     );
     this.setHeight(height);
+    // @ts-ignore FIXME: `width` is undefined
     this.setWidth(width);
   }
 
-  updateCoordsByAngle(center, angle, radius) {
+  updateCoordsByAngle(center: Vector, angle: number, radius: number) {
     let x = Math.cos(angle) * (radius - this.width / 2);
     let y = Math.sin(angle) * (radius - this.width / 2);
 
     this.setPos(gp5.createVector(center.x + x, center.y + y));
   }
 
-  show(renderer, fillColor, strokeColor) {
+  override show(
+    renderer: p5,
+    fillColor: p5.Color | string,
+    strokeColor: p5.Color | string,
+  ) {
     renderer.ellipseMode(gp5.CENTER);
+    // @ts-ignore FIXME: argument type
     renderer.fill(fillColor);
+    // @ts-ignore FIXME: argument type
     renderer.stroke(fillColor);
+    // @ts-ignore FIXME: argument type
     if (strokeColor) renderer.stroke(strokeColor);
     //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
     // let radius =  * Number(DOM.sliders.nodeSizeFactor.value);
     // if (radius < 3) radius = 3;
-    renderer.ellipse(this.pos.x, this.pos.y, this.width);
+    renderer.ellipse(this.pos!.x, this.pos!.y, this.width);
     // label
     // renderer.textSize(5);
     // renderer.textAlign(gp5.RIGHT, gp5.CENTER);

@@ -1,28 +1,44 @@
+import QuickSettings, {DropDownItems, QuickSettingsPanel,} from "quicksettings";
+import {Observer} from "../../types";
+import {gp5} from "../../main";
+import {DOM} from "../DOM/DOMManager";
+
 /**
  * This class uses the library Quicksettings. See http://bit101.github.io/quicksettings/
  */
-class ContextualGUI {
+export class ContextualGUI {
+  static edgeMenu: QuickSettingsPanel;
+  static spacesMenu: QuickSettingsPanel;
+  static observers: Observer[] = [];
+  static edgeCategories: string[] = [];
+  static edgeMenuChoice: string;
+  static _edgeMenuValue: unknown;
+
   // This constructor is not needed, but it is here because the documentation generator requires it to format the documentation
   constructor() {}
 
-  static subscribe(obj) {
+  static subscribe(obj: Observer) {
     ContextualGUI.observers.push(obj);
   }
 
-  static unsubscribe(obj) {}
+  static unsubscribe(obj: Observer) {}
 
-  static notifyObservers(data) {
+  static notifyObservers(data: unknown) {
     for (const obs of ContextualGUI.observers) {
-      obs.getDataFromContextualGUI(data);
+      obs.getDataFromContextualGUI?.(data);
     }
   }
 
-  /**
+  /**x
    * Init from string
    * @param {string} kinds comma separated names
    */
-  static init(kinds) {
-    if (ContextualGUI.edgeMenu && ContextualGUI.edgeMenu._content) {
+  static init(kinds: string | string[]) {
+    if (
+      ContextualGUI.edgeMenu &&
+      /* @ts-ignore FIXME: `_content` doesn't exist */
+      ContextualGUI.edgeMenu._content
+    ) {
       ContextualGUI.edgeMenu.destroy();
       ContextualGUI.edgeCategories = [];
     }
@@ -43,8 +59,12 @@ class ContextualGUI {
    * Init from collection of strings
    * @param {*} collection collection of strings
    */
-  static init2(collection) {
-    if (ContextualGUI.edgeMenu && ContextualGUI.edgeMenu._content) {
+  static init2(collection: string[]) {
+    if (
+      ContextualGUI.edgeMenu &&
+      /* @ts-ignore FIXME: `_content` doesn't exist */
+      ContextualGUI.edgeMenu._content
+    ) {
       ContextualGUI.edgeMenu.destroy();
     }
 
@@ -61,7 +81,7 @@ class ContextualGUI {
       gp5.width - 240,
       gp5.height - 240,
       "Edge Menu",
-      document.getElementById("model"),
+      document.getElementById("model")!,
     );
 
     // Switch it off is the checkbox is off
@@ -80,7 +100,7 @@ class ContextualGUI {
         gp5.width - 540,
         gp5.height - 240,
         "Spaces Menu",
-        document.getElementById("model"),
+        document.getElementById("model")!,
       );
     } else {
       ContextualGUI.clearFloatingMenu(ContextualGUI.spacesMenu);
@@ -91,28 +111,29 @@ class ContextualGUI {
     }
   }
 
-  static addEdgeCheckboxes(label, items) {
+  static addEdgeCheckboxes(label: string, items: DropDownItems<unknown>) {
     // the callback here is used when a new option is chosen
     ContextualGUI.edgeMenu.addDropDown(label, items, (val) => {
       ContextualGUI.edgeMenuChoice = val.value;
       ContextualGUI.notifyObservers(val.value);
     });
     // get the value of first selected item in the dropdown at the moment of adding new checkboxes
+    /* @ts-ignore FIXME: `_controls` doesn't exist */
     let tmp = ContextualGUI.edgeMenu._controls.Categories.control.value;
     ContextualGUI.notifyObservers(tmp);
     ContextualGUI.edgeMenuChoice = tmp;
   }
 
-  static getValue(val) {
+  static getValue(val: { value: unknown }) {
     ContextualGUI._edgeMenuValue = val.value;
     console.log("value changed");
   }
 
-  static setEdgeMenuValue(val) {
+  static setEdgeMenuValue(val: { value: unknown }) {
     ContextualGUI._edgeMenuValue = val;
   }
 
-  static addEdgeCategory(cat) {
+  static addEdgeCategory(cat: string) {
     let rtn = false;
     if (!ContextualGUI.edgeCategories.includes(cat)) {
       ContextualGUI.edgeCategories.push(cat);
@@ -121,7 +142,8 @@ class ContextualGUI {
     return rtn;
   }
 
-  static clearFloatingMenu(menu) {
+  static clearFloatingMenu(menu: QuickSettingsPanel) {
+    /* @ts-ignore FIXME: `_controls` doesn't exist */
     let controls = Object.entries(menu._controls);
     for (let i = controls.length; i > 0; i--) {
       let controlName = controls[i - 1][0];
@@ -129,8 +151,3 @@ class ContextualGUI {
     }
   }
 }
-ContextualGUI.edgeMenu;
-ContextualGUI.spacesMenu;
-ContextualGUI.observers = [];
-ContextualGUI.edgeCategories = [];
-ContextualGUI.edgeMenuChoice;

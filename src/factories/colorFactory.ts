@@ -1,6 +1,24 @@
 // This class makes use of chroma.js to generate some color palettes
-class ColorFactory {
-  static loadPalettes(path, names, thenFunction) {
+import chroma from "chroma-js";
+import { gp5 } from "../main";
+import { Canvas } from "../canvas/canvas";
+import BrewerPaletteName = chroma.BrewerPaletteName;
+
+export class ColorFactory {
+  static dictionaries: Record<string, Record<string, string | string[]>> = {};
+  static palettes: string[][] = [];
+  static basic = {
+    r: "#cc0033",
+    g: "#00cc99",
+    b: "#0040ff",
+    y: "#ffbf00",
+    k: "#000000",
+  };
+  static brewerNames = Object.keys(chroma.brewer);
+  static chroma = chroma;
+
+  static loadPalettes(path: string, names: string[], thenFunction: () => void) {
+    // TODO: Create a promise-returning wrapper function for `loadStrings`
     return new Promise((resolve) => {
       resolve(
         // First palette
@@ -20,6 +38,7 @@ class ColorFactory {
                 ColorFactory.palettes.push(data);
                 // console.log(3 + ", :" + ColorFactory.palettes.length);
                 // Call the "then" function once all the palettes are completed
+                // @ts-ignore FIXME: always true
                 if (thenFunction) {
                   console.log("Color palettes instantiated");
                   //thenFunction();
@@ -40,24 +59,24 @@ class ColorFactory {
    * 'RdGy', 'PuOr', 'Set2', 'Accent', 'Set1', 'Set3', 'Dark2', 'Paired', 'Pastel2', 'Pastel1'
    * @returns the color palette. If the parameter does not match anly palete, it returns the default palete (first of the native ones).
    */
-  static getPalette(n) {
+  static getPalette(n: unknown): string[] | undefined {
     // let tempIndex = n % ColorFactory.palettes.length;
     // return ColorFactory.palettes[tempIndex];
     if (typeof n === "number") {
       let tempIndex = n % ColorFactory.palettes.length;
       return ColorFactory.palettes[tempIndex];
     } else if (typeof n === "string") {
-      return chroma.brewer[n];
+      return chroma.brewer[n as BrewerPaletteName];
     }
     //else return ColorFactory.palettes[0];
   }
 
-  static getColor(palette, index) {
+  static getColor(palette: string[], index: number) {
     let tmpIndex = index % palette.length;
     return palette[tmpIndex];
   }
 
-  static getColorFor(kind) {
+  static getColorFor(kind: string | number) {
     let rtn;
     if (typeof kind === "string") {
       kind = Number(kind);
@@ -84,8 +103,12 @@ class ColorFactory {
     return rtn;
   }
 
-  static makeDictionary(list, palette, name) {
-    let dic = {};
+  static makeDictionary(
+    list: string | string[],
+    palette: string[],
+    name: string,
+  ) {
+    let dic: Record<string, string | string[]> = {};
     let arr = [];
     if (list instanceof Array) {
       arr = list;
@@ -97,7 +120,7 @@ class ColorFactory {
       for (let i = 0; i < arr.length; i++) {
         // if the palete is a name of the colorBrewer insert the array of colors
         if (ColorFactory.brewerNames.includes(palette[i])) {
-          dic[arr[i]] = chroma.brewer[palette[i]];
+          dic[arr[i]] = chroma.brewer[palette[i] as BrewerPaletteName];
         } else {
           dic[arr[i]] = palette[i];
         }
@@ -115,7 +138,10 @@ class ColorFactory {
    * This was intended to update the dictionary of colors. It is not working yet.
    * @param {*} name
    */
-  static updateDictionary(name, dic) {
+  static updateDictionary(
+    name: string,
+    dic: Record<string, string | string[]>,
+  ) {
     ColorFactory.dictionaries[name] = dic;
   }
 
@@ -131,7 +157,11 @@ class ColorFactory {
    * @returns the color of the palete in the the index position. White if the color is
    * not defined or there is an error.
    */
-  static getColorFromDictionary(key1, key2 = "", index = 0) {
+  static getColorFromDictionary(
+    key1: string,
+    key2: string = "",
+    index: number = 0,
+  ) {
     try {
       let entry = ColorFactory.dictionaries[key1];
       let rtn;
@@ -155,14 +185,3 @@ class ColorFactory {
     }
   }
 }
-ColorFactory.dictionaries = {};
-ColorFactory.palettes = [];
-ColorFactory.basic = {
-  r: "#cc0033",
-  g: "#00cc99",
-  b: "#0040ff",
-  y: "#ffbf00",
-  k: "#000000",
-};
-ColorFactory.brewerNames = Object.keys(chroma.brewer);
-ColorFactory.chroma = chroma;

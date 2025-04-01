@@ -1,10 +1,21 @@
 // main function
-var main = function (p5) {
+import { DOM } from "./GUI/DOM/DOMManager";
+import { ColorFactory } from "./factories/colorFactory";
+import { Canvas } from "./canvas/canvas";
+import { Font } from "p5";
+import p5 = require("p5");
+
+export const gp5 = new p5(
+  main,
+  document.querySelector("#model") as HTMLElement,
+);
+
+function main(p5: p5) {
   // variables
   let graphics;
 
   // font
-  let myFont;
+  let myFont: Font;
 
   // Networks path
   DOM.pathNetworks = "./files/Networks/";
@@ -56,7 +67,7 @@ var main = function (p5) {
     DOM.init();
 
     // load the first selected model by default
-    DOM.switchModel(DOM.dropdowns.modelChoice.value);
+    DOM.switchModel((DOM.dropdowns.modelChoice as HTMLInputElement).value);
 
     // scroll
     document.body.style.overflow = "hidden";
@@ -104,6 +115,4 @@ var main = function (p5) {
     gp5.resizeCanvas(window.innerWidth, window.innerHeight);
     DOM.event = evt;
   };
-};
-
-var gp5 = new p5(main, "model");
+}
