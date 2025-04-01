@@ -1,4 +1,10 @@
-import { Node } from "./node";
+import { Node, NodeIdCat } from "./node";
+
+export type EdgeIdCat = {
+  source: NodeIdCat;
+  target: NodeIdCat;
+  polarity?: unknown;
+};
 
 export interface EdgeInit {
   weight: number;
@@ -14,13 +20,7 @@ export class Edge {
   source: Node;
   kind: string | undefined;
   target: Node | undefined;
-  id:
-    | {
-        source: Node["idCat"];
-        target: Node["idCat"];
-        polarity?: unknown;
-      }
-    | undefined;
+  id: EdgeIdCat | undefined;
   open: boolean;
   weight: number;
 

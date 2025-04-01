@@ -5,6 +5,12 @@ import { Edge } from "./edge";
 import { ContextualGUI } from "../GUI/ContextualGUIs/ContextualGUI";
 import { DOM } from "../GUI/DOM/DOMManager";
 
+export type NodeIdCat = {
+  cluster: string;
+  index: unknown;
+  pajekIndex: number;
+};
+
 export interface NodeAttributes {
   attr: unknown;
   attRaw?: Record<string, any>;
@@ -29,11 +35,7 @@ export interface NodeInit {
  */
 export class Node {
   id: unknown;
-  idCat: {
-    cluster: string;
-    index: unknown;
-    pajekIndex: number;
-  };
+  idCat: NodeIdCat;
   connectors: Connector[];
   label: string;
   description: string;
