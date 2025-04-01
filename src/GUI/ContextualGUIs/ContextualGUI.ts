@@ -3,6 +3,8 @@ import {Observer} from "../../types";
 import {gp5} from "../../main";
 import {DOM} from "../DOM/DOMManager";
 
+import "../../../node_modules/quicksettings/quicksettings.css";
+
 /**
  * This class uses the library Quicksettings. See http://bit101.github.io/quicksettings/
  */

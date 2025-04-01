@@ -17,6 +17,7 @@ import { ContextualGUI } from "../ContextualGUIs/ContextualGUI";
 import { TransFactory } from "../../factories/transformerFactory";
 import { ColorFactory } from "../../factories/colorFactory";
 import { Edge } from "../../graphElements/edge";
+import { VirtualElementPool } from "../../visualElements/VirtualElementPool";
 
 interface NetworkData {
   nodes: ClusterInit[];

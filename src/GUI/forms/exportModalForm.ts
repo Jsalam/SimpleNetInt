@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { ClusterFactory } from "../../factories/clusterFactory";
 import { EdgeFactory } from "../../factories/edgeFactory";
 import { gp5 } from "../../main";

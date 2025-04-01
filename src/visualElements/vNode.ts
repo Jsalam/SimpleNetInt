@@ -14,6 +14,7 @@ import { ColorFactory } from "../factories/colorFactory";
 import { Transformer } from "../canvas/transformer";
 import { EdgeFactory } from "../factories/edgeFactory";
 import { VEdge } from "./vEdge";
+import { VirtualElementPool } from "./VirtualElementPool";
 
 export interface VNodeInit {
   posX: number;

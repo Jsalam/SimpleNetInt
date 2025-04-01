@@ -1,8 +1,10 @@
+import $ from "jquery";
 import { DOM } from "../DOM/DOMManager";
 import { Canvas } from "../../canvas/canvas";
 import { ClusterFactory, ClusterInit } from "../../factories/clusterFactory";
 import { Edge } from "../../graphElements/edge";
 import { EdgeFactory } from "../../factories/edgeFactory";
+import { VirtualElementPool } from "../../visualElements/VirtualElementPool";
 
 let nodesImported: ClusterInit[];
 let edgesImported: Edge[];

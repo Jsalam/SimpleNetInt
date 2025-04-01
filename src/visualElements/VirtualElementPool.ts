@@ -36,7 +36,7 @@ class VirtualElement {
  * The pool will automatically apply the necessary changes to the DOM when
  * the `scheduleUpdate` method is called.
  */
-class VirtualElementPool {
+export class VirtualElementPool {
   /**
    * Represents a void DOM element.
    */

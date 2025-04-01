@@ -1,13 +1,12 @@
-// addClusterModalForm = function() {
+import $ from "jquery";
+import { ClusterFactory, ClusterInit } from "../../factories/clusterFactory";
+import { TransFactory } from "../../factories/transformerFactory";
+import { ContextualGUI } from "../ContextualGUIs/ContextualGUI";
 
+// addClusterModalForm = function() {
 //     document.getElementById("SubmitAddClusterModal").onclick = getDataCluster
 // }
-
 // Prevent focus on form close
-import {ClusterFactory, ClusterInit} from "../../factories/clusterFactory";
-import {TransFactory} from "../../factories/transformerFactory";
-import {ContextualGUI} from "../ContextualGUIs/ContextualGUI";
-
 document.addEventListener("DOMContentLoaded", function () {
   $("#addClusterModal").on("hide.bs.modal", function () {
     if (document.activeElement) {

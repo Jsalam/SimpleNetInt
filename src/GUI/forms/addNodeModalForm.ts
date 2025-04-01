@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { ClusterFactory } from "../../factories/clusterFactory";
 import { VNode } from "../../visualElements/vNode";
 import { NodeAttributes, NodeInit } from "../../graphElements/node";

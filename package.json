@@ -2,23 +2,24 @@
   "name": "simple-netint",
   "version": "1.0.0",
   "scripts": {
-    "esbuild": "esbuild --bundle src/main.ts --outdir=dist",
+    "esbuild": "esbuild --bundle src/main.ts --loader:.ttf=binary --outdir=dist",
     "dev": "npm run esbuild -- --watch --serve=3000 --servedir=.",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@types/animejs": "^3.1.13",
+    "@types/chroma-js": "^3.1.1",
     "@types/geojson": "^7946.0.16",
+    "@types/jquery": "^3.5.32",
     "@types/p5": "^1.7.6",
+    "@types/quicksettings": "^3.0.6",
     "esbuild": "^0.25.2",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@types/animejs": "^3.1.13",
-    "@types/chroma-js": "^3.1.1",
-    "@types/jquery": "^3.5.32",
-    "@types/quicksettings": "^3.0.6",
     "animejs": "^3.2.2",
+    "bootstrap": "^5.3.3",
     "chroma-js": "^3.1.2",
     "geojson": "^0.5.0",
     "gl-matrix": "^3.4.3",

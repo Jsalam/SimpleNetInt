@@ -1,15 +1,19 @@
-// main function
+import p5, { Font } from "p5";
 import { DOM } from "./GUI/DOM/DOMManager";
 import { ColorFactory } from "./factories/colorFactory";
 import { Canvas } from "./canvas/canvas";
-import { Font } from "p5";
-import p5 = require("p5");
+
+import "bootstrap/dist/js/bootstrap.min.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import "./style.css";
 
 export const gp5 = new p5(
   main,
   document.querySelector("#model") as HTMLElement,
 );
 
+// main function
 function main(p5: p5) {
   // variables
   let graphics;

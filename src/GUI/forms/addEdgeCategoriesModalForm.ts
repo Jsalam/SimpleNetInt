@@ -1,3 +1,4 @@
+import $ from "jquery";
 import {DOM} from "../DOM/DOMManager";
 import {ContextualGUI} from "../ContextualGUIs/ContextualGUI";
 import {ClusterFactory} from "../../factories/clusterFactory";

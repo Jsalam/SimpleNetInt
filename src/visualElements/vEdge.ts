@@ -10,6 +10,7 @@ import p5, { Vector } from "p5";
 import { ColorFactory } from "../factories/colorFactory";
 import { gp5 } from "../main";
 import { TransFactory } from "../factories/transformerFactory";
+import { VirtualElementPool } from "./VirtualElementPool";
 
 export class VEdge implements Observer {
   edge: Edge;
