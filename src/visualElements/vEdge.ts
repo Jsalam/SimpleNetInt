@@ -160,8 +160,21 @@ export class VEdge implements Observer {
         Number(DOM.sliders.edgeTickness.value),
       ); // the parameter attenuates the thickness
 
-      // @ts-ignore FIXME: check argument type
-      strokeColor = gp5.color(strokeColor);
+      // NOTE: the color() function is polymorphic. It can take different types of arguments. See https://p5js.org/reference/p5/color/
+      // Handle polymorphism for gp5.color()
+      if (typeof strokeColor === "string") {
+        strokeColor = gp5.color(strokeColor); // Handle string input
+      } else if (Array.isArray(strokeColor)) {
+        strokeColor = gp5.color(
+          Number.parseInt(strokeColor[0]),
+          Number.parseInt(strokeColor[1]),
+          Number.parseInt(strokeColor[2])); // Handle array input
+      } else if (strokeColor as any instanceof p5.Color) {
+        // Already a p5.Color, no need to convert
+      } else {
+        console.error("Invalid strokeColor type:", strokeColor);
+        strokeColor = gp5.color(0); // Fallback to black
+      }
 
       if (vCnctrSource.selected) {
         const tr = TransFactory.getTransformerByVClusterID(
@@ -354,8 +367,8 @@ export class VEdge implements Observer {
         fontSize: "12px",
         overflow: "hidden",
         display: "block",
-        // @ts-ignore FIXME: wrong argument type. must be string
-        color: color,
+        //NOTE this color is arbitraty
+        color: "#488282",
         transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
                 scale(${Canvas._zoom})
