@@ -291,12 +291,10 @@ export class Canvas {
     this._zoom = 1;
     this._offset.set(0, 0, 0);
     TransFactory.reset();
-    // @ts-ignore FIXME: should be `.length` FIXED April 16 2025
-    //for (let i = 0; i < Canvas.observers; i++) {
     for (let i = 0; i < Canvas.observers.length; i++) {
       let element = Canvas.observers[i];
       // FIXME: unnecessary runtime type check
-      // There are multiple kinds of objects in the Canvas.observers array
+      // NOTE: There are multiple kinds of objects in the Canvas.observers array
       // and we need to check if the element is a VNode. However, it seems that all the objects 
       // observing the cnavas have a 'transformed' proerty, so this check might not be necessary  
       if (element instanceof VNode) {
@@ -432,7 +430,7 @@ export class Canvas {
       }
     }
     // @ts-ignore FIXME: should be string
-    // I do not follow this fixme. Opacity value in CSS is a number between 0 and 1.
+    // NOTE: I do not follow this fixme. Opacity value in CSS is a number between 0 and 1, not a string.
     this.legendEl.style.opacity = 1;
     this.legendEl.style.transform = `
             translate(${pos.x}px, ${pos.y}px)

@@ -66,16 +66,16 @@ export class ClusterFactory {
           width,
           height,
           // @ts-ignore FIXME: wrong argument type
-          // NOTE: the palete attribute can be a number or a string
-          // A solution is Polymorphism by overloading the function. See ColorFactory.getPalette()
+          // NOTE: FIXED. The palete attribute can be a number or a string
+          // The function has a polymorphism by overloading. See ColorFactory.getPalette()
           palette as string[],
           data[index].keyAttribute!,
           data[index].mapName!,
         ); //  /files/Cartographies/Brazil_Amazon.geojson
       } else {
         // @ts-ignore FIXME: wrong argument type
-         // NOTE: the palete attribute can be a number or a string
-          // A solution is Polymorphism by overloading the function. See ColorFactory.getPalette()
+        // NOTE: FIXED. The palete attribute can be a number or a string
+        // The function has a polymorphism by overloading. See ColorFactory.getPalette()
         tmp = new VCluster(
           cluster,
           posX,
@@ -117,8 +117,8 @@ export class ClusterFactory {
       ClusterFactory.wdth,
       ClusterFactory.hght,
       // FIXME: wrong argument type
-      // NOTE: the palete attribute can be a number or a string
-      // A solution is Polymorphism by overloading the function. See ColorFactory.getPalette()
+      // NOTE: FIXED. The palete attribute can be a number or a string
+      // The function has a polymorphism by overloading. See ColorFactory.getPalette()
       ColorFactory.getPalette(index) as string[],
     );
     Canvas.subscribe(tmp);
@@ -131,10 +131,10 @@ export class ClusterFactory {
    * @param {number} hght node height. only used whith rectangular node shape
    * @param {number} gutter gap between columns of clusters
    */
-  static initParameters() {
-    ClusterFactory.wdth = 10;
-    ClusterFactory.hght = 10;
-    ClusterFactory.gutter = 110;
+  static initParameters(wdth: number = 10, hght: number = 10, gutter: number = 150) {
+    ClusterFactory.wdth = wdth;
+    ClusterFactory.hght = hght;
+    ClusterFactory.gutter = gutter;
   }
 
   static instantiateCluster(data: ClusterInit) {
