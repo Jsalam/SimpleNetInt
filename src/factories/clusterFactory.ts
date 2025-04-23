@@ -285,3 +285,7 @@ export class ClusterFactory {
     return rtn;
   }
 }
+
+
+// Attach ClusterFactory to the global window object
+(window as any).ClusterFactory = ClusterFactory;

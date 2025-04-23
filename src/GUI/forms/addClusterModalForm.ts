@@ -43,8 +43,8 @@ export function addClusterToModalFormList(id: string, name: string) {
   input.setAttribute("type", "radio");
   input.setAttribute("id", "cluster" + id);
   input.setAttribute("name", "cluster");
-  // @ts-ignore FIXME: should be string
-  input.setAttribute("value", id - 1);
+  let tmp = parseInt(id) -1;
+  input.setAttribute("value", tmp.toString());
 
   // Create input label
   let label = document.createElement("label");

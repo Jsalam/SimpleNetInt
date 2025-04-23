@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "clusterID": 1,
+      "clusterID": "1",
       "clusterLabel": "main space",
       "clusterDescription": "The default space built on initialization",
       "nodes": [

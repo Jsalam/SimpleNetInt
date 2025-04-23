@@ -4,9 +4,7 @@ import { VNode } from "../../visualElements/vNode";
 import { NodeAttributes, NodeInit } from "../../graphElements/node";
 
 export function getData() {
-  let cluster = document.querySelector(
-    'input[name="cluster"]:checked',
-  ) as HTMLInputElement;
+  let cluster = document.querySelector('input[name="cluster"]:checked') as HTMLInputElement;
   let name = (document.getElementById("catName") as HTMLInputElement).value;
   let description = (
     document.getElementById("catDescription") as HTMLInputElement
@@ -15,8 +13,9 @@ export function getData() {
     .value;
 
   if (cluster) {
-    // @ts-ignore FIXME: index should be number
-    let clusterTmp = ClusterFactory.clusters[cluster.value];
+    console.log(cluster);
+    // get the cluster object
+    let clusterTmp = ClusterFactory.clusters[parseInt(cluster.value)];
     // format string
     attr = "{" + attr + "}";
     // parse to JSON

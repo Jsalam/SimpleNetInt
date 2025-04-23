@@ -20,10 +20,12 @@ export function getDataImport(evt: UIEvent) {
   DOM.onLoadNetwork({ nodes: nodesImported, edges: edgesImported }, evt);
 }
 
-function callbackNetwork(files: Array<Blob>) {
+function callbackNetwork(files: FileList) {
   //Only process json files.
   if (files[0].type.endsWith("json")) {
-    // @ts-ignore FIXME: `.name` doesn't exist
+    // NOTE: this is the name of the file read from the file dropped or loaded by 
+    // the user on the import model form. The data type in this function parameter 
+    // is unknown and should be a FileList or something of the kind
     document.getElementById("networkFileName")!.innerHTML = files[0].name;
     loadFile(files[0]);
   } else {
@@ -36,13 +38,24 @@ function loadFile(file: Blob) {
   // Closure to capture the file information.
   reader.onload = (function (theFile) {
     return function (e) {
-      // Read text data and parse to JSON.
-      // @ts-ignore FIXME: unsafe
-      let data = JSON.parse(e.target.result);
+      if (e.target instanceof FileReader && typeof e.target.result === "string") {
+        try {
+          // Safely parse the JSON string
+          let data = JSON.parse(e.target.result);
 
-      nodesImported = data.nodes;
-      edgesImported = data.edges;
+          // Assign parsed data to the appropriate variables
+          nodesImported = data.nodes;
+          edgesImported = data.edges;
+        } catch (error) {
+          console.error("Failed to parse JSON:", error);
+          alert("The file contains invalid JSON. Please check the file and try again.");
+        }
+      } else {
+        console.error("Unexpected FileReader result type:", e.target?.result);
+        alert("Failed to read the file. Please try again.");
+      }
     };
+    
   })(file);
   // Read in the file as text.
   reader.readAsText(file);
@@ -50,16 +63,14 @@ function loadFile(file: Blob) {
 
 function callback(files: unknown) {
   console.log("both");
-  // @ts-ignore FIXME: unknown type
-  console.log(files.getData());
+ // console.log(files.getData());
 }
 
 //source: https://bitwiser.in/2015/08/08/creating-dropzone-for-drag-drop-file.html
 function makeDroppable(element: HTMLElement, callback: Function) {
   var input = document.createElement("input");
   input.setAttribute("type", "file");
-  // @ts-ignore FIXME: should be string
-  input.setAttribute("multiple", true);
+  input.setAttribute("multiple", "true");
   input.style.display = "none";
 
   input.addEventListener("change", triggerCallback as (e: Event) => void);
@@ -85,8 +96,7 @@ function makeDroppable(element: HTMLElement, callback: Function) {
   });
 
   element.addEventListener("click", function () {
-    // @ts-ignore FIXME: should be string
-    input.value = null;
+    input.value = "null";
     input.click();
   });
 

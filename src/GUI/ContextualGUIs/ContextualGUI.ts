@@ -158,6 +158,5 @@ export class ContextualGUI {
   }
 }
 
-// Attach TransFactory to the global window object
+// Attach ContextualGUI to the global window object
 (window as any).ContextualGUI = ContextualGUI;
-console.log(ContextualGUI.edgeMenu);
