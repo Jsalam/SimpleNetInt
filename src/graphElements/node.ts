@@ -274,8 +274,8 @@ export class Node {
                 if (obs.vNodeObserver!.clicked) {
                   console.log(
                     "Forward propagation stopped at node " +
-                      obs.label +
-                      ". Already in propagation chain",
+                    obs.label +
+                    ". Already in propagation chain",
                   );
                 }
                 // in case this node is not the end of the propagation branch.
@@ -299,15 +299,15 @@ export class Node {
         } else if (error instanceof RangeError) {
           alert(
             "infinite forward propadation. \nThe path of successors from " +
-              cat.label +
-              " draws a closed loop. \nPropagation will be dissabled",
+            cat.label +
+            " draws a closed loop. \nPropagation will be dissabled",
           );
           let box = DOM.boxChecked("forward");
           box = "";
         } else {
           console.log(
             (error as any).name +
-              " Warning: error catched in forward propagation",
+            " Warning: error catched in forward propagation",
           );
         }
       }
@@ -321,17 +321,19 @@ export class Node {
           obs.propagateForward2(obs, false);
         });
       } catch (error) {
-        // @ts-ignore FIXME: `error` is undefined
-        // NOTE fixed
-        if (error.name == "Recursion") {
-          console.log(
-            " ** End of prop for cat: " +
+        if (error instanceof Error) {
+          if (error.name == "Recursion") {
+            console.log(
+              " ** End of prop for cat: " +
               cat.label +
               " fwd_Prop: " +
               cat.inFwdPropagation +
               " clicked: " +
               clicked,
-          );
+            );
+          }
+        } else {
+          console.log("Unknown error" + error)
         }
       }
     }
@@ -363,16 +365,16 @@ export class Node {
                 if (obs.vNodeObserver!.clicked) {
                   console.log(
                     "Backward propagation stopped at node" +
-                      obs.label +
-                      ". Already in propagation chain",
+                    obs.label +
+                    ". Already in propagation chain",
                   );
                 }
                 // in case this node is not the end of the propagation branch.
                 else if (this.getBackwardEdges(obs).length != 0) {
                   console.log(
                     "Blocked predecessor propagation from " +
-                      cat.label +
-                      ".\n** Recursion Error thrown **",
+                    cat.label +
+                    ".\n** Recursion Error thrown **",
                   );
                   let nError = new Error(cat.label);
                   nError.name = "Recursion";
@@ -392,15 +394,15 @@ export class Node {
         } else if (error instanceof RangeError) {
           alert(
             "infinite backward propadation. \nThe path of predecessors from " +
-              cat.label +
-              " draws a closed loop. \nPropagation will be dissabled",
+            cat.label +
+            " draws a closed loop. \nPropagation will be dissabled",
           );
           let box = DOM.boxChecked("backward");
           box = "";
         } else {
           console.log(
             (error as any).name +
-              " Warning: error catched in backward propagation",
+            " Warning: error catched in backward propagation",
           );
         }
       }
@@ -414,17 +416,19 @@ export class Node {
           obs.propagateBackward2(obs, false);
         });
       } catch (error) {
-        // @ts-ignore FIXME: `error` is undefined
-        // NOTE fixed
-        if (error.name == "Recursion") {
-          console.log(
-            " ** End of prop for cat: " +
+        if (error instanceof Error) {
+          if (error.name == "Recursion") {
+            console.log(
+              " ** End of prop for cat: " +
               cat.label +
               " fwd_Prop: " +
               cat.inBkwPropagation +
               " clicked: " +
               clicked,
-          );
+            );
+          }
+        } else {
+          console.log("Unknown error")
         }
       }
     }
