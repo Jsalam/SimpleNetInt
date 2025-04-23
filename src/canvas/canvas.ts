@@ -242,20 +242,22 @@ export class Canvas {
    * @param {Object} element An element from the canvas.observers collection
    * @param {Object} renderer either gp5 or this.graphics
    * @param {Integer} clusterID the cluster id
+   * NOTE: this method is deprecated. It was a work around to apply transformations on nodes but
+   * Wenqi found a better solution. 
    */
-  static transformAndShowVNodes(element: VNode, renderer: p5) {
-    let transformer = TransformerFactory.get(element.node.idCat.cluster)!;
+  // static transformAndShowVNodes(element: VNode, renderer: p5) {
+  //   let transformer = TransformerFactory.get(element.node.idCat.cluster)!;
 
-    let vN = element;
+  //   let vN = element;
 
-    // Applies transformation on the node
-    transformer.pushTo([vN.pos!]);
+  //   // Applies transformation on the node
+  //   transformer.pushTo([vN.pos!]);
 
-    vN.show(renderer);
+  //   vN.show(renderer);
 
-    // Applies inverse transformation on the node
-    transformer.popTo([vN.pos!]);
-  }
+  //   // Applies inverse transformation on the node
+  //   transformer.popTo([vN.pos!]);
+  // }
 
   /**
    * This method MUST be invoked iteratively to get a fresh mouseCoordinate.
