@@ -70,14 +70,18 @@ export class VConnector extends Button {
     strokeColor: p5.Color | string,
   ) {
     renderer.ellipseMode(gp5.CENTER);
-    // @ts-ignore FIXME: argument type
-    // NOTE: this is a polymorphism. p5 takes color in different ways. See https://p5js.org/reference/p5/fill/
+  
+    // Fill color
+    if (typeof fillColor === "string") {
+      fillColor = renderer.color(fillColor);
+    }
     renderer.fill(fillColor);
-    // @ts-ignore FIXME: argument type
-    // NOTE: this is a polymorphism. p5 takes color in different ways. See https://p5js.org/reference/p5/stroke/
     renderer.stroke(fillColor);
-    // @ts-ignore FIXME: argument type
-    // NOTE: this is a polymorphism. p5 takes color in different ways. See https://p5js.org/reference/p5/stroke/
+
+    // Stroke color
+    if (typeof strokeColor === "string") {
+      strokeColor = renderer.color(strokeColor);
+    }
     if (strokeColor) renderer.stroke(strokeColor);
     //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
     // let radius =  * Number(DOM.sliders.nodeSizeFactor.value);
