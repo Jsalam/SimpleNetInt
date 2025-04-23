@@ -54,8 +54,7 @@ export class VConnector extends Button {
       gp5.createVector(pos.x - this.width, pos.y + sequence * height),
     );
     this.setHeight(height);
-    // @ts-ignore FIXME: `width` is undefined
-    this.setWidth(width);
+    this.setWidth(height);
   }
 
   updateCoordsByAngle(center: Vector, angle: number, radius: number) {
@@ -72,10 +71,13 @@ export class VConnector extends Button {
   ) {
     renderer.ellipseMode(gp5.CENTER);
     // @ts-ignore FIXME: argument type
+    // NOTE: this is a polymorphism. p5 takes color in different ways. See https://p5js.org/reference/p5/fill/
     renderer.fill(fillColor);
     // @ts-ignore FIXME: argument type
+    // NOTE: this is a polymorphism. p5 takes color in different ways. See https://p5js.org/reference/p5/stroke/
     renderer.stroke(fillColor);
     // @ts-ignore FIXME: argument type
+    // NOTE: this is a polymorphism. p5 takes color in different ways. See https://p5js.org/reference/p5/stroke/
     if (strokeColor) renderer.stroke(strokeColor);
     //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
     // let radius =  * Number(DOM.sliders.nodeSizeFactor.value);
