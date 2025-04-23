@@ -169,6 +169,7 @@ export class EdgeFactory {
     }
     if (element!) rtn = element;
     // FIXME: wrong type
+    // NOTE: does this mean that the element retrieved from the list of vEdges is not a VEdge?
     return rtn as VEdge;
   }
 
@@ -274,12 +275,16 @@ export class EdgeFactory {
 
   static setBufferEdge(edge: Edge) {
     // FIXME: unnecessary runtime type check
-    if (edge instanceof Edge) EdgeFactory._edgeBuffer = edge;
+    // NOTE: fixed April 16, 2024
+    // if (edge instanceof Edge) 
+    EdgeFactory._edgeBuffer = edge;
   }
 
   static setBufferVEdge(vEdge: VEdge) {
     // FIXME: unnecessary runtime type check
-    if (vEdge instanceof VEdge) EdgeFactory._vEdgeBuffer = vEdge;
+    // NOTE: fixed April 16, 2024
+    // if (vEdge instanceof VEdge) 
+    EdgeFactory._vEdgeBuffer = vEdge;
   }
 
   static clearBuffer() {
@@ -302,7 +307,8 @@ export class EdgeFactory {
 
       // delete the edge here otherwise connector won't be empty for deletion */
       // @ts-ignore FIXME: wrong argument type
-      sourceVNode.node.disconnectEdge(EdgeFactory._vEdgeBuffer);
+      // NOTE: fixed. EdgeFactory._vEdgeBuffer.edge is used
+      sourceVNode.node.disconnectEdge(EdgeFactory._vEdgeBuffer.edge);
 
       // remove visual connectors from VNode
       sourceVNode.removeVConnector(sourceConnector!);

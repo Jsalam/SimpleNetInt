@@ -4,7 +4,7 @@ import {VConnector} from "../visualElements/vConnector";
 import {CustomEvent} from "../types";
 import {Node} from "./node";
 
-/** These are connectors with different a polarity either true or false. These connectors can only take edges coming from connectors with opposite polarity
+/** These are connectors with a different polarity either true or false. These connectors can only take edges coming from connectors with opposite polarity
  */
 class PolarityConnector {
   polarity: unknown;
@@ -50,6 +50,11 @@ class PolarityConnector {
     this.vConnectorObserver = observer;
   }
 
+  //NOTE: this method is not used. Deprecated
+  /**
+   * @deprecated
+   * @param data 
+   */
   notifyObserver(data: CustomEvent) {
     if (data instanceof Edge) {
       // @ts-ignore FIXME: method does not exist
@@ -57,18 +62,27 @@ class PolarityConnector {
     }
   }
 
+  //NOTE: this method is not used. Deprecated
+  /**
+   * @deprecated
+   */
   popThisConnector() {
     // @ts-ignore FIXME: method does not exist
     this.nodeObserver.popLastConnector(this.polarity);
   }
 
+  /**
+   * deprecated
+   * @returns 
+   */
   workOnLastEdge() {
     let lastEdge;
     if ((document.getElementById("edit") as HTMLInputElement).checked) {
       if (!this.taken) {
         // get the last edge in edges collection.
         // @ts-ignore FIXME: `EDGES` does not exist
-        lastEdge = EdgeFactory.EDGES.slice(-1)[0];
+        // NNOTE: FIXED
+        lastEdge = EdgeFactory._edges.slice(-1)[0];
 
         // If there is at least one edge
         if (lastEdge) {
@@ -93,14 +107,17 @@ class PolarityConnector {
   sproutEdge() {
     // create a new one
     // @ts-ignore FIXME: wrong argument type
-    let tmpEdge = new Edge(this);
+    // NOTE: fixed, but I am not sure this is the right parameter
+    let tmpEdge = new Edge(this.nodeObserver!);
     // @ts-ignore FIXME: `edges` does not exist
-    EdgeFactory.edges.push(tmpEdge);
+    // NOTE: FIXED
+    EdgeFactory._edges.push(tmpEdge);
     // dissable this connector
     this.taken = true;
     return tmpEdge;
   }
 
+  // NOTE: this method is not used. It is copies from a different class
   closeEdge(lastEdge: Edge) {
     // evaluate source and target cluster difference
     // @ts-ignore FIXME: type of `.id`

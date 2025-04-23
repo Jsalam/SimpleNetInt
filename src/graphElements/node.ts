@@ -320,8 +320,9 @@ export class Node {
           let obs = edg.target!;
           obs.propagateForward2(obs, false);
         });
-      } catch {
+      } catch (error) {
         // @ts-ignore FIXME: `error` is undefined
+        // NOTE fixed
         if (error.name == "Recursion") {
           console.log(
             " ** End of prop for cat: " +
@@ -412,8 +413,9 @@ export class Node {
           let obs = edg.source;
           obs.propagateBackward2(obs, false);
         });
-      } catch {
+      } catch (error) {
         // @ts-ignore FIXME: `error` is undefined
+        // NOTE fixed
         if (error.name == "Recursion") {
           console.log(
             " ** End of prop for cat: " +

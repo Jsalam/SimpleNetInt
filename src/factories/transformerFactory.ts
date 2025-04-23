@@ -108,6 +108,7 @@ export class TransFactory {
 
   static get(__UNKNOWN_ARG__: unknown): Transformer | undefined {
     // FIXME: NO IMPLEMENTATION
+    // NOTE: this function is useless. Are we using it anywhere?
     return undefined;
   }
 }

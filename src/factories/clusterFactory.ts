@@ -66,12 +66,16 @@ export class ClusterFactory {
           width,
           height,
           // @ts-ignore FIXME: wrong argument type
+          // NOTE: the palete attribute can be a number or a string
+          // A solution is Polymorphism by overloading the function. See ColorFactory.getPalette()
           palette as string[],
           data[index].keyAttribute!,
           data[index].mapName!,
         ); //  /files/Cartographies/Brazil_Amazon.geojson
       } else {
         // @ts-ignore FIXME: wrong argument type
+         // NOTE: the palete attribute can be a number or a string
+          // A solution is Polymorphism by overloading the function. See ColorFactory.getPalette()
         tmp = new VCluster(
           cluster,
           posX,
@@ -113,6 +117,8 @@ export class ClusterFactory {
       ClusterFactory.wdth,
       ClusterFactory.hght,
       // FIXME: wrong argument type
+      // NOTE: the palete attribute can be a number or a string
+      // A solution is Polymorphism by overloading the function. See ColorFactory.getPalette()
       ColorFactory.getPalette(index) as string[],
     );
     Canvas.subscribe(tmp);

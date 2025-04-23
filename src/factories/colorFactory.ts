@@ -39,10 +39,11 @@ export class ColorFactory {
                 // console.log(3 + ", :" + ColorFactory.palettes.length);
                 // Call the "then" function once all the palettes are completed
                 // @ts-ignore FIXME: always true
-                if (thenFunction) {
+                // NOTE: the whole code could be simplified using async/await
+               // if (thenFunction) {
                   console.log("Color palettes instantiated");
                   //thenFunction();
-                }
+              //  }
               });
             });
           });
@@ -59,7 +60,9 @@ export class ColorFactory {
    * 'RdGy', 'PuOr', 'Set2', 'Accent', 'Set1', 'Set3', 'Dark2', 'Paired', 'Pastel2', 'Pastel1'
    * @returns the color palette. If the parameter does not match anly palete, it returns the default palete (first of the native ones).
    */
-  static getPalette(n: unknown): string[] | undefined {
+  static getPalette(n: string): string[] | undefined;
+  static getPalette(n: number): string[] | undefined;
+  static getPalette(n: any): string[]| undefined {
     // let tempIndex = n % ColorFactory.palettes.length;
     // return ColorFactory.palettes[tempIndex];
     if (typeof n === "number") {

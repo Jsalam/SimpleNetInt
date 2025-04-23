@@ -39,6 +39,7 @@ export class ContextualGUI {
     if (
       ContextualGUI.edgeMenu &&
       /* @ts-ignore FIXME: `_content` doesn't exist */
+      // NOTE: _content shoukd exist. This is populated with HTML elements once the json is loaded.
       ContextualGUI.edgeMenu._content
     ) {
       ContextualGUI.edgeMenu.destroy();
@@ -121,6 +122,7 @@ export class ContextualGUI {
     });
     // get the value of first selected item in the dropdown at the moment of adding new checkboxes
     /* @ts-ignore FIXME: `_controls` doesn't exist */
+    // NOTE: _controls is populated with HTML elements once the json is loaded and it is updated if the user changes the list of 'link categories' under the 'Network" menu. 
     let tmp = ContextualGUI.edgeMenu._controls.Categories.control.value;
     ContextualGUI.notifyObservers(tmp);
     ContextualGUI.edgeMenuChoice = tmp;
