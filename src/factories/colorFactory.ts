@@ -40,10 +40,10 @@ export class ColorFactory {
                 // Call the "then" function once all the palettes are completed
                 // @ts-ignore FIXME: always true
                 // NOTE: the whole code could be simplified using async/await
-               // if (thenFunction) {
-                  console.log("Color palettes instantiated");
-                  //thenFunction();
-              //  }
+                // if (thenFunction) {
+                console.log("Color palettes instantiated");
+                //thenFunction();
+                //  }
               });
             });
           });
@@ -62,7 +62,7 @@ export class ColorFactory {
    */
   static getPalette(n: string): string[] | undefined;
   static getPalette(n: number): string[] | undefined;
-  static getPalette(n: any): string[]| undefined {
+  static getPalette(n: any): string[] | undefined {
     // let tempIndex = n % ColorFactory.palettes.length;
     // return ColorFactory.palettes[tempIndex];
     if (typeof n === "number") {
