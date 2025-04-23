@@ -108,7 +108,6 @@ export class TransFactory {
 
   // NOTE: The following method is commented out because it was implemented in a deprecated function on canvas.ts
   // static get(__UNKNOWN_ARG__: string): Transformer | undefined {
-  //   // FIXME: NO IMPLEMENTATION
   //   return undefined;
   // }
 }

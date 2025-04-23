@@ -38,11 +38,13 @@
                         </select>
                     </div>
                     <hr>
-                    <div class="customButton" data-toggle="modal" data-target="#exportNetworkModal">Save/Export file
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#exportNetworkModal">Save/Export
+                        file
                     </div>
-                    <div class="customButton" data-toggle="modal" data-target="#importNetworkModal">Open/Import file
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#importNetworkModal">Open/Import
+                        file
                     </div>
-                    <div id="version">v. 10_2024</div>
+                    <div id="version">v. 0.1_2025</div>
                 </div>
 
             </div>
@@ -52,10 +54,11 @@
                 <div class="dropdownTitle" id="networkTitle">Network</div>
                 <div class="dropdownContent" id="networkSection">
 
-                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add space</div>
-                    <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addClusterModal">Add space</div>
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addNodeModal">Add node</div>
                     <hr>
-                    <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addKindModal">Link Categories
+                    </div>
                     <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
                 </div>
             </div>
@@ -164,11 +167,12 @@
     <!-- Navigation Bar -->
     <nav>
         <!-- <div class="d-inline-flex flex-row-reverse" style="align-items: initial;"> -->
-        <div onclick="DOM.toggle_visibility('navbarHideableHeader')" data-toggle="collapse"
-            data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
-            aria-label="Toggle navigation">
+        <div onclick="DOM.toggle_visibility('navbarHideableHeader')" data-bs-toggle="collapse"
+            data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+            aria-expanded="false" aria-label="Toggle navigation">
 
             <div id="navbarHideableHeader">
+                <div id="currentFile">Current File</div>
                 <div id="menuButton">menu</div>
             </div>
         </div>

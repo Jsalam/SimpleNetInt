@@ -153,6 +153,12 @@ hr {
     padding-right: 4em;
 }
 
+#currentFile {
+    font-size: 0.8em;
+    color: #888c8f;
+    margin-left: 4em;
+}
+
 .labelRadioButton {
     margin-left: 0.2em;
     margin-right: 0.4em;

@@ -168,10 +168,9 @@ export class EdgeFactory {
       })[0];
     }
     if (element!) rtn = element;
-    // FIXME: wrong type
     // NOTE: does this mean that the element retrieved from the list of vEdges is not a VEdge? Or does it mean that
     // the element could be a boolean (false)? Please advise.
-    return rtn as VEdge;
+    return rtn;
   }
 
   static isThereOpenEdge() {

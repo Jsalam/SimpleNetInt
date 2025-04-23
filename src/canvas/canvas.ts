@@ -1,15 +1,15 @@
-import p5, {Graphics, Vector} from "p5";
-import {gp5} from "../main";
-import {Observer} from "../types";
-import {Edge} from "../graphElements/edge";
-import {VNode} from "../visualElements/vNode";
-import {EdgeFactory} from "../factories/edgeFactory";
-import {VEdge} from "../visualElements/vEdge";
-import {TransFactory, TransFactory as TransformerFactory,} from "../factories/transformerFactory";
-import {VConnector} from "../visualElements/vConnector";
-import {Grid} from "./grid";
-import {VCluster} from "../visualElements/vCluster";
-import {VGeoCluster} from "../visualElements/vGeoCluster";
+import p5, { Graphics, Vector } from "p5";
+import { gp5 } from "../main";
+import { Observer } from "../types";
+import { Edge } from "../graphElements/edge";
+import { VNode } from "../visualElements/vNode";
+import { EdgeFactory } from "../factories/edgeFactory";
+import { VEdge } from "../visualElements/vEdge";
+import { TransFactory, TransFactory as TransformerFactory, } from "../factories/transformerFactory";
+import { VConnector } from "../visualElements/vConnector";
+import { Grid } from "./grid";
+import { VCluster } from "../visualElements/vCluster";
+import { VGeoCluster } from "../visualElements/vGeoCluster";
 
 /**
  * Adaptation of NetInt Canvas class
@@ -293,15 +293,9 @@ export class Canvas {
     this._zoom = 1;
     this._offset.set(0, 0, 0);
     TransFactory.reset();
-    for (let i = 0; i < Canvas.observers.length; i++) {
-      let element = Canvas.observers[i];
-      // FIXME: unnecessary runtime type check
-      // NOTE: There are multiple kinds of objects in the Canvas.observers array
-      // and we need to check if the element is a VNode. However, it seems that all the objects 
-      // observing the cnavas have a 'transformed' proerty, so this check might not be necessary  
-      if (element instanceof VNode) {
-        element.transformed = false;
-      }
+    const vNodeObservers = Canvas.observers.filter((observer): observer is VNode => observer instanceof VNode);
+    for (const element of vNodeObservers) {
+      element.transformed = false;
     }
   }
 
@@ -431,9 +425,7 @@ export class Canvas {
         containerEl.append(this.legendEl);
       }
     }
-    // @ts-ignore FIXME: should be string
-    // NOTE: I do not follow this fixme. Opacity value in CSS is a number between 0 and 1, not a string.
-    this.legendEl.style.opacity = 1;
+    this.legendEl.style.opacity = '1';
     this.legendEl.style.transform = `
             translate(${pos.x}px, ${pos.y}px)
             translateX(-100%)

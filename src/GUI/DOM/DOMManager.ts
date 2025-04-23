@@ -482,6 +482,10 @@ export class DOM {
     DOM.eventTriggered(evt);
   }
 
+  /**
+   * 
+   * @param evt changes the visibility of the contextual menu for spaces
+   */
   static toggleContextualSpacesMenu(evt: UIEvent) {
     ContextualGUI.spacesMenu.toggleVisibility();
     DOM.eventTriggered(evt);

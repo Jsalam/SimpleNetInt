@@ -1,7 +1,6 @@
-import QuickSettings, {DropDownItems, QuickSettingsPanel,} from "quicksettings";
-import {Observer} from "../../types";
-import {gp5} from "../../main";
-import {DOM} from "../DOM/DOMManager";
+import QuickSettings, { DropDownItems, QuickSettingsPanel, } from "quicksettings";
+import { Observer } from "../../types";
+import { DOM } from "../DOM/DOMManager";
 
 import "../../../node_modules/quicksettings/quicksettings.css";
 
@@ -17,13 +16,13 @@ export class ContextualGUI {
   static _edgeMenuValue: unknown;
 
   // This constructor is not needed, but it is here because the documentation generator requires it to format the documentation
-  constructor() {}
+  constructor() { }
 
   static subscribe(obj: Observer) {
     ContextualGUI.observers.push(obj);
   }
 
-  static unsubscribe(obj: Observer) {}
+  static unsubscribe(obj: Observer) { }
 
   static notifyObservers(data: unknown) {
     for (const obs of ContextualGUI.observers) {
@@ -36,62 +35,61 @@ export class ContextualGUI {
    * @param {string} kinds comma separated names
    */
   static init(kinds: string | string[]) {
-    if (
-      ContextualGUI.edgeMenu &&
-      /* @ts-ignore FIXME: `_content` doesn't exist */
-      // NOTE: _content does not exist when the compiler parses the code but it populated with HTML elements once the json file is loaded.
-      ContextualGUI.edgeMenu._content
-    ) {
+
+    // Destroy the menu if it exists
+    if (ContextualGUI.edgeMenu) {
       ContextualGUI.edgeMenu.destroy();
       ContextualGUI.edgeCategories = [];
     }
 
     // Create Contextual GUIs edges
-    ContextualGUI.createEdgeMenu();
+    ContextualGUI.createEdgeMenu().then(() => {
+      // populate contextual menu
+      if (kinds instanceof Array) ContextualGUI.edgeCategories = kinds;
+      else ContextualGUI.edgeCategories = kinds.split(",");
+      ContextualGUI.addEdgeCheckboxes("Categories", ContextualGUI.edgeCategories);
+    });
 
     // Create Contextual GUI spaces
     ContextualGUI.createSpacesMenu();
-
-    // populate contextual menu
-    if (kinds instanceof Array) ContextualGUI.edgeCategories = kinds;
-    else ContextualGUI.edgeCategories = kinds.split(",");
-    ContextualGUI.addEdgeCheckboxes("Categories", ContextualGUI.edgeCategories);
   }
 
   /**
+   * This function is not being used.
+   * 
    * Init from collection of strings
-   * @param {*} collection collection of strings
+   * param {*} collection collection of strings
    */
-  static init2(collection: string[]) {
-    if (
-      ContextualGUI.edgeMenu &&
-      /* @ts-ignore FIXME: `_content` doesn't exist */
-      // NOTE: _content does not exist when the compiler parses the code but it populated with HTML elements once the json file is loaded.
-      ContextualGUI.edgeMenu._content
-    ) {
-      ContextualGUI.edgeMenu.destroy();
-    }
+  // static init2(collection: string[]) {
 
-    // Create Contextual GUI edges
-    ContextualGUI.createEdgeMenu();
-    ContextualGUI.addEdgeCheckboxes("Categories", collection);
-  }
+  //   // Destroy the menu if it exists
+  //   if (ContextualGUI.edgeMenu) {
+  //     ContextualGUI.edgeMenu.destroy();
+  //   }
+
+  //   // Create Contextual GUI edges
+  //   ContextualGUI.createEdgeMenu();
+  //   ContextualGUI.addEdgeCheckboxes("Categories", collection);
+  // }
 
   /**
    * The menu to choose edge kinds
    */
-  static createEdgeMenu() {
-    ContextualGUI.edgeMenu = QuickSettings.create(
-      gp5.width - 240,
-      gp5.height - 240,
-      "Edge Menu",
-      document.getElementById("model")!,
-    );
-
-    // Switch it off is the checkbox is off
-    if (!DOM.checkboxes.edit.checked) {
-      ContextualGUI.edgeMenu.toggleVisibility();
-    }
+  static async createEdgeMenu(): Promise<void> {
+    return new Promise((resolve) => {
+      console.log("Creating edge menu");
+      ContextualGUI.edgeMenu = QuickSettings.create(
+        window.innerWidth - 240,
+        window.innerHeight - 240,
+        "Edge Menu",
+        document.getElementById("model")!,
+      );
+      // Switch it off if the checkbox is off
+      if (!DOM.checkboxes.edit.checked) {
+        ContextualGUI.edgeMenu.toggleVisibility();
+      }
+      resolve();
+    });
   }
 
   /**
@@ -101,8 +99,8 @@ export class ContextualGUI {
     // Check first if this already exists
     if (!ContextualGUI.spacesMenu) {
       ContextualGUI.spacesMenu = QuickSettings.create(
-        gp5.width - 540,
-        gp5.height - 240,
+        window.innerWidth - 540,
+        window.innerHeight - 240,
         "Spaces Menu",
         document.getElementById("model")!,
       );
@@ -123,7 +121,7 @@ export class ContextualGUI {
     });
     // get the value of first selected item in the dropdown at the moment of adding new checkboxes
     /* @ts-ignore FIXME: `_controls` doesn't exist */
-    // NOTE: _controls is populated with HTML elements once the json is loaded and it is updated if the user changes the list of 'link categories' under the 'Network" menu. 
+    // NOTE: the attribute _controls exists in the quickSettings object definition and it is initialized with a null value. See line 104 : https://github.com/bit101/quicksettings/blob/master/quicksettings.js
     let tmp = ContextualGUI.edgeMenu._controls.Categories.control.value;
     ContextualGUI.notifyObservers(tmp);
     ContextualGUI.edgeMenuChoice = tmp;
