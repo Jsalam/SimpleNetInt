@@ -39,7 +39,7 @@ export class ContextualGUI {
     if (
       ContextualGUI.edgeMenu &&
       /* @ts-ignore FIXME: `_content` doesn't exist */
-      // NOTE: _content shoukd exist. This is populated with HTML elements once the json is loaded.
+      // NOTE: _content does not exist when the compiler parses the code but it populated with HTML elements once the json file is loaded.
       ContextualGUI.edgeMenu._content
     ) {
       ContextualGUI.edgeMenu.destroy();
@@ -66,6 +66,7 @@ export class ContextualGUI {
     if (
       ContextualGUI.edgeMenu &&
       /* @ts-ignore FIXME: `_content` doesn't exist */
+      // NOTE: _content does not exist when the compiler parses the code but it populated with HTML elements once the json file is loaded.
       ContextualGUI.edgeMenu._content
     ) {
       ContextualGUI.edgeMenu.destroy();
@@ -148,6 +149,7 @@ export class ContextualGUI {
 
   static clearFloatingMenu(menu: QuickSettingsPanel) {
     /* @ts-ignore FIXME: `_controls` doesn't exist */
+    // NOTE: _controls is populated with HTML elements once the json is loaded and it is updated if the user changes the list of 'link categories' under the 'Network" menu. 
     let controls = Object.entries(menu._controls);
     for (let i = controls.length; i > 0; i--) {
       let controlName = controls[i - 1][0];
@@ -155,3 +157,7 @@ export class ContextualGUI {
     }
   }
 }
+
+// Attach TransFactory to the global window object
+(window as any).ContextualGUI = ContextualGUI;
+console.log(ContextualGUI.edgeMenu);
