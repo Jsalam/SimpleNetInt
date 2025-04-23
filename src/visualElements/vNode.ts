@@ -15,6 +15,7 @@ import { Transformer } from "../canvas/transformer";
 import { EdgeFactory } from "../factories/edgeFactory";
 import { VEdge } from "./vEdge";
 import { VirtualElementPool } from "./VirtualElementPool";
+import { Utilities } from "../utilities/utilities";
 
 export interface VNodeInit {
   posX: number;
@@ -290,10 +291,8 @@ export class VNode extends Button {
   show(renderer: p5) {
     // Do not show the nodes with no connectors if the user make that choice in the GUI
     if (
-      // @ts-ignore FIXME: type mismatch
-      this.vConnectors.length < DOM.sliders.nodeConnectorFilter.value ||
-      // @ts-ignore FIXME: type mismatch
-      this.node.getDegree() < DOM.sliders.nodeDegreeFilter.value
+      this.vConnectors.length < Number(DOM.sliders.nodeConnectorFilter.value) ||
+      this.node.getDegree() < Number(DOM.sliders.nodeDegreeFilter.value)
     ) {
       this.visible = false;
     } else {
@@ -380,8 +379,11 @@ export class VNode extends Button {
 
           if (!strokeCnctrColor) strokeCnctrColor = this.color!;
 
-          // @ts-ignore FIXME: fix signature of `color()`
-          strokeCnctrColor = gp5.color(strokeCnctrColor);
+          if (typeof strokeCnctrColor == "string") {
+            strokeCnctrColor = gp5.color(strokeCnctrColor)
+          } else if (Array.isArray(strokeCnctrColor)) {
+            strokeCnctrColor = gp5.color(Number(strokeCnctrColor[0]), Number(strokeCnctrColor[1]), Number(strokeCnctrColor[2]));
+          } 
 
           if (this.transformed) {
             strokeCnctrColor.setAlpha(
@@ -418,6 +420,11 @@ export class VNode extends Button {
     // the translation - labelWidth serves to reposition the labels after they are rotated
     let translation = labelWidth;
 
+    // get the color in string format
+    if(color instanceof p5.Color) {
+      color = ColorFactory.convertP5ColorToHex(color);
+    }
+
     // show label
     VirtualElementPool.show(this, "node-label", this.node.label, {
       width: labelWidth + "px",
@@ -431,8 +438,7 @@ export class VNode extends Button {
       paddingRight: "10px",
       transformOrigin: "bottom right",
       opacity: String(0.3 * this.localScale!),
-      // @ts-ignore FIXME: wrong argument type. must be string
-      color: color,
+      color: color, //Note: arbitrary pink color
       fontSize: 10 + 2 * this.localScale! + "px",
       fontStyle: this.propagated ? "bold" : "normal",
       transform: `

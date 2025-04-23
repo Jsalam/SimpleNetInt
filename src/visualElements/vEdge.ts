@@ -362,13 +362,20 @@ export class VEdge implements Observer {
       this.vSource!.mouseIsOver ||
       (this.vTarget && this.vTarget.mouseIsOver)
     ) {
+
+      // get the color in string format
+      let colorHex: string = "#ffffff"
+      if (color instanceof p5.Color) {
+        colorHex = ColorFactory.convertP5ColorToHex(color);
+      }
+
       VirtualElementPool.show(this, "edge-label", this.edge.kind!, {
         fontFamily: "Roboto",
         fontSize: "12px",
         overflow: "hidden",
         display: "block",
         //NOTE this color is arbitraty
-        color: "#488282",
+        color: colorHex,
         transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
                 scale(${Canvas._zoom})

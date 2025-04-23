@@ -1,4 +1,5 @@
 // This class makes use of chroma.js to generate some color palettes
+import p5 from "p5";
 import chroma from "chroma-js";
 import { gp5 } from "../main";
 import { Canvas } from "../canvas/canvas";
@@ -186,5 +187,13 @@ export class ColorFactory {
     } catch (error) {
       return "#FFFFFF";
     }
+  }
+
+  static convertP5ColorToHex(color: p5.Color): string {
+    let r = gp5.red(color);
+    let g = gp5.green(color);
+    let b = gp5.blue(color);
+    let hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    return hex;
   }
 }
