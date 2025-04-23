@@ -105,8 +105,6 @@ export class Layout {
       } else {
         // Set the locations for nodes in the collection and get the tier radius
         lastRadius = this.setLocations(
-          // @ts-ignore FIXME: wrong argument type
-          tempVNodes,
           maxCircumference,
           lastRadius,
           gapFactor,
@@ -136,8 +134,7 @@ export class Layout {
     }
 
     // Set the locations for nodes in the collection
-    // @ts-ignore FIXME: wrong argument type
-    this.setLocations(tempVNodes, maxCircumference, lastRadius, gapFactor);
+    this.setLocations(maxCircumference, lastRadius, gapFactor);
 
     // Adds the very last tier's collection to rings
     rings.push(tempVNodes);
@@ -152,8 +149,7 @@ export class Layout {
   setLocations(
     totalLength: number,
     lastRadius: number,
-    gapFactor: number,
-    __UNUSED_ARG__: unknown,
+    gapFactor: number
   ) {
     // Distribute all possible angles in all length units
     let angleFraction = (Math.PI * 2) / this.vNodes!.length; //totalLength;

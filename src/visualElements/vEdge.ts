@@ -160,7 +160,6 @@ export class VEdge implements Observer {
         Number(DOM.sliders.edgeTickness.value),
       ); // the parameter attenuates the thickness
 
-      // NOTE: the color() function is polymorphic. It can take different types of arguments. See https://p5js.org/reference/p5/color/
       // Handle polymorphism for gp5.color()
       if (typeof strokeColor === "string") {
         strokeColor = gp5.color(strokeColor); // Handle string input
@@ -168,7 +167,8 @@ export class VEdge implements Observer {
         strokeColor = gp5.color(
           Number.parseInt(strokeColor[0]),
           Number.parseInt(strokeColor[1]),
-          Number.parseInt(strokeColor[2])); // Handle array input
+          Number.parseInt(strokeColor[2]),
+          Number.parseInt(strokeColor[3])); // Handle array input
       } else if (strokeColor as any instanceof p5.Color) {
         // Already a p5.Color, no need to convert
       } else {
