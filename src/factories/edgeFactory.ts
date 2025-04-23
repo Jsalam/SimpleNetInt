@@ -169,7 +169,8 @@ export class EdgeFactory {
     }
     if (element!) rtn = element;
     // FIXME: wrong type
-    // NOTE: does this mean that the element retrieved from the list of vEdges is not a VEdge?
+    // NOTE: does this mean that the element retrieved from the list of vEdges is not a VEdge? Or does it mean that
+    // the element could be a boolean (false)? Please advise.
     return rtn as VEdge;
   }
 
@@ -274,16 +275,10 @@ export class EdgeFactory {
   }
 
   static setBufferEdge(edge: Edge) {
-    // FIXME: unnecessary runtime type check
-    // NOTE: fixed April 16, 2024
-    // if (edge instanceof Edge) 
     EdgeFactory._edgeBuffer = edge;
   }
 
   static setBufferVEdge(vEdge: VEdge) {
-    // FIXME: unnecessary runtime type check
-    // NOTE: fixed April 16, 2024
-    // if (vEdge instanceof VEdge) 
     EdgeFactory._vEdgeBuffer = vEdge;
   }
 
@@ -306,8 +301,6 @@ export class EdgeFactory {
       let sourceConnector = EdgeFactory._vEdgeBuffer.edge.getSourceConnector();
 
       // delete the edge here otherwise connector won't be empty for deletion */
-      // @ts-ignore FIXME: wrong argument type
-      // NOTE: fixed. EdgeFactory._vEdgeBuffer.edge is used
       sourceVNode.node.disconnectEdge(EdgeFactory._vEdgeBuffer.edge);
 
       // remove visual connectors from VNode
