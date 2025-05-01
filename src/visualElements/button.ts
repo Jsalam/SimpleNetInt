@@ -1,6 +1,6 @@
-import {gp5} from "../main";
-import p5, {Vector} from "p5";
-import {Canvas} from "../canvas/canvas";
+import { gp5 } from "../main";
+import p5, { Vector } from "p5";
+import { Canvas } from "../canvas/canvas";
 
 /**
  * Base class for nodes, connectors or any other visual element with an area.

@@ -4,7 +4,9 @@ import { VNode } from "../../visualElements/vNode";
 import { NodeAttributes, NodeInit } from "../../graphElements/node";
 
 export function getData() {
-  let cluster = document.querySelector('input[name="cluster"]:checked') as HTMLInputElement;
+  let cluster = document.querySelector(
+    'input[name="cluster"]:checked',
+  ) as HTMLInputElement;
   let name = (document.getElementById("catName") as HTMLInputElement).value;
   let description = (
     document.getElementById("catDescription") as HTMLInputElement

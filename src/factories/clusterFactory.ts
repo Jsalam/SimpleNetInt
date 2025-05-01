@@ -70,14 +70,7 @@ export class ClusterFactory {
           data[index].mapName!,
         ); //  /files/Cartographies/Brazil_Amazon.geojson
       } else {
-        tmp = new VCluster(
-          cluster,
-          posX,
-          posY,
-          width,
-          height,
-          palette,
-        );
+        tmp = new VCluster(cluster, posX, posY, width, height, palette);
       }
       // set the VCluster transformer from data imported
       if (
@@ -122,7 +115,11 @@ export class ClusterFactory {
    * @param {number} hght node height. only used whith rectangular node shape
    * @param {number} gutter gap between columns of clusters
    */
-  static initParameters(wdth: number = 10, hght: number = 10, gutter: number = 150) {
+  static initParameters(
+    wdth: number = 10,
+    hght: number = 10,
+    gutter: number = 150,
+  ) {
     ClusterFactory.wdth = wdth;
     ClusterFactory.hght = hght;
     ClusterFactory.gutter = gutter;
@@ -276,7 +273,6 @@ export class ClusterFactory {
     return rtn;
   }
 }
-
 
 // Attach ClusterFactory to the global window object
 (window as any).ClusterFactory = ClusterFactory;

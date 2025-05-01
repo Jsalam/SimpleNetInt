@@ -483,7 +483,7 @@ export class DOM {
   }
 
   /**
-   * 
+   *
    * @param evt changes the visibility of the contextual menu for spaces
    */
   static toggleContextualSpacesMenu(evt: UIEvent) {

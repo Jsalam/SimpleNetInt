@@ -5,7 +5,7 @@ import { Edge } from "../graphElements/edge";
 import { VNode } from "../visualElements/vNode";
 import { EdgeFactory } from "../factories/edgeFactory";
 import { VEdge } from "../visualElements/vEdge";
-import { TransFactory, TransFactory as TransformerFactory, } from "../factories/transformerFactory";
+import { TransFactory } from "../factories/transformerFactory";
 import { VConnector } from "../visualElements/vConnector";
 import { Grid } from "./grid";
 import { VCluster } from "../visualElements/vCluster";
@@ -243,7 +243,7 @@ export class Canvas {
    * @param {Object} renderer either gp5 or this.graphics
    * @param {Integer} clusterID the cluster id
    * NOTE: this method is deprecated. It was a work around to apply transformations on nodes but
-   * Wenqi found a better solution. 
+   * Wenqi found a better solution.
    */
   // static transformAndShowVNodes(element: VNode, renderer: p5) {
   //   let transformer = TransformerFactory.get(element.node.idCat.cluster)!;
@@ -293,7 +293,9 @@ export class Canvas {
     this._zoom = 1;
     this._offset.set(0, 0, 0);
     TransFactory.reset();
-    const vNodeObservers = Canvas.observers.filter((observer): observer is VNode => observer instanceof VNode);
+    const vNodeObservers = Canvas.observers.filter(
+      (observer): observer is VNode => observer instanceof VNode,
+    );
     for (const element of vNodeObservers) {
       element.transformed = false;
     }
@@ -425,7 +427,7 @@ export class Canvas {
         containerEl.append(this.legendEl);
       }
     }
-    this.legendEl.style.opacity = '1';
+    this.legendEl.style.opacity = "1";
     this.legendEl.style.transform = `
             translate(${pos.x}px, ${pos.y}px)
             translateX(-100%)

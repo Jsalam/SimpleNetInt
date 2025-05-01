@@ -165,8 +165,9 @@ export class VEdge implements Observer {
           Number.parseInt(strokeColor[0]),
           Number.parseInt(strokeColor[1]),
           Number.parseInt(strokeColor[2]),
-          Number.parseInt(strokeColor[3])); // Handle array input
-      } else if (strokeColor as any instanceof p5.Color) {
+          Number.parseInt(strokeColor[3]),
+        ); // Handle array input
+      } else if ((strokeColor as any) instanceof p5.Color) {
         // Already a p5.Color, no need to convert
       } else {
         console.error("Invalid strokeColor type:", strokeColor);
@@ -359,9 +360,8 @@ export class VEdge implements Observer {
       this.vSource!.mouseIsOver ||
       (this.vTarget && this.vTarget.mouseIsOver)
     ) {
-
       // get the color in string format
-      let colorHex: string = "#ffffff"
+      let colorHex: string = "#ffffff";
       if (color instanceof p5.Color) {
         colorHex = ColorFactory.convertP5ColorToHex(color);
       }

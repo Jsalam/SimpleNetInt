@@ -1,5 +1,5 @@
-import {gp5} from "../../main";
-import {VNode} from "../vNode";
+import { gp5 } from "../../main";
+import { VNode } from "../vNode";
 
 /**
  * Instances of this class are associated with VClusters
@@ -104,11 +104,7 @@ export class Layout {
         tempVNodes.push(vNode);
       } else {
         // Set the locations for nodes in the collection and get the tier radius
-        lastRadius = this.setLocations(
-          maxCircumference,
-          lastRadius,
-          gapFactor,
-        );
+        lastRadius = this.setLocations(maxCircumference, lastRadius, gapFactor);
 
         // Add the collected nodes satisfying the former condition
         rings.push(tempVNodes);
@@ -146,11 +142,7 @@ export class Layout {
     //  return rings;
   }
 
-  setLocations(
-    totalLength: number,
-    lastRadius: number,
-    gapFactor: number
-  ) {
+  setLocations(totalLength: number, lastRadius: number, gapFactor: number) {
     // Distribute all possible angles in all length units
     let angleFraction = (Math.PI * 2) / this.vNodes!.length; //totalLength;
 

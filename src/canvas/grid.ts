@@ -1,5 +1,5 @@
-import {gp5} from "../main";
-import p5, {Vector} from "p5";
+import { gp5 } from "../main";
+import p5, { Vector } from "p5";
 
 /** Class for adding a grid on top of the canvas */
 export class Grid {

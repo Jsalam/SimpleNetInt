@@ -1,7 +1,7 @@
-import {Transformer} from "../canvas/transformer";
-import {ClusterFactory} from "./clusterFactory";
-import {Canvas} from "../canvas/canvas";
-import {VCluster} from "../visualElements/vCluster";
+import { Transformer } from "../canvas/transformer";
+import { ClusterFactory } from "./clusterFactory";
+import { Canvas } from "../canvas/canvas";
+import { VCluster } from "../visualElements/vCluster";
 import p5 from "p5";
 
 /**
