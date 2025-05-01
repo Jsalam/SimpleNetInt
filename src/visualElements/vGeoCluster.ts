@@ -177,7 +177,8 @@ export class VGeoCluster extends VCluster {
               center,
               scale,
             );
-            // @ts-ignore FIXME: add type for `buildGeometry`
+            // @ts-expect-error
+            // Error reported in: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/72658
             const geometry: p5.Geometry = VGeoCluster.pixelTarget.buildGeometry(
               () => {
                 for (let [i, feature] of features.entries()) {
@@ -394,14 +395,18 @@ export class VGeoCluster extends VCluster {
       this._palette = gp5.createImage(this.features.length, 1);
       this._palette.loadPixels();
       for (let i = 0; i < this.features.length; ++i) {
-        let color = ColorFactory.getColorFromDictionary(
+        let colorStr = ColorFactory.getColorFromDictionary(
           "clusters",
           this.features[i].properties!.UF,
           5 + Math.floor(Math.random() * 3),
         ); // entry name, field name, index
-        // this.palette.set(i, 0, getColorAt(i).levels);
-        // @ts-ignore FIXME: `.levels` does not exist
-        this._palette.set(i, 0, gp5.color(color).levels);
+        const color = gp5.color(colorStr as string);
+        this._palette.set(i, 0, [
+          gp5.red(color),
+          gp5.green(color),
+          gp5.blue(color),
+          gp5.alpha(color),
+        ]);
       }
       this._palette.updatePixels();
 
@@ -673,10 +678,8 @@ export class VGeoCluster extends VCluster {
 
   renderToBuffer(buffer: p5.Graphics, shader: p5.Shader) {
     buffer.shader(shader);
-    // @ts-ignore FIXME: fix signature of `setUniform`
-    shader.setUniform("modelViewMatrix", this.modelViewMatrix!);
-    // @ts-ignore FIXME: fix signature of `setUniform`
-    shader.setUniform("projectionMatrix", this.projectionMatrix!);
+    shader.setUniform("modelViewMatrix", [...this.modelViewMatrix]);
+    shader.setUniform("projectionMatrix", [...this.projectionMatrix]);
     shader.setUniform("mouse", [this.mouseX_object!, this.mouseY_object!]);
     shader.setUniform("layerId", this.index + 1);
     shader.setUniform("r1", this.r1);

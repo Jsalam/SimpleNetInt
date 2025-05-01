@@ -1,4 +1,7 @@
-import QuickSettings, { DropDownItems, QuickSettingsPanel, } from "quicksettings";
+import QuickSettings, {
+  DropDownItems,
+  QuickSettingsPanel,
+} from "quicksettings";
 import { Observer } from "../../types";
 import { DOM } from "../DOM/DOMManager";
 
@@ -8,7 +11,10 @@ import "../../../node_modules/quicksettings/quicksettings.css";
  * This class uses the library Quicksettings. See http://bit101.github.io/quicksettings/
  */
 export class ContextualGUI {
-  static edgeMenu: QuickSettingsPanel;
+  static edgeMenu: QuickSettingsPanel<{
+    Categories: { value: string };
+    [key: string]: any;
+  }>;
   static spacesMenu: QuickSettingsPanel;
   static observers: Observer[] = [];
   static edgeCategories: string[] = [];
@@ -16,13 +22,13 @@ export class ContextualGUI {
   static _edgeMenuValue: unknown;
 
   // This constructor is not needed, but it is here because the documentation generator requires it to format the documentation
-  constructor() { }
+  constructor() {}
 
   static subscribe(obj: Observer) {
     ContextualGUI.observers.push(obj);
   }
 
-  static unsubscribe(obj: Observer) { }
+  static unsubscribe(obj: Observer) {}
 
   static notifyObservers(data: unknown) {
     for (const obs of ContextualGUI.observers) {
@@ -35,7 +41,6 @@ export class ContextualGUI {
    * @param {string} kinds comma separated names
    */
   static init(kinds: string | string[]) {
-
     // Destroy the menu if it exists
     if (ContextualGUI.edgeMenu) {
       ContextualGUI.edgeMenu.destroy();
@@ -47,7 +52,10 @@ export class ContextualGUI {
       // populate contextual menu
       if (kinds instanceof Array) ContextualGUI.edgeCategories = kinds;
       else ContextualGUI.edgeCategories = kinds.split(",");
-      ContextualGUI.addEdgeCheckboxes("Categories", ContextualGUI.edgeCategories);
+      ContextualGUI.addEdgeCheckboxes(
+        "Categories",
+        ContextualGUI.edgeCategories,
+      );
     });
 
     // Create Contextual GUI spaces
@@ -56,7 +64,7 @@ export class ContextualGUI {
 
   /**
    * This function is not being used.
-   * 
+   *
    * Init from collection of strings
    * param {*} collection collection of strings
    */
@@ -120,9 +128,7 @@ export class ContextualGUI {
       ContextualGUI.notifyObservers(val.value);
     });
     // get the value of first selected item in the dropdown at the moment of adding new checkboxes
-    /* @ts-ignore FIXME: `_controls` doesn't exist */
-    // NOTE: the attribute _controls exists in the quickSettings object definition and it is initialized with a null value. See line 104 : https://github.com/bit101/quicksettings/blob/master/quicksettings.js
-    let tmp = ContextualGUI.edgeMenu._controls.Categories.control.value;
+    let tmp = ContextualGUI.edgeMenu.getValue("Categories").value;
     ContextualGUI.notifyObservers(tmp);
     ContextualGUI.edgeMenuChoice = tmp;
   }
@@ -146,11 +152,8 @@ export class ContextualGUI {
   }
 
   static clearFloatingMenu(menu: QuickSettingsPanel) {
-    /* @ts-ignore FIXME: `_controls` doesn't exist */
-    // NOTE: _controls is populated with HTML elements once the json is loaded and it is updated if the user changes the list of 'link categories' under the 'Network" menu. 
-    let controls = Object.entries(menu._controls);
-    for (let i = controls.length; i > 0; i--) {
-      let controlName = controls[i - 1][0];
+    const values = menu.getValuesAsJSON(false);
+    for (const controlName of Object.keys(values)) {
       menu.removeControl(controlName);
     }
   }

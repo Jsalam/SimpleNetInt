@@ -1,9 +1,9 @@
 import $ from "jquery";
-import {DOM} from "../DOM/DOMManager";
-import {ContextualGUI} from "../ContextualGUIs/ContextualGUI";
-import {ClusterFactory} from "../../factories/clusterFactory";
-import {TransFactory} from "../../factories/transformerFactory";
-import {ColorFactory} from "../../factories/colorFactory";
+import { DOM } from "../DOM/DOMManager";
+import { ContextualGUI } from "../ContextualGUIs/ContextualGUI";
+import { ClusterFactory } from "../../factories/clusterFactory";
+import { TransFactory } from "../../factories/transformerFactory";
+import { ColorFactory } from "../../factories/colorFactory";
 
 /**
  * Invoked when the user clicks the submit button in the Edge Kinds textbox

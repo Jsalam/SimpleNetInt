@@ -70,7 +70,7 @@ export class VConnector extends Button {
     strokeColor: p5.Color | string,
   ) {
     renderer.ellipseMode(gp5.CENTER);
-  
+
     // Fill color
     if (typeof fillColor === "string") {
       fillColor = renderer.color(fillColor);

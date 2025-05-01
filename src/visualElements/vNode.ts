@@ -380,10 +380,14 @@ export class VNode extends Button {
           if (!strokeCnctrColor) strokeCnctrColor = this.color!;
 
           if (typeof strokeCnctrColor == "string") {
-            strokeCnctrColor = gp5.color(strokeCnctrColor)
+            strokeCnctrColor = gp5.color(strokeCnctrColor);
           } else if (Array.isArray(strokeCnctrColor)) {
-            strokeCnctrColor = gp5.color(Number(strokeCnctrColor[0]), Number(strokeCnctrColor[1]), Number(strokeCnctrColor[2]));
-          } 
+            strokeCnctrColor = gp5.color(
+              Number(strokeCnctrColor[0]),
+              Number(strokeCnctrColor[1]),
+              Number(strokeCnctrColor[2]),
+            );
+          }
 
           if (this.transformed) {
             strokeCnctrColor.setAlpha(
@@ -421,7 +425,7 @@ export class VNode extends Button {
     let translation = labelWidth;
 
     // get the color in string format
-    if(color instanceof p5.Color) {
+    if (color instanceof p5.Color) {
       color = ColorFactory.convertP5ColorToHex(color);
     }
 
