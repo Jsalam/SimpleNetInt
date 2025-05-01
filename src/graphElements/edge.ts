@@ -1,0 +1,112 @@
+import { Node, NodeIdCat } from "./node";
+
+export type EdgeIdCat = {
+  source: NodeIdCat;
+  target: NodeIdCat;
+  polarity?: unknown;
+};
+
+export interface EdgeInit {
+  weight: number;
+  source: {
+    pajekIndex: number;
+  };
+  target: {
+    pajekIndex: number;
+  };
+}
+
+export class Edge {
+  source: Node;
+  kind: string | undefined;
+  target: Node | undefined;
+  id: EdgeIdCat | undefined;
+  open: boolean;
+  weight: number;
+
+  constructor(source: Node) {
+    this.source = source;
+    // the kind is set in connector class where the edge is subscribed to the connector
+    this.kind;
+    this.target;
+    this.id;
+    this.open = true;
+    this.weight = 1;
+  }
+
+  equals(edgeA: Edge) {
+    let A, B;
+    let rtn = false;
+
+    if (edgeA.target) {
+      A = [edgeA.source.idCat.pajekIndex, edgeA.target.idCat.pajekIndex];
+    } else {
+      A = [edgeA.source.idCat.pajekIndex, undefined];
+    }
+    if (this.target) {
+      B = [this.source.idCat.pajekIndex, this.target.idCat.pajekIndex];
+    } else {
+      B = [this.source.idCat.pajekIndex, undefined];
+    }
+    rtn = A[0] === B[0] && A[1] === B[1];
+
+    if (rtn) {
+      rtn = edgeA.kind === this.kind;
+    }
+
+    return rtn;
+  }
+
+  setWeight(val: number) {
+    this.weight = val;
+  }
+
+  increaseWeight() {
+    this.weight++;
+  }
+
+  decreaseWeight() {
+    if (this.weight > 1) {
+      this.weight--;
+    }
+  }
+
+  getSourceConnector() {
+    for (const connector of this.source.connectors) {
+      for (const edgeObs of connector.edgeObservers) {
+        if (edgeObs.equals(this)) {
+          return connector;
+        }
+      }
+    }
+  }
+
+  getTargetConnector() {
+    if (this.target) {
+      for (const connector of this.target.connectors) {
+        for (const edgeObs of connector.edgeObservers) {
+          if (edgeObs.equals(this)) {
+            return connector;
+          }
+        }
+      }
+    }
+  }
+
+  setTarget(target: Node) {
+    this.target = target;
+    this.id = { source: this.source.idCat, target: this.target.idCat };
+    this.open = false;
+    return true;
+  }
+
+  getJSON() {
+    let rtn = {
+      source: this.source.idCat,
+      target: this.target!.idCat,
+      kind: this.kind,
+      weight: this.weight,
+    };
+    return rtn;
+  }
+}
