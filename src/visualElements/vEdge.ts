@@ -152,10 +152,7 @@ export class VEdge implements Observer {
 
       if (!baseColor) baseColor = this.vSource!.color!;
 
-      let strokeColor: string | string[] | p5.Color = this._getStrokeColor(
-        baseColor,
-        alpha!,
-      );
+      let strokeColor: string | string[] | p5.Color = this._getStrokeColor( baseColor, alpha!);
       let strokeWeight = this._getStrokeWeight(
         Number(DOM.sliders.edgeTickness.value),
       ); // the parameter attenuates the thickness
@@ -374,8 +371,7 @@ export class VEdge implements Observer {
         fontSize: "12px",
         overflow: "hidden",
         display: "block",
-        //NOTE this color is arbitraty
-        color: colorHex,
+        color:  colorHex,
         transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
                 scale(${Canvas._zoom})

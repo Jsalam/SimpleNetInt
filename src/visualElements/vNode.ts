@@ -322,14 +322,12 @@ export class VNode extends Button {
       renderer.fill(fillColors.fill);
       renderer.stroke(this.strokeColor!);
       renderer.strokeWeight(strokeWeight);
+      
       // draw shape
       renderer.ellipseMode(gp5.CENTER);
 
       // set diameter
-      this.diam =
-        this.width *
-        this.localScale! *
-        Number(DOM.sliders.nodeSizeFactor.value);
+      this.diam = this.width * this.localScale! * Number(DOM.sliders.nodeSizeFactor.value);
 
       // Ajust diameter to global transformation
       if (this.transformed) {
@@ -438,7 +436,7 @@ export class VNode extends Button {
       paddingRight: "10px",
       transformOrigin: "bottom right",
       opacity: String(0.3 * this.localScale!),
-      color: color, //Note: arbitrary pink color
+      color: color,
       fontSize: 10 + 2 * this.localScale! + "px",
       fontStyle: this.propagated ? "bold" : "normal",
       transform: `

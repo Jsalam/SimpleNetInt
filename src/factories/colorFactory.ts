@@ -60,8 +60,8 @@ export class ColorFactory {
    * 'RdGy', 'PuOr', 'Set2', 'Accent', 'Set1', 'Set3', 'Dark2', 'Paired', 'Pastel2', 'Pastel1'
    * @returns the color palette. If the parameter does not match anly palete, it returns the default palete (first of the native ones).
    */
-  static getPalette(n: string): string[] ;
-  static getPalette(n: number): string[] ;
+  static getPalette(n: string): string[];
+  static getPalette(n: number): string[];
   static getPalette(n: any): string[] {
     // let tempIndex = n % ColorFactory.palettes.length;
     // return ColorFactory.palettes[tempIndex];
@@ -191,7 +191,13 @@ export class ColorFactory {
     let r = gp5.red(color);
     let g = gp5.green(color);
     let b = gp5.blue(color);
-    let hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    let a = gp5.alpha(color);
+    let hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    if (a < 255) {
+      hex += Math.round(a).toString(16).padStart(2, "0").toUpperCase();
+    }
+
     return hex;
   }
 }
+
