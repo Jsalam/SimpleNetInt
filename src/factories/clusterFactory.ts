@@ -21,6 +21,7 @@ export interface ClusterInit extends TransformerInit {
   clusterDescription: string;
   keyAttribute?: string;
   mapName?: string;
+  bbox?: [number, number, number, number];
   nodes?: NodeInit[];
 }
 
@@ -67,6 +68,7 @@ export class ClusterFactory {
           height,
           palette,
           data[index].keyAttribute!,
+          data[index].bbox!,
           data[index].mapName!,
         ); //  /files/Cartographies/Brazil_Amazon.geojson
       } else {

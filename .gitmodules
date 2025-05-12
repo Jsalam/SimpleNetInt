@@ -1,0 +1,3 @@
+[submodule "script/municipal-brazilian-geodata"]
+	path = script/municipal-brazilian-geodata
+	url = https://github.com/luizpedone/municipal-brazilian-geodata.git
