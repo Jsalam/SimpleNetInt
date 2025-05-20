@@ -322,12 +322,15 @@ export class VNode extends Button {
       renderer.fill(fillColors.fill);
       renderer.stroke(this.strokeColor!);
       renderer.strokeWeight(strokeWeight);
-      
+
       // draw shape
       renderer.ellipseMode(gp5.CENTER);
 
       // set diameter
-      this.diam = this.width * this.localScale! * Number(DOM.sliders.nodeSizeFactor.value);
+      this.diam =
+        this.width *
+        this.localScale! *
+        Number(DOM.sliders.nodeSizeFactor.value);
 
       // Ajust diameter to global transformation
       if (this.transformed) {
@@ -782,6 +785,11 @@ export class VNode extends Button {
   }
 
   mouseClickedEvents() {
+    // FIXME
+    if (ClusterFactory.getCluster(this.node.idCat.cluster).type === "geo") {
+      return;
+    }
+
     /** Note: this.dragged is true at the slightest drag motion. Sometimes
      * this is imperceptible thus the click behavior of vNodes is not as
      * responsive as it should, but it is highly accurate ;-)

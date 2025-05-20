@@ -1,10 +1,7 @@
 from io import StringIO
-import numpy as np
 import pandas as pd
 import os
 import json
-import csv
-import random
 
 
 out_dir = "../files/Networks"
@@ -18,16 +15,22 @@ def read_csv(filename):
         for line in f:
             file_content += line[1:-2].replace('""', '"') + "\n"
 
-    return pd.read_csv(StringIO(file_content)).fillna(-1)
+    return pd.read_csv(StringIO(file_content)).fillna(0)
 
 
-def make_node(id, label):
+def make_node(geocode, municipality):
     return {
-        "id": id,
-        "nodeLabel": label,
+        "id": geocode,
+        "nodeLabel": municipality,
         "nodeDescription": "",
-        "nodeAttributes": {},
-        "connectors": ["geo"],
+        "nodeAttributes": {
+            "attGeo": {
+                "geocode": geocode,
+                "municipality": municipality,
+            },
+            "attAll": {},
+        },
+        "connectors": [],
         "pajekIndex": 0,
         "vNode": {
             "posX": -999,
@@ -50,11 +53,11 @@ def process_environmental_data():
         timestamp = row["period"]
 
         if geocode not in nodes:
-            nodes[geocode] = make_node(next_id, municipality)
+            nodes[geocode] = make_node(geocode, municipality)
             next_id += 1
         node = nodes[geocode]
 
-        attributes = node["nodeAttributes"]
+        attributes = node["nodeAttributes"]["attAll"]
         attributes[timestamp] = row
 
     return list(nodes.values())
@@ -93,11 +96,11 @@ def process_epidemiological_data():
             continue
 
         if geocode not in nodes:
-            nodes[geocode] = make_node(next_id, municipality)
+            nodes[geocode] = make_node(geocode, municipality)
             next_id += 1
         node = nodes[geocode]
 
-        attributes = node["nodeAttributes"]
+        attributes = node["nodeAttributes"]["attAll"]
         if timestamp not in attributes:
             attributes[timestamp] = {}
 
@@ -123,11 +126,11 @@ def process_socioeconomic_data():
         timestamp = row["year"]
 
         if geocode not in nodes:
-            nodes[geocode] = make_node(next_id, municipality)
+            nodes[geocode] = make_node(geocode, municipality)
             next_id += 1
         node = nodes[geocode]
 
-        attributes = node["nodeAttributes"]
+        attributes = node["nodeAttributes"]["attAll"]
         attributes[timestamp] = row
 
     return list(nodes.values())
@@ -148,11 +151,11 @@ def process_population_data():
         rur2017e = row["rur2017e"]
 
         if geocode not in nodes:
-            nodes[geocode] = make_node(next_id, municipality)
+            nodes[geocode] = make_node(geocode, municipality)
             next_id += 1
         node = nodes[geocode]
 
-        node["nodeAttributes"] = {
+        node["nodeAttributes"]["attAll"] = {
             "2006": {
                 "rural": rur2006e,
                 "urban": urb2006e,
@@ -176,100 +179,124 @@ dataset = {
             "mapName": "Brazil_Amazon.geojson",
             "bbox": bbox,
             "timestamps": ["2006", "2017"],
-            "dimensions": [
-                {
-                    "name": "Habitat loss",
-                    "children": [
-                        {
-                            "name": "Deforestation",
-                            "children": [
-                                {"name": "deorg", "key": "deord"},
-                                {"name": "defor", "key": "defor"},
-                            ],
-                        },
-                        {
-                            "name": "Forest degradation",
-                            "children": [
-                                {"name": "dgorg", "key": "dgorg"},
-                                {"name": "dgfor", "key": "dgfor"},
-                            ],
-                        },
-                        {
-                            "name": "Fires",
-                            "children": [{"name": "fire", "key": "fire"}],
-                        },
-                        {
-                            "name": "Mining",
-                            "children": [{"name": "mining", "key": "mining"}],
-                        },
-                        {
-                            "name": "Vegetation fragmentation",
-                            "children": [
-                                {"name": "core", "key": "core"},
-                                {"name": "edge", "key": "edge"},
-                            ],
-                        },
-                    ],
-                },
-                {
-                    "name": "Land Use and Land Cover",
-                    "children": [
-                        {
-                            "name": "Remanent forest",
-                            "children": [{"name": "refor", "key": "refor"}],
-                        },
-                        {
-                            "name": "Secondary vegetation",
-                            "children": [{"name": "secveg", "key": "secveg"}],
-                        },
-                        {
-                            "name": "Pasture",
-                            "children": [{"name": "pasture", "key": "pasture"}],
-                        },
-                        {
-                            "name": "Crop",
-                            "children": [{"name": "crop", "key": "crop"}],
-                        },
-                        {
-                            "name": "Urban area",
-                            "children": [{"name": "urban", "key": "urban"}],
-                        },
-                    ],
-                },
-                {
-                    "name": "Transportation networks",
-                    "children": [
-                        {
-                            "name": "Roads network",
-                            "children": [{"name": "roads", "key": "roads"}],
-                        },
-                        {
-                            "name": "Waterways network",
-                            "children": [{"name": "river", "key": "river"}],
-                        },
-                        {
-                            "name": "Ports",
-                            "children": [{"name": "port", "key": "port"}],
-                        },
-                    ],
-                },
-                {
-                    "name": "Climatic anomalies",
-                    "children": [
-                        {
-                            "name": "Precipitation",
-                            "children": [
-                                {"name": "precp", "key": "precp"},
-                                {"name": "precn", "key": "precn"},
-                            ],
-                        },
-                        {
-                            "name": "Temperature",
-                            "children": [{"name": "tempp", "key": "tempp"}],
-                        },
-                    ],
-                },
-            ],
+            "palette": {
+                "deorg": ["seashell", "blueviolet"],
+                "defor": ["seashell", "blueviolet"],
+                "dgorg": ["seashell", "#8b3a3a"],
+                "dgfor": ["seashell", "#8b3a3a"],
+                "fire": ["seashell", "#ee7600"],
+                "mining": ["seashell", "midnightblue"],
+                "core": ["seashell", "forestgreen"],
+                "edge": ["seashell", "forestgreen"],
+                "refor": ["lavender", "#8b864e"],
+                "secveg": ["lavender", "darkolivegreen"],
+                "pasture": ["lavender", "#8b6508"],
+                "crop": ["lavender", "#458b00"],
+                "urban": ["lavender", "#8b0a50"],
+                "road": ["#FFEFFF", "#68228b"],
+                "river": ["#FFEFFF", "#8b3a62"],
+                "port": ["#FFEFFF", "cadetblue"],
+                "precp": ["azure", "steelblue"],
+                "precn": ["azure", "#8b0a50"],
+                "tempp": ["azure", "#8b2323"],
+            },
+            "dimensions": {
+                "name": "Environmental",
+                "children": [
+                    {
+                        "name": "Habitat loss",
+                        "children": [
+                            {
+                                "name": "Deforestation",
+                                "children": [
+                                    {"name": "deorg", "key": "deorg"},
+                                    {"name": "defor", "key": "defor"},
+                                ],
+                            },
+                            {
+                                "name": "Forest degradation",
+                                "children": [
+                                    {"name": "dgorg", "key": "dgorg"},
+                                    {"name": "dgfor", "key": "dgfor"},
+                                ],
+                            },
+                            {
+                                "name": "Fires",
+                                "children": [{"name": "fire", "key": "fire"}],
+                            },
+                            {
+                                "name": "Mining",
+                                "children": [{"name": "mining", "key": "mining"}],
+                            },
+                            {
+                                "name": "Vegetation fragmentation",
+                                "children": [
+                                    {"name": "core", "key": "core"},
+                                    {"name": "edge", "key": "edge"},
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "name": "Land Use and Land Cover",
+                        "children": [
+                            {
+                                "name": "Remanent forest",
+                                "children": [{"name": "refor", "key": "refor"}],
+                            },
+                            {
+                                "name": "Secondary vegetation",
+                                "children": [{"name": "secveg", "key": "secveg"}],
+                            },
+                            {
+                                "name": "Pasture",
+                                "children": [{"name": "pasture", "key": "pasture"}],
+                            },
+                            {
+                                "name": "Crop",
+                                "children": [{"name": "crop", "key": "crop"}],
+                            },
+                            {
+                                "name": "Urban area",
+                                "children": [{"name": "urban", "key": "urban"}],
+                            },
+                        ],
+                    },
+                    {
+                        "name": "Transportation networks",
+                        "children": [
+                            {
+                                "name": "Roads network",
+                                "children": [{"name": "road", "key": "road"}],
+                            },
+                            {
+                                "name": "Waterways network",
+                                "children": [{"name": "river", "key": "river"}],
+                            },
+                            {
+                                "name": "Ports",
+                                "children": [{"name": "port", "key": "port"}],
+                            },
+                        ],
+                    },
+                    {
+                        "name": "Climatic anomalies",
+                        "children": [
+                            {
+                                "name": "Precipitation",
+                                "children": [
+                                    {"name": "precp", "key": "precp"},
+                                    {"name": "precn", "key": "precn"},
+                                ],
+                            },
+                            {
+                                "name": "Temperature",
+                                "children": [{"name": "tempp", "key": "tempp"}],
+                            },
+                        ],
+                    },
+                ],
+            },
             "nodes": process_environmental_data(),
         },
         {
@@ -279,19 +306,29 @@ dataset = {
             "clusterDescription": "Epidemiological Indicators",
             "mapName": "Brazil_Amazon.geojson",
             "bbox": bbox,
+            "palette": {
+                "chagas": ["#d1eeee", "#00688b"],
+                "cl": ["#d1eeee", "#27408b"],
+                "vl": ["#d1eeee", "#473c8b"],
+                "dengue": ["#d1eeee", "#36648b"],
+                "malaria": ["#d1eeee", "midnightblue"],
+            },
             "timestamps": ["2004-2008", "2015-2019"],
-            "dimensions": [
-                {
-                    "name": "Occurrence of diseases",
-                    "children": [
-                        {"name": "Chagas", "key": "chagas"},
-                        {"name": "Cutaneous leishmaniasis", "key": "cl"},
-                        {"name": "Visceral leishmaniasis", "key": "vl"},
-                        {"name": "Dengue", "key": "dengue"},
-                        {"name": "Malaria", "key": "malaria"},
-                    ],
-                }
-            ],
+            "dimensions": {
+                "name": "Epidemiological",
+                "children": [
+                    {
+                        "name": "Occurrence of diseases",
+                        "children": [
+                            {"name": "Chagas", "key": "chagas"},
+                            {"name": "Cutaneous leishmaniasis", "key": "cl"},
+                            {"name": "Visceral leishmaniasis", "key": "vl"},
+                            {"name": "Dengue", "key": "dengue"},
+                            {"name": "Malaria", "key": "malaria"},
+                        ],
+                    }
+                ],
+            },
             "nodes": process_epidemiological_data(),
         },
         {
@@ -301,18 +338,32 @@ dataset = {
             "clusterDescription": "Socio-economic Indicators",
             "mapName": "Brazil_Amazon.geojson",
             "bbox": bbox,
+            "palette": {
+                "h": ["#e6f0ff", "#e5e5e5"],
+                "A": ["#e6f0ff", "#e5e5e5"],
+                "ipm": ["#e6f0ff", "#e5e5e5"],
+            },
             "timestamps": ["2000", "2010"],
-            "dimensions": [
-                {
-                    "name": "Multidimensional Poverty Index",
-                    "children": [
-                        {"name": "Multidimensional Poverty Incidence (H)", "key": "h"},
-                        {"name": "Multidimensional Poverty Intensity (A)", "key": "A"},
-                        {"name": "Deprivations", "key": "carpon"},
-                        {"name": "Multidimensional Poverty Index", "key": "mpi"},
-                    ],
-                }
-            ],
+            "dimensions": {
+                "name": "Socioeconomic",
+                "children": [
+                    {
+                        "name": "Multidimensional Poverty Index",
+                        "children": [
+                            {
+                                "name": "Multidimensional Poverty Incidence (H)",
+                                "key": "h",
+                            },
+                            {
+                                "name": "Multidimensional Poverty Intensity (A)",
+                                "key": "a",
+                            },
+                            {"name": "Deprivations", "key": "carpond"},
+                            {"name": "Multidimensional Poverty Index", "key": "ipm"},
+                        ],
+                    }
+                ],
+            },
             "nodes": process_socioeconomic_data(),
         },
         {
@@ -322,16 +373,23 @@ dataset = {
             "clusterDescription": "Population Indicators",
             "mapName": "Brazil_Amazon.geojson",
             "bbox": bbox,
+            "palette": {
+                "rural": ["#e3fff6", "#e5e5e5"],
+                "urban": ["#e3fff6", "#e5e5e5"],
+            },
             "timestamps": ["2006", "2017"],
-            "dimensions": [
-                {
-                    "name": "Population",
-                    "children": [
-                        {"name": "Rural population", "key": "rural"},
-                        {"name": "Urban population", "key": "urban"},
-                    ],
-                }
-            ],
+            "dimensions": {
+                "name": "Population",
+                "children": [
+                    {
+                        "name": "Population",
+                        "children": [
+                            {"name": "Rural population", "key": "rural"},
+                            {"name": "Urban population", "key": "urban"},
+                        ],
+                    }
+                ],
+            },
             "nodes": process_population_data(),
         },
     ],

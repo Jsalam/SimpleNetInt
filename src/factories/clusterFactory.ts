@@ -13,16 +13,31 @@ import { TransformerInit } from "../canvas/transformer";
 import { Canvas } from "../canvas/canvas";
 import { VNode } from "../visualElements/vNode";
 import { gp5 } from "../main";
+import { ClusterSettings } from "../GUI/ContextualGUIs/ClusterSettings";
+
+export interface DimensionCategory {
+  name: string;
+  children: Dimensions[];
+}
+
+export interface DimensionID {
+  name: string;
+  key: string;
+}
+
+export type Dimensions = DimensionCategory | DimensionID;
 
 export interface ClusterInit extends TransformerInit {
   clusterID: string;
   clusterType?: string;
   clusterLabel: string;
   clusterDescription: string;
-  keyAttribute?: string;
   mapName?: string;
   bbox?: [number, number, number, number];
   nodes?: NodeInit[];
+  timestamps?: string[];
+  dimensions?: DimensionCategory;
+  palette?: Record<string, [string, string]>;
 }
 
 export class ClusterFactory {
@@ -67,13 +82,14 @@ export class ClusterFactory {
           width,
           height,
           palette,
-          data[index].keyAttribute!,
           data[index].bbox!,
           data[index].mapName!,
+          data[index].palette!,
         ); //  /files/Cartographies/Brazil_Amazon.geojson
       } else {
         tmp = new VCluster(cluster, posX, posY, width, height, palette);
       }
+      ClusterSettings.add(tmp);
       // set the VCluster transformer from data imported
       if (
         TransFactory.getTransformerByVClusterID(
@@ -107,6 +123,7 @@ export class ClusterFactory {
       ClusterFactory.hght,
       ColorFactory.getPalette(index),
     );
+    ClusterSettings.add(tmp);
     Canvas.subscribe(tmp);
     ClusterFactory.vClusters.push(tmp);
   }
@@ -128,7 +145,12 @@ export class ClusterFactory {
   }
 
   static instantiateCluster(data: ClusterInit) {
-    let cluster = new Cluster(data.clusterID, data.clusterType!);
+    let cluster = new Cluster(
+      data.clusterID,
+      data.clusterType!,
+      data.timestamps,
+      data.dimensions,
+    );
     cluster.setLabel(data.clusterLabel);
     cluster.setDescription(data.clusterDescription);
     this.makeNodes(cluster, data);

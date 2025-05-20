@@ -1,30 +1,30 @@
 import * as glMatrix from "gl-matrix";
 import { gp5 } from "../main";
 import p5, { Vector } from "p5";
-import { ColorFactory } from "../factories/colorFactory";
+import chroma from "chroma-js";
 import { DOM } from "../GUI/DOM/DOMManager";
 import { Canvas } from "../canvas/canvas";
 import { Cluster } from "../graphElements/cluster";
 import { VCluster } from "./vCluster";
 import { Feature, FeatureCollection, Geometry, Position } from "geojson";
-import { Node } from "../graphElements/node";
 import { CustomEvent } from "../types";
+import { ClusterFactory } from "../factories/clusterFactory";
 
 const { mat4, vec4, vec3 } = glMatrix;
 
 type GeometryCache = {
-  features: Feature[];
+  numFeatures: number;
+  featureIndexByGeocode: Record<string, number>;
   centroidByGeocode: Record<string, Vector>;
   geometry: p5.Geometry;
 };
 
 export class VGeoCluster extends VCluster {
-  static total = 0;
   static _pixelTarget: p5.Graphics;
   static _idTarget: p5.Graphics;
   static geometryCache: Record<string, Promise<GeometryCache>> = {};
 
-  static PADDING = 200;
+  static PADDING = 300;
 
   static get width() {
     return gp5.width;
@@ -153,8 +153,15 @@ export class VGeoCluster extends VCluster {
                 }
               },
             );
+
+            const featureIndexByGeocode: Record<string, number> = {};
+            for (let [i, feature] of features.entries()) {
+              featureIndexByGeocode[feature.properties!.GEOCODIGO] = i;
+            }
+
             resolve({
-              features,
+              numFeatures: features.length,
+              featureIndexByGeocode,
               centroidByGeocode,
               geometry,
             });
@@ -202,23 +209,22 @@ export class VGeoCluster extends VCluster {
     checkSyncStatus();
   }
 
-  keyAttributeMean = Infinity;
-  keyAttributeStdev = -Infinity;
-  nodeByGeocode: Record<string, Node> = {};
+  numFeatures = 1;
+  featureIndexByGeocode: Record<string, number> = {};
   centroidByGeocode: Record<string, Vector> = {};
-  features: Feature[] = [];
   clusterGeometry: p5.Geometry | null = null;
   pixelShader: p5.Shader | null = null;
   idShader: p5.Shader | null = null;
 
   r1 = 10;
   r2 = 15;
-  s1 = 5;
+  s1 = 1;
   s2 = 1;
 
-  layerGap = 0;
-  rotationX = -0.51;
-  rotationY = 0.51;
+  zCenter = 0;
+  layerGap = 100;
+  rotationX = 0;
+  rotationY = 0;
   cameraDistance = 900;
 
   // tangent of 1/2 vertical field-of-view
@@ -233,7 +239,6 @@ export class VGeoCluster extends VCluster {
   mouseY_object: number | undefined;
 
   index: number;
-  keyAttribute: string;
 
   /**
    * ************************** constructor **************************
@@ -243,7 +248,6 @@ export class VGeoCluster extends VCluster {
    * @param {Number} width
    * @param {Number} height
    * @param {Object} palette Retrieved from the ColorFactory collection of palettes
-   * @param {String} keyAttribute The attribute of the cluster
    * @param {String} cartography The URL of the GeoJSON file
    */
   constructor(
@@ -253,16 +257,13 @@ export class VGeoCluster extends VCluster {
     width: number,
     height: number,
     palette: string[],
-    keyAttribute: string,
     bbox: [number, number, number, number],
     cartography: string,
+    private paletteByDimension: Record<string, [string, string]>,
   ) {
     super(cluster, posX, posY, width, height, palette);
 
-    this.index = VGeoCluster.total++;
-    this.keyAttribute = keyAttribute;
-
-    this.computeStatistics();
+    this.index = ClusterFactory.vClusters.length;
 
     gp5.loadShader(
       "./src/shader/shader_color.vert",
@@ -287,14 +288,11 @@ export class VGeoCluster extends VCluster {
     const [xMin, yMin] = VGeoCluster.projectMercator(bbox[0], bbox[1]);
     const [xMax, yMax] = VGeoCluster.projectMercator(bbox[2], bbox[3]);
 
-    const center = gp5.createVector(
-      (xMin + xMax) / 2,
-      (yMin + yMax) / 2,
-    );
+    const center = gp5.createVector((xMin + xMax) / 2, (yMin + yMax) / 2);
 
     const scale = Math.min(
       (VGeoCluster.width - 2 * VGeoCluster.PADDING) / (xMax - xMin),
-      (VGeoCluster.height - 2 * VGeoCluster.PADDING) / (yMax - yMin)
+      (VGeoCluster.height - 2 * VGeoCluster.PADDING) / (yMax - yMin),
     );
 
     VGeoCluster.loadGeometry(geoJsonUrl, center, scale).then((data) => {
@@ -302,40 +300,12 @@ export class VGeoCluster extends VCluster {
       DOM.hideMessage();
 
       // store propreties of this VGeoCluster
-      this.features = data.features;
+      this.numFeatures = data.numFeatures;
+      this.featureIndexByGeocode = data.featureIndexByGeocode;
       this.centroidByGeocode = data.centroidByGeocode;
       this.clusterGeometry = data.geometry;
 
-      // Get the list of UF from the attributes. Note: UF is the abbreviation of the states in Brazil.
-      // This should be the cluster names in the future
-      const UFs = ["AC", "AM", "AP", "MA", "MT", "PA", "RO", "RR", "TO"];
-      // let UFs: string[] = [];
-      // for (let i = 0; i < this.features.length; ++i) {
-      //   if (!UFs.includes(this.features[i].properties!.UF)) {
-      //     UFs.push(this.features[i].properties!.UF);
-      //   }
-      // }
-      // assign a color palete to each UF
-      ColorFactory.makeDictionary(UFs, ColorFactory.brewerNames, "clusters");
-
-      // update the colors of each UF in the map
-      this._palette = gp5.createImage(this.features.length, 1);
-      this._palette.loadPixels();
-      for (let i = 0; i < this.features.length; ++i) {
-        let colorStr = ColorFactory.getColorFromDictionary(
-          "clusters",
-          this.features[i].properties!.UF,
-          5 + Math.floor(Math.random() * 3),
-        ); // entry name, field name, index
-        const color = gp5.color(colorStr as string);
-        this._palette.set(i, 0, [
-          gp5.red(color),
-          gp5.green(color),
-          gp5.blue(color),
-          gp5.alpha(color),
-        ]);
-      }
-      this._palette.updatePixels();
+      this.updatePalette();
 
       // Refresh canvas and reposition nodes
       this.updateMatrices();
@@ -347,52 +317,50 @@ export class VGeoCluster extends VCluster {
     });
   }
 
-  computeStatistics() {
-    let n = 0;
-    let total = 0;
-    for (const node of this.cluster.nodes) {
-      this.nodeByGeocode[node.attributes!.attRaw!.geocode] = node;
-      const attrValue = Number(node.attributes!.attRaw![this.keyAttribute]);
-      if (Number.isNaN(attrValue)) continue;
-      ++n;
-      total += attrValue;
-    }
-    this.keyAttributeMean = total / n;
+  override updatePalette() {
+    if (!this.timestamp || !this.dimension) return;
+    this._palette = gp5.createImage(this.numFeatures, 1);
+    this._palette.loadPixels();
 
-    let SSD = 0;
-    for (const node of this.cluster.nodes) {
-      this.nodeByGeocode[node.attributes!.attRaw!.geocode] = node;
-      const attrValue = Number(node.attributes!.attRaw![this.keyAttribute]);
-      if (Number.isNaN(attrValue)) continue;
-      SSD += (attrValue - this.keyAttributeMean) ** 2;
+    let min = Infinity;
+    let max = -Infinity;
+    for (const vNode of this.vNodes) {
+      const attributes = vNode.node.attributes;
+      for (const attrs of Object.values(attributes?.attAll!)) {
+        const value = attrs[this.dimension];
+        if (value !== undefined && value !== -1) {
+          min = Math.min(min, Number(value));
+          max = Math.max(max, Number(value));
+        }
+      }
     }
-    this.keyAttributeStdev = Math.sqrt(SSD / n);
-  }
+    if (min === Infinity || max === -Infinity) return;
 
-  colorFor(geocode: string) {
-    if (!this.nodeByGeocode[geocode]) {
-      return gp5.color(200);
+    const scale = chroma
+      .scale(this.paletteByDimension[this.dimension])
+      .domain([Math.log10(1), Math.log10(max - min + 1)]);
+
+    for (let i = 0; i < this.numFeatures; ++i) {
+      this._palette.set(i, 0, [...scale(min).rgb(), 255]);
     }
-    const attrValue =
-      Number(
-        this.nodeByGeocode[geocode]?.attributes!.attRaw?.[this.keyAttribute],
-      ) || 0;
-    const start = this.keyAttributeMean - 1.5 * this.keyAttributeStdev;
-    const end = this.keyAttributeMean + 1.5 * this.keyAttributeStdev;
-    // TODO: this will be loaded from JSON
-    const [r1, g1, b1] = [
-      [7, 64, 80],
-      [255, 198, 196],
-    ][this.index];
-    const [r2, g2, b2] = [
-      [211, 242, 163],
-      [103, 32, 68],
-    ][this.index];
-    return gp5.color(
-      gp5.map(attrValue, start, end, r1, r2, true),
-      gp5.map(attrValue, start, end, g1, g2, true),
-      gp5.map(attrValue, start, end, b1, b2, true),
-    );
+
+    for (const vNode of this.vNodes) {
+      const attributes = vNode.node.attributes;
+      const geocode = attributes?.attGeo!["geocode"];
+      const featureIndex = this.featureIndexByGeocode[geocode];
+      if (!featureIndex) continue;
+      const value = Math.log10(
+        Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]) -
+          min +
+          1,
+      );
+      this._palette.set(
+        featureIndex,
+        0,
+        value === -1 ? [0, 0, 0, 0] : [...scale(value).rgb(), 255],
+      );
+    }
+    this._palette.updatePixels();
   }
 
   warp(r: number) {
@@ -401,7 +369,7 @@ export class VGeoCluster extends VCluster {
       return (
         this.s1 * r +
         ((this.s1 - this.s2) * (r - this.r1) * (r - this.r1)) /
-        (2.0 * (this.r1 - this.r2))
+          (2.0 * (this.r1 - this.r2))
       );
     }
     return (
@@ -430,11 +398,16 @@ export class VGeoCluster extends VCluster {
       0,
       1,
     );
-    const offset = vec3.fromValues(
-      0,
-      0,
-      this.layerGap * (this.index - (VGeoCluster.total - 1) / 2),
-    );
+
+    const zOffset =
+      this.zCenter +
+      -1 *
+        this.layerGap *
+        (this.index - (ClusterFactory.vClusters.length - 1) / 2);
+    const xOffset = zOffset;
+    const yOffset = 0;
+
+    const offset = vec3.fromValues(xOffset, yOffset, zOffset);
     const translate = mat4.fromTranslation(mat4.create(), offset);
     const rotateX = mat4.fromXRotation(mat4.create(), this.rotationX);
     const rotateY = mat4.fromYRotation(mat4.create(), this.rotationY);
@@ -472,7 +445,7 @@ export class VGeoCluster extends VCluster {
     mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
     for (let vNode of this.vNodes) {
-      const geocode = vNode.node.attributes!.attRaw!.geocode;
+      const geocode = vNode.node.attributes!.attGeo!.geocode;
       if (!this.centroidByGeocode[geocode]) continue;
 
       const vIn = this.centroidByGeocode[geocode].copy();
@@ -580,6 +553,12 @@ export class VGeoCluster extends VCluster {
               Math.PI / 2,
             );
             break;
+          case ",":
+            this.zCenter -= 10;
+            break;
+          case ".":
+            this.zCenter += 10;
+            break;
           case "=":
             this.s1 = gp5.constrain(this.s1 + 1, 1, 50);
             break;
@@ -615,11 +594,12 @@ export class VGeoCluster extends VCluster {
     shader.setUniform("s2", this.s2);
     shader.setUniform("palette", this._palette);
     shader.setUniform("paletteSize", this._palette.width);
-    shader.setUniform("selected", VGeoCluster.selectedLayerId === this.index ? VGeoCluster.selectedFeatureId : -1);
+    shader.setUniform("selected", VGeoCluster.selectedFeatureId);
     buffer.model(this.clusterGeometry!);
   }
 
   show(renderer: p5) {
+    if (!this.visible) return;
     // super.show(renderer);
     // this.handleEvents();
     if (this.clusterGeometry) {

@@ -10,6 +10,7 @@ import { VConnector } from "../visualElements/vConnector";
 import { Grid } from "./grid";
 import { VCluster } from "../visualElements/vCluster";
 import { VGeoCluster } from "../visualElements/vGeoCluster";
+import { ClusterSettings } from "../GUI/ContextualGUIs/ClusterSettings";
 
 /**
  * Adaptation of NetInt Canvas class
@@ -293,6 +294,7 @@ export class Canvas {
     this._zoom = 1;
     this._offset.set(0, 0, 0);
     TransFactory.reset();
+    ClusterSettings.reset();
     const vNodeObservers = Canvas.observers.filter(
       (observer): observer is VNode => observer instanceof VNode,
     );

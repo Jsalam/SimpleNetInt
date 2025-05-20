@@ -1,3 +1,4 @@
+import { DimensionCategory } from "../factories/clusterFactory";
 import { Node } from "./node";
 
 export class Cluster {
@@ -7,7 +8,12 @@ export class Cluster {
   id: string;
   type: string;
 
-  constructor(id: string, type: string) {
+  constructor(
+    id: string,
+    type: string,
+    public timestamps: string[] = [],
+    public dimensions: DimensionCategory = { name: "", children: [] },
+  ) {
     this.label;
     this.description;
     this.nodes = [];
