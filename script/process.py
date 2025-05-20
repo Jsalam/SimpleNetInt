@@ -15,7 +15,7 @@ def read_csv(filename):
         for line in f:
             file_content += line[1:-2].replace('""', '"') + "\n"
 
-    return pd.read_csv(StringIO(file_content)).fillna(0)
+    return pd.read_csv(StringIO(file_content)).fillna(-1)
 
 
 def make_node(geocode, municipality):
@@ -169,229 +169,249 @@ def process_population_data():
     return list(nodes.values())
 
 
+def environmental(id, label):
+    return {
+        "clusterID": id,
+        "clusterType": "geo",
+        "clusterLabel": label,
+        "clusterDescription": "Environmental Indicators",
+        "mapName": "Brazil_Amazon.geojson",
+        "bbox": bbox,
+        "timestamps": ["2006", "2017"],
+        "palette": {
+            "deorg": ["seashell", "blueviolet"],
+            "defor": ["seashell", "blueviolet"],
+            "dgorg": ["seashell", "#8b3a3a"],
+            "dgfor": ["seashell", "#8b3a3a"],
+            "fire": ["seashell", "#ee7600"],
+            "mining": ["seashell", "midnightblue"],
+            "core": ["seashell", "forestgreen"],
+            "edge": ["seashell", "forestgreen"],
+            "refor": ["lavender", "#8b864e"],
+            "secveg": ["lavender", "darkolivegreen"],
+            "pasture": ["lavender", "#8b6508"],
+            "crop": ["lavender", "#458b00"],
+            "urban": ["lavender", "#8b0a50"],
+            "road": ["#FFEFFF", "#68228b"],
+            "river": ["#FFEFFF", "#8b3a62"],
+            "port": ["#FFEFFF", "cadetblue"],
+            "precp": ["azure", "steelblue"],
+            "precn": ["azure", "#8b0a50"],
+            "tempp": ["azure", "#8b2323"],
+        },
+        "dimensions": {
+            "name": "Environmental",
+            "children": [
+                {
+                    "name": "Habitat loss",
+                    "children": [
+                        {
+                            "name": "Deforestation",
+                            "children": [
+                                {"name": "deorg", "key": "deorg"},
+                                {"name": "defor", "key": "defor"},
+                            ],
+                        },
+                        {
+                            "name": "Forest degradation",
+                            "children": [
+                                {"name": "dgorg", "key": "dgorg"},
+                                {"name": "dgfor", "key": "dgfor"},
+                            ],
+                        },
+                        {
+                            "name": "Fires",
+                            "children": [{"name": "fire", "key": "fire"}],
+                        },
+                        {
+                            "name": "Mining",
+                            "children": [{"name": "mining", "key": "mining"}],
+                        },
+                        {
+                            "name": "Vegetation fragmentation",
+                            "children": [
+                                {"name": "core", "key": "core"},
+                                {"name": "edge", "key": "edge"},
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "name": "Land Use and Land Cover",
+                    "children": [
+                        {
+                            "name": "Remanent forest",
+                            "children": [{"name": "refor", "key": "refor"}],
+                        },
+                        {
+                            "name": "Secondary vegetation",
+                            "children": [{"name": "secveg", "key": "secveg"}],
+                        },
+                        {
+                            "name": "Pasture",
+                            "children": [{"name": "pasture", "key": "pasture"}],
+                        },
+                        {
+                            "name": "Crop",
+                            "children": [{"name": "crop", "key": "crop"}],
+                        },
+                        {
+                            "name": "Urban area",
+                            "children": [{"name": "urban", "key": "urban"}],
+                        },
+                    ],
+                },
+                {
+                    "name": "Transportation networks",
+                    "children": [
+                        {
+                            "name": "Roads network",
+                            "children": [{"name": "road", "key": "road"}],
+                        },
+                        {
+                            "name": "Waterways network",
+                            "children": [{"name": "river", "key": "river"}],
+                        },
+                        {
+                            "name": "Ports",
+                            "children": [{"name": "port", "key": "port"}],
+                        },
+                    ],
+                },
+                {
+                    "name": "Climatic anomalies",
+                    "children": [
+                        {
+                            "name": "Precipitation",
+                            "children": [
+                                {"name": "precp", "key": "precp"},
+                                {"name": "precn", "key": "precn"},
+                            ],
+                        },
+                        {
+                            "name": "Temperature",
+                            "children": [{"name": "tempp", "key": "tempp"}],
+                        },
+                    ],
+                },
+            ],
+        },
+        "nodes": process_environmental_data(),
+    }
+
+
+def epidemiological(id, label):
+    return {
+        "clusterID": id,
+        "clusterType": "geo",
+        "clusterLabel": label,
+        "clusterDescription": "Epidemiological Indicators",
+        "mapName": "Brazil_Amazon.geojson",
+        "bbox": bbox,
+        "palette": {
+            "chagas": ["#d1eeee", "#00688b"],
+            "cl": ["#d1eeee", "#27408b"],
+            "vl": ["#d1eeee", "#473c8b"],
+            "dengue": ["#d1eeee", "#36648b"],
+            "malaria": ["#d1eeee", "midnightblue"],
+        },
+        "timestamps": ["2004-2008", "2015-2019"],
+        "dimensions": {
+            "name": "Epidemiological",
+            "children": [
+                {
+                    "name": "Occurrence of diseases",
+                    "children": [
+                        {"name": "Chagas", "key": "chagas"},
+                        {"name": "Cutaneous leishmaniasis", "key": "cl"},
+                        {"name": "Visceral leishmaniasis", "key": "vl"},
+                        {"name": "Dengue", "key": "dengue"},
+                        {"name": "Malaria", "key": "malaria"},
+                    ],
+                }
+            ],
+        },
+        "nodes": process_epidemiological_data(),
+    }
+
+
+def socioeconomic(id, label):
+    return {
+        "clusterID": id,
+        "clusterType": "geo",
+        "clusterLabel": label,
+        "clusterDescription": "Socio-economic Indicators",
+        "mapName": "Brazil_Amazon.geojson",
+        "bbox": bbox,
+        "palette": {
+            "h": ["#e6f0ff", "#e5e5e5"],
+            "A": ["#e6f0ff", "#e5e5e5"],
+            "ipm": ["#e6f0ff", "#e5e5e5"],
+        },
+        "timestamps": ["2000", "2010"],
+        "dimensions": {
+            "name": "Socioeconomic",
+            "children": [
+                {
+                    "name": "Multidimensional Poverty Index",
+                    "children": [
+                        {
+                            "name": "Multidimensional Poverty Incidence (H)",
+                            "key": "h",
+                        },
+                        {
+                            "name": "Multidimensional Poverty Intensity (A)",
+                            "key": "a",
+                        },
+                        {"name": "Deprivations", "key": "carpond"},
+                        {"name": "Multidimensional Poverty Index", "key": "ipm"},
+                    ],
+                }
+            ],
+        },
+        "nodes": process_socioeconomic_data(),
+    }
+
+
+def population(id, label):
+    return {
+        "clusterID": id,
+        "clusterType": "geo",
+        "clusterLabel": label,
+        "clusterDescription": "Population Indicators",
+        "mapName": "Brazil_Amazon.geojson",
+        "bbox": bbox,
+        "palette": {
+            "rural": ["#e6f0ff", "#e5e5e5"],
+            "urban": ["#e6f0ff", "#e5e5e5"],
+        },
+        "timestamps": ["2006", "2017"],
+        "dimensions": {
+            "name": "Population",
+            "children": [
+                {
+                    "name": "Population",
+                    "children": [
+                        {"name": "Rural population", "key": "rural"},
+                        {"name": "Urban population", "key": "urban"},
+                    ],
+                }
+            ],
+        },
+        "nodes": process_population_data(),
+    }
+
+
 dataset = {
     "nodes": [
-        {
-            "clusterID": 0,
-            "clusterType": "geo",
-            "clusterLabel": "Environmental",
-            "clusterDescription": "Environmental Indicators",
-            "mapName": "Brazil_Amazon.geojson",
-            "bbox": bbox,
-            "timestamps": ["2006", "2017"],
-            "palette": {
-                "deorg": ["seashell", "blueviolet"],
-                "defor": ["seashell", "blueviolet"],
-                "dgorg": ["seashell", "#8b3a3a"],
-                "dgfor": ["seashell", "#8b3a3a"],
-                "fire": ["seashell", "#ee7600"],
-                "mining": ["seashell", "midnightblue"],
-                "core": ["seashell", "forestgreen"],
-                "edge": ["seashell", "forestgreen"],
-                "refor": ["lavender", "#8b864e"],
-                "secveg": ["lavender", "darkolivegreen"],
-                "pasture": ["lavender", "#8b6508"],
-                "crop": ["lavender", "#458b00"],
-                "urban": ["lavender", "#8b0a50"],
-                "road": ["#FFEFFF", "#68228b"],
-                "river": ["#FFEFFF", "#8b3a62"],
-                "port": ["#FFEFFF", "cadetblue"],
-                "precp": ["azure", "steelblue"],
-                "precn": ["azure", "#8b0a50"],
-                "tempp": ["azure", "#8b2323"],
-            },
-            "dimensions": {
-                "name": "Environmental",
-                "children": [
-                    {
-                        "name": "Habitat loss",
-                        "children": [
-                            {
-                                "name": "Deforestation",
-                                "children": [
-                                    {"name": "deorg", "key": "deorg"},
-                                    {"name": "defor", "key": "defor"},
-                                ],
-                            },
-                            {
-                                "name": "Forest degradation",
-                                "children": [
-                                    {"name": "dgorg", "key": "dgorg"},
-                                    {"name": "dgfor", "key": "dgfor"},
-                                ],
-                            },
-                            {
-                                "name": "Fires",
-                                "children": [{"name": "fire", "key": "fire"}],
-                            },
-                            {
-                                "name": "Mining",
-                                "children": [{"name": "mining", "key": "mining"}],
-                            },
-                            {
-                                "name": "Vegetation fragmentation",
-                                "children": [
-                                    {"name": "core", "key": "core"},
-                                    {"name": "edge", "key": "edge"},
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        "name": "Land Use and Land Cover",
-                        "children": [
-                            {
-                                "name": "Remanent forest",
-                                "children": [{"name": "refor", "key": "refor"}],
-                            },
-                            {
-                                "name": "Secondary vegetation",
-                                "children": [{"name": "secveg", "key": "secveg"}],
-                            },
-                            {
-                                "name": "Pasture",
-                                "children": [{"name": "pasture", "key": "pasture"}],
-                            },
-                            {
-                                "name": "Crop",
-                                "children": [{"name": "crop", "key": "crop"}],
-                            },
-                            {
-                                "name": "Urban area",
-                                "children": [{"name": "urban", "key": "urban"}],
-                            },
-                        ],
-                    },
-                    {
-                        "name": "Transportation networks",
-                        "children": [
-                            {
-                                "name": "Roads network",
-                                "children": [{"name": "road", "key": "road"}],
-                            },
-                            {
-                                "name": "Waterways network",
-                                "children": [{"name": "river", "key": "river"}],
-                            },
-                            {
-                                "name": "Ports",
-                                "children": [{"name": "port", "key": "port"}],
-                            },
-                        ],
-                    },
-                    {
-                        "name": "Climatic anomalies",
-                        "children": [
-                            {
-                                "name": "Precipitation",
-                                "children": [
-                                    {"name": "precp", "key": "precp"},
-                                    {"name": "precn", "key": "precn"},
-                                ],
-                            },
-                            {
-                                "name": "Temperature",
-                                "children": [{"name": "tempp", "key": "tempp"}],
-                            },
-                        ],
-                    },
-                ],
-            },
-            "nodes": process_environmental_data(),
-        },
-        {
-            "clusterID": 1,
-            "clusterType": "geo",
-            "clusterLabel": "Epidemiological",
-            "clusterDescription": "Epidemiological Indicators",
-            "mapName": "Brazil_Amazon.geojson",
-            "bbox": bbox,
-            "palette": {
-                "chagas": ["#d1eeee", "#00688b"],
-                "cl": ["#d1eeee", "#27408b"],
-                "vl": ["#d1eeee", "#473c8b"],
-                "dengue": ["#d1eeee", "#36648b"],
-                "malaria": ["#d1eeee", "midnightblue"],
-            },
-            "timestamps": ["2004-2008", "2015-2019"],
-            "dimensions": {
-                "name": "Epidemiological",
-                "children": [
-                    {
-                        "name": "Occurrence of diseases",
-                        "children": [
-                            {"name": "Chagas", "key": "chagas"},
-                            {"name": "Cutaneous leishmaniasis", "key": "cl"},
-                            {"name": "Visceral leishmaniasis", "key": "vl"},
-                            {"name": "Dengue", "key": "dengue"},
-                            {"name": "Malaria", "key": "malaria"},
-                        ],
-                    }
-                ],
-            },
-            "nodes": process_epidemiological_data(),
-        },
-        {
-            "clusterID": 2,
-            "clusterType": "geo",
-            "clusterLabel": "Socioeconomic",
-            "clusterDescription": "Socio-economic Indicators",
-            "mapName": "Brazil_Amazon.geojson",
-            "bbox": bbox,
-            "palette": {
-                "h": ["#e6f0ff", "#e5e5e5"],
-                "A": ["#e6f0ff", "#e5e5e5"],
-                "ipm": ["#e6f0ff", "#e5e5e5"],
-            },
-            "timestamps": ["2000", "2010"],
-            "dimensions": {
-                "name": "Socioeconomic",
-                "children": [
-                    {
-                        "name": "Multidimensional Poverty Index",
-                        "children": [
-                            {
-                                "name": "Multidimensional Poverty Incidence (H)",
-                                "key": "h",
-                            },
-                            {
-                                "name": "Multidimensional Poverty Intensity (A)",
-                                "key": "a",
-                            },
-                            {"name": "Deprivations", "key": "carpond"},
-                            {"name": "Multidimensional Poverty Index", "key": "ipm"},
-                        ],
-                    }
-                ],
-            },
-            "nodes": process_socioeconomic_data(),
-        },
-        {
-            "clusterID": 3,
-            "clusterType": "geo",
-            "clusterLabel": "Population",
-            "clusterDescription": "Population Indicators",
-            "mapName": "Brazil_Amazon.geojson",
-            "bbox": bbox,
-            "palette": {
-                "rural": ["#e3fff6", "#e5e5e5"],
-                "urban": ["#e3fff6", "#e5e5e5"],
-            },
-            "timestamps": ["2006", "2017"],
-            "dimensions": {
-                "name": "Population",
-                "children": [
-                    {
-                        "name": "Population",
-                        "children": [
-                            {"name": "Rural population", "key": "rural"},
-                            {"name": "Urban population", "key": "urban"},
-                        ],
-                    }
-                ],
-            },
-            "nodes": process_population_data(),
-        },
+        environmental(0, "Environmental I"),
+        environmental(1, "Environmental II"),
+        epidemiological(2, "Epidemiological I"),
+        epidemiological(3, "Epidemiological II"),
+        socioeconomic(4, "Socioeconomic I"),
+        socioeconomic(5, "Socioeconomic II"),
+        population(6, "Population I"),
+        population(7, "Population II"),
     ],
     "edges": [],
 }

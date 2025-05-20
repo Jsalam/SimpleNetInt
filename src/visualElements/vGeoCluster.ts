@@ -221,8 +221,8 @@ export class VGeoCluster extends VCluster {
   s1 = 1;
   s2 = 1;
 
-  zCenter = 0;
-  layerGap = 100;
+  layerIndexInFocus = 0;
+  layerGap = 1;
   rotationX = 0;
   rotationY = 0;
   cameraDistance = 900;
@@ -400,11 +400,12 @@ export class VGeoCluster extends VCluster {
     );
 
     const zOffset =
-      this.zCenter +
-      -1 *
-        this.layerGap *
-        (this.index - (ClusterFactory.vClusters.length - 1) / 2);
-    const xOffset = zOffset;
+      this.layerGap *
+      ((ClusterFactory.vClusters.length - 1) / 2 -
+        this.index -
+        this.layerIndexInFocus);
+
+    const xOffset = 2 * zOffset;
     const yOffset = 0;
 
     const offset = vec3.fromValues(xOffset, yOffset, zOffset);
@@ -554,10 +555,10 @@ export class VGeoCluster extends VCluster {
             );
             break;
           case ",":
-            this.zCenter -= 10;
+            this.layerIndexInFocus -= 0.1;
             break;
           case ".":
-            this.zCenter += 10;
+            this.layerIndexInFocus += 0.1;
             break;
           case "=":
             this.s1 = gp5.constrain(this.s1 + 1, 1, 50);
