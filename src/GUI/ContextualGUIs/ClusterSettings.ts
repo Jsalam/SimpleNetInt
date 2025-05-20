@@ -1,18 +1,25 @@
 import { Canvas } from "../../canvas/canvas";
 import { DimensionCategory, Dimensions } from "../../factories/clusterFactory";
 import { VCluster } from "../../visualElements/vCluster";
+import {
+  createElement,
+  createInputElement,
+  createSelectElement,
+  updateSelectOptions,
+} from "./DOMUtils";
 
 export class ClusterSettings {
   private static _container: HTMLElement | undefined;
   private static get container(): HTMLElement {
     if (!this._container) {
-      this._container = document.createElement("div");
-      this._container.style.position = "absolute";
-      this._container.style.left = "0";
-      this._container.style.top = "10px";
-      this._container.style.bottom = "0";
-      this._container.style.width = "300px";
-      this._container.style.overflowY = "scroll";
+      this._container = createElement("div", {
+        position: "absolute",
+        left: "0",
+        top: "10px",
+        bottom: "0",
+        width: "300px",
+        overflowY: "scroll",
+      });
       document.querySelector("#model")!.append(this._container);
     }
     return this._container;
@@ -22,110 +29,39 @@ export class ClusterSettings {
 
   public static add(vCluster: VCluster) {
     const settings = new ClusterSettings(vCluster);
-    this.all.push(settings);
     ClusterSettings.container.append(settings.root);
+    this.all.push(settings);
   }
 
   public static reset() {
-    this.all.length = 0;
     this.container.innerHTML = "";
+    this.all.length = 0;
   }
 
-  private root = document.createElement("div");
+  private root: HTMLElement;
+  private levels: number;
+  private dimemsionViewModels: DimensionCategory[] = [];
   private dimensionControls: HTMLSelectElement[] = [];
+  private timeControl: HTMLSelectElement;
 
   constructor(private vCluster: VCluster) {
-    this.root.style.color = "white";
-    this.root.style.padding = "10px";
+    this.levels = this.getDepth(vCluster.cluster.dimensions) - 1;
 
-    const label = document.createElement("div");
-    this.root.append(label);
+    this.dimemsionViewModels = this.makeDimensionControlViewModels();
+    this.dimensionControls = this.makeDimensionControls();
+    this.timeControl = this.makeTimeControl();
 
-    const visibilityControl = document.createElement("input");
-    visibilityControl.type = "checkbox";
-    label.append(visibilityControl);
-    visibilityControl.checked = true;
-    visibilityControl.onclick = () => {
-      this.vCluster.visible = visibilityControl.checked;
-    };
+    this.root = this.makeContainer(
+      this.makeTitle(vCluster.cluster.label!),
+      this.makeControl("Dimension", ...this.dimensionControls),
+      this.makeControl("Time", this.timeControl),
+    );
 
-    const labelText = document.createElement("label");
-    labelText.style.marginLeft = "10px";
-    labelText.textContent = vCluster.cluster.label!;
-    label.append(labelText);
-
-    const { timestamps, dimensions } = vCluster.cluster;
-
-    {
-      // dimension controls
-      const depth = this.getDepth(dimensions);
-
-      const controls = document.createElement("div");
-      controls.style.margin = "10px";
-      this.root.append(controls);
-
-      const label = document.createElement("div");
-      label.style.color = "gray";
-      label.textContent = "Dimension";
-      controls.append(label);
-
-      for (let i = 0; i < depth - 1; ++i) {
-        const select = this.createSelectElement();
-        select.onchange = () => {
-          this.onSelect(i);
-          select.blur();
-        };
-        controls.append(select);
-        this.dimensionControls.push(select);
-      }
-      if (this.dimensionControls.length) {
-        this.setControlOptions(
-          this.dimensionControls[0],
-          dimensions.children.map((dim) => ({
-            name: dim.name,
-            value: "key" in dim ? dim.key : dim.name,
-          })),
-        );
-        this.onSelect(0);
-      }
+    for (let i = 0; i < this.levels; ++i) {
+      this.syncDimensionControl(i);
     }
-
-    {
-      // timestamp controls
-      const controls = document.createElement("div");
-      controls.style.margin = "10px";
-      this.root.append(controls);
-
-      const label = document.createElement("div");
-      label.style.color = "gray";
-      label.textContent = "Period";
-      controls.append(label);
-
-      const select = this.createSelectElement();
-      this.setControlOptions(
-        select,
-        timestamps.map((t) => ({
-          name: t,
-          value: t,
-        })),
-      );
-      select.onchange = () => {
-        this.setTimestamp(select.value);
-        select.blur();
-      };
-      controls.append(select);
-      this.setTimestamp(select.value);
-    }
-  }
-
-  private createSelectElement() {
-    const select = document.createElement("select");
-    select.style.display = "block";
-    select.style.width = "100%";
-    select.style.background = "transparent";
-    select.style.color = "white";
-    select.style.fontSize = "14px";
-    return select;
+    this.updateDimension();
+    this.updateTimestamp();
   }
 
   private getDepth(dimension: Dimensions): number {
@@ -133,60 +69,160 @@ export class ClusterSettings {
     return Math.max(...dimension.children.map((dim) => this.getDepth(dim))) + 1;
   }
 
-  private onSelect(index: number) {
-    if (index === this.dimensionControls.length - 1) {
-      this.setDimension(this.dimensionControls[index].value);
-    } else {
-      this.selectInternal(index);
-    }
+  private makeContainer(...children: HTMLElement[]) {
+    return createElement(
+      "div",
+      {
+        color: "white",
+        padding: "10px",
+      },
+      null,
+      ...children,
+    );
   }
 
-  private setDimension(dimension: string) {
-    this.vCluster.dimension = dimension;
-    this.vCluster.updatePalette();
-    Canvas.update();
+  private makeTitle(title: string): HTMLElement {
+    return createElement(
+      "div",
+      null,
+      null,
+      createInputElement(null, {
+        type: "checkbox",
+        checked: true,
+        onclick: (e) => {
+          this.vCluster.visible = (e.target as HTMLInputElement).checked;
+        },
+      }),
+      createElement(
+        "label",
+        {
+          marginLeft: "10px",
+        },
+        null,
+        title,
+      ),
+    );
   }
 
-  private setTimestamp(timestamp: string) {
-    this.vCluster.timestamp = timestamp;
-    this.vCluster.updatePalette();
-    Canvas.update();
+  private makeInputLabel(text: string): HTMLElement {
+    return createElement(
+      "div",
+      {
+        color: "gray",
+      },
+      null,
+      text,
+    );
   }
 
-  private selectInternal(index: number) {
-    let cur: DimensionCategory | undefined = this.vCluster.cluster.dimensions;
-    for (let i = 0; i <= index; ++i) {
-      if (!cur) break;
-      const value = this.dimensionControls[i].value;
-      cur = cur.children.find((o) => o.name === value) as DimensionCategory;
-    }
-
-    const next = this.dimensionControls[index + 1];
-    if (cur) {
-      this.setControlOptions(
-        next,
-        cur.children.map((dim) => ({
-          name: dim.name,
-          value: "key" in dim ? dim.key : dim.name,
-        })),
-      );
-    } else {
-      next.innerHTML = "";
-    }
-
-    this.onSelect(index + 1);
+  private makeControl(label: string, ...controls: HTMLElement[]): HTMLElement {
+    return createElement(
+      "div",
+      {
+        margin: "10px",
+      },
+      null,
+      this.makeInputLabel(label),
+      ...controls,
+    );
   }
 
-  private setControlOptions(
-    select: HTMLSelectElement,
+  private makeSelectElement(
     options: Array<{ name: string; value: string }>,
+    properties?: Partial<HTMLSelectElement> | null,
   ) {
-    select.innerHTML = "";
-    for (let o of options) {
-      const option = document.createElement("option");
-      option.value = o.value;
-      option.textContent = o.name;
-      select.append(option);
+    return createSelectElement(
+      options,
+      {
+        display: "block",
+        width: "100%",
+        background: "transparent",
+        color: "white",
+        fontSize: "14px",
+      },
+      properties,
+    );
+  }
+
+  private makeTimeControl(): HTMLSelectElement {
+    return this.makeSelectElement(
+      this.vCluster.cluster.timestamps.map((t) => ({
+        name: t,
+        value: t,
+      })),
+      {
+        onchange: (e) => {
+          this.updateTimestamp();
+          (e.target as HTMLSelectElement).blur();
+        },
+      },
+    );
+  }
+
+  private makeDimensionControlViewModels(): DimensionCategory[] {
+    const viewModels: DimensionCategory[] = [];
+    let cur: Dimensions = this.vCluster.cluster.dimensions;
+    while (cur && "children" in cur) {
+      viewModels.push(cur);
+      cur = cur.children[0];
     }
+    return viewModels;
+  }
+
+  private makeDimensionControls(): HTMLSelectElement[] {
+    const controls: HTMLSelectElement[] = [];
+    for (let i = 0; i < this.levels; ++i) {
+      controls.push(
+        this.makeSelectElement([], {
+          onchange: (e) => {
+            this.onDimensionSelect(i);
+            (e.target as HTMLSelectElement).blur();
+          },
+        }),
+      );
+    }
+    return controls;
+  }
+
+  private syncDimensionControl(i: number) {
+    updateSelectOptions(
+      this.dimensionControls[i],
+      this.dimemsionViewModels[i].children.map((dim) => ({
+        name: dim.name,
+        value: "key" in dim ? dim.key : dim.name,
+      })),
+    );
+  }
+
+  private onDimensionSelect(index: number) {
+    if (index < this.levels - 1) {
+      this.dimemsionViewModels[index + 1] = this.dimemsionViewModels[
+        index
+      ].children.find(
+        (dim) => dim.name === this.dimensionControls[index].value,
+      ) as DimensionCategory;
+
+      for (let i = index + 2; i < this.levels; ++i) {
+        this.dimemsionViewModels[i] = this.dimemsionViewModels[i - 1]
+          .children[0] as DimensionCategory;
+      }
+
+      for (let i = index + 1; i < this.levels; ++i) {
+        this.syncDimensionControl(i);
+      }
+    }
+    this.updateDimension();
+  }
+
+  private updateDimension() {
+    this.vCluster.dimension = this.dimensionControls[this.levels - 1].value;
+    this.vCluster.updatePalette();
+    Canvas.update();
+  }
+
+  private updateTimestamp() {
+    this.vCluster.timestamp = this.timeControl.value;
+    this.vCluster.updatePalette();
+    Canvas.update();
   }
 }
