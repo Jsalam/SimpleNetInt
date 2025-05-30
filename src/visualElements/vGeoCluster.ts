@@ -285,8 +285,8 @@ export class VGeoCluster extends VCluster {
 
     const geoJsonUrl = "./files/Cartographies/" + cartography;
 
-    const [xMin, yMin] = VGeoCluster.projectMercator(bbox[0], bbox[1]);
-    const [xMax, yMax] = VGeoCluster.projectMercator(bbox[2], bbox[3]);
+    const [xMin, yMax] = VGeoCluster.projectMercator(bbox[0], bbox[1]);
+    const [xMax, yMin] = VGeoCluster.projectMercator(bbox[2], bbox[3]);
 
     const center = gp5.createVector((xMin + xMax) / 2, (yMin + yMax) / 2);
 
@@ -405,7 +405,7 @@ export class VGeoCluster extends VCluster {
         this.index -
         this.layerIndexInFocus);
 
-    const xOffset = 2 * zOffset;
+    const xOffset = -1 * zOffset;
     const yOffset = 0;
 
     const offset = vec3.fromValues(xOffset, yOffset, zOffset);
