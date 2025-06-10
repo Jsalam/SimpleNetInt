@@ -20,6 +20,18 @@ type GeometryCache = {
 };
 
 export class VGeoCluster extends VCluster {
+  static all: VGeoCluster[] = [];
+  static visible: VGeoCluster[] = [];
+
+  static scalarTransforms: Record<
+    "linear" | "log" | "sqrt",
+    (v: number) => number
+  > = {
+    linear: (v) => v,
+    log: Math.log10,
+    sqrt: Math.sqrt,
+  };
+
   static _pixelTarget: p5.Graphics;
   static _idTarget: p5.Graphics;
   static geometryCache: Record<string, Promise<GeometryCache>> = {};
@@ -116,6 +128,64 @@ export class VGeoCluster extends VCluster {
     }
   }
 
+  // TODO: comments
+  static drawOutline(geom: Geometry, center: Vector, scale: number) {
+    function traverse(rings: Position[][]) {
+      if (rings.length === 0) return;
+      const N = rings[0].length;
+      for (let i = 0; i < N; ++i) {
+        const [lon1, lat1] = rings[0][i];
+        const [lon2, lat2] = rings[0][(i + 1) % N];
+
+        const [x1, y1] = VGeoCluster.projectMercator(lon1, lat1, center, scale);
+        const [x2, y2] = VGeoCluster.projectMercator(lon2, lat2, center, scale);
+        const forward = new p5.Vector(x2 - x1, y2 - y1).normalize();
+        const offset = new p5.Vector(-forward.y, forward.x).mult(1);
+
+        VGeoCluster.pixelTarget.beginShape();
+        VGeoCluster.pixelTarget.vertex(x1 + offset.x, y1 + offset.y);
+        VGeoCluster.pixelTarget.vertex(x1 - offset.x, y1 - offset.y);
+        VGeoCluster.pixelTarget.vertex(x2 - offset.x, y2 - offset.y);
+        VGeoCluster.pixelTarget.vertex(x2 + offset.x, y2 + offset.y);
+        VGeoCluster.pixelTarget.endShape();
+      }
+      for (let i = 0; i < N; ++i) {
+        const [lon1, lat1] = rings[0][i];
+        const [lon2, lat2] = rings[0][(i + 1) % N];
+        const [lon3, lat3] = rings[0][(i + 2) % N];
+
+        const [x1, y1] = VGeoCluster.projectMercator(lon1, lat1, center, scale);
+        const [x2, y2] = VGeoCluster.projectMercator(lon2, lat2, center, scale);
+        const [x3, y3] = VGeoCluster.projectMercator(lon3, lat3, center, scale);
+        const forward1 = new p5.Vector(x2 - x1, y2 - y1).normalize();
+        const offset1 = new p5.Vector(-forward1.y, forward1.x).mult(1);
+        const forward2 = new p5.Vector(x3 - x2, y3 - y2).normalize();
+        const offset2 = new p5.Vector(-forward2.y, forward2.x).mult(1);
+        if (forward1.cross(forward2).z > 0) {
+          VGeoCluster.pixelTarget.beginShape();
+          VGeoCluster.pixelTarget.vertex(x2, y2);
+          VGeoCluster.pixelTarget.vertex(x2 - offset1.x, y2 - offset1.y);
+          VGeoCluster.pixelTarget.vertex(x2 - offset2.x, y2 - offset2.y);
+          VGeoCluster.pixelTarget.endShape();
+        } else {
+          VGeoCluster.pixelTarget.beginShape();
+          VGeoCluster.pixelTarget.vertex(x2, y2);
+          VGeoCluster.pixelTarget.vertex(x2 + offset2.x, y2 + offset2.y);
+          VGeoCluster.pixelTarget.vertex(x2 + offset1.x, y2 + offset1.y);
+          VGeoCluster.pixelTarget.endShape();
+        }
+      }
+    }
+
+    if (geom.type === "Polygon") {
+      traverse(geom.coordinates);
+    } else if (geom.type === "MultiPolygon") {
+      for (const polygon of geom.coordinates) {
+        traverse(polygon);
+      }
+    }
+  }
+
   static computeCentroids(features: Feature[], center: Vector, scale: number) {
     const index: Record<string, Vector> = {};
     for (const feature of features) {
@@ -175,6 +245,52 @@ export class VGeoCluster extends VCluster {
     return this.geometryCache[url];
   }
 
+  static loadSecondaryGeometry(url: string, center: Vector, scale: number) {
+    //console.log("Loading geometry from", url);
+    DOM.showMessage(`Loading secondary geometry from\n${url} ...`);
+    if (!this.geometryCache[url]) {
+      this.geometryCache[url] = new Promise<GeometryCache>((resolve) => {
+        gp5.loadJSON(
+          url,
+          ({ features }: FeatureCollection) => {
+            const centroidByGeocode = this.computeCentroids(
+              features,
+              center,
+              scale,
+            );
+            // @ts-expect-error
+            // Error reported in: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/72658
+            const geometry: p5.Geometry = VGeoCluster.pixelTarget.buildGeometry(
+              () => {
+                for (let [i, feature] of features.entries()) {
+                  VGeoCluster.pixelTarget.noStroke();
+                  VGeoCluster.pixelTarget.fill(128, 128, 128);
+                  this.drawOutline(feature.geometry, center, scale);
+                }
+              },
+            );
+
+            const featureIndexByGeocode: Record<string, number> = {};
+            for (let [i, feature] of features.entries()) {
+              featureIndexByGeocode[feature.properties!.GEOCODIGO] = i;
+            }
+
+            resolve({
+              numFeatures: features.length,
+              featureIndexByGeocode,
+              centroidByGeocode,
+              geometry,
+            });
+          },
+          (err) => {
+            console.error(err), DOM.showMessage(`Wrong URL\n${url} ...`);
+          },
+        );
+      });
+    }
+    return this.geometryCache[url];
+  }
+
   static idBuffer = new Uint8Array(4);
   static selectedLayerId = 0;
   static selectedFeatureId = 0;
@@ -209,12 +325,20 @@ export class VGeoCluster extends VCluster {
     checkSyncStatus();
   }
 
+  static applyZoom(direction: 1 | -1) {
+    for (const vCluster of this.all) {
+      vCluster.scale *= vCluster.zoomDirection == direction ? 1.02 : 0.98;
+    }
+  }
+
   numFeatures = 1;
   featureIndexByGeocode: Record<string, number> = {};
   centroidByGeocode: Record<string, Vector> = {};
   clusterGeometry: p5.Geometry | null = null;
+  secondaryClusterGeometry: p5.Geometry | null = null;
   pixelShader: p5.Shader | null = null;
   idShader: p5.Shader | null = null;
+  outlineShader: p5.Shader | null = null;
 
   r1 = 10;
   r2 = 15;
@@ -239,6 +363,9 @@ export class VGeoCluster extends VCluster {
   mouseY_object: number | undefined;
 
   index: number;
+  scale: 1 | -1 = 1;
+  zoomDirection = 1;
+  scalarTransform = VGeoCluster.scalarTransforms.linear;
 
   /**
    * ************************** constructor **************************
@@ -259,9 +386,13 @@ export class VGeoCluster extends VCluster {
     palette: string[],
     bbox: [number, number, number, number],
     cartography: string,
+    secondaryCartography: string,
     private paletteByDimension: Record<string, [string, string]>,
   ) {
     super(cluster, posX, posY, width, height, palette);
+
+    VGeoCluster.all.push(this);
+    VGeoCluster.visible.push(this);
 
     this.index = ClusterFactory.vClusters.length;
 
@@ -279,6 +410,15 @@ export class VGeoCluster extends VCluster {
       "./src/shader/shader.frag",
       (shader) => {
         this.idShader = shader;
+      },
+      console.error,
+    );
+
+    gp5.loadShader(
+      "./src/shader/shader_outline.vert",
+      "./src/shader/shader.frag",
+      (shader) => {
+        this.outlineShader = shader;
       },
       console.error,
     );
@@ -315,6 +455,25 @@ export class VGeoCluster extends VCluster {
       // update the canvas with the new drawings
       Canvas.update();
     });
+
+    const secondaryGeoJsonUrl = "./files/Cartographies/" + secondaryCartography;
+
+    VGeoCluster.loadSecondaryGeometry(secondaryGeoJsonUrl, center, scale).then(
+      (data) => {
+        console.log("SECONDARY GEOMETRY LOADED from", secondaryGeoJsonUrl);
+        DOM.hideMessage();
+
+        this.secondaryClusterGeometry = data.geometry;
+
+        // Refresh canvas and reposition nodes
+        this.updateMatrices();
+        this.unprojectMousePosition();
+        this.updateVNodePositions();
+
+        // update the canvas with the new drawings
+        Canvas.update();
+      },
+    );
   }
 
   override updatePalette() {
@@ -338,7 +497,7 @@ export class VGeoCluster extends VCluster {
 
     const scale = chroma
       .scale(this.paletteByDimension[this.dimension])
-      .domain([Math.log10(1), Math.log10(max - min + 1)]);
+      .domain([this.scalarTransform(1), this.scalarTransform(max - min + 1)]);
 
     for (let i = 0; i < this.numFeatures; ++i) {
       this._palette.set(i, 0, [...scale(min).rgb(), 255]);
@@ -349,7 +508,7 @@ export class VGeoCluster extends VCluster {
       const geocode = attributes?.attGeo!["geocode"];
       const featureIndex = this.featureIndexByGeocode[geocode];
       if (!featureIndex) continue;
-      const value = Math.log10(
+      const value = this.scalarTransform(
         Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]) -
           min +
           1,
@@ -381,17 +540,17 @@ export class VGeoCluster extends VCluster {
 
   updateMatrices() {
     const flipY = mat4.fromValues(
-      1,
+      this.scale,
       0,
       0,
       0,
       0,
-      -1,
+      -this.scale,
       0,
       0,
       0,
       0,
-      1,
+      this.scale,
       0,
       0,
       0,
@@ -399,10 +558,12 @@ export class VGeoCluster extends VCluster {
       1,
     );
 
+    const visibleIndex = VGeoCluster.visible.indexOf(this);
+
     const zOffset =
       this.layerGap *
-      ((ClusterFactory.vClusters.length - 1) / 2 -
-        this.index -
+      ((VGeoCluster.all.length - 1) / 2 -
+        visibleIndex -
         this.layerIndexInFocus);
 
     const xOffset = -1 * zOffset;
@@ -583,7 +744,11 @@ export class VGeoCluster extends VCluster {
     }
   }
 
-  renderToBuffer(buffer: p5.Graphics, shader: p5.Shader) {
+  renderToBuffer(
+    buffer: p5.Graphics,
+    geometry: p5.Geometry,
+    shader: p5.Shader,
+  ) {
     buffer.shader(shader);
     shader.setUniform("modelViewMatrix", [...this.modelViewMatrix]);
     shader.setUniform("projectionMatrix", [...this.projectionMatrix]);
@@ -596,20 +761,37 @@ export class VGeoCluster extends VCluster {
     shader.setUniform("palette", this._palette);
     shader.setUniform("paletteSize", this._palette.width);
     shader.setUniform("selected", VGeoCluster.selectedFeatureId);
-    buffer.model(this.clusterGeometry!);
+    buffer.model(geometry);
   }
 
   show(renderer: p5) {
     if (!this.visible) return;
     // super.show(renderer);
     // this.handleEvents();
-    if (this.clusterGeometry) {
+    if (this.clusterGeometry && this.secondaryClusterGeometry) {
       if (this.pixelShader) {
         VGeoCluster.pixelTarget.texture(this._palette);
-        this.renderToBuffer(VGeoCluster.pixelTarget, this.pixelShader);
+        this.renderToBuffer(
+          VGeoCluster.pixelTarget,
+          this.clusterGeometry,
+          this.pixelShader,
+        );
+      }
+      if (this.outlineShader) {
+        // TODO: comments
+        VGeoCluster.pixelTarget.fill(0);
+        this.renderToBuffer(
+          VGeoCluster.pixelTarget,
+          this.secondaryClusterGeometry,
+          this.outlineShader,
+        );
       }
       if (this.idShader) {
-        this.renderToBuffer(VGeoCluster.idTarget, this.idShader);
+        this.renderToBuffer(
+          VGeoCluster.idTarget,
+          this.clusterGeometry,
+          this.idShader,
+        );
       }
     }
   }

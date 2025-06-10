@@ -562,6 +562,8 @@ export class Canvas {
     // Zoom by amount about point.
     //  TransFactory.zoom(amnt);
     TransFactory.crissCross(amnt);
+    // TODO: consolidate the logic here
+    VGeoCluster.applyZoom(evt.deltaY < 0 ? 1 : -1);
 
     this.renderGate = true;
   }

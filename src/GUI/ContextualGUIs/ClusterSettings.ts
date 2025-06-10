@@ -1,6 +1,7 @@
 import { Canvas } from "../../canvas/canvas";
 import { DimensionCategory, Dimensions } from "../../factories/clusterFactory";
 import { VCluster } from "../../visualElements/vCluster";
+import { VGeoCluster } from "../../visualElements/vGeoCluster";
 import {
   createElement,
   createInputElement,
@@ -20,6 +21,12 @@ export class ClusterSettings {
         width: "300px",
         overflowY: "scroll",
       });
+      this._container.onwheel = (e) => {
+        e.stopPropagation();
+      };
+      this._container.onmousedown = (e) => {
+        e.stopPropagation();
+      };
       document.querySelector("#model")!.append(this._container);
     }
     return this._container;
@@ -55,6 +62,8 @@ export class ClusterSettings {
       this.makeTitle(vCluster.cluster.label!),
       this.makeControl("Dimension", ...this.dimensionControls),
       this.makeControl("Time", this.timeControl),
+      this.makeControl("Zoom Direction", this.makeZoomDirectionControl()),
+      this.makeControl("Color Transform", this.makeColorTransformControl()),
     );
 
     for (let i = 0; i < this.levels; ++i) {
@@ -66,7 +75,9 @@ export class ClusterSettings {
 
   private getDepth(dimension: Dimensions): number {
     if ("key" in dimension) return 1;
-    return Math.max(...dimension.children.map((dim) => this.getDepth(dim))) + 1;
+    return (
+      Math.max(0, ...dimension.children.map((dim) => this.getDepth(dim))) + 1
+    );
   }
 
   private makeContainer(...children: HTMLElement[]) {
@@ -91,6 +102,10 @@ export class ClusterSettings {
         checked: true,
         onclick: (e) => {
           this.vCluster.visible = (e.target as HTMLInputElement).checked;
+          // TODO: refactor this logic
+          VGeoCluster.visible = VGeoCluster.all.filter(
+            (cluster) => cluster.visible,
+          );
         },
       }),
       createElement(
@@ -194,6 +209,88 @@ export class ClusterSettings {
     );
   }
 
+  private makeZoomDirectionControl() {
+    return createSelectElement(
+      [
+        {
+          name: "In",
+          value: "1",
+        },
+        {
+          name: "Out",
+          value: "-1",
+        },
+      ],
+      {
+        display: "block",
+        width: "100%",
+        background: "transparent",
+        color: "white",
+        fontSize: "14px",
+      },
+      {
+        onchange: (e) => {
+          if (this.vCluster instanceof VGeoCluster) {
+            this.vCluster.zoomDirection = Number(
+              (e.target as HTMLSelectElement).value,
+            );
+          }
+        },
+      },
+    );
+  }
+
+  private makeColorTransformControl() {
+    return createSelectElement(
+      [
+        {
+          name: "linear",
+          value: "linear",
+        },
+        {
+          name: "log",
+          value: "log",
+        },
+        {
+          name: "sqrt",
+          value: "sqrt",
+        },
+      ],
+      {
+        display: "block",
+        width: "100%",
+        background: "transparent",
+        color: "white",
+        fontSize: "14px",
+      },
+      {
+        onchange: (e) => {
+          if (this.vCluster instanceof VGeoCluster) {
+            // TODO: refactor this
+            const value = (e.target as HTMLSelectElement)
+              .value as keyof typeof VGeoCluster.scalarTransforms;
+            switch (value) {
+              case "log":
+                this.vCluster.scalarTransform =
+                  VGeoCluster.scalarTransforms.log;
+                break;
+              case "sqrt":
+                this.vCluster.scalarTransform =
+                  VGeoCluster.scalarTransforms.sqrt;
+                break;
+              default:
+                this.vCluster.scalarTransform =
+                  VGeoCluster.scalarTransforms.linear;
+                break;
+            }
+          }
+          this.vCluster.updatePalette();
+          Canvas.update();
+        },
+      },
+    );
+  }
+
   private onDimensionSelect(index: number) {
     if (index < this.levels - 1) {
       this.dimemsionViewModels[index + 1] = this.dimemsionViewModels[
@@ -215,6 +312,7 @@ export class ClusterSettings {
   }
 
   private updateDimension() {
+    if (this.levels == 0) return;
     this.vCluster.dimension = this.dimensionControls[this.levels - 1].value;
     this.vCluster.updatePalette();
     Canvas.update();

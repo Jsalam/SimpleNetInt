@@ -176,6 +176,7 @@ def environmental(id, label):
         "clusterLabel": label,
         "clusterDescription": "Environmental Indicators",
         "mapName": "Brazil_Amazon.geojson",
+        "secondaryMapName": "states.geojson",
         "bbox": bbox,
         "timestamps": ["2006", "2017"],
         "palette": {
@@ -307,6 +308,7 @@ def epidemiological(id, label):
         "clusterLabel": label,
         "clusterDescription": "Epidemiological Indicators",
         "mapName": "Brazil_Amazon.geojson",
+        "secondaryMapName": "states.geojson",
         "bbox": bbox,
         "palette": {
             "chagas": ["#d1eeee", "#00688b"],
@@ -342,6 +344,7 @@ def socioeconomic(id, label):
         "clusterLabel": label,
         "clusterDescription": "Socio-economic Indicators",
         "mapName": "Brazil_Amazon.geojson",
+        "secondaryMapName": "states.geojson",
         "bbox": bbox,
         "palette": {
             "h": ["#e6f0ff", "#e5e5e5"],
@@ -380,6 +383,7 @@ def population(id, label):
         "clusterLabel": label,
         "clusterDescription": "Population Indicators",
         "mapName": "Brazil_Amazon.geojson",
+        "secondaryMapName": "states.geojson",
         "bbox": bbox,
         "palette": {
             "rural": ["#e6f0ff", "#e5e5e5"],
