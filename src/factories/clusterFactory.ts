@@ -14,6 +14,8 @@ import { Canvas } from "../canvas/canvas";
 import { VNode } from "../visualElements/vNode";
 import { gp5 } from "../main";
 import { ClusterSettings } from "../GUI/ContextualGUIs/ClusterSettings";
+import { VSelectionCluster } from "../visualElements/vSelectionCluster";
+import { Vector } from "p5";
 
 export interface DimensionCategory {
   name: string;
@@ -50,6 +52,10 @@ export class ClusterFactory {
   // The distance between vClusters origin
   static gutter = 150;
 
+  static selectionStart: Vector | null = null;
+  static selectionEnd: Vector | null = null;
+  static nextSelectionId = 0;
+
   static makeClusters(data: ClusterInit[]) {
     ClusterFactory.initParameters();
     ClusterFactory.clusters = [];
@@ -74,7 +80,7 @@ export class ClusterFactory {
       let palette = ColorFactory.getPalette(index);
 
       // vCluster instantiation
-      let tmp;
+      let tmp: any;
       if (cluster.type === "geo") {
         tmp = new VGeoCluster(
           cluster,
@@ -117,17 +123,30 @@ export class ClusterFactory {
     this.instantiateCluster(data);
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
     let index = ClusterFactory.clusters.length - 1;
-    let tmp = new VCluster(
-      ClusterFactory.clusters[index],
-      15 + x * index,
-      10,
-      ClusterFactory.wdth,
-      ClusterFactory.hght,
-      ColorFactory.getPalette(index),
-    );
+    let tmp;
+    if (data.clusterType === "selection") {
+      tmp = new VSelectionCluster(
+        ClusterFactory.clusters[index],
+        15 + x * index,
+        10,
+        ClusterFactory.wdth,
+        ClusterFactory.hght,
+        ColorFactory.getPalette(index),
+      );
+    } else {
+      tmp = new VCluster(
+        ClusterFactory.clusters[index],
+        15 + x * index,
+        10,
+        ClusterFactory.wdth,
+        ClusterFactory.hght,
+        ColorFactory.getPalette(index),
+      );
+    }
     ClusterSettings.add(tmp);
     Canvas.subscribe(tmp);
     ClusterFactory.vClusters.push(tmp);
+    return tmp;
   }
 
   /**
@@ -297,6 +316,64 @@ export class ClusterFactory {
       }
     }
     return rtn;
+  }
+
+  static showSelectedArea() {
+    if (!this.selectionStart || !this.selectionEnd) return;
+    gp5.push();
+    gp5.stroke(255);
+    gp5.strokeWeight(4);
+    gp5.noFill();
+    gp5.rect(
+      Math.min(this.selectionEnd.x, this.selectionStart.x),
+      Math.min(this.selectionEnd.y, this.selectionStart.y),
+      Math.abs(this.selectionEnd.x - this.selectionStart.x),
+      Math.abs(this.selectionEnd.y - this.selectionStart.y),
+    );
+    gp5.pop();
+  }
+
+  static createSelection() {
+    if (!this.selectionStart || !this.selectionEnd) return;
+    const minX = Math.min(this.selectionEnd.x, this.selectionStart.x);
+    const minY = Math.min(this.selectionEnd.y, this.selectionStart.y);
+    const maxX = Math.max(this.selectionEnd.x, this.selectionStart.x);
+    const maxY = Math.max(this.selectionEnd.y, this.selectionStart.y);
+
+    const selectedVNodes: VNode[] = [];
+    this.vClusters.forEach((cluster) => {
+      cluster.vNodes.forEach((vNode) => {
+        if (
+          vNode.pos &&
+          vNode.pos.x >= minX &&
+          vNode.pos.x <= maxX &&
+          vNode.pos.y >= minY &&
+          vNode.pos.y <= maxY
+        ) {
+          selectedVNodes.push(vNode);
+        }
+      });
+    });
+
+    if (selectedVNodes.length > 0) {
+      const selectionVCluster = this.makeCluster({
+        clusterType: "selection",
+        clusterDescription: "Cluster description",
+        clusterID: "selection-" + this.nextSelectionId,
+        clusterLabel: "Selection " + this.nextSelectionId,
+        nodes: [],
+      });
+      this.nextSelectionId++;
+      selectionVCluster.boundingBox = [minX, minY, maxX - minX, maxY - minY];
+      selectionVCluster.vNodes = selectedVNodes;
+      selectionVCluster.cluster.nodes = selectedVNodes.map(
+        (vNode) => vNode.node,
+      );
+      selectedVNodes.forEach((vNode) => {
+        vNode.parentVCluster = selectionVCluster;
+      });
+    }
+    this.selectionStart = this.selectionEnd = null;
   }
 }
 

@@ -16,6 +16,7 @@ import { EdgeFactory } from "../factories/edgeFactory";
 import { VEdge } from "./vEdge";
 import { VirtualElementPool } from "./VirtualElementPool";
 import { Utilities } from "../utilities/utilities";
+import { VCluster } from "./vCluster";
 
 export interface VNodeInit {
   posX: number;
@@ -41,6 +42,8 @@ export class VNode extends Button {
   labelEl: HTMLElement | undefined;
   descriptionEl: HTMLElement | undefined;
   propagated: boolean | undefined;
+
+  parentVCluster: VCluster | null = null;
 
   constructor(node: Node, width: number, height: number) {
     super(0, 0, width, height);
@@ -162,6 +165,8 @@ export class VNode extends Button {
         }
       }
     }
+    // A VNode can handle a (mouse) event iff the mouse is over it
+    return this.mouseIsOver;
   }
 
   // Observer node

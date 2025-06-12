@@ -18,6 +18,8 @@ export class VCluster extends Button implements Observer {
   timestamp: string | undefined;
   dimension: string | undefined;
 
+  boundingBox: [number, number, number, number] = [0, 0, 0, 0];
+
   constructor(
     cluster: Cluster,
     x: number,
@@ -47,6 +49,7 @@ export class VCluster extends Button implements Observer {
     } else {
       // do something
     }
+    return false;
   }
 
   populateVNodes(cluster: Cluster) {

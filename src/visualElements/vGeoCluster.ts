@@ -738,10 +738,12 @@ export class VGeoCluster extends VCluster {
         this.updateMatrices();
         this.unprojectMousePosition();
         this.updateVNodePositions();
+        return true;
       }
     } else {
       // do something
     }
+    return false;
   }
 
   renderToBuffer(
