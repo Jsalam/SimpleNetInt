@@ -1,4 +1,7 @@
 class ClusterFactory {
+    static selectionStart = null;
+    static selectionEnd = null;
+    static nextSelectionId = 0;
 
     static makeClusters(data) {
        
@@ -54,9 +57,15 @@ class ClusterFactory {
         this.instantiateCluster(data);
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         let index = ClusterFactory.clusters.length - 1;
-        let tmp = new VCluster(ClusterFactory.clusters[index], 15 + (x * index), 10, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
+        let tmp;
+        if (data.clusterType === "selection") {
+            tmp = new VSelectionCluster(ClusterFactory.clusters[index], 15 + (x * index), 10, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
+        } else {
+            tmp = new VCluster(ClusterFactory.clusters[index], 15 + (x * index), 10, ClusterFactory.wdth, ClusterFactory.hght, ColorFactory.getPalette(index));
+        }
         Canvas.subscribe(tmp);
         ClusterFactory.vClusters.push(tmp);
+        return tmp;
     }
 
     /**
@@ -220,6 +229,56 @@ class ClusterFactory {
             }
         }
         return (rtn);
+    }
+
+    static showSelectedArea() {
+        if (this.selectionStart) {
+            gp5.push();
+            gp5.stroke(255);
+            gp5.strokeWeight(4);
+            gp5.noFill();
+            gp5.rect(
+                Math.min(this.selectionEnd.x, this.selectionStart.x),
+                Math.min(this.selectionEnd.y, this.selectionStart.y),
+                Math.abs(this.selectionEnd.x - this.selectionStart.x),
+                Math.abs(this.selectionEnd.y - this.selectionStart.y)
+            );
+            gp5.pop();
+        }
+    }
+
+    static createSelection() {
+        const minX = Math.min(this.selectionEnd.x, this.selectionStart.x);
+        const minY = Math.min(this.selectionEnd.y, this.selectionStart.y);
+        const maxX = Math.max(this.selectionEnd.x, this.selectionStart.x);
+        const maxY = Math.max(this.selectionEnd.y, this.selectionStart.y);
+
+        const selectedVNodes = [];
+        this.vClusters.forEach(cluster => {
+            cluster.vNodes.forEach((vNode) => {
+                if (vNode.pos.x >= minX && vNode.pos.x <= maxX && vNode.pos.y >= minY && vNode.pos.y <= maxY) {
+                    selectedVNodes.push(vNode);
+                }
+            })
+        })
+
+        if (selectedVNodes.length > 0) {
+            const selectionVCluster = this.makeCluster({
+                clusterType: "selection",
+                clusterDescription: "Cluster description",
+                clusterID: "selection-" + this.nextSelectionId,
+                clusterLabel: "Selection " + this.nextSelectionId,
+                nodes: []
+            });
+            this.nextSelectionId++;
+            selectionVCluster.boundingBox = [minX, minY, maxX - minX, maxY - minY];
+            selectionVCluster.vNodes = selectedVNodes;
+            selectionVCluster.cluster.nodes = selectedVNodes.map(vNode => vNode.node);
+            selectedVNodes.forEach(vNode => {
+                vNode.parentVCluster = selectionVCluster;
+            })
+        }
+        this.selectionStart = this.selectionEnd = null;
     }
 }
 

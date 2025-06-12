@@ -22,6 +22,7 @@ class VCluster extends Button{
         } else {
             // do something
         }
+        return false;
     }
 
     populateVNodes(cluster) {
