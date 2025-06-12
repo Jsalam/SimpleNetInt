@@ -7,7 +7,7 @@ import {
   createInputElement,
   createSelectElement,
   updateSelectOptions,
-} from "./DOMUtils";
+} from "../ContextualGUIs/DOMUtils";
 
 export class ClusterSettings {
   private static _container: HTMLElement | undefined;

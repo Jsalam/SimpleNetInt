@@ -10,7 +10,7 @@ import { VConnector } from "../visualElements/vConnector";
 import { Grid } from "./grid";
 import { VCluster } from "../visualElements/vCluster";
 import { VGeoCluster } from "../visualElements/vGeoCluster";
-import { ClusterSettings } from "../GUI/ContextualGUIs/ClusterSettings";
+import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
 import { ClusterFactory } from "../factories/clusterFactory";
 
 /**

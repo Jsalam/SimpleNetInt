@@ -13,7 +13,7 @@ import { TransformerInit } from "../canvas/transformer";
 import { Canvas } from "../canvas/canvas";
 import { VNode } from "../visualElements/vNode";
 import { gp5 } from "../main";
-import { ClusterSettings } from "../GUI/ContextualGUIs/ClusterSettings";
+import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
 import { VSelectionCluster } from "../visualElements/vSelectionCluster";
 import { Vector } from "p5";
 
