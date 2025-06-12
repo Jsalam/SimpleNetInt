@@ -15,6 +15,10 @@ export class VCluster extends Button implements Observer {
   cluster: Cluster;
   palette: string[];
   layout: Layout;
+  timestamp: string | undefined;
+  dimension: string | undefined;
+
+  boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
   constructor(
     cluster: Cluster,
@@ -45,6 +49,7 @@ export class VCluster extends Button implements Observer {
     } else {
       // do something
     }
+    return false;
   }
 
   populateVNodes(cluster: Cluster) {
@@ -141,6 +146,8 @@ export class VCluster extends Button implements Observer {
       renderer.text(this.cluster.label, this.pos!.x, this.pos!.y, 140);
     }
   }
+
+  updatePalette() {}
 
   getJSON() {
     let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);
