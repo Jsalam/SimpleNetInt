@@ -22,13 +22,13 @@ export class ContextualGUI {
   static _edgeMenuValue: unknown;
 
   // This constructor is not needed, but it is here because the documentation generator requires it to format the documentation
-  constructor() {}
+  constructor() { }
 
   static subscribe(obj: Observer) {
     ContextualGUI.observers.push(obj);
   }
 
-  static unsubscribe(obj: Observer) {}
+  static unsubscribe(obj: Observer) { }
 
   static notifyObservers(data: unknown) {
     for (const obs of ContextualGUI.observers) {
@@ -104,6 +104,8 @@ export class ContextualGUI {
    * The menu to toggle individual transformation spaces
    */
   static createSpacesMenu() {
+    console.log("Creating spaces menu");
+
     // Check first if this already exists
     if (!ContextualGUI.spacesMenu) {
       ContextualGUI.spacesMenu = QuickSettings.create(
@@ -114,6 +116,7 @@ export class ContextualGUI {
       );
     } else {
       ContextualGUI.clearFloatingMenu(ContextualGUI.spacesMenu);
+      //  ContextualGUI.spacesMenu.destroy();
     }
     //Switch it off is the checkbox is off
     if (!DOM.checkboxes.spacesMenu.checked) {
@@ -153,9 +156,9 @@ export class ContextualGUI {
 
   static clearFloatingMenu(menu: QuickSettingsPanel) {
     const values = menu.getValuesAsJSON(false);
-    for (const controlName of Object.keys(values)) {
-      menu.removeControl(controlName);
-    }
+     for (const controlName of Object.keys(values)) {
+       menu.removeControl(controlName);
+     }
   }
 }
 

@@ -227,14 +227,13 @@
                     <hr>
                     <h4>Node description</h4>
                     <p>Describe briefly the content of the new node. Give credits to third parties if any. </p>
-                    <textarea class="form-control" rows="3" id="catDescription">Node description</textarea>
+                    <textarea class="form-control" rows="3" id="catDescription"></textarea>
                     <hr>
 
                     </textarea>
                     <h4>Attributes</h4>
                     <p>Add attributes in comma separated "key":"value" pairs. </p>
                     <textarea class="form-control" rows="3" id="catAttributesOther">
-                    "Attribute A":"", "Attribute B":""
                     </textarea>
                     <hr>
                 </div>
@@ -321,6 +320,15 @@
     <div id="screenMessage">
         <div> Something</div>
         <div class="dot-flashing"></div>
+    </div>
+
+    <!-- Sorting lists holder -->
+    <div id="sortingListsHolder">
+        <hr>
+        <div class="title menuTitle" id="sortingListsTitle">Sorting lists</div>
+        <div id="sortingLists"></div>
+        <div class="title" id="addSortingList"></div>
+
     </div>
 
     <!-- SCRIPTS -->

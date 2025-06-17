@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./style.css";
+import "./styleSortingList.css";
 
 export const gp5 = new p5(
   main,

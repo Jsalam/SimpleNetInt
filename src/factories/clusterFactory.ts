@@ -253,6 +253,19 @@ export class ClusterFactory {
     return tmp;
   }
 
+  static getClusterByLabel(label: string) {
+    const tmp = ClusterFactory.clusters.filter((elem) => {
+      return elem.label == label;
+    })[0];
+    return tmp;
+  }
+  static getVClusterByLabel(label: string) {
+    const tmp = ClusterFactory.vClusters.filter((elem) => {
+      return elem.cluster.label == label;
+    })[0];
+    return tmp;
+  }
+
   /**
    * Retrieves all the KINDS of connectors in every cluster.
    * To get the actual connectors us the function getConnectors

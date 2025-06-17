@@ -18,6 +18,10 @@ import { TransFactory } from "../../factories/transformerFactory";
 import { ColorFactory } from "../../factories/colorFactory";
 import { Edge } from "../../graphElements/edge";
 import { VirtualElementPool } from "../../visualElements/VirtualElementPool";
+import { SortingList } from "../widgets/listWidget/sortingList";
+import { VCluster } from "../../visualElements/vCluster";
+import { SortingListFactory } from "../../factories/sortingListFactory";
+
 
 interface NetworkData {
   nodes: ClusterInit[];
@@ -46,7 +50,7 @@ export class DOM {
   static elements: Record<string, HTMLElement> = {};
 
   // This constructor is not needed, but it is here because the documentation generatior requires it to format the documentation
-  constructor() {}
+  constructor() { }
 
   /** Initializes all the GUI elements created in the HTML
    */
@@ -64,9 +68,8 @@ export class DOM {
     DOM.buttons.exportNetwork = document.getElementById("exportNetwork")!;
     DOM.buttons.importNetwork = document.getElementById("importNetwork")!;
     DOM.buttons.submitEdgeKinds = document.getElementById("submitEdgeKinds")!;
-    DOM.buttons.toggle_instructions = document.getElementById(
-      "toggle_instructions",
-    )!;
+    DOM.buttons.toggle_instructions = document.getElementById("toggle_instructions")!;
+    DOM.buttons.sortingListsTitle = document.getElementById('sortingListsTitle')!;
 
     DOM.buttons.clearEdges.onclick = (evt) => DOM.clearEdges(evt);
     DOM.buttons.submitAddClusterModal.onclick = getDataCluster;
@@ -75,6 +78,8 @@ export class DOM {
     DOM.buttons.importNetwork.onclick = getDataImport;
     DOM.buttons.submitEdgeKinds.onclick = getTextBoxContent;
     DOM.buttons.toggle_instructions.onclick = DOM.toggleInstructions;
+    DOM.buttons.sortingListsTitle.onclick = () => { DOM.toggleDisplay('addSortingList', 'flex'); DOM.toggleDisplay('sortingLists'); };
+
 
     // Checkboxes
     DOM.checkboxes.edit = document.getElementById("edit") as HTMLInputElement;
@@ -145,9 +150,7 @@ export class DOM {
       DOM.eventTriggered(evt as InputEvent);
 
     // Dropdowns
-    DOM.dropdowns.modelChoice = document.getElementById(
-      "modelChoice",
-    ) as HTMLInputElement;
+    DOM.dropdowns.modelChoice = document.getElementById("modelChoice",) as HTMLInputElement;
     DOM.dropdowns.modelChoice.addEventListener("change", (evt) => {
       DOM.switchModel(DOM.dropdowns.modelChoice.value, evt as InputEvent);
     });
@@ -163,6 +166,8 @@ export class DOM {
 
     // Elements
     DOM.elements.screenMessage = document.getElementById("screenMessage")!;
+    DOM.elements.currentFile = document.getElementById('currentFile')!;
+    DOM.elements.sortingLists = document.getElementById('sortingLists')!;
 
     // Get the current status of checkboxes
     DOM.createNativeCurrentCheckboxes();
@@ -310,10 +315,15 @@ export class DOM {
 
     console.log("Switching to " + value + " network");
 
+    const selectElem = DOM.dropdowns.modelChoice as unknown as HTMLSelectElement;
+
+    DOM.elements.currentFile.innerText = "Current Model: " + selectElem.options[Number(value)].innerHTML;
+
     gp5.loadJSON(
       DOM.pathNetworks + value + "_network.json",
       (data: NetworkData) => {
         DOM.onLoadNetwork(data, evt);
+        DOM.createSortingList();
       },
     );
   }
@@ -460,7 +470,7 @@ export class DOM {
   }
 
   /**
-   * Adds a children with a given id into a DOM element
+   * Checks if a child with the given id exists in the list of children of a DOM element
    * @param {string} id the id of the new element
    * @param {object} list a DOM element
    */
@@ -507,6 +517,53 @@ export class DOM {
     } else e.style.opacity = "1";
   }
 
+  static toggleDisplay(id: string, display: string = "block") {
+    let e = document.getElementById(id)!;
+    if (e.style.display == "none" || e.style.display == "") {
+      e.style.display = display;
+    } else {
+      e.style.display = "none";
+    }
+  }
+
+  /**
+   * Method used in the  DOM.switchModel() to create a sorting list after the network is loaded.
+   * It creates a dropdown with the current cluster labels and adds an event listener to it.
+   * When a cluster is selected, it creates a SortingList with the vNodes of that cluster and appends it to the sorting lists container.
+   * The sorting list is not displayed by default 
+   * */
+  static createSortingList(width: number = window.innerWidth - 200, height: number = 300) {
+
+    // Create an array with the current cluster labels
+    const clusterLabels = ClusterFactory.clusters.map(cluster => cluster.label ?? "");
+
+    // Create a dropdown (select) element with the cluster labels
+    let dropdown: HTMLSelectElement = DOM.createDropdown(clusterLabels, 'Add sorted list', 'sorting_dropdown', 'clusterLabelsDropdown');
+
+    // Add an event listener to the dropdown
+    dropdown.addEventListener("change", (evt) => {
+
+      // get the selected value
+      let selectedValue = (evt.target as HTMLSelectElement).value;
+
+      // get a SortingList from the factory
+      let list = SortingListFactory.getListByLabel(selectedValue);
+
+      console.log(list.label+" "+list.id)
+
+      // append the sorting list to the sorting lists container above the dropwown
+      DOM.elements.sortingLists.insertBefore(list.makeChart(selectedValue + " >"), dropdown);
+
+      // Reset the dropdown to the first option
+      dropdown.selectedIndex = 0;
+    });
+
+    // Append the dropdown to the sorting lists container
+    DOM.elements.sortingLists.appendChild(dropdown);
+
+  }
+
+
   static resetEdgeContextualMenuInputContent(val: { toString(): string }) {
     DOM.textboxes.edgeKinds.value = val.toString();
   }
@@ -520,6 +577,34 @@ export class DOM {
     );
   }
 
+  /**
+   * Creates a dropdown (select) HTML element from an array of strings.
+   * @param {string[]} options - The array of option strings.
+   * @param {string} [id] - Optional id for the select element.
+   * @returns {HTMLSelectElement} The dropdown menu element.
+   */
+  static createDropdown(options: string[], title: string = 'Drop', className?: string, id?: string): HTMLSelectElement {
+    const select = document.createElement("select");
+    if (className) select.className = className;
+    if (id) select.id = id;
+
+    // Add the title as a non-selectable option
+    const titleOption = document.createElement("option");
+    titleOption.text = title;
+    titleOption.value = "";
+    titleOption.disabled = true;
+    titleOption.selected = true;
+    select.appendChild(titleOption);
+
+    for (const optionText of options) {
+      const option = document.createElement("option");
+      option.value = optionText;
+      option.text = optionText;
+      select.appendChild(option);
+    }
+    return select;
+  }
+
   static reset() {
     // keep only the GUI native object in the currentCheckboxes array
     DOM.resetCheckboxes();
@@ -527,5 +612,10 @@ export class DOM {
     DOM.resetEdgeContextualMenuInputContent("default");
     // remove all children from Filters dropdown in the GUI bar
     DOM.removeChildrenOf(DOM.lists.filtersB);
+    // reset the sorting lists
+    const holder = DOM.elements.sortingLists;
+    while (holder.children.length > 0) {
+      holder.removeChild(holder.lastChild!);
+    }
   }
 }

@@ -9,6 +9,7 @@ import { Cluster } from "../graphElements/cluster";
 import { ColorFactory } from "../factories/colorFactory";
 import { Canvas } from "../canvas/canvas";
 import { Node } from "../graphElements/node";
+import { SortingList } from "../GUI/widgets/listWidget/sortingList";
 
 export class VCluster extends Button implements Observer {
   vNodes: VNode[];
@@ -28,10 +29,12 @@ export class VCluster extends Button implements Observer {
     this.vNodes = [];
     this.cluster = cluster;
     this.palette = palette;
+
     // instantiate a layout
     this.layout = new Layout();
     this.populateVNodes(cluster);
-    //   this.setPalette();
+    this.layout.subscribeVNodes(this.vNodes);
+
     // instantiate a tranformer for this vCluster
     TransFactory.initTransformer(this);
   }
@@ -79,7 +82,6 @@ export class VCluster extends Button implements Observer {
       // add to colecction
       this.addVNode(vNodeTemp!, node.importedVNodeData!);
     }
-    this.layout.subscribeVNodes(this.vNodes);
   }
 
   addVNode(
@@ -140,6 +142,8 @@ export class VCluster extends Button implements Observer {
       renderer.textLeading(12);
       renderer.text(this.cluster.label, this.pos!.x, this.pos!.y, 140);
     }
+
+
   }
 
   getJSON() {

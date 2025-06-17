@@ -15,7 +15,6 @@ export function getData() {
     .value;
 
   if (cluster) {
-    console.log(cluster);
     // get the cluster object
     let clusterTmp = ClusterFactory.clusters[parseInt(cluster.value)];
     // format string
@@ -44,6 +43,8 @@ export function getData() {
         vNodeTmp.addVConnector(nodeTmp.connectors[0]);
       }
     }
+    
+    vClustTmp.sortingList!.addItem(vNodeTmp);
 
     // add to collections
     clusterTmp.addNode(nodeTmp);
