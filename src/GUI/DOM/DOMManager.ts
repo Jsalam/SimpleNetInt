@@ -18,7 +18,7 @@ import { TransFactory } from "../../factories/transformerFactory";
 import { ColorFactory } from "../../factories/colorFactory";
 import { Edge } from "../../graphElements/edge";
 import { VirtualElementPool } from "../../visualElements/VirtualElementPool";
-import { SortingList } from "../widgets/listWidget/sortingList";
+import { SortingWidget } from "../widgets/listWidget/sortingWidget";
 import { VCluster } from "../../visualElements/vCluster";
 import { SortingListFactory } from "../../factories/sortingListFactory";
 
@@ -69,7 +69,7 @@ export class DOM {
     DOM.buttons.importNetwork = document.getElementById("importNetwork")!;
     DOM.buttons.submitEdgeKinds = document.getElementById("submitEdgeKinds")!;
     DOM.buttons.toggle_instructions = document.getElementById("toggle_instructions")!;
-    DOM.buttons.sortingListsTitle = document.getElementById('sortingListsTitle')!;
+    DOM.buttons.sortingWidgetsTitle = document.getElementById('sortingWidgetsTitle')!;
 
     DOM.buttons.clearEdges.onclick = (evt) => DOM.clearEdges(evt);
     DOM.buttons.submitAddClusterModal.onclick = getDataCluster;
@@ -78,7 +78,7 @@ export class DOM {
     DOM.buttons.importNetwork.onclick = getDataImport;
     DOM.buttons.submitEdgeKinds.onclick = getTextBoxContent;
     DOM.buttons.toggle_instructions.onclick = DOM.toggleInstructions;
-    DOM.buttons.sortingListsTitle.onclick = () => { DOM.toggleDisplay('addSortingList', 'flex'); DOM.toggleDisplay('sortingLists'); };
+    DOM.buttons.sortingWidgetsTitle.onclick = () => { DOM.toggleDisplay('addSortingWidget', 'flex'); DOM.toggleDisplay('sortingWidgets'); };
 
 
     // Checkboxes
@@ -167,7 +167,7 @@ export class DOM {
     // Elements
     DOM.elements.screenMessage = document.getElementById("screenMessage")!;
     DOM.elements.currentFile = document.getElementById('currentFile')!;
-    DOM.elements.sortingLists = document.getElementById('sortingLists')!;
+    DOM.elements.sortingWidgets = document.getElementById('sortingWidgets')!;
 
     // Get the current status of checkboxes
     DOM.createNativeCurrentCheckboxes();
@@ -323,7 +323,7 @@ export class DOM {
       DOM.pathNetworks + value + "_network.json",
       (data: NetworkData) => {
         DOM.onLoadNetwork(data, evt);
-        DOM.createSortingList();
+        DOM.createSortingWidget();
       },
     );
   }
@@ -529,10 +529,10 @@ export class DOM {
   /**
    * Method used in the  DOM.switchModel() to create a sorting list after the network is loaded.
    * It creates a dropdown with the current cluster labels and adds an event listener to it.
-   * When a cluster is selected, it creates a SortingList with the vNodes of that cluster and appends it to the sorting lists container.
+   * When a cluster is selected, it creates a SortingWidget with the vNodes of that cluster and appends it to the sorting lists container.
    * The sorting list is not displayed by default 
    * */
-  static createSortingList(width: number = window.innerWidth - 200, height: number = 300) {
+  static createSortingWidget(width: number = window.innerWidth - 200, height: number = 300) {
 
     // Create an array with the current cluster labels
     const clusterLabels = ClusterFactory.clusters.map(cluster => cluster.label ?? "");
@@ -543,23 +543,30 @@ export class DOM {
     // Add an event listener to the dropdown
     dropdown.addEventListener("change", (evt) => {
 
+      let target = evt.target as HTMLSelectElement;
+
       // get the selected value
-      let selectedValue = (evt.target as HTMLSelectElement).value;
+      let selectedValue = target.value;
+      let parent = target.parentElement;
 
-      // get a SortingList from the factory
-      let list = SortingListFactory.getListByLabel(selectedValue);
+      console.log("Selected cluster: " + selectedValue);
+      console.log(evt);
 
-      console.log(list.label+" "+list.id)
+      // get a SortingWidget from the factory
+      let widget = SortingListFactory.makeSortingWidget(selectedValue);
 
-      // append the sorting list to the sorting lists container above the dropwown
-      DOM.elements.sortingLists.insertBefore(list.makeChart(selectedValue + " >"), dropdown);
+      if (widget !== undefined) {
+
+        // append the sorting list to the sorting lists container above the dropwown
+        DOM.elements.sortingWidgets.insertBefore(widget.makeChart(selectedValue + " >"), dropdown);
+      }
 
       // Reset the dropdown to the first option
       dropdown.selectedIndex = 0;
     });
 
-    // Append the dropdown to the sorting lists container
-    DOM.elements.sortingLists.appendChild(dropdown);
+    // Append the dropdown to the sorting widget container
+    DOM.elements.sortingWidgets.appendChild(dropdown);
 
   }
 
@@ -613,7 +620,7 @@ export class DOM {
     // remove all children from Filters dropdown in the GUI bar
     DOM.removeChildrenOf(DOM.lists.filtersB);
     // reset the sorting lists
-    const holder = DOM.elements.sortingLists;
+    const holder = DOM.elements.sortingWidgets;
     while (holder.children.length > 0) {
       holder.removeChild(holder.lastChild!);
     }

@@ -9,7 +9,7 @@ import { Cluster } from "../graphElements/cluster";
 import { ColorFactory } from "../factories/colorFactory";
 import { Canvas } from "../canvas/canvas";
 import { Node } from "../graphElements/node";
-import { SortingList } from "../GUI/widgets/listWidget/sortingList";
+import { SortingWidget } from "../GUI/widgets/listWidget/sortingWidget";
 
 export class VCluster extends Button implements Observer {
   vNodes: VNode[];

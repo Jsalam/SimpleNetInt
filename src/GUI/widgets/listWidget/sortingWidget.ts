@@ -6,11 +6,12 @@
 import { VNode } from '../../../visualElements/vNode';
 import { quickSort } from '../../../utilities/quicksort';
 import { Item } from './item';
-import { DOM } from '../../../GUI/DOM/DOMManager';
+import { DOM } from '../../DOM/DOMManager';
 import { Comparator } from "../../../utilities/comparator";
+import { ItemList } from './itemList';
 
-export class SortingList {
-    items: Item[];
+export class SortingWidget {
+    itemList: ItemList | undefined;
     width: number;
     height: number;
     label: string;
@@ -20,33 +21,44 @@ export class SortingList {
     sortingAttributes: string[] = [];
 
     // constructor
-    constructor(items:Item[], label: string,  width?: number, height?: number) {
-        this.items = items;
-        width? this.width = width : this.width = window.innerWidth - 200; // Default width if not provided
-        height? this.height = height : this.height = 150; // Default height if not provided
+    constructor(label: string, width?: number, height?: number) {
+        this.itemList;
+        width ? this.width = width : this.width = window.innerWidth - 200; // Default width if not provided
+        height ? this.height = height : this.height = 150; // Default height if not provided
         this.label = label;
         this.id = `${this.label.replace(/\s+/g, '_')}_${Date.now()}`;
 
         // Set the sorting chart limits before creating the chart
         this.minValue = undefined;
         this.maxValue = undefined;
-        this.setValueLimits(this.items); // Set the limits for the chart
     }
 
-      subscribe(list: Item[]) {
-        this.items = list;
-      }
+    subscribe(itemList: ItemList) {
+        this.itemList = itemList;
+
+        // Update the value limits
+        this.setValueLimits(this.itemList.items);
+    }
+
+    /**
+     * This method is used to notify the sorting list about changes in the item list
+     * @param obj the object to notify the sorting list about
+     */
+    fromItemList(obj: any) {
+
+        if (obj instanceof Item) {
+            this.updateVisuals(); // Add the item to the sorting list
+        }
+    }
 
     /** 
      * This method is used mainly by the getData() function in the addNodeModalForm file
     */
-    addItem(vNode: VNode) {
-        let item = new Item(vNode);
-        this.items.push(item);
+    updateVisuals() {
         // Update the value limits
-        this.setValueLimits(this.items); // Set the limits for the chart
+        this.setValueLimits(this.itemList!.items); // Set the limits for the chart
         // get the chart element by its ID and replace it with a new chart
-        let tmpDIV = DOM.elements.sortingLists.querySelectorAll('#' + this.id)[0] as HTMLElement;
+        let tmpDIV = DOM.elements.sortingWidgets.querySelectorAll('#' + this.id)[0] as HTMLElement;
         // Replace the old chart with the new one
         tmpDIV.replaceWith(this.makeChart(this.label + " | value")); // Replace the old chart with the new one
     }
@@ -60,8 +72,8 @@ export class SortingList {
      */
     private getSortingAttributes() {
         let attributes: string[] = [];
-        for (let i = 0; i < this.items.length; i++) {
-            let vNode = this.items[i].vNode;
+        for (let i = 0; i < this.itemList!.items.length; i++) {
+            let vNode = this.itemList!.items[i].vNode;
             let topKeys: string[] = vNode.node.attributes ? Object.keys(vNode.node.attributes) : [];
             // push the topkeys to the attributes array if they are not already included
             if (vNode.node.attributes) {
@@ -79,20 +91,6 @@ export class SortingList {
             }
         }
         return attributes;
-    }
-
-    /**
-     * 
-     * @param vNodes @deprecated
-     * @returns 
-     */
-    private makeItems(vNodes: VNode[]) {
-        let items: Item[] = [];
-        for (let i = 0; i < vNodes.length; i++) {
-            let item = new Item(vNodes[i]);
-            items.push(item);
-        }
-        return items;
     }
 
     makeChart(labelNew?: string) {
@@ -130,14 +128,14 @@ export class SortingList {
         svg.setAttribute('height', this.height.toString());
 
         // Add groups to the SVG for each item in the array
-        let xStep = this.width / this.items.length;
+        let xStep = this.width / this.itemList!.items.length;
         let yPos = this.height / 2;
         let groupContainer = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         groupContainer.setAttribute('class', 'itemsContainer'); // Replace spaces with underscores for valid ID
 
-        for (let i = 0; i < this.items.length; i++) {
+        for (let i = 0; i < this.itemList!.items.length; i++) {
             // Create a group for each item
-            let group = this.items[i].getBarGroup(xStep, yPos, i, this.minValue!, this.maxValue!); // Create a group for each item
+            let group = this.itemList!.items[i].getBarGroup(xStep, yPos, i, this.minValue!, this.maxValue!); // Create a group for each item
             groupContainer.appendChild(group);
         }
         svg.appendChild(groupContainer); // Add the group container to the SVG
@@ -209,13 +207,13 @@ export class SortingList {
             let comparator = Comparator.staticMethodNames[0] //; console.log("Comparators available: " + comparators);
 
             //sort the array and make a new chart
-            quickSort(this.items, 0, this.items.length - 1, comparator, "value"); // Sort the items based on the selected criteria
+            quickSort(this.itemList!.items, 0, this.itemList!.items.length - 1, comparator, "value"); // Sort the items based on the selected criteria
 
             // get the chart element by its ID and replace it with a new chart
-            let tmpDIV = DOM.elements.sortingLists.querySelectorAll('#' + this.id)[0] as HTMLElement;
+            let tmpDIV = DOM.elements.sortingWidgets.querySelectorAll('#' + this.id)[0] as HTMLElement;
 
             // Replace the old chart with the new one
-            tmpDIV.children[1].replaceWith(this.makeSVG()); 
+            tmpDIV.children[1].replaceWith(this.makeSVG());
         });
     }
 }

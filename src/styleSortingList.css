@@ -1,6 +1,6 @@
  /* SORTING LISTS*/
 
- #sortingListsHolder {
+ #sortingWidgetsHolder {
      position: absolute;
      bottom: 0px;
      left: 5vw;
@@ -9,25 +9,25 @@
      background-color: rgba(50, 55, 55, 0.95);
  }
 
- #sortingListsTitle {
+ #sortingWidgetsTitle {
      color: rgb(158, 175, 1);
      margin-bottom: 5px;
  }
 
- #sortingListsTitle:hover {
+ #sortingWidgetsTitle:hover {
      background-color: rgba(90, 98, 20, 0.2);
  }
 
- #sortingLists {
+ #sortingWidgets {
      display: none
  }
 
- #addSortingList {
+ #addSortingWidget {
      display: none;
      gap: 1em;
  }
 
- #addSortingList:hover {
+ #addSortingWidget:hover {
      background-color: rgba(90, 98, 20, 0.4);
  }
 

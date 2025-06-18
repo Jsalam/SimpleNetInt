@@ -44,7 +44,7 @@ export function getData() {
       }
     }
     
-    vClustTmp.sortingList!.addItem(vNodeTmp);
+    vClustTmp.sortingWidget!.addItem(vNodeTmp);
 
     // add to collections
     clusterTmp.addNode(nodeTmp);
