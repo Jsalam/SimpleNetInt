@@ -1,17 +1,21 @@
 
 /**
- * Get a list of nodes to be sorted. This is achieved by accessing the nodes included in a cluster. Thus, we need to
- * reach the ClusterFactory, ask for one of clusters, and then get the nodes from that cluster. 
+ * @name SortingWidget class
+ * @description This class is used to create a sorting widget that displays a chart of items that can be sorted based on their attributes.
+ * It provides methods to create the chart, update the visuals, and set value limits for the items.
+ * It also includes methods to handle user interactions, such as selecting sorting attributes from a dropdown menu.
+ * The chart is created using SVG elements and can be updated dynamically based on user input.
+ * The sorting widget can be used to visualize and sort items based on their attributes, making it a useful tool for data analysis and visualization.
+ * @author Juan Salamanca
+ * @version 1.0.0
  */
-import { VNode } from '../../../visualElements/vNode';
 import { quickSort } from '../../../utilities/quicksort';
 import { Item } from './item';
 import { DOM } from '../../DOM/DOMManager';
 import { Comparator } from "../../../utilities/comparator";
-import { ItemList } from './itemList';
 
 export class SortingWidget {
-    itemList: ItemList | undefined;
+    items: Item[]; // The items to be sorted in the chart
     width: number;
     height: number;
     label: string;
@@ -21,10 +25,10 @@ export class SortingWidget {
     sortingAttributes: string[] = [];
 
     // constructor
-    constructor(label: string, width?: number, height?: number) {
-        this.itemList;
+    constructor(items: Item[], label: string, width?: number, height?: number) {
+        this.items = items;
         width ? this.width = width : this.width = window.innerWidth - 200; // Default width if not provided
-        height ? this.height = height : this.height = 150; // Default height if not provided
+        height ? this.height = height : this.height = 70; // Default height if not provided
         this.label = label;
         this.id = `${this.label.replace(/\s+/g, '_')}_${Date.now()}`;
 
@@ -33,34 +37,21 @@ export class SortingWidget {
         this.maxValue = undefined;
     }
 
-    subscribe(itemList: ItemList) {
-        this.itemList = itemList;
-
-        // Update the value limits
-        this.setValueLimits(this.itemList.items);
-    }
-
-    /**
-     * This method is used to notify the sorting list about changes in the item list
-     * @param obj the object to notify the sorting list about
-     */
-    fromItemList(obj: any) {
-
-        if (obj instanceof Item) {
-            this.updateVisuals(); // Add the item to the sorting list
-        }
-    }
-
     /** 
      * This method is used mainly by the getData() function in the addNodeModalForm file
     */
     updateVisuals() {
         // Update the value limits
-        this.setValueLimits(this.itemList!.items); // Set the limits for the chart
+        this.setValueLimits(this.items); // Set the limits for the chart
         // get the chart element by its ID and replace it with a new chart
-        let tmpDIV = DOM.elements.sortingWidgets.querySelectorAll('#' + this.id)[0] as HTMLElement;
+        let tmpElement = DOM.elements.sortingWidgets.querySelectorAll('#' + this.id)[0] as HTMLElement;
         // Replace the old chart with the new one
-        tmpDIV.replaceWith(this.makeChart(this.label + " | value")); // Replace the old chart with the new one
+        let replacement = this.makeChart(this.label + " | value"); // Create a new chart with the updated items
+       // tmpElement.innerHTML = ''; // Clear the old chart
+        tmpElement.appendChild(replacement); // Append the new chart to the old chart element
+      //  tmpElement.replaceWith(replacement); // Replace the old chart with the new one
+
+        console.log(replacement)
     }
 
     /**
@@ -72,8 +63,8 @@ export class SortingWidget {
      */
     private getSortingAttributes() {
         let attributes: string[] = [];
-        for (let i = 0; i < this.itemList!.items.length; i++) {
-            let vNode = this.itemList!.items[i].vNode;
+        for (let i = 0; i < this.items.length; i++) {
+            let vNode = this.items[i].vNode;
             let topKeys: string[] = vNode.node.attributes ? Object.keys(vNode.node.attributes) : [];
             // push the topkeys to the attributes array if they are not already included
             if (vNode.node.attributes) {
@@ -94,6 +85,7 @@ export class SortingWidget {
     }
 
     makeChart(labelNew?: string) {
+        this.setValueLimits(this.items); // Set the limits for the chart
         //the container element
         let chart = document.createElement('div');
         chart.setAttribute('id', this.id); // Replace spaces with underscores for valid ID
@@ -128,14 +120,14 @@ export class SortingWidget {
         svg.setAttribute('height', this.height.toString());
 
         // Add groups to the SVG for each item in the array
-        let xStep = this.width / this.itemList!.items.length;
+        let xStep = this.width / this.items.length;
         let yPos = this.height / 2;
         let groupContainer = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         groupContainer.setAttribute('class', 'itemsContainer'); // Replace spaces with underscores for valid ID
 
-        for (let i = 0; i < this.itemList!.items.length; i++) {
+        for (let i = 0; i < this.items.length; i++) {
             // Create a group for each item
-            let group = this.itemList!.items[i].getBarGroup(xStep, yPos, i, this.minValue!, this.maxValue!); // Create a group for each item
+            let group = this.items[i].makeBarGroup(xStep, yPos, i, this.minValue!, this.maxValue!); // Create a group for each item
             groupContainer.appendChild(group);
         }
         svg.appendChild(groupContainer); // Add the group container to the SVG
@@ -168,8 +160,23 @@ export class SortingWidget {
      * This method iterates through the items and sets the minimum and maximum values based on their values.
      */
     private setValueLimits(items: Item[]) {
+        this.minValue = undefined;
+        this.maxValue = undefined;
+        /**
+         * WHEN THE CASE IS ABOUT STRINGS, THE MIN AND MAX VALUES ARE SET TO THE LENGTH OF THE STRING
+         * WHEN THE CASE IS ABOUT NUMBERS, THE MIN AND MAX VALUES ARE SET TO THE NUMBER ITSELF
+         * THIS IS A TEMPORARY SOLUTION, AND IT SHOULD BE REPLACED WITH A BETTER SOLUTION IN THE FUTURE
+         * THIS IS BECAUSE THE ITEMS CAN HAVE DIFFERENT TYPES OF VALUES, AND WE NEED TO HANDLE THEM PROPERLY
+         */
         for (let item of items) {
             let value = item.getValue();
+            // Check if value can be casted as a number
+            if (!isNaN(Number(value))) {
+                value = Number(value);
+            } 
+            // else if (value instanceof  String) {
+            //     value = value.length; // Use the length of the string as the value if it is not a number
+            // }
             if (this.minValue === undefined || value < this.minValue) {
                 this.minValue = value;
             }
@@ -180,40 +187,80 @@ export class SortingWidget {
         //  console.warn("The limits of list " + this.label + " changed to Min value: " + this.minValue + ", Max value: " + this.maxValue);
     }
 
+    /**
+ *   This method adds a new item to the item list.
+ *   It creates a new Item instance from the provided VNode and adds it to the items array.
+ *   It also notifies all subscribed widgets about the new item.
+ * @param vNode the VNode to create an Item from
+ * @returns void
+ */
+    addItem(item: Item) {
+        this.items.push(item);
+        this.updateVisuals(); // Update the visuals after adding the item
+        this.setValueLimits(this.items); // Update the value limits after adding the item
+    }
+
     /********** LISTENERS *************/
     /**
-     * @param element 
+     * @param dropdown 
      */
-    private addListener(element: HTMLSelectElement) {
+    private addListener(dropdown: HTMLSelectElement) {
 
-        element.addEventListener('change', (event: Event) => {
+        dropdown.addEventListener('change', (event: Event) => {
 
             // get the selected value
             let target = (event.target as HTMLSelectElement);
             let selectedValue = target.value; // Get the selected value from the dropdown
-
-            // Set the dropdown's selected option to the user's selection
-            element.value = selectedValue;
+            let comparatorName: string = 'compareAlphabetically'; // Default comparator
 
             /**
-             * Here you need to determine the comparator based on the selected value.
-             * First, you need to determine if the selected attribute can be casted to a number or not.
-             * If it can be casted to a number, you can use the numeric comparator.
-             * If it cannot be casted to a number, you can use the string comparator.
-             * You can use the Comparator class to get the appropriate comparator based on the selected value.
+             * I made an assumption that the items in the list have a vNode whose attribute names are 
+             * all the same across the vNodes. That is why I am using the first item in the list to get 
+             * the attributes.
              */
+            for (let item of this.items) {
+                // Access the attribute value from the vNode using the selectedValue as the key
+                const node = item.vNode.node;
+                let attrValue = undefined;
+                if (node.attributes) {
+                    for (const key of Object.keys(node.attributes)) {
+                        const nestedAttrs = (node.attributes as Record<string, any>)[key];
 
-            // get the right comparator for the value
-            let comparator = Comparator.staticMethodNames[0] //; console.log("Comparators available: " + comparators);
+                        // Check if the selectedValue exists in the nested attributes
+                        if (nestedAttrs && selectedValue in nestedAttrs) {
+                            attrValue = nestedAttrs[selectedValue];
+                            break;
+                        }
+                    }
+                }
+
+                if (attrValue !== undefined) {
+                    item.value = NaN; // Reset the value to 0 before assigning a new value
+
+                    console.log(`Item ${item.label} in ${selectedValue} has value: ${attrValue}`);
+                    // Determine if attrValue can be casted to a number
+                    if (!isNaN(Number(attrValue))) {
+                         console.log('before ='+ item.value);
+                        item.value = Number(attrValue);
+                        console.log('after ='+item.value);
+                        // Use the numeric comparator if attrValue is a number
+                        comparatorName = "compareValue";
+                    } else {
+                        item.value = attrValue                        
+                        // Otherwise, use the alphabetical comparator
+                        comparatorName = 'compareAlphabetically';
+                    }
+                }
+            }
+
+            console.log("Sorting items by: " + selectedValue + " using comparator: " + comparatorName);
 
             //sort the array and make a new chart
-            quickSort(this.itemList!.items, 0, this.itemList!.items.length - 1, comparator, "value"); // Sort the items based on the selected criteria
+            quickSort(this.items, 0, this.items.length - 1, comparatorName, "value"); // Sort the items based on the selected criteria
 
-            // get the chart element by its ID and replace it with a new chart
-            let tmpDIV = DOM.elements.sortingWidgets.querySelectorAll('#' + this.id)[0] as HTMLElement;
+            this.updateVisuals()
 
-            // Replace the old chart with the new one
-            tmpDIV.children[1].replaceWith(this.makeSVG());
+            console.log(this.minValue + " " + this.maxValue);
         });
     }
 }

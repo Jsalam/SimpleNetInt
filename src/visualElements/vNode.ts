@@ -15,7 +15,7 @@ import { Transformer } from "../canvas/transformer";
 import { EdgeFactory } from "../factories/edgeFactory";
 import { VEdge } from "./vEdge";
 import { VirtualElementPool } from "./VirtualElementPool";
-import { Utilities } from "../utilities/utilities";
+import { Item } from "../GUI/widgets/listWidget/item";
 
 export interface VNodeInit {
   posX: number;
@@ -41,6 +41,7 @@ export class VNode extends Button {
   labelEl: HTMLElement | undefined;
   descriptionEl: HTMLElement | undefined;
   propagated: boolean | undefined;
+  observerListItems: Item[];
 
   constructor(node: Node, width: number, height: number) {
     super(0, 0, width, height);
@@ -60,13 +61,16 @@ export class VNode extends Button {
     this.keyD_Down = false; // deletion
     // *** TRANSFORMATIONS ***
     this.tr;
+    // *** SORTING LIST ***
+    this.observerListItems = [];
   }
 
-  subscribe(obj: VConnector) {
+  subscribe(obj: any) {
     if (obj instanceof VConnector) this.vConnectors.push(obj);
+    if (obj instanceof Item) this.observerListItems.push(obj)
   }
 
-  unsubscribe(obj: VConnector) {
+  unsubscribe(obj: any) {
     console.log(obj);
     this.vConnectors = this.vConnectors.filter(function (subscriber) {
       let rtn = true;
@@ -76,7 +80,7 @@ export class VNode extends Button {
           rtn = false;
           console.log(
             "unsubscribed vConnector " +
-              JSON.stringify(subscriber.connector.id),
+            JSON.stringify(subscriber.connector.id),
           );
         }
       }
@@ -92,6 +96,7 @@ export class VNode extends Button {
 
   notifyObservers(data: CustomEvent) {
     this.vConnectors.forEach((observer) => observer.fromVNode(data));
+    this.observerListItems.forEach((observer) => observer.fromVNode(data));
   }
 
   removeVConnector(conn: Connector) {
@@ -117,7 +122,7 @@ export class VNode extends Button {
     // MouseEvents
     if (data.event instanceof MouseEvent) {
       if (data.type == "mouseclick") {
-        this.mouseClickedEvents();
+        this.mouseClickedEvents(data);
       }
       if (data.type == "mouseup") {
       }
@@ -322,7 +327,7 @@ export class VNode extends Button {
       renderer.fill(fillColors.fill);
       renderer.stroke(this.strokeColor!);
       renderer.strokeWeight(strokeWeight);
-      
+
       // draw shape
       renderer.ellipseMode(gp5.CENTER);
 
@@ -361,8 +366,10 @@ export class VNode extends Button {
         // show node description
         if (this.mouseIsOver) {
           this._showDescription(newPos);
+          this.notifyObservers({ event: new MouseEvent("mouseover"), type: 'mouseIsOver', pos: newPos} as CustomEvent); 
         } else {
           this._hideDescription();
+          this.notifyObservers({ event: new MouseEvent("mouseout"), type: 'mouseIsOut', pos: newPos} as CustomEvent); 
         }
       } else {
         this._hideLabel();
@@ -781,7 +788,7 @@ export class VNode extends Button {
     }
   }
 
-  mouseClickedEvents() {
+  mouseClickedEvents(data: CustomEvent) {
     /** Note: this.dragged is true at the slightest drag motion. Sometimes
      * this is imperceptible thus the click behavior of vNodes is not as
      * responsive as it should, but it is highly accurate ;-)

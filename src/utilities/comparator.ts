@@ -44,10 +44,10 @@ export class Comparator {
      * @param other - The second item to compare (a string).
      * @returns {number} - Returns -1 if the first item comes before the second item alphabetically, 1 if it comes after, and 0 if they are equal.
      */
-    static  compareAlphabetically(item: string, other: string): number {
-        if (item.localeCompare(other) < 0) {
+    static  compareAlphabetically(word: string, other: string): number {
+        if (word.localeCompare(other) < 0) {
             return -1; // Return true if this word comes before the other word alphabetically
-        } else if (item.localeCompare(other) > 0) {
+        } else if (word.localeCompare(other) > 0) {
             return 1; // Return true if this word comes after the other word alphabetically
         }
         return 0; // Return 0 if both words are equal

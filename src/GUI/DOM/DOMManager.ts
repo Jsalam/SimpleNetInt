@@ -527,10 +527,9 @@ export class DOM {
   }
 
   /**
-   * Method used in the  DOM.switchModel() to create a sorting list after the network is loaded.
-   * It creates a dropdown with the current cluster labels and adds an event listener to it.
-   * When a cluster is selected, it creates a SortingWidget with the vNodes of that cluster and appends it to the sorting lists container.
-   * The sorting list is not displayed by default 
+   * Method used in the  DOM.switchModel() to create a dropdown menu of space names(cluster names) 
+   * after the network is loaded and adds an event listener to it.
+   * The sorting list is not displayed by default (display:none) and is only displayed when the user opens the "Sorting lists" tab 
    * */
   static createSortingWidget(width: number = window.innerWidth - 200, height: number = 300) {
 
@@ -538,7 +537,7 @@ export class DOM {
     const clusterLabels = ClusterFactory.clusters.map(cluster => cluster.label ?? "");
 
     // Create a dropdown (select) element with the cluster labels
-    let dropdown: HTMLSelectElement = DOM.createDropdown(clusterLabels, 'Add sorted list', 'sorting_dropdown', 'clusterLabelsDropdown');
+    let dropdown: HTMLSelectElement = DOM.createDropdown(clusterLabels, 'Add sorting list', 'sorting_dropdown', 'clusterLabelsDropdown');
 
     // Add an event listener to the dropdown
     dropdown.addEventListener("change", (evt) => {
@@ -547,10 +546,10 @@ export class DOM {
 
       // get the selected value
       let selectedValue = target.value;
-      let parent = target.parentElement;
+      // let parent = target.parentElement;
 
-      console.log("Selected cluster: " + selectedValue);
-      console.log(evt);
+      // console.log("Selected cluster: " + selectedValue);
+      // console.log(evt);
 
       // get a SortingWidget from the factory
       let widget = SortingListFactory.makeSortingWidget(selectedValue);
@@ -620,6 +619,7 @@ export class DOM {
     // remove all children from Filters dropdown in the GUI bar
     DOM.removeChildrenOf(DOM.lists.filtersB);
     // reset the sorting lists
+    DOM.toggleDisplay('addSortingWidget', 'flex'); DOM.toggleDisplay('sortingWidgets');
     const holder = DOM.elements.sortingWidgets;
     while (holder.children.length > 0) {
       holder.removeChild(holder.lastChild!);
