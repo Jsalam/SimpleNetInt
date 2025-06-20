@@ -10,6 +10,8 @@ import { VConnector } from "../visualElements/vConnector";
 import { Grid } from "./grid";
 import { VCluster } from "../visualElements/vCluster";
 import { VGeoCluster } from "../visualElements/vGeoCluster";
+import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
+import { ClusterFactory } from "../factories/clusterFactory";
 
 /**
  * Adaptation of NetInt Canvas class
@@ -126,7 +128,13 @@ export class Canvas {
   }
 
   static notifyObservers(data: unknown) {
-    this.observers.forEach((observer) => observer.fromCanvas?.(data));
+    let handled = false;
+    this.observers.forEach((observer) => {
+      if (observer.fromCanvas?.(data)) {
+        handled = true;
+      }
+    });
+    return handled;
   }
 
   static resetObservers() {
@@ -180,6 +188,7 @@ export class Canvas {
       Canvas.renderOnP5();
     }
     this.renderGate = false;
+    ClusterFactory.showSelectedArea();
   }
 
   /**
@@ -293,6 +302,7 @@ export class Canvas {
     this._zoom = 1;
     this._offset.set(0, 0, 0);
     TransFactory.reset();
+    ClusterSettings.reset();
     const vNodeObservers = Canvas.observers.filter(
       (observer): observer is VNode => observer instanceof VNode,
     );
@@ -489,11 +499,15 @@ export class Canvas {
     if (Canvas.shiftDown) {
       gp5.cursor("grab");
     }
-    Canvas.notifyObservers({
-      event: evt,
-      type: "mousedown",
-      pos: Canvas._mouse,
-    });
+    if (
+      !Canvas.notifyObservers({
+        event: evt,
+        type: "mousedown",
+        pos: Canvas._mouse,
+      })
+    ) {
+      ClusterFactory.selectionStart = Canvas._mouse;
+    }
   }
 
   /** Mouse left button released */
@@ -501,7 +515,15 @@ export class Canvas {
     Canvas.mouseDown = false;
     this.renderGate = false;
     gp5.cursor(gp5.ARROW);
-    Canvas.notifyObservers({ event: evt, type: "mouseup", pos: Canvas._mouse });
+    if (
+      !Canvas.notifyObservers({
+        event: evt,
+        type: "mouseup",
+        pos: Canvas._mouse,
+      })
+    ) {
+      ClusterFactory.createSelection();
+    }
   }
 
   /** Mouse dragged */
@@ -521,18 +543,26 @@ export class Canvas {
         this._canvasBeingTransformed = false;
       }
       // if mouse move & down
-      Canvas.notifyObservers({
-        event: evt,
-        type: "mousedrag",
-        pos: Canvas._mouse,
-      });
+      if (
+        !Canvas.notifyObservers({
+          event: evt,
+          type: "mousedrag",
+          pos: Canvas._mouse,
+        })
+      ) {
+        ClusterFactory.selectionEnd = Canvas._mouse;
+      }
     } else {
       // if mouse move
-      Canvas.notifyObservers({
-        event: evt,
-        type: "mousemove",
-        pos: Canvas._mouse,
-      });
+      if (
+        !Canvas.notifyObservers({
+          event: evt,
+          type: "mousemove",
+          pos: Canvas._mouse,
+        })
+      ) {
+        ClusterFactory.selectionEnd = Canvas._mouse;
+      }
     }
   }
 
@@ -560,6 +590,8 @@ export class Canvas {
     // Zoom by amount about point.
     //  TransFactory.zoom(amnt);
     TransFactory.crissCross(amnt);
+    // TODO: consolidate the logic here
+    VGeoCluster.applyZoom(evt.deltaY < 0 ? 1 : -1);
 
     this.renderGate = true;
   }

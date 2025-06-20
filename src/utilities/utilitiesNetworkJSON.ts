@@ -18,19 +18,20 @@ class UtilitiesNetworkJSON {
     // get networks
     gp5.loadJSON(JSONnetwork, (data: JSONFile) => {
       console.log(data);
-      data.nodes[clusterID].nodes!.forEach((node) => {
-        // console.log(node.nodeAttributes.attRaw.state_abbrev)
-        // check if the state is already in the map
-        if (!tempClusts.has(node.nodeAttributes.attRaw!.state_abbrev)) {
-          // create a new array for the state
-          tempClusts.set(node.nodeAttributes.attRaw!.state_abbrev, []);
-          // push the node to the array
-          tempClusts.get(node.nodeAttributes.attRaw!.state_abbrev).push(node);
-        } else {
-          // if the state is already in the map, push the node to the array
-          tempClusts.get(node.nodeAttributes.attRaw!.state_abbrev).push(node);
-        }
-      });
+      // FIXME: the JSON structure has changed
+      // data.nodes[clusterID].nodes!.forEach((node) => {
+      //   // console.log(node.nodeAttributes.attRaw.state_abbrev)
+      //   // check if the state is already in the map
+      //   if (!tempClusts.has(node.nodeAttributes.attRaw!.state_abbrev)) {
+      //     // create a new array for the state
+      //     tempClusts.set(node.nodeAttributes.attRaw!.state_abbrev, []);
+      //     // push the node to the array
+      //     tempClusts.get(node.nodeAttributes.attRaw!.state_abbrev).push(node);
+      //   } else {
+      //     // if the state is already in the map, push the node to the array
+      //     tempClusts.get(node.nodeAttributes.attRaw!.state_abbrev).push(node);
+      //   }
+      // });
       // change the original network with the new clusters
       let i = 0;
       for (const [key, value] of tempClusts) {

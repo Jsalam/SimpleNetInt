@@ -192,7 +192,12 @@ export class ColorFactory {
     let g = gp5.green(color);
     let b = gp5.blue(color);
     let a = gp5.alpha(color);
-    let hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    let hex =
+      "#" +
+      ((1 << 24) + (r << 16) + (g << 8) + b)
+        .toString(16)
+        .slice(1)
+        .toUpperCase();
     if (a < 255) {
       hex += Math.round(a).toString(16).padStart(2, "0").toUpperCase();
     }
@@ -200,4 +205,3 @@ export class ColorFactory {
     return hex;
   }
 }
-
