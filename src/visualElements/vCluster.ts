@@ -12,6 +12,7 @@ import { Node } from "../graphElements/node";
 import { SortingWidget } from "../GUI/widgets/listWidget/sortingWidget";
 
 export class VCluster extends Button implements Observer {
+  sortingWidget: SortingWidget | null = null;
   vNodes: VNode[];
   cluster: Cluster;
   palette: string[];
@@ -149,8 +150,6 @@ export class VCluster extends Button implements Observer {
       renderer.textLeading(12);
       renderer.text(this.cluster.label, this.pos!.x, this.pos!.y, 140);
     }
-
-
   }
 
   updatePalette() {}

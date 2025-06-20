@@ -2,6 +2,7 @@ import $ from "jquery";
 import { ClusterFactory } from "../../factories/clusterFactory";
 import { VNode } from "../../visualElements/vNode";
 import { NodeAttributes, NodeInit } from "../../graphElements/node";
+import { Item } from "../widgets/listWidget/item";
 
 export function getData() {
   let cluster = document.querySelector(
@@ -48,8 +49,8 @@ export function getData() {
         vNodeTmp.addVConnector(nodeTmp.connectors[0]);
       }
     }
-    
-    vClustTmp.sortingWidget!.addItem(vNodeTmp);
+
+    vClustTmp.sortingWidget!.addItem(new Item(vNodeTmp));
 
     // add to collections
     clusterTmp.addNode(nodeTmp);

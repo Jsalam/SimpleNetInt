@@ -140,7 +140,7 @@ export class VNode extends Button {
       }
 
       if (data.type == "mousemove") {
-        this.mouseOver();
+        this.mouseOver(data);
         // // update the canvas if the mouse is over a vNode
         if (this.mouseIsOver) {
           Canvas.update();
@@ -386,21 +386,26 @@ export class VNode extends Button {
         // show node description
         if (this.mouseIsOver) {
           this._showDescription(newPos);
-          this.notifyObservers({
-            event: new MouseEvent("mouseover"),
-            type: "mouseIsOver",
-            pos: newPos,
-          } as CustomEvent);
+          // this.notifyObservers({
+          //   event: new MouseEvent("mouseover"),
+          //   type: "mouseIsOver",
+          //   pos: newPos,
+          // } as CustomEvent);
         } else {
           this._hideDescription();
-          this.notifyObservers({
-            event: new MouseEvent("mouseout"),
-            type: "mouseIsOut",
-            pos: newPos,
-          } as CustomEvent);
+          // this.notifyObservers({
+          //   event: new MouseEvent("mouseout"),
+          //   type: "mouseIsOut",
+          //   pos: newPos,
+          // } as CustomEvent);
         }
       } else {
         this._hideLabel();
+        // this.notifyObservers({
+        //   event: new MouseEvent("mouseout"),
+        //   type: "mouseIsOut",
+        //   pos: newPos,
+        // } as CustomEvent);
       }
 
       // Show connectors
