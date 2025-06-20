@@ -43,9 +43,12 @@ export class VNode extends Button {
   descriptionEl: HTMLElement | undefined;
   propagated: boolean | undefined;
 
-  parentVCluster: VCluster | null = null;
-
-  constructor(node: Node, width: number, height: number) {
+  constructor(
+    node: Node,
+    width: number,
+    height: number,
+    public parentVCluster: VCluster | null = null,
+  ) {
     super(0, 0, width, height);
     this.node = node;
     this.color;
@@ -63,6 +66,8 @@ export class VNode extends Button {
     this.keyD_Down = false; // deletion
     // *** TRANSFORMATIONS ***
     this.tr;
+    // @ts-ignore
+    globalThis[`test${this.node.idCat.index}`] = () => this.highlight();
   }
 
   subscribe(obj: VConnector) {
@@ -290,6 +295,14 @@ export class VNode extends Button {
       }
       counter++;
     });
+  }
+
+  highlight(on = true) {
+    this.mouseIsOver = on;
+    // this.shouldShowButton = on;
+    this.shouldShowText = on;
+    Canvas.renderGate = true;
+    this.parentVCluster?.highlight(this);
   }
 
   /*** SHOW FUNCTIONS */

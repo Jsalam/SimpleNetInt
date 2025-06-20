@@ -64,7 +64,7 @@ export class VCluster extends Button implements Observer {
         let vNodeH = 10;
 
         // instantiation
-        vNodeTemp = new VNode(node, vNodeW, vNodeH);
+        vNodeTemp = new VNode(node, vNodeW, vNodeH, this);
         for (const connector of vNodeTemp.node.connectors) {
           vNodeTemp.addVConnector(connector);
         }
@@ -135,6 +135,8 @@ export class VCluster extends Button implements Observer {
       }
     }
   }
+
+  highlight(vNode: VNode) {}
 
   show(renderer: p5) {
     renderer.textAlign(gp5.LEFT, gp5.TOP);

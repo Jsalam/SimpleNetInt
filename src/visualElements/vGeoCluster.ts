@@ -9,6 +9,7 @@ import { VCluster } from "./vCluster";
 import { Feature, FeatureCollection, Geometry, Position } from "geojson";
 import { CustomEvent } from "../types";
 import { ClusterFactory } from "../factories/clusterFactory";
+import { VNode } from "./vNode";
 
 const { mat4, vec4, vec3 } = glMatrix;
 
@@ -744,6 +745,15 @@ export class VGeoCluster extends VCluster {
       // do something
     }
     return false;
+  }
+
+  highlight(vNode: VNode) {
+    const attributes = vNode.node.attributes;
+    const geocode = attributes?.attGeo!["geocode"];
+    const featureIndex = this.featureIndexByGeocode[geocode];
+    VGeoCluster.selectedLayerId = this.index;
+    console.log(featureIndex);
+    VGeoCluster.selectedFeatureId = featureIndex;
   }
 
   renderToBuffer(
