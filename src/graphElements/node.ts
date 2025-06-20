@@ -13,7 +13,8 @@ export type NodeIdCat = {
 
 export interface NodeAttributes {
   attr: unknown;
-  attRaw?: Record<string, any>;
+  attGeo?: Record<string, any>;
+  attAll?: Record<string, Record<string, any>>;
 }
 
 export interface NodeInit {

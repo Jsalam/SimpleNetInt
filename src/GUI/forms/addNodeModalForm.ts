@@ -37,7 +37,12 @@ export function getData() {
     // visual representation of the new category
     let vClustTmp = ClusterFactory.getVClusterOf(clusterTmp)!;
 
-    let vNodeTmp = new VNode(nodeTmp, ClusterFactory.wdth, ClusterFactory.hght);
+    let vNodeTmp = new VNode(
+      nodeTmp,
+      ClusterFactory.wdth,
+      ClusterFactory.hght,
+      vClustTmp,
+    );
     if (nodeTmp instanceof Node) {
       if (nodeTmp.connectors.length > 0) {
         vNodeTmp.addVConnector(nodeTmp.connectors[0]);
