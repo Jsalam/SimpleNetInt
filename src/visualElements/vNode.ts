@@ -321,7 +321,7 @@ export class VNode extends Button {
       this.visible = true;
     }
 
-    if (this.visible) {
+    if (this.visible && this.parentVCluster?.visible) {
       // *** TRANSFORMATIONS ***
       this.tr = TransFactory.getTransformerByVClusterID(
         this.node.idCat.cluster,
