@@ -12,10 +12,15 @@ import { Node } from "../graphElements/node";
 import { SortingWidget } from "../GUI/widgets/listWidget/sortingWidget";
 
 export class VCluster extends Button implements Observer {
+  sortingWidget: SortingWidget | null = null;
   vNodes: VNode[];
   cluster: Cluster;
   palette: string[];
   layout: Layout;
+  timestamp: string | undefined;
+  dimension: string | undefined;
+
+  boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
   constructor(
     cluster: Cluster,
@@ -48,6 +53,7 @@ export class VCluster extends Button implements Observer {
     } else {
       // do something
     }
+    return false;
   }
 
   populateVNodes(cluster: Cluster) {
@@ -62,7 +68,7 @@ export class VCluster extends Button implements Observer {
         let vNodeH = 10;
 
         // instantiation
-        vNodeTemp = new VNode(node, vNodeW, vNodeH);
+        vNodeTemp = new VNode(node, vNodeW, vNodeH, this);
         for (const connector of vNodeTemp.node.connectors) {
           vNodeTemp.addVConnector(connector);
         }
@@ -133,6 +139,8 @@ export class VCluster extends Button implements Observer {
     }
   }
 
+  highlight(vNode: VNode) {}
+
   show(renderer: p5) {
     renderer.textAlign(gp5.LEFT, gp5.TOP);
     if (this.cluster.label) {
@@ -142,9 +150,9 @@ export class VCluster extends Button implements Observer {
       renderer.textLeading(12);
       renderer.text(this.cluster.label, this.pos!.x, this.pos!.y, 140);
     }
-
-
   }
+
+  updatePalette() {}
 
   getJSON() {
     let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);

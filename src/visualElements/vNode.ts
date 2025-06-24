@@ -16,6 +16,8 @@ import { EdgeFactory } from "../factories/edgeFactory";
 import { VEdge } from "./vEdge";
 import { VirtualElementPool } from "./VirtualElementPool";
 import { Item } from "../GUI/widgets/listWidget/item";
+import { Utilities } from "../utilities/utilities";
+import { VCluster } from "./vCluster";
 
 export interface VNodeInit {
   posX: number;
@@ -43,7 +45,12 @@ export class VNode extends Button {
   propagated: boolean | undefined;
   observerListItems: Item[];
 
-  constructor(node: Node, width: number, height: number) {
+  constructor(
+    node: Node,
+    width: number,
+    height: number,
+    public parentVCluster: VCluster | null = null,
+  ) {
     super(0, 0, width, height);
     this.node = node;
     this.color;
@@ -67,7 +74,7 @@ export class VNode extends Button {
 
   subscribe(obj: any) {
     if (obj instanceof VConnector) this.vConnectors.push(obj);
-    if (obj instanceof Item) this.observerListItems.push(obj)
+    if (obj instanceof Item) this.observerListItems.push(obj);
   }
 
   unsubscribe(obj: any) {
@@ -80,7 +87,7 @@ export class VNode extends Button {
           rtn = false;
           console.log(
             "unsubscribed vConnector " +
-            JSON.stringify(subscriber.connector.id),
+              JSON.stringify(subscriber.connector.id),
           );
         }
       }
@@ -133,7 +140,7 @@ export class VNode extends Button {
       }
 
       if (data.type == "mousemove") {
-        this.mouseOver();
+        this.mouseOver(data);
         // // update the canvas if the mouse is over a vNode
         if (this.mouseIsOver) {
           Canvas.update();
@@ -167,6 +174,8 @@ export class VNode extends Button {
         }
       }
     }
+    // A VNode can handle a (mouse) event iff the mouse is over it
+    return this.mouseIsOver;
   }
 
   // Observer node
@@ -292,6 +301,14 @@ export class VNode extends Button {
     });
   }
 
+  highlight(on = true) {
+    this.mouseIsOver = on;
+    // this.shouldShowButton = on;
+    this.shouldShowText = on;
+    Canvas.renderGate = true;
+    this.parentVCluster?.highlight(this);
+  }
+
   /*** SHOW FUNCTIONS */
   show(renderer: p5) {
     // Do not show the nodes with no connectors if the user make that choice in the GUI
@@ -304,7 +321,7 @@ export class VNode extends Button {
       this.visible = true;
     }
 
-    if (this.visible) {
+    if (this.visible && this.parentVCluster?.visible) {
       // *** TRANSFORMATIONS ***
       this.tr = TransFactory.getTransformerByVClusterID(
         this.node.idCat.cluster,
@@ -332,7 +349,10 @@ export class VNode extends Button {
       renderer.ellipseMode(gp5.CENTER);
 
       // set diameter
-      this.diam = this.width * this.localScale! * Number(DOM.sliders.nodeSizeFactor.value);
+      this.diam =
+        this.width *
+        this.localScale! *
+        Number(DOM.sliders.nodeSizeFactor.value);
 
       // Ajust diameter to global transformation
       if (this.transformed) {
@@ -366,13 +386,26 @@ export class VNode extends Button {
         // show node description
         if (this.mouseIsOver) {
           this._showDescription(newPos);
-          this.notifyObservers({ event: new MouseEvent("mouseover"), type: 'mouseIsOver', pos: newPos} as CustomEvent); 
+          // this.notifyObservers({
+          //   event: new MouseEvent("mouseover"),
+          //   type: "mouseIsOver",
+          //   pos: newPos,
+          // } as CustomEvent);
         } else {
           this._hideDescription();
-          this.notifyObservers({ event: new MouseEvent("mouseout"), type: 'mouseIsOut', pos: newPos} as CustomEvent); 
+          // this.notifyObservers({
+          //   event: new MouseEvent("mouseout"),
+          //   type: "mouseIsOut",
+          //   pos: newPos,
+          // } as CustomEvent);
         }
       } else {
         this._hideLabel();
+        // this.notifyObservers({
+        //   event: new MouseEvent("mouseout"),
+        //   type: "mouseIsOut",
+        //   pos: newPos,
+        // } as CustomEvent);
       }
 
       // Show connectors
@@ -789,6 +822,11 @@ export class VNode extends Button {
   }
 
   mouseClickedEvents(data: CustomEvent) {
+    // FIXME
+    if (ClusterFactory.getCluster(this.node.idCat.cluster).type === "geo") {
+      return;
+    }
+
     /** Note: this.dragged is true at the slightest drag motion. Sometimes
      * this is imperceptible thus the click behavior of vNodes is not as
      * responsive as it should, but it is highly accurate ;-)

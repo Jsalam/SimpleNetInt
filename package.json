@@ -2,7 +2,7 @@
   "name": "simple-netint",
   "version": "1.0.0",
   "scripts": {
-    "esbuild": "esbuild --bundle src/main.ts --loader:.ttf=binary --outdir=dist",
+    "esbuild": "esbuild --bundle src/main.ts --loader:.ttf=binary --sourcemap --outdir=dist",
     "dev": "npm run esbuild -- --watch --serve=3000 --servedir=.",
     "typecheck": "tsc --noEmit"
   },

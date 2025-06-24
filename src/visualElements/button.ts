@@ -1,6 +1,7 @@
 import { gp5 } from "../main";
 import p5, { Vector } from "p5";
 import { Canvas } from "../canvas/canvas";
+import { CustomEvent } from "../types";
 
 /**
  * Base class for nodes, connectors or any other visual element with an area.
@@ -63,7 +64,8 @@ export class Button {
     this.width = w;
   }
 
-  mouseOver() {
+  mouseOver(data: CustomEvent) {
+    const mousWasOver = this.mouseIsOver;
     if (this.visible) {
       this.mouseIsOver = false;
       if (
@@ -77,7 +79,24 @@ export class Button {
     } else {
       this.mouseIsOver = false;
     }
+    if (mousWasOver !== this.mouseIsOver) {
+      if (this.mouseIsOver) {
+        this.notifyObservers({
+          event: new MouseEvent("mouseover"),
+          type: "mouseIsOver",
+          pos: data.pos,
+        } as CustomEvent);
+      } else {
+        this.notifyObservers({
+          event: new MouseEvent("mouseout"),
+          type: "mouseIsOut",
+          pos: data.pos,
+        } as CustomEvent);
+      }
+    }
   }
+
+  notifyObservers(data: CustomEvent) {}
 
   getDeltaMouse() {
     let rtn = gp5.createVector(0, 0);
