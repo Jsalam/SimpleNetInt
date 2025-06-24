@@ -408,14 +408,14 @@ def population(id, label):
 
 dataset = {
     "nodes": [
-        environmental(0, "Environmental I"),
-        environmental(1, "Environmental II"),
-        epidemiological(2, "Epidemiological I"),
-        epidemiological(3, "Epidemiological II"),
-        socioeconomic(4, "Socioeconomic I"),
-        socioeconomic(5, "Socioeconomic II"),
-        population(6, "Population I"),
-        population(7, "Population II"),
+        environmental(1, "Environmental I"),
+        environmental(2, "Environmental II"),
+        epidemiological(3, "Epidemiological I"),
+        epidemiological(4, "Epidemiological II"),
+        socioeconomic(5, "Socioeconomic I"),
+        socioeconomic(6, "Socioeconomic II"),
+        population(7, "Population I"),
+        population(8, "Population II"),
     ],
     "edges": [],
 }
