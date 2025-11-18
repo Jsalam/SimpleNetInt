@@ -377,12 +377,13 @@ export class DOM {
     ContextualGUI.init(connectorKinds);
 
     // Add checkboxes to Space Menu contextual GUI. Contextual menu created in ContextualGUI.init()
+    if (ContextualGUI.spacesMenu) {
     for (const cluster of ClusterFactory.clusters) {
       let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
       ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val) => {
         transformerTemp.setActive(val);
       });
-    }
+    }}
 
     // Create color dictionary for connectors
     ColorFactory.makeDictionary(

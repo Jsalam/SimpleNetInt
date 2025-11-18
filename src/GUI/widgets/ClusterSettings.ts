@@ -9,6 +9,13 @@ import {
   updateSelectOptions,
 } from "../ContextualGUIs/DOMUtils";
 
+/**
+ * GUI widget for controlling cluster settings such as dimension, time, zoom direction, and color transform.
+ * It provides a user interface for interacting with VCluster instances.
+ * 
+ * It creates a menu on the left side of the screen with controls for each VCluster added.
+ */
+
 export class ClusterSettings {
   private static _container: HTMLElement | undefined;
   private static get container(): HTMLElement {

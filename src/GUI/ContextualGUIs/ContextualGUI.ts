@@ -52,14 +52,11 @@ export class ContextualGUI {
       // populate contextual menu
       if (kinds instanceof Array) ContextualGUI.edgeCategories = kinds;
       else ContextualGUI.edgeCategories = kinds.split(",");
-      ContextualGUI.addEdgeCheckboxes(
-        "Categories",
-        ContextualGUI.edgeCategories,
-      );
+      ContextualGUI.addEdgeCheckboxes('',  ContextualGUI.edgeCategories,);
     });
 
     // Create Contextual GUI spaces
-    ContextualGUI.createSpacesMenu();
+    // ContextualGUI.createSpacesMenu();
   }
 
   /**
@@ -89,7 +86,7 @@ export class ContextualGUI {
       ContextualGUI.edgeMenu = QuickSettings.create(
         window.innerWidth - 240,
         window.innerHeight - 240,
-        "Edge Menu",
+        "Edge options",
         document.getElementById("model")!,
       );
       // Switch it off if the checkbox is off
@@ -131,7 +128,8 @@ export class ContextualGUI {
       ContextualGUI.notifyObservers(val.value);
     });
     // get the value of first selected item in the dropdown at the moment of adding new checkboxes
-    let tmp = ContextualGUI.edgeMenu.getValue("Categories").value;
+    // Using '' as label to get the first value because the list of edge options is titled ''.
+    let tmp = ContextualGUI.edgeMenu.getValue('').value;
     ContextualGUI.notifyObservers(tmp);
     ContextualGUI.edgeMenuChoice = tmp;
   }
