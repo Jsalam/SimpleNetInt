@@ -25,7 +25,7 @@ export class ClusterSettings {
         left: "0",
         top: "10px",
         bottom: "0",
-        width: "300px",
+        width: "250px",
         overflowY: "scroll",
       });
       this._container.onwheel = (e) => {
@@ -67,10 +67,11 @@ export class ClusterSettings {
 
     this.root = this.makeContainer(
       this.makeTitle(vCluster.cluster.label!),
-      this.makeControl("Dimension", ...this.dimensionControls),
-      this.makeControl("Time", this.timeControl),
-      this.makeControl("Zoom Direction", this.makeZoomDirectionControl()),
-      this.makeControl("Color Transform", this.makeColorTransformControl()),
+       this.makeControl("Dimension", null, ...this.dimensionControls),
+       this.makeControl("Year Data", null, this.timeControl),
+      this.makeControl("Zoom Direction", "selectElementFlex", this.makeZoomDirectionControl()),
+      this.makeControl("Color Transform", "selectElementFlex", this.makeColorTransformControl()),
+      createElement("hr", { border: "1px solid rgba(110, 117, 124)" })
     );
 
     for (let i = 0; i < this.levels; ++i) {
@@ -92,7 +93,8 @@ export class ClusterSettings {
       "div",
       {
         color: "white",
-        padding: "10px",
+        paddingLeft: "10px",
+        // marginBottom: "1.5em"
       },
       null,
       ...children,
@@ -104,6 +106,29 @@ export class ClusterSettings {
       "div",
       null,
       null,
+
+      createElement(
+        "label",
+        {
+          marginLeft: "10px",
+          fontSize: "1em",
+          color: "rgb(178, 192, 203)",
+        },
+        null,
+
+        title,
+      ),
+      createElement(
+        "label",
+        {
+          marginLeft: "10px",
+          fontSize: "1em",
+        },
+        null,
+
+        "",
+      ),
+
       createInputElement(null, {
         type: "checkbox",
         checked: true,
@@ -115,14 +140,6 @@ export class ClusterSettings {
           );
         },
       }),
-      createElement(
-        "label",
-        {
-          marginLeft: "10px",
-        },
-        null,
-        title,
-      ),
     );
   }
 
@@ -130,23 +147,31 @@ export class ClusterSettings {
     return createElement(
       "div",
       {
-        color: "gray",
+        color: "rgb(178, 192, 203)",
+        // fontSize: "0.9em",
       },
       null,
       text,
     );
   }
 
-  private makeControl(label: string, ...controls: HTMLElement[]): HTMLElement {
-    return createElement(
+  private makeControl(label: string, className: string | null, ...controls: HTMLElement[]): HTMLElement {
+    let tmp = createElement(
       "div",
       {
-        margin: "10px",
+        marginLeft: "1em",
+        marginBottom: "0.5em",
+        fontSize: "0.8em",
       },
       null,
       this.makeInputLabel(label),
       ...controls,
     );
+
+    if (className) {
+      tmp.className = className;
+    }
+    return tmp;
   }
 
   private makeSelectElement(
@@ -159,8 +184,10 @@ export class ClusterSettings {
         display: "block",
         width: "100%",
         background: "transparent",
-        color: "white",
-        fontSize: "14px",
+        color: "gray",
+        border: "none",
+        // borderBottom: "0.5px solid rgba(110, 117, 124, 0.65)",
+
       },
       properties,
     );
@@ -220,20 +247,22 @@ export class ClusterSettings {
     return createSelectElement(
       [
         {
-          name: "In",
+          name: "in",
           value: "1",
         },
         {
-          name: "Out",
+          name: "out",
           value: "-1",
         },
       ],
       {
         display: "block",
-        width: "100%",
+        // width: "100%",
         background: "transparent",
-        color: "white",
         fontSize: "14px",
+        color: "gray",
+        border: "none",
+        //  borderBottom: "0.5px solid rgba(110, 117, 124, 0.65)",
       },
       {
         onchange: (e) => {
@@ -265,10 +294,11 @@ export class ClusterSettings {
       ],
       {
         display: "block",
-        width: "100%",
+        width: "30%",
         background: "transparent",
-        color: "white",
-        fontSize: "14px",
+        color: "gray",
+        border: "none",
+        // borderBottom: "0.5px solid rgba(110, 117, 124, 0.65)",
       },
       {
         onchange: (e) => {
