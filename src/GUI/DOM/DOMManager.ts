@@ -380,7 +380,7 @@ export class DOM {
     if (ContextualGUI.spacesMenu) {
     for (const cluster of ClusterFactory.clusters) {
       let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
-      ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val) => {
+      ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val:boolean) => {
         transformerTemp.setActive(val);
       });
     }}

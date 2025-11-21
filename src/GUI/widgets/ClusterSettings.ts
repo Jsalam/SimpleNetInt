@@ -67,8 +67,8 @@ export class ClusterSettings {
 
     this.root = this.makeContainer(
       this.makeTitle(vCluster.cluster.label!),
-       this.makeControl("Dimension", null, ...this.dimensionControls),
-       this.makeControl("Year Data", null, this.timeControl),
+      this.makeControl("Dimension", null, ...this.dimensionControls),
+      this.makeControl("Year Data", null, this.timeControl),
       this.makeControl("Zoom Direction", "selectElementFlex", this.makeZoomDirectionControl()),
       this.makeControl("Color Transform", "selectElementFlex", this.makeColorTransformControl()),
       createElement("hr", { border: "1px solid rgba(110, 117, 124)" })
@@ -94,6 +94,7 @@ export class ClusterSettings {
       {
         color: "white",
         paddingLeft: "10px",
+        fontFamily: "roboto-light, sans-serif",
         // marginBottom: "1.5em"
       },
       null,
@@ -111,7 +112,7 @@ export class ClusterSettings {
         "label",
         {
           marginLeft: "10px",
-          fontSize: "1em",
+          fontSize: "0.9em",
           color: "rgb(178, 192, 203)",
         },
         null,

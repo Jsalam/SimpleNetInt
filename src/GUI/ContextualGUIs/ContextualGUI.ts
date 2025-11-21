@@ -99,6 +99,8 @@ export class ContextualGUI {
 
   /**
    * The menu to toggle individual transformation spaces
+   *
+   * @deprecated This function is not being used. Nov 2025.
    */
   static createSpacesMenu() {
     console.log("Creating spaces menu");
