@@ -28,10 +28,10 @@ export class VGeoCluster extends VCluster {
     "linear" | "log" | "sqrt",
     (v: number) => number
   > = {
-    linear: (v) => v,
-    log: Math.log10,
-    sqrt: Math.sqrt,
-  };
+      linear: (v) => v,
+      log: Math.log10,
+      sqrt: Math.sqrt,
+    };
 
   static _pixelTarget: p5.Graphics;
   static _idTarget: p5.Graphics;
@@ -511,8 +511,8 @@ export class VGeoCluster extends VCluster {
       if (!featureIndex) continue;
       const value = this.scalarTransform(
         Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]) -
-          min +
-          1,
+        min +
+        1,
       );
       this._palette.set(
         featureIndex,
@@ -529,7 +529,7 @@ export class VGeoCluster extends VCluster {
       return (
         this.s1 * r +
         ((this.s1 - this.s2) * (r - this.r1) * (r - this.r1)) /
-          (2.0 * (this.r1 - this.r2))
+        (2.0 * (this.r1 - this.r2))
       );
     }
     return (
@@ -567,6 +567,7 @@ export class VGeoCluster extends VCluster {
         visibleIndex -
         this.layerIndexInFocus);
 
+    // PARAMETERS TO SHIFT THE MAPS WHEN LOADED. 
     const xOffset = -1 * zOffset;
     const yOffset = 0;
 
