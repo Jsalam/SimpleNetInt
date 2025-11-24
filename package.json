@@ -13,7 +13,7 @@
     "@types/jquery": "^3.5.32",
     "@types/p5": "^1.7.6",
     "@types/quicksettings": "^3.0.6",
-    "esbuild": "^0.25.2",
+    "esbuild": "^0.25.12",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2"
   },
