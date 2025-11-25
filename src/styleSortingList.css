@@ -81,15 +81,17 @@
  .title {
      font-family: Arial, sans-serif;
      font-size: 12px;
-     color: rgb(187, 167, 167);
-     width: fit-content;
+     color: rgb(15, 147, 147);
+     width: 100%;
      padding: 0.3em 0.5em;
      /* background-color: rgba(126, 10, 56, 0.969); */
 
  }
 
  .sorting_dropdown {
-     font-size: 12px;
+     display: block;
+  width: 100%;
+     font-size: 0.8em;
      background-color: rgba(126, 10, 56, 0.0069);
      color: rgb(187, 167, 167);
      border: none;

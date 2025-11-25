@@ -54,14 +54,14 @@ export class ClusterSettings {
 
   private root: HTMLElement;
   private levels: number;
-  private dimemsionViewModels: DimensionCategory[] = [];
+  private dimensionViewModels: DimensionCategory[] = [];
   private dimensionControls: HTMLSelectElement[] = [];
   private timeControl: HTMLSelectElement;
 
   constructor(private vCluster: VCluster) {
     this.levels = this.getDepth(vCluster.cluster.dimensions) - 1;
 
-    this.dimemsionViewModels = this.makeDimensionControlViewModels();
+    this.dimensionViewModels = this.makeDimensionControlViewModels();
     this.dimensionControls = this.makeDimensionControls();
     this.timeControl = this.makeTimeControl();
 
@@ -79,6 +79,10 @@ export class ClusterSettings {
     }
     this.updateDimension();
     this.updateTimestamp();
+  }
+
+  public getDimensionControls(): HTMLSelectElement[] {
+    return this.dimensionControls;
   }
 
   private getDepth(dimension: Dimensions): number {
@@ -217,6 +221,7 @@ export class ClusterSettings {
       cur = cur.children[0];
     }
     return viewModels;
+
   }
 
   private makeDimensionControls(): HTMLSelectElement[] {
@@ -237,7 +242,7 @@ export class ClusterSettings {
   private syncDimensionControl(i: number) {
     updateSelectOptions(
       this.dimensionControls[i],
-      this.dimemsionViewModels[i].children.map((dim) => ({
+      this.dimensionViewModels[i].children.map((dim) => ({
         name: dim.name,
         value: "key" in dim ? dim.key : dim.name,
       })),
@@ -330,15 +335,16 @@ export class ClusterSettings {
   }
 
   private onDimensionSelect(index: number) {
+    console.log(this.dimensionControls[index].value)
     if (index < this.levels - 1) {
-      this.dimemsionViewModels[index + 1] = this.dimemsionViewModels[
+      this.dimensionViewModels[index + 1] = this.dimensionViewModels[
         index
       ].children.find(
         (dim) => dim.name === this.dimensionControls[index].value,
       ) as DimensionCategory;
 
       for (let i = index + 2; i < this.levels; ++i) {
-        this.dimemsionViewModels[i] = this.dimemsionViewModels[i - 1]
+        this.dimensionViewModels[i] = this.dimensionViewModels[i - 1]
           .children[0] as DimensionCategory;
       }
 

@@ -547,18 +547,15 @@ export class DOM {
 
       // get the selected value
       let selectedValue = target.value;
-      // let parent = target.parentElement;
-
-      // console.log("Selected cluster: " + selectedValue);
-      // console.log(evt);
 
       // get a SortingWidget from the factory
       let widget = SortingListFactory.makeSortingWidget(selectedValue);
+  
 
       if (widget !== undefined) {
 
         // append the sorting list to the sorting lists container above the dropwown
-        DOM.elements.sortingWidgets.insertBefore(widget.makeChart(selectedValue + " >"), dropdown);
+        DOM.elements.sortingWidgets.insertBefore(widget.makeChart(selectedValue), dropdown);
       }
 
       // Reset the dropdown to the first option

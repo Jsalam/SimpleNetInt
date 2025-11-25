@@ -97,7 +97,9 @@ export class ClusterFactory {
       } else {
         tmp = new VCluster(cluster, posX, posY, width, height, palette);
       }
+      // Builds the cluster settings menu on the left 
       ClusterSettings.add(tmp);
+      
       // set the VCluster transformer from data imported
       if (
         TransFactory.getTransformerByVClusterID(

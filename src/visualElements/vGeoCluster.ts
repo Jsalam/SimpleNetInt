@@ -24,6 +24,7 @@ export class VGeoCluster extends VCluster {
   static all: VGeoCluster[] = [];
   static visible: VGeoCluster[] = [];
 
+  // These are the tranformations applied to color mapping.
   static scalarTransforms: Record<
     "linear" | "log" | "sqrt",
     (v: number) => number
@@ -500,6 +501,7 @@ export class VGeoCluster extends VCluster {
       .scale(this.paletteByDimension[this.dimension])
       .domain([this.scalarTransform(1), this.scalarTransform(max - min + 1)]);
 
+    // Set a base color for every silhoutte 
     for (let i = 0; i < this.numFeatures; ++i) {
       this._palette.set(i, 0, [...scale(min).rgb(), 255]);
     }
@@ -514,6 +516,7 @@ export class VGeoCluster extends VCluster {
         min +
         1,
       );
+      // assign mapped color to each silhoutte
       this._palette.set(
         featureIndex,
         0,
@@ -568,7 +571,7 @@ export class VGeoCluster extends VCluster {
         this.layerIndexInFocus);
 
     // PARAMETERS TO SHIFT THE MAPS WHEN LOADED. 
-    const xOffset = -1 * zOffset;
+    const xOffset = -300 * zOffset;
     const yOffset = 0;
 
     const offset = vec3.fromValues(xOffset, yOffset, zOffset);
@@ -730,10 +733,10 @@ export class VGeoCluster extends VCluster {
             this.s1 = gp5.constrain(this.s1 - 1, 1, 50);
             break;
           case "k":
-            this.layerGap += 10;
+            this.layerGap += 0.1;
             break;
           case "j":
-            this.layerGap -= 10;
+            this.layerGap -= 0.1;
             break;
           default:
         }

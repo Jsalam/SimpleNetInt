@@ -13,6 +13,7 @@ exports.SortingWidget = void 0;
  */
 var quicksort_1 = require("../../../utilities/quicksort");
 var DOMManager_1 = require("../../DOM/DOMManager");
+const { ClusterSettings } = require("../ClusterSettings");
 var SortingWidget = /** @class */ (function () {
     // constructor
     function SortingWidget(items, label, width, height) {
@@ -78,14 +79,19 @@ var SortingWidget = /** @class */ (function () {
         chart.setAttribute('class', 'chart');
         // the chart header
         var chartHeader = this.makeHeader(labelNew !== null && labelNew !== void 0 ? labelNew : this.label); // Create the header
-        var svg = this.makeSVG(); // Create the SVG element
+        // Create the SVG element
+        var svg = this.makeSVG(); 
         // Get the sorting attributes from the vNodes
         this.sortingAttributes = this.getSortingAttributes();
-        var attributesDropdown = DOMManager_1.DOM.createDropdown(this.sortingAttributes, 'att', 'sorting_dropdown', this.id + "_sorting"); // Create a dropdown for sorting attributes
+        // Create a dropdown for sorting attributes
+        var attributesDropdown = DOMManager_1.DOM.createDropdown(this.sortingAttributes, 'att', 'sorting_dropdown', this.id + "_sorting"); 
         this.addListener(attributesDropdown);
-        chartHeader.appendChild(attributesDropdown); // Add the dropdown to the header
-        chart.appendChild(chartHeader); // Add the header
-        chart.appendChild(svg); // Add the SVG
+        // Add the dropdown to the header
+        chartHeader.appendChild(attributesDropdown);
+        // Add the header
+        chart.appendChild(chartHeader);
+        // Add the SVG
+        chart.appendChild(svg);
         return chart;
     };
     SortingWidget.prototype.makeSVG = function () {

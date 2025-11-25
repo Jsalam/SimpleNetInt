@@ -13,6 +13,9 @@ import { quickSort } from '../../../utilities/quicksort';
 import { Item } from './item';
 import { DOM } from '../../DOM/DOMManager';
 import { Comparator } from "../../../utilities/comparator";
+import { ClusterSettings } from "../ClusterSettings";
+import { ClusterFactory } from '../../../factories/clusterFactory';
+
 
 export class SortingWidget {
     items: Item[]; // The items to be sorted in the chart
@@ -38,7 +41,7 @@ export class SortingWidget {
     }
 
     /** 
-     * This method is used mainly by the getData() function in the addNodeModalForm file
+     * This method ...
     */
     updateVisuals() {
         // Update the value limits
@@ -47,21 +50,57 @@ export class SortingWidget {
         let tmpElement = DOM.elements.sortingWidgets.querySelectorAll('#' + this.id)[0] as HTMLElement;
         // Replace the old chart with the new one
         let replacement = this.makeChart(this.label + " | value"); // Create a new chart with the updated items
-       // tmpElement.innerHTML = ''; // Clear the old chart
+        // tmpElement.innerHTML = ''; // Clear the old chart
         tmpElement.appendChild(replacement); // Append the new chart to the old chart element
-      //  tmpElement.replaceWith(replacement); // Replace the old chart with the new one
+        //  tmpElement.replaceWith(replacement); // Replace the old chart with the new one
+    }
 
-        console.log(replacement)
+
+    private getSortingAttributes() {
+        let tmp: string[] | undefined;
+
+        // Get the attributes from an array of strings.
+        tmp = this.getSortingAttributesFromVCluster(this.label);
+
+        if (tmp.length === 0) {
+            // Alternatively, get the attributes from the vNodes
+            tmp = this.getSortingAttributesFromVNodes();
+        }
+        return tmp;
+
+    }
+
+    private getSortingAttributesFromVCluster(label: string): string[] {
+        let attributes: string[] = [];
+
+        // get the cluster by user selected label
+        let cluster = ClusterFactory.getClusterByLabel(label);
+
+        // create the sorting widget from the cluster data
+        if (cluster && cluster.type == "geo") {
+
+            let clusterSetting = ClusterSettings.all.find(cs => cs['vCluster'].cluster.label === label);
+
+            if (!clusterSetting) {
+                throw new Error(`ClusterSettings for label ${label} not found`);
+            } else {
+                console.log(clusterSetting)
+            }
+            attributes = [];
+        } else {
+            attributes = this.getSortingAttributesFromVNodes()
+        }
+
+        return attributes;
     }
 
     /**
-     * @param vNodes the vNodes to get the sorting attributes from
-     * This method extracts the attributes from the vNodes and returns them as an array of strings.
+     * This method extracts the attributes from the vNodes and returns them as an array of strings. 
      * It iterates through the vNodes and their attributes, collecting the keys of the attributes into an array.
      * This is used to determine the attributes that can be used for sorting the items in the chart.
      * @returns 
      */
-    private getSortingAttributes() {
+    private getSortingAttributesFromVNodes() {
         let attributes: string[] = [];
         for (let i = 0; i < this.items.length; i++) {
             let vNode = this.items[i].vNode;
@@ -81,10 +120,11 @@ export class SortingWidget {
                 }
             }
         }
+
         return attributes;
     }
 
-    makeChart(labelNew?: string) {
+    makeChart(labelNew: string) {
         this.setValueLimits(this.items); // Set the limits for the chart
         //the container element
         let chart = document.createElement('div');
@@ -92,18 +132,29 @@ export class SortingWidget {
         chart.setAttribute('class', 'chart');
 
         // the chart header
-        let chartHeader = this.makeHeader(labelNew ?? this.label); // Create the header
+        let chartHeader = this.makeHeader(labelNew); // Create the header
 
         let svg: SVGElement = this.makeSVG(); // Create the SVG element
 
         // Get the sorting attributes from the vNodes
-        this.sortingAttributes = this.getSortingAttributes();
+        // this.sortingAttributes = this.getSortingAttributes();
 
-        let attributesDropdown = DOM.createDropdown(this.sortingAttributes, 'att', 'sorting_dropdown', this.id + "_sorting"); // Create a dropdown for sorting attributes
+        let clusterSetting = ClusterSettings.all.find(cs => cs['vCluster'].cluster.label === labelNew);
 
-        this.addListener(attributesDropdown)
+        let attributesControls = clusterSetting?.getDimensionControls();
+        for (let i = 0; i < attributesControls!.length; i++) {
+            let dropdown = attributesControls![i].cloneNode(true) as HTMLSelectElement;
+            console.log(dropdown);
+            dropdown.style = '';
+            dropdown.classList.add('sorting_dropdown');
+            if (i == attributesControls!.length - 1) {
+                this.addListener(dropdown as HTMLSelectElement);
+            }
+            chartHeader.appendChild(dropdown as HTMLSelectElement); // Add the dropdown to the header
+        }
 
-        chartHeader.appendChild(attributesDropdown); // Add the dropdown to the header
+        // let attributesDropdown = DOM.createDropdown(this.sortingAttributes, 'att', 'sorting_dropdown', this.id + "_sorting"); // Create a dropdown for sorting attributes
+
 
         chart.appendChild(chartHeader); // Add the header
 
@@ -134,7 +185,7 @@ export class SortingWidget {
         return svg
     }
 
-    private makeHeader(label?: string) {
+    private makeHeader(label: string) {
         let header = document.createElement('div');
         header.setAttribute('class', 'chartHeader');
         let titleLabel = this.makeTitle(label);
@@ -173,7 +224,7 @@ export class SortingWidget {
             // Check if value can be casted as a number
             if (!isNaN(Number(value))) {
                 value = Number(value);
-            } 
+            }
             // else if (value instanceof  String) {
             //     value = value.length; // Use the length of the string as the value if it is not a number
             // }
@@ -240,13 +291,13 @@ export class SortingWidget {
                     console.log(`Item ${item.label} in ${selectedValue} has value: ${attrValue}`);
                     // Determine if attrValue can be casted to a number
                     if (!isNaN(Number(attrValue))) {
-                         console.log('before ='+ item.value);
+                        console.log('before =' + item.value);
                         item.value = Number(attrValue);
-                        console.log('after ='+item.value);
+                        console.log('after =' + item.value);
                         // Use the numeric comparator if attrValue is a number
                         comparatorName = "compareValue";
                     } else {
-                        item.value = attrValue                        
+                        item.value = attrValue
                         // Otherwise, use the alphabetical comparator
                         comparatorName = 'compareAlphabetically';
                     }

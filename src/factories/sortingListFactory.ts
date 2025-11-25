@@ -3,6 +3,8 @@ import { VNode } from "../visualElements/vNode";
 import { VCluster } from "../visualElements/vCluster";
 import { ClusterFactory } from "./clusterFactory";
 import { Item } from "../GUI/widgets/listWidget/item";
+import { Cluster } from "../graphElements/cluster";
+import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
 
 export class SortingListFactory {
   static widgets: SortingWidget[];
@@ -19,6 +21,8 @@ export class SortingListFactory {
     width?: number,
     height?: number,
   ): SortingWidget {
+
+    // get the vNodes to create the items for the sorting list
     let vNodes = SortingListFactory.getVNodeLookup() ?? [];
 
     // Create a list of items from the vNodes
@@ -31,7 +35,9 @@ export class SortingListFactory {
     SortingListFactory.widgets.push(sortingWidget);
 
     return sortingWidget;
+
   }
+
 
   static makeItems(vNodesById: Record<string, VNode[]>) {
     let items: Item[] = [];
@@ -54,7 +60,6 @@ export class SortingListFactory {
     let rtn: SortingWidget | undefined = SortingListFactory.widgets.find(
       (widget) => widget.label === label,
     );
-
     return rtn;
   }
 
@@ -63,7 +68,6 @@ export class SortingListFactory {
     let rtn: SortingWidget | undefined = SortingListFactory.widgets.find(
       (widget) => widget.id === id,
     );
-
     return rtn;
   }
 

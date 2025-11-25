@@ -445,9 +445,12 @@ export class Canvas {
     this.legendEl.textContent =
       "ZOOM & PAN\n" +
       "Hold SHIFT and right mouse button to pan\n" +
-      "use 'SHIFT + ' to zoom in the canvas, 'SHIFT -' to zoom  out the canvas\n" +
-      "use 'SHIFT + mouse wheel' to zoom in and out clusters\n" +
+      "Use 'SHIFT +' + to zoom in the canvas, 'SHIFT +' - to zoom  out the canvas\n" +
+      "Use 'SHIFT + mouse wheel' to zoom in and out clusters\n" +
       "Press 'SHIFT + r' to restore zoom and pan to default values\n" +
+      " \n" +
+      "MAGNIFICATION\n" +
+      " Use '+' or '-' to enhance the magnifying effect\n" +
       " \n" +
       "PROPAGATION\n" +
       "Press 'p' to enable propagation selection on node click\n" +
