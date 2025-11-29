@@ -3,7 +3,7 @@
     {
       "clusterID": 1,
       "clusterType": "geo",
-      "clusterLabel": "Environmental I",
+      "clusterLabel": "Environmental",
       "clusterDescription": "Environmental Indicators",
       "mapName": "Brazil_Amazon.geojson",
       "secondaryMapName": "states.geojson",
@@ -56706,7 +56706,7 @@
     {
       "clusterID": 3,
       "clusterType": "geo",
-      "clusterLabel": "Epidemiological I",
+      "clusterLabel": "Epidemiological",
       "clusterDescription": "Epidemiological Indicators",
       "mapName": "Brazil_Amazon.geojson",
       "secondaryMapName": "states.geojson",
@@ -83798,7 +83798,7 @@
     {
       "clusterID": 5,
       "clusterType": "geo",
-      "clusterLabel": "Socioeconomic I",
+      "clusterLabel": "Socioeconomic",
       "clusterDescription": "Socio-economic Indicators",
       "mapName": "Brazil_Amazon.geojson",
       "secondaryMapName": "states.geojson",
@@ -127592,7 +127592,7 @@
     {
       "clusterID": 7,
       "clusterType": "geo",
-      "clusterLabel": "Population I",
+      "clusterLabel": "Population",
       "clusterDescription": "Population Indicators",
       "mapName": "Brazil_Amazon.geojson",
       "secondaryMapName": "states.geojson",

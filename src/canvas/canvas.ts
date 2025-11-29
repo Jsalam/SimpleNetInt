@@ -10,7 +10,7 @@ import { VConnector } from "../visualElements/vConnector";
 import { Grid } from "./grid";
 import { VCluster } from "../visualElements/vCluster";
 import { VGeoCluster } from "../visualElements/vGeoCluster";
-import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
+import { ClusterSettingsFactory } from "../factories/clusterSettingsFactory";
 import { ClusterFactory } from "../factories/clusterFactory";
 
 /**
@@ -302,7 +302,7 @@ export class Canvas {
     this._zoom = 1;
     this._offset.set(0, 0, 0);
     TransFactory.reset();
-    ClusterSettings.reset();
+    ClusterSettingsFactory.reset();
     const vNodeObservers = Canvas.observers.filter(
       (observer): observer is VNode => observer instanceof VNode,
     );

@@ -17,42 +17,8 @@ import {
  */
 
 export class ClusterSettings {
-  private static _container: HTMLElement | undefined;
-  private static get container(): HTMLElement {
-    if (!this._container) {
-      this._container = createElement("div", {
-        position: "absolute",
-        left: "0",
-        top: "10px",
-        bottom: "0",
-        width: "250px",
-        overflowY: "scroll",
-      });
-      this._container.onwheel = (e) => {
-        e.stopPropagation();
-      };
-      this._container.onmousedown = (e) => {
-        e.stopPropagation();
-      };
-      document.querySelector("#model")!.append(this._container);
-    }
-    return this._container;
-  }
 
-  public static all: ClusterSettings[] = [];
-
-  public static add(vCluster: VCluster) {
-    const settings = new ClusterSettings(vCluster);
-    ClusterSettings.container.append(settings.root);
-    this.all.push(settings);
-  }
-
-  public static reset() {
-    this.container.innerHTML = "";
-    this.all.length = 0;
-  }
-
-  private root: HTMLElement;
+  root: HTMLElement;
   private levels: number;
   private dimensionViewModels: DimensionCategory[] = [];
   private dimensionControls: HTMLSelectElement[] = [];
@@ -81,9 +47,26 @@ export class ClusterSettings {
     this.updateTimestamp();
   }
 
+  /*  Getters for private members */
+
   public getDimensionControls(): HTMLSelectElement[] {
     return this.dimensionControls;
   }
+
+  public getOnDimensionSelect(): (index: number) => void {
+    return this.onDimensionSelect.bind(this);
+  }
+
+  public getUpdateDimension(): () => void {
+    return this.updateDimension.bind(this);
+  }
+
+  public getRoot(): HTMLElement {
+    return this.root;
+  }
+
+
+  /*  Private methods  */
 
   private getDepth(dimension: Dimensions): number {
     if ("key" in dimension) return 1;
@@ -337,15 +320,12 @@ export class ClusterSettings {
   private onDimensionSelect(index: number) {
     console.log(this.dimensionControls[index].value)
     if (index < this.levels - 1) {
-      this.dimensionViewModels[index + 1] = this.dimensionViewModels[
-        index
-      ].children.find(
+      this.dimensionViewModels[index + 1] = this.dimensionViewModels[index].children.find(
         (dim) => dim.name === this.dimensionControls[index].value,
       ) as DimensionCategory;
 
       for (let i = index + 2; i < this.levels; ++i) {
-        this.dimensionViewModels[i] = this.dimensionViewModels[i - 1]
-          .children[0] as DimensionCategory;
+        this.dimensionViewModels[i] = this.dimensionViewModels[i - 1].children[0] as DimensionCategory;
       }
 
       for (let i = index + 1; i < this.levels; ++i) {
@@ -368,3 +348,5 @@ export class ClusterSettings {
     Canvas.update();
   }
 }
+// Attach ClusterFactory to the global window object
+(window as any).ClusterSettings = ClusterSettings;

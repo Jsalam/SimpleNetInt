@@ -1,6 +1,6 @@
 
 /**
- * @name SortingWidget class
+ * @name SortingWidget2 class
  * @description This class is used to create a sorting widget that displays a chart of items that can be sorted based on their attributes.
  * It provides methods to create the chart, update the visuals, and set value limits for the items.
  * It also includes methods to handle user interactions, such as selecting sorting attributes from a dropdown menu.

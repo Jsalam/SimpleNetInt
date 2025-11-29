@@ -69,8 +69,8 @@
  .chart {
      margin-bottom: 5px;
      overflow-y: scroll;
-      border-bottom: rgba(172, 255, 47, 0.18) 0.5px solid; 
-      padding-bottom: 10px;
+     border-bottom: rgba(172, 255, 47, 0.18) 0.5px solid;
+     padding-bottom: 10px;
  }
 
  .chartHeader {
@@ -82,7 +82,7 @@
      font-family: Arial, sans-serif;
      font-size: 12px;
      color: rgb(15, 147, 147);
-     width: 100%;
+     width: fit-content;
      padding: 0.3em 0.5em;
      /* background-color: rgba(126, 10, 56, 0.969); */
 
@@ -90,19 +90,19 @@
 
  .sorting_dropdown {
      display: block;
-  width: 100%;
+     width: 100%;
      font-size: 0.8em;
      background-color: rgba(126, 10, 56, 0.0069);
      color: rgb(187, 167, 167);
      border: none;
  }
 
-  .menuTitle:hover {
+ .menuTitle:hover {
      cursor: pointer;
  }
 
- 
-/* .menuTitle:hover .menuList  {
+
+ /* .menuTitle:hover .menuList  {
      display: inline
  }
 
