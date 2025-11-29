@@ -28,16 +28,17 @@ export class ClusterSettings {
     this.levels = this.getDepth(vCluster.cluster.dimensions) - 1;
 
     this.dimensionViewModels = this.makeDimensionControlViewModels();
-    this.dimensionControls = this.makeDimensionControls();
-    this.timeControl = this.makeTimeControl();
+    this.dimensionControls = this.makeDimensionControls("CSSelect");
+    this.timeControl = this.makeTimeControl("CSSelect");
 
-    this.root = this.makeContainer(
-      this.makeTitle(vCluster.cluster.label!),
+    this.root = this.makeContainer('CSContainer',
+      this.makeTitle(vCluster.cluster.label!, 'CSTitle'),
       this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
       this.makeControl("Year Data", 'CSControl selectElementFlex', this.timeControl),
       this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
       this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
-      createElement("hr", { border: "1px solid rgba(110, 117, 124)" })
+      createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
+  
     );
 
     for (let i = 0; i < this.levels; ++i) {
@@ -75,14 +76,14 @@ export class ClusterSettings {
     );
   }
 
-  private makeContainer(...children: HTMLElement[]) {
-    return createElement("div", null, 'CSContainer', null, ...children,);
+  private makeContainer(className:string, ...children: HTMLElement[]) {
+    return createElement("div", null, className, null, ...children,);
   }
 
-  private makeTitle(title: string): HTMLElement {
+  private makeTitle(title: string, className:string): HTMLElement {
     return createElement("div",
       null,
-      'CSTitle',
+     className,
       null,
       createElement("label", null, null, null, title,),
       createInputElement({ marginLeft: "10px", fontSize: "1em" }, {
@@ -113,12 +114,13 @@ export class ClusterSettings {
   private makeSelectElement(
     options: Array<{ name: string; value: string }>,
     properties?: Partial<HTMLSelectElement> | null,
+    className?:string
   ) {
-    let tmp = createSelectElement(options, null, "CSSelect", properties);
+    let tmp = createSelectElement(options, null, className, properties);
     return tmp;
   }
 
-  private makeTimeControl(): HTMLSelectElement {
+  private makeTimeControl(className:string): HTMLSelectElement {
     return this.makeSelectElement(
       this.vCluster.cluster.timestamps.map((t) => ({
         name: t,
@@ -130,6 +132,7 @@ export class ClusterSettings {
           (e.target as HTMLSelectElement).blur();
         },
       },
+      className
     );
   }
 
@@ -144,7 +147,7 @@ export class ClusterSettings {
 
   }
 
-  private makeDimensionControls(): HTMLSelectElement[] {
+  private makeDimensionControls(className:string): HTMLSelectElement[] {
     const controls: HTMLSelectElement[] = [];
     for (let i = 0; i < this.levels; ++i) {
       controls.push(
@@ -153,7 +156,7 @@ export class ClusterSettings {
             this.onDimensionSelect(i);
             (e.target as HTMLSelectElement).blur();
           },
-        }),
+        }, className),
       );
     }
     return controls;
