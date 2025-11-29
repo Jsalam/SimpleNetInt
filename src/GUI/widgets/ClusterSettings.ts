@@ -33,10 +33,10 @@ export class ClusterSettings {
 
     this.root = this.makeContainer(
       this.makeTitle(vCluster.cluster.label!),
-      this.makeControl("Dimension", null, ...this.dimensionControls),
-      this.makeControl("Year Data", null, this.timeControl),
-      this.makeControl("Zoom Direction", "selectElementFlex", this.makeZoomDirectionControl()),
-      this.makeControl("Color Transform", "selectElementFlex", this.makeColorTransformControl()),
+      this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
+      this.makeControl("Year Data", 'CSControl selectElementFlex', this.timeControl),
+      this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
+      this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
       createElement("hr", { border: "1px solid rgba(110, 117, 124)" })
     );
 
@@ -76,48 +76,16 @@ export class ClusterSettings {
   }
 
   private makeContainer(...children: HTMLElement[]) {
-    return createElement(
-      "div",
-      {
-        color: "white",
-        paddingLeft: "10px",
-        fontFamily: "roboto-light, sans-serif",
-        // marginBottom: "1.5em"
-      },
-      null,
-      ...children,
-    );
+    return createElement("div", null, 'CSContainer', null, ...children,);
   }
 
   private makeTitle(title: string): HTMLElement {
-    return createElement(
-      "div",
+    return createElement("div",
       null,
+      'CSTitle',
       null,
-
-      createElement(
-        "label",
-        {
-          marginLeft: "10px",
-          fontSize: "0.9em",
-          color: "rgb(178, 192, 203)",
-        },
-        null,
-
-        title,
-      ),
-      createElement(
-        "label",
-        {
-          marginLeft: "10px",
-          fontSize: "1em",
-        },
-        null,
-
-        "",
-      ),
-
-      createInputElement(null, {
+      createElement("label", null, null, null, title,),
+      createInputElement({ marginLeft: "10px", fontSize: "1em" }, {
         type: "checkbox",
         checked: true,
         onclick: (e) => {
@@ -133,32 +101,12 @@ export class ClusterSettings {
 
   private makeInputLabel(text: string): HTMLElement {
     return createElement(
-      "div",
-      {
-        color: "rgb(178, 192, 203)",
-        // fontSize: "0.9em",
-      },
-      null,
-      text,
+      "div", null, null, null, text,
     );
   }
 
   private makeControl(label: string, className: string | null, ...controls: HTMLElement[]): HTMLElement {
-    let tmp = createElement(
-      "div",
-      {
-        marginLeft: "1em",
-        marginBottom: "0.5em",
-        fontSize: "0.8em",
-      },
-      null,
-      this.makeInputLabel(label),
-      ...controls,
-    );
-
-    if (className) {
-      tmp.className = className;
-    }
+    let tmp = createElement("div", null, className, null, this.makeInputLabel(label), ...controls);
     return tmp;
   }
 
@@ -166,19 +114,8 @@ export class ClusterSettings {
     options: Array<{ name: string; value: string }>,
     properties?: Partial<HTMLSelectElement> | null,
   ) {
-    return createSelectElement(
-      options,
-      {
-        display: "block",
-        width: "100%",
-        background: "transparent",
-        color: "gray",
-        border: "none",
-        // borderBottom: "0.5px solid rgba(110, 117, 124, 0.65)",
-
-      },
-      properties,
-    );
+    let tmp = createSelectElement(options, null, "CSSelect", properties);
+    return tmp;
   }
 
   private makeTimeControl(): HTMLSelectElement {
@@ -232,7 +169,7 @@ export class ClusterSettings {
     );
   }
 
-  private makeZoomDirectionControl() {
+  private makeZoomDirectionControl(className: string) {
     return createSelectElement(
       [
         {
@@ -244,15 +181,7 @@ export class ClusterSettings {
           value: "-1",
         },
       ],
-      {
-        display: "block",
-        // width: "100%",
-        background: "transparent",
-        fontSize: "14px",
-        color: "gray",
-        border: "none",
-        //  borderBottom: "0.5px solid rgba(110, 117, 124, 0.65)",
-      },
+      null, className,
       {
         onchange: (e) => {
           if (this.vCluster instanceof VGeoCluster) {
@@ -265,7 +194,7 @@ export class ClusterSettings {
     );
   }
 
-  private makeColorTransformControl() {
+  private makeColorTransformControl(className: string) {
     return createSelectElement(
       [
         {
@@ -281,14 +210,7 @@ export class ClusterSettings {
           value: "sqrt",
         },
       ],
-      {
-        display: "block",
-        width: "30%",
-        background: "transparent",
-        color: "gray",
-        border: "none",
-        // borderBottom: "0.5px solid rgba(110, 117, 124, 0.65)",
-      },
+      null, className,
       {
         onchange: (e) => {
           if (this.vCluster instanceof VGeoCluster) {

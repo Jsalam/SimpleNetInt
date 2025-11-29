@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./style.css";
 import "./styleSortingList.css";
+import "./styleClusterSettings.css";
 
 export const gp5 = new p5(
   main,

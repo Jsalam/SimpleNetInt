@@ -21,6 +21,7 @@ import { VirtualElementPool } from "../../visualElements/VirtualElementPool";
 import { SortingWidget } from "../widgets/listWidget/sortingWidget";
 import { VCluster } from "../../visualElements/vCluster";
 import { SortingListFactory } from "../../factories/sortingListFactory";
+import { ClusterSettingsFactory } from "../../factories/clusterSettingsFactory";
 
 
 interface NetworkData {
@@ -337,6 +338,7 @@ export class DOM {
     Canvas.resetObservers();
 
     ClusterFactory.reset();
+    ClusterSettingsFactory.reset();
     EdgeFactory.reset();
 
     // Reset TransFactory After reseting the clusters

@@ -16,10 +16,6 @@ import { VCluster } from "../visualElements/vCluster";
 
 export class ClusterSettingsFactory {
 
-    // public static HTMLcontainer: HTMLElement | undefined;
-
-    // public static all: ClusterSettings[] = [];
-
     private static _cSettingsMap = new Map<HTMLElement, ClusterSettings[]>();
 
     public static setSettings(el: HTMLElement, settings: ClusterSettings[]) {
@@ -61,8 +57,6 @@ export class ClusterSettingsFactory {
        */
     public static add(vCluster: VCluster, containerElement?: HTMLElement) {
         const settings = new ClusterSettings(vCluster);
-        console.log("Adding ClusterSettings for cluster:", vCluster.cluster.id);
-
         let containerTmp: HTMLElement;
 
         if (containerElement) {
@@ -72,18 +66,14 @@ export class ClusterSettingsFactory {
         } else {
             let oldContainer = this.getKeyById("cSettingsMain");
             if (oldContainer) {
-                console.log(-1)
                 oldContainer.append(settings.root);
                 this.pushSettings(oldContainer, settings);
             } else {
-                console.log(0)
                 containerTmp = this.makeHTMLcontainer();
                 containerTmp.append(settings.root);
                 this.setSettings(containerTmp, [settings]);
             }
-            
         }
-
     }
 
     /*  Public methods  */
@@ -114,7 +104,15 @@ export class ClusterSettingsFactory {
      * See implementations in canvas.ts
      */
     public static reset() {
-        ClusterSettingsFactory._cSettingsMap.clear();
+        // Delete children
+        let node = document.getElementById('cSettingsMain')
+        node?.replaceChildren();
+
+        // remove main element
+        node?.remove();
+
+        // clear map
+        this._cSettingsMap.clear();
     }
 }
 

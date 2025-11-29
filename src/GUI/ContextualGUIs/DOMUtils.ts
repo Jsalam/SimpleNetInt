@@ -1,12 +1,16 @@
 export function createElement<T extends HTMLElement>(
   tag: keyof HTMLElementTagNameMap,
   style?: Partial<CSSStyleDeclaration> | null,
+  className?: string | null,
   properties?: Partial<GlobalEventHandlers> | null,
   ...children: (HTMLElement | string)[]
 ): HTMLElement {
   const el = document.createElement(tag);
   Object.assign(el.style, style);
   Object.assign(el, properties);
+  if (className) {
+    el.className = className;
+  }
   for (const child of children) {
     el.append(child);
   }
@@ -26,6 +30,7 @@ export function createInputElement(
 export function createSelectElement(
   options: Array<{ name: string; value: string }>,
   style?: Partial<CSSStyleDeclaration> | null,
+  className?: string | null,
   properties?: Partial<HTMLSelectElement> | null,
 ): HTMLSelectElement {
   const el = document.createElement("select");
@@ -37,6 +42,9 @@ export function createSelectElement(
   }
   Object.assign(el.style, style);
   Object.assign(el, properties);
+  if (className) {
+    el.className = className;
+  }
   return el;
 }
 
