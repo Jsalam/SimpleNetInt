@@ -33,7 +33,7 @@ export class SortingWidget {
     // constructor
     constructor(items: Item[], label: string, width?: number, height?: number) {
         this.items = items;
-        width ? this.width = width : this.width = window.innerWidth - 200; // Default width if not provided
+        width ? this.width = width : this.width = window.innerWidth - 20; // Default width if not provided
         height ? this.height = height : this.height = 70; // Default height if not provided
         this.label = label;
         this.id = `${this.label.replace(/\s+/g, '_')}_${Date.now()}`;
@@ -85,7 +85,6 @@ export class SortingWidget {
             }
         }
 
-
         for (let i = 0; i < this.items.length; i++) {
             //for (let i = 0; i < 1; i++) {
             let vNode = this.items[i].vNodes[index]; ////// THI NEEDS TO BE CORRECTED!!!!!!!!!!!!
@@ -131,10 +130,10 @@ export class SortingWidget {
 
         let svg: SVGElement = this.makeSVG(); // Create the SVG element
 
-        // // Get the sorting attributes from the vNodes
+        // Get the sorting attributes from the vNodes
         this.sortingAttributes = this.getSortingAttributesFromVNodes();
 
-        console.log(this.sortingAttributes);
+        // console.log(this.sortingAttributes);
 
         // Create the settings panel in the provided HTML element
         let tmp = SettingsPanelFactory.add(ClusterFactory.getVClusterByLabel(labelNew), false, chartHeader);
@@ -157,12 +156,13 @@ export class SortingWidget {
         // Create an SVG element using the standard DOM API
         let svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
         svg.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-        svg.setAttribute('width', this.width.toString());
+        svg.setAttribute('width', (this.width).toString());
         svg.setAttribute('height', this.height.toString());
+        svg.setAttribute('transform', 'translate(8,0)'); // add margin on the right
 
         // Add groups to the SVG for each item in the array
-        let xStep = this.width / this.items.length;
-        let yPos = this.height / 2;
+        let xStep = (this.width-16) / this.items.length;
+        let yPos = this.height ;
         let groupContainer = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         groupContainer.setAttribute('class', 'itemsContainer'); // Replace spaces with underscores for valid ID
 
@@ -369,13 +369,6 @@ export class SortingWidget {
                 if (year == '2004-2008' || year == '2006' || year == '2000') index = 0;
                 if (year == '2015-2019' || year == '2017' || year == '2010') index = 1;
 
-                // console.log(settings)
-                // console.log('attrs: ')
-                // console.log(attributes)
-                // console.log('year in control: ' + year)
-                // console.log(Object.values(attributes)[index])
-
-                // console.log(selectedValue)
                 try {
                     Utilities.traverse(Object.values(attributes)[index] as Object,
                         (datum: any) => {
@@ -421,7 +414,5 @@ export class SortingWidget {
         quickSort(this.items, 0, this.items.length - 1, comparatorName, "value"); // Sort the items based on the selected criteria
 
         this.updateVisuals()
-
-        //  console.log('min: '+ this.minValue + ", max: " + this.maxValue);
     }
 }

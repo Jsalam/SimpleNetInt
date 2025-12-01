@@ -646,3 +646,4 @@ export class Canvas {
     Canvas.notifyObservers({ event: k, type: "keyup" });
   }
 }
+(window as any).Canvas = Canvas;

@@ -118,10 +118,11 @@ export class Item {
     text.textContent = this.label;
     text.setAttribute(
       "transform",
-      `rotate(-90, ${index * xStep + xStep / 2}, ${yPos + 5})`,
+      `rotate(-90, ${index * xStep + xStep / 2}, ${yPos + 5}) translate(10, 0)`,
     );
     text.setAttribute("dy", "8"); // Leave a 5px gap
-    text.setAttribute("text-anchor", "end"); // Justify to the top
+    text.setAttribute("text-anchor", "start"); // Justify to the top
+   text.setAttribute('display', 'none')
     return text;
   }
 
@@ -152,12 +153,14 @@ export class Item {
           let text = group.querySelector(".textLabel") as SVGTextElement | null;
 
           if (line) {
-            (line as SVGLineElement).style.stroke = "#ff0000";
+            (line as SVGLineElement).style.stroke = "rgb(158, 175, 1)";
             (line as SVGLineElement).style.strokeWidth = "3px"; // Increase line width
+            (line as SVGLineElement).style.display = 'none';
           }
           if (text) {
-            (text as SVGTextElement).style.fill = "#ff0000"; // Change text color to red
-            (text as SVGTextElement).style.fontSize = "14px"; // Make text bold
+            (text as SVGTextElement).style.display = 'block';
+            (text as SVGTextElement).style.fill = "rgb(182, 202, 4)"; // Change text color to red
+            (text as SVGTextElement).style.fontSize = "12px"; // Make text bold
             (text as SVGTextElement).style.width = "200px";
 
           }
@@ -181,6 +184,7 @@ export class Item {
           if (line) {
             (line as SVGLineElement).style.stroke = "#9E9E9E";
             (line as SVGLineElement).style.strokeWidth = "1px";
+            (line as SVGLineElement).style.display = 'block';
           } // Reset line color
           if (text) {
             (text as SVGTextElement).style.fill = "rgba(169, 163, 163, 0.315)";

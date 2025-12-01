@@ -479,7 +479,7 @@ export class VNode extends Button {
       textAlign: "right",
       paddingRight: "10px",
       transformOrigin: "bottom right",
-      opacity: String(0.3 * this.localScale!),
+      opacity: String(0.8 * this.localScale!),
       color: color,
       fontSize: 10 + 2 * this.localScale! + "px",
       fontStyle: this.propagated ? "bold" : "normal",
@@ -503,14 +503,15 @@ export class VNode extends Button {
     let fillColor: string | p5.Color = baseColor;
     let labelColor: string | p5.Color = "#111111";
     if (Canvas.currentBackground < 150) {
-      labelColor = "#EEEEEE";
+      labelColor = "#444444";
     }
     let filtered = baseColor;
 
     // settings. see hex table https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
     let normal = "40"; // 60%
     let accent = "B3"; // 70%
-    let dimmed = "33"; // 20%
+    let dimmed = "11"; // 
+    //let dimmed = "33"; // 20%
     // attenuate
     if (this.mouseIsOver) {
       normal = "E6"; // 90%
@@ -781,6 +782,10 @@ export class VNode extends Button {
       //     translate(${x}px, ${y + 5}px)
       //     translateY(-100%)
       // `,
+
+    transform:`
+    translateX(100%)
+    `
     });
   }
 

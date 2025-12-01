@@ -64,7 +64,7 @@ export class SettingsPanelFactory {
             containerTmp = containerElement;
             containerTmp.append(settings.root);
             let oldContainer = this.getKeyById(containerTmp.id)
-             if (oldContainer) {
+            if (oldContainer) {
                 oldContainer.append(settings.root);
                 this.pushSettings(oldContainer, settings);
             } else {
@@ -96,14 +96,18 @@ export class SettingsPanelFactory {
             bottom: "0",
             width: "250px",
             overflowY: "scroll",
+            scrollbarWidth: "none",
         });
+        // Add inline styles for WebKit browsers (Chrome, Edge, Safari)
+        tmp.style.cssText += "::-webkit-scrollbar { display: none; }";
+
         tmp.onwheel = (e) => {
             e.stopPropagation();
         };
         tmp.onmousedown = (e) => {
             e.stopPropagation();
         };
-        // ad an id to this container
+        // add an id to this container
         tmp.id = "cSettingsMain";
 
         document.querySelector("#model")!.append(tmp);

@@ -51,8 +51,8 @@ void main() {
 
   int index = parseInt(aVertexColor);
   vec4 color = texture(uSampler, toTexCoord(index));
-  float intensity = (selected == 0 || selected == index ? 1.0f : 0.5f) *
-                    exp(-(0.5f / CAMERA_DIST / CAMERA_DIST) *
+  float intensity = (selected == 0 || selected == index ? 0.8f : 1.0f) *
+                    exp(-(0.2f / CAMERA_DIST / CAMERA_DIST) *
                         position_camera.z * position_camera.z);
   vColor = vec4(color.rgb * intensity, 1.0f);
 }
