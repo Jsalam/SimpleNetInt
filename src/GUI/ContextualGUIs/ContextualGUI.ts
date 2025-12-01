@@ -15,7 +15,7 @@ export class ContextualGUI {
     Categories: { value: string };
     [key: string]: any;
   }>;
-  static spacesMenu: QuickSettingsPanel;
+  //static spacesMenu: QuickSettingsPanel;
   static observers: Observer[] = [];
   static edgeCategories: string[] = [];
   static edgeMenuChoice: string;
@@ -102,26 +102,26 @@ export class ContextualGUI {
    *
    * @deprecated This function is not being used. Nov 2025.
    */
-  static createSpacesMenu() {
-    console.log("Creating spaces menu");
+  // static createSpacesMenu() {
+  //   console.log("Creating spaces menu");
 
-    // Check first if this already exists
-    if (!ContextualGUI.spacesMenu) {
-      ContextualGUI.spacesMenu = QuickSettings.create(
-        window.innerWidth - 540,
-        window.innerHeight - 240,
-        "Spaces Menu",
-        document.getElementById("model")!,
-      );
-    } else {
-      ContextualGUI.clearFloatingMenu(ContextualGUI.spacesMenu);
-      //  ContextualGUI.spacesMenu.destroy();
-    }
-    //Switch it off is the checkbox is off
-    if (!DOM.checkboxes.spacesMenu.checked) {
-      ContextualGUI.spacesMenu.toggleVisibility();
-    }
-  }
+  //   // Check first if this already exists
+  //   if (!ContextualGUI.spacesMenu) {
+  //     ContextualGUI.spacesMenu = QuickSettings.create(
+  //       window.innerWidth - 540,
+  //       window.innerHeight - 240,
+  //       "Spaces Menu",
+  //       document.getElementById("model")!,
+  //     );
+  //   } else {
+  //     ContextualGUI.clearFloatingMenu(ContextualGUI.spacesMenu);
+  //     //  ContextualGUI.spacesMenu.destroy();
+  //   }
+  //   //Switch it off is the checkbox is off
+  //   if (!DOM.checkboxes.spacesMenu.checked) {
+  //     ContextualGUI.spacesMenu.toggleVisibility();
+  //   }
+  // }
 
   static addEdgeCheckboxes(label: string, items: DropDownItems<unknown>) {
     // the callback here is used when a new option is chosen

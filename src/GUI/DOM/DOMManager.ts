@@ -21,7 +21,7 @@ import { VirtualElementPool } from "../../visualElements/VirtualElementPool";
 import { SortingWidget } from "../widgets/listWidget/sortingWidget";
 import { VCluster } from "../../visualElements/vCluster";
 import { SortingListFactory } from "../../factories/sortingListFactory";
-import { ClusterSettingsFactory } from "../../factories/clusterSettingsFactory";
+import { SettingsPanelFactory } from "../../factories/settingsPanelFactory";
 
 
 interface NetworkData {
@@ -109,9 +109,9 @@ export class DOM {
     DOM.checkboxes.magnifyingEffect = document.getElementById(
       "magnifyingEffect",
     ) as HTMLInputElement;
-    DOM.checkboxes.spacesMenu = document.getElementById(
-      "spaces",
-    ) as HTMLInputElement;
+    // DOM.checkboxes.spacesMenu = document.getElementById(
+    //   "spaces",
+    // ) as HTMLInputElement;
 
     DOM.checkboxes.edit.onclick = (evt) => DOM.toggleContextualEdgeMenu(evt);
     DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
@@ -124,8 +124,8 @@ export class DOM {
     DOM.checkboxes.showOutEdges.onclick = (evt) => DOM.eventTriggered(evt);
     DOM.checkboxes.magnifyingEffect.onclick = (evt) =>
       DOM.toggleMagnifyingEffect(evt);
-    DOM.checkboxes.spacesMenu.onclick = (evt) =>
-      DOM.toggleContextualSpacesMenu(evt);
+    // DOM.checkboxes.spacesMenu.onclick = (evt) =>
+    //   DOM.toggleContextualSpacesMenu(evt);
 
     // Sliders
     DOM.sliders.nodeConnectorFilter = document.getElementById(
@@ -338,7 +338,7 @@ export class DOM {
     Canvas.resetObservers();
 
     ClusterFactory.reset();
-    ClusterSettingsFactory.reset();
+    SettingsPanelFactory.reset();
     EdgeFactory.reset();
 
     // Reset TransFactory After reseting the clusters
@@ -379,13 +379,13 @@ export class DOM {
     ContextualGUI.init(connectorKinds);
 
     // Add checkboxes to Space Menu contextual GUI. Contextual menu created in ContextualGUI.init()
-    if (ContextualGUI.spacesMenu) {
-    for (const cluster of ClusterFactory.clusters) {
-      let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
-      ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val:boolean) => {
-        transformerTemp.setActive(val);
-      });
-    }}
+    // if (ContextualGUI.spacesMenu) {
+    // for (const cluster of ClusterFactory.clusters) {
+    //   let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
+    //   ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val:boolean) => {
+    //     transformerTemp.setActive(val);
+    //   });
+    // }}
 
     // Create color dictionary for connectors
     ColorFactory.makeDictionary(
@@ -499,10 +499,10 @@ export class DOM {
    *
    * @param evt changes the visibility of the contextual menu for spaces
    */
-  static toggleContextualSpacesMenu(evt: UIEvent) {
-    ContextualGUI.spacesMenu.toggleVisibility();
-    DOM.eventTriggered(evt);
-  }
+  // static toggleContextualSpacesMenu(evt: UIEvent) {
+  //   ContextualGUI.spacesMenu.toggleVisibility();
+  //   DOM.eventTriggered(evt);
+  // }
 
   static toggleMagnifyingEffect(evt: UIEvent) {
     DOM.updateCheckboxes(evt);

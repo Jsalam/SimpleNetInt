@@ -14,7 +14,7 @@ import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
 import { VCluster } from "../visualElements/vCluster";
 
 
-export class ClusterSettingsFactory {
+export class SettingsPanelFactory {
 
     private static _cSettingsMap = new Map<HTMLElement, ClusterSettings[]>();
 
@@ -48,20 +48,29 @@ export class ClusterSettingsFactory {
         return undefined;
     }
 
-
     /**
        * Add a new ClusterSettings widget for the given VCluster. The widget is appended to 
        * the specified container element or to the default container.
        * @param vCluster the VCluster instance to create settings for
+       * @param updateVCluster true if the instance of ClusterSettings needs to update the vCluster visualization 
        * @param containerElement the container element to append the settings widget to (optional)
        */
-    public static add(vCluster: VCluster, containerElement?: HTMLElement) {
-        const settings = new ClusterSettings(vCluster);
+    public static add(vCluster: VCluster, updateVCluster: boolean, containerElement?: HTMLElement,) {
+        const settings = new ClusterSettings(vCluster, updateVCluster);
+
         let containerTmp: HTMLElement;
 
         if (containerElement) {
             containerTmp = containerElement;
             containerTmp.append(settings.root);
+            let oldContainer = this.getKeyById(containerTmp.id)
+             if (oldContainer) {
+                oldContainer.append(settings.root);
+                this.pushSettings(oldContainer, settings);
+            } else {
+                containerTmp.append(settings.root);
+                this.setSettings(containerTmp, [settings]);
+            }
 
         } else {
             let oldContainer = this.getKeyById("cSettingsMain");
@@ -74,6 +83,7 @@ export class ClusterSettingsFactory {
                 this.setSettings(containerTmp, [settings]);
             }
         }
+        return settings
     }
 
     /*  Public methods  */
@@ -117,4 +127,4 @@ export class ClusterSettingsFactory {
 }
 
 // Attach ClusterFactory to the global window object
-(window as any).ClusterSettingsFactory = ClusterSettingsFactory;
+(window as any).SettingsPanelFactory = SettingsPanelFactory;

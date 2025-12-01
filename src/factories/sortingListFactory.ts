@@ -35,17 +35,18 @@ export class SortingListFactory {
     SortingListFactory.widgets.push(sortingWidget);
 
     return sortingWidget;
-
   }
 
 
   static makeItems(vNodesById: Record<string, VNode[]>) {
     let items: Item[] = [];
     for (const [id, vNodes] of Object.entries(vNodesById)) {
-      let item = new Item(vNodes[0]);
+      let item = new Item(vNodes);
+      // observer pattern
       for (const vNode of vNodes) {
         vNode.subscribe(item);
       }
+      // add item to collection
       items.push(item);
     }
     return items;

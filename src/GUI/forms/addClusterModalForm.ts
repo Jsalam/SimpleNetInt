@@ -31,10 +31,10 @@ export function getDataCluster() {
   ClusterFactory.makeCluster(dataTmp);
 
   // add checkboxes to space contextual menu. Contextual menu created in ContextualGUI.init()
-  let transformerTemp = TransFactory.getTransformerByVClusterID(id);
-  ContextualGUI.spacesMenu.addBoolean(name, false, (val) => {
-    transformerTemp.setActive(val);
-  });
+  // let transformerTemp = TransFactory.getTransformerByVClusterID(id);
+  // ContextualGUI.spacesMenu.addBoolean(name, false, (val) => {
+  //   transformerTemp.setActive(val);
+  // });
 }
 
 export function addClusterToModalFormList(id: string, name: string) {

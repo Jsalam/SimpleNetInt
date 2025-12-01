@@ -13,7 +13,7 @@ import { TransformerInit } from "../canvas/transformer";
 import { Canvas } from "../canvas/canvas";
 import { VNode } from "../visualElements/vNode";
 import { gp5 } from "../main";
-import { ClusterSettingsFactory } from "../factories/clusterSettingsFactory";
+import { SettingsPanelFactory } from "./settingsPanelFactory";
 import { VSelectionCluster } from "../visualElements/vSelectionCluster";
 import { Vector } from "p5";
 
@@ -122,7 +122,7 @@ export class ClusterFactory {
       }
       // Builds the cluster settings menu on the left side of the screen
       
-      ClusterSettingsFactory.add(tmp);
+      SettingsPanelFactory.add(tmp, true);
       
       // set the VCluster transformer from data imported
       if (
@@ -169,7 +169,7 @@ export class ClusterFactory {
         ColorFactory.getPalette(index),
       );
     }
-    ClusterSettingsFactory.add(tmp,document.getElementById('cSettingsMain')!);
+    SettingsPanelFactory.add(tmp,true, document.getElementById('cSettingsMain')!);
     Canvas.subscribe(tmp);
     ClusterFactory.vClusters.push(tmp);
     return tmp;

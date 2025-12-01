@@ -7,7 +7,7 @@ import { CustomEvent } from "../../../types";
  */
 
 export class Item {
-  vNode: VNode;
+  vNodes: VNode[];
   label: string;
   value: number; // The value associated with the item, can be a number or a string
   width: number;
@@ -16,10 +16,10 @@ export class Item {
   svgNS: string;
   element: SVGElement | undefined;
 
-  constructor(vNode: VNode) {
-    this.vNode = vNode;
-    this.label = String(vNode.node.label);
-    this.value = Math.random() * 1; // Use the length of the word as the value
+  constructor(vNodes: VNode[]) {
+    this.vNodes = vNodes; // one node for each cluster in the dataset
+    this.label = String(vNodes[0].node.label);
+    this.value = 0 // Math.random() * 1; // Use the length of the word as the value
     this.width = 0;
     this.height = 0;
     this.classID = this.label
@@ -82,7 +82,7 @@ export class Item {
     if (minValue == maxValue) {
       y = yPos - this.value;
     } else {
-      y = yPos - gp5.map(this.value, minValue, maxValue, 5, yPos);
+      y = yPos - gp5.map(this.value, minValue, maxValue, 1, yPos);
     } // Scale the height for visibility
 
     // Create a line and label
@@ -157,7 +157,9 @@ export class Item {
           }
           if (text) {
             (text as SVGTextElement).style.fill = "#ff0000"; // Change text color to red
-            (text as SVGTextElement).style.fontSize = "18px"; // Make text bold
+            (text as SVGTextElement).style.fontSize = "14px"; // Make text bold
+            (text as SVGTextElement).style.width = "200px";
+
           }
         } else {
           (group as SVGElement).style.color = "#ff0000";
@@ -181,8 +183,8 @@ export class Item {
             (line as SVGLineElement).style.strokeWidth = "1px";
           } // Reset line color
           if (text) {
-            (text as SVGTextElement).style.fill = "darkgrey";
-            (text as SVGTextElement).style.fontSize = "12px"; // Reset text color
+            (text as SVGTextElement).style.fill = "rgba(169, 163, 163, 0.315)";
+            (text as SVGTextElement).style.fontSize = "6px"; // Reset text color
           } // Reset text color
         } else {
           (group as SVGElement).style.backgroundColor = "seashell"; // Reset background color

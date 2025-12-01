@@ -50,7 +50,7 @@ export function getData() {
       }
     }
 
-    vClustTmp.sortingWidget!.addItem(new Item(vNodeTmp));
+   // vClustTmp.sortingWidget!.addItem(new Item(vNodeTmp));
 
     // add to collections
     clusterTmp.addNode(nodeTmp);
