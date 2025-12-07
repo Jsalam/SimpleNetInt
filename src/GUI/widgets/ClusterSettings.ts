@@ -88,7 +88,7 @@ export class ClusterSettings {
     return this.makeContainer('CSContainer',
       this.makeTitle(vCluster.cluster.label!, 'CSTitle'),
       this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
-      this.makeControl("Year Data", 'CSControl selectElementFlex', this.timeControl),
+      this.makeControl("Period", 'CSControl selectElementFlex', this.timeControl),
       this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
       this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
       createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),

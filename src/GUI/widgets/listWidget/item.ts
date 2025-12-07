@@ -122,7 +122,7 @@ export class Item {
     );
     text.setAttribute("dy", "8"); // Leave a 5px gap
     text.setAttribute("text-anchor", "start"); // Justify to the top
-   text.setAttribute('display', 'none')
+   //text.setAttribute('display', 'none')
     return text;
   }
 
