@@ -1,25 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EdgeFactory = void 0;
-var edge_1 = require("../graphElements/edge");
-var main_1 = require("../main");
-var vEdge_1 = require("../visualElements/vEdge");
-var clusterFactory_1 = require("./clusterFactory");
-var canvas_1 = require("../canvas/canvas");
-var EdgeFactory = /** @class */ (function () {
-    function EdgeFactory() {
-    }
-    EdgeFactory.buildEdges = function (edgs, clusters) {
-        var _loop_1 = function (index) {
+const edge_1 = require("../graphElements/edge");
+const main_1 = require("../main");
+const vEdge_1 = require("../visualElements/vEdge");
+const clusterFactory_1 = require("./clusterFactory");
+const canvas_1 = require("../canvas/canvas");
+class EdgeFactory {
+    static _edgeBuffer;
+    static _vEdgeBuffer;
+    static _edges = [];
+    static _vEdges = [];
+    static buildEdges(edgs, clusters) {
+        for (let index = 0; index < Object.keys(edgs).length; index++) {
             // take the source ID: cluster, cat and polarity
-            var e = edgs[index];
-            var source = void 0;
-            var sourceConnector = void 0;
+            let e = edgs[index];
+            let source;
+            let sourceConnector;
             // get source node
             try {
-                var cluster = clusterFactory_1.ClusterFactory.getCluster(e.source.cluster);
+                let cluster = clusterFactory_1.ClusterFactory.getCluster(e.source.cluster);
                 source = cluster.getNode(e.source.index);
-                sourceConnector = source.connectors.filter(function (cnctr) { return cnctr.kind == e.kind; })[0];
+                sourceConnector = source.connectors.filter((cnctr) => cnctr.kind == e.kind)[0];
                 // In case the node does not have the connector. Usual case in merged networks.
                 if (!sourceConnector) {
                     sourceConnector = source.addConnector(e.kind, source.connectors.length);
@@ -31,12 +33,12 @@ var EdgeFactory = /** @class */ (function () {
                 alert("Cannot retrieve the source of this edge:\n" + JSON.stringify(e));
             }
             // get target node
-            var target = void 0;
-            var targetConnector = void 0;
+            let target;
+            let targetConnector;
             try {
-                var cluster = clusterFactory_1.ClusterFactory.getCluster(e.target.cluster);
+                let cluster = clusterFactory_1.ClusterFactory.getCluster(e.target.cluster);
                 target = cluster.getNode(e.target.index);
-                targetConnector = target.connectors.filter(function (cnctr) { return cnctr.kind == e.kind; })[0];
+                targetConnector = target.connectors.filter((cnctr) => cnctr.kind == e.kind)[0];
                 // In case the node does not have the connector. Usual case in merged networks.
                 if (!targetConnector) {
                     targetConnector = target.addConnector(e.kind, target.connectors.length);
@@ -50,11 +52,11 @@ var EdgeFactory = /** @class */ (function () {
             // Instantiate the edge and the vEdge
             try {
                 // get vSource
-                var vSource = clusterFactory_1.ClusterFactory.getVNodeOf(source);
+                let vSource = clusterFactory_1.ClusterFactory.getVNodeOf(source);
                 // get vTarget
-                var vTarget = clusterFactory_1.ClusterFactory.getVNodeOf(target);
+                let vTarget = clusterFactory_1.ClusterFactory.getVNodeOf(target);
                 // make Edge and set target and weight
-                var edge = new edge_1.Edge(source);
+                let edge = new edge_1.Edge(source);
                 edge.setTarget(target);
                 edge.weight = e.weight;
                 // subscribe to source and target's connector. This sets the edge kind
@@ -64,7 +66,7 @@ var EdgeFactory = /** @class */ (function () {
                 sourceConnector.subscribeEdgeObserver(edge);
                 targetConnector.subscribeEdgeObserver(edge);
                 // make VEdge
-                var vEdge = new vEdge_1.VEdge(edge);
+                let vEdge = new vEdge_1.VEdge(edge);
                 // set VNodes
                 vEdge.setVSource(vSource);
                 vEdge.setVTarget(vTarget);
@@ -77,21 +79,18 @@ var EdgeFactory = /** @class */ (function () {
                 console.log(error);
                 //  alert("Cannot complete the instantiation of this edge:\n" + JSON.stringify(e))
             }
-        };
-        for (var index = 0; index < Object.keys(edgs).length; index++) {
-            _loop_1(index);
         }
-    };
+    }
     // static get EDGES() {
     //     return EdgeFactory._edges;
     // }
-    EdgeFactory.reset = function () {
+    static reset() {
         EdgeFactory._edges = [];
         EdgeFactory._vEdges = [];
-    };
-    EdgeFactory.deleteLastVEdge = function () {
+    }
+    static deleteLastVEdge() {
         // remove the last vEdge from the collection
-        var lastVEdge = EdgeFactory._vEdges.pop();
+        let lastVEdge = EdgeFactory._vEdges.pop();
         // delete corresponding edge
         EdgeFactory._edges.pop();
         if (lastVEdge) {
@@ -101,17 +100,17 @@ var EdgeFactory = /** @class */ (function () {
             // unsubscribe vEdge from canvas
             canvas_1.Canvas.unsubscribe(lastVEdge);
         }
-    };
-    EdgeFactory.deleteEdge = function (edge) {
+    }
+    static deleteEdge(edge) {
         // find the corresponding vEdge
-        var tmpEdge = EdgeFactory.contains(EdgeFactory._edges, edge);
-        var tmpVEdge = EdgeFactory.retrieveVEdgeForEdge(tmpEdge);
-        var indexOf = EdgeFactory._vEdges.indexOf(tmpVEdge);
+        let tmpEdge = EdgeFactory.contains(EdgeFactory._edges, edge);
+        let tmpVEdge = EdgeFactory.retrieveVEdgeForEdge(tmpEdge);
+        let indexOf = EdgeFactory._vEdges.indexOf(tmpVEdge);
         // extract the VEdge from the collections
-        var removedVEdge = EdgeFactory._vEdges.splice(indexOf, 1)[0];
+        let removedVEdge = EdgeFactory._vEdges.splice(indexOf, 1)[0];
         // delete corresponding edge
         indexOf = EdgeFactory._edges.indexOf(edge);
-        var removedEdge = EdgeFactory._edges.splice(indexOf, 1)[0];
+        let removedEdge = EdgeFactory._edges.splice(indexOf, 1)[0];
         removedEdge = undefined;
         // remove connectors from its vNodes
         if (removedVEdge) {
@@ -122,13 +121,13 @@ var EdgeFactory = /** @class */ (function () {
             canvas_1.Canvas.unsubscribe(removedVEdge);
             //     console.log("done")
         }
-    };
-    EdgeFactory.retrieveVEdgeForEdge = function (edgeA) {
-        var rtn = false;
-        var element;
+    }
+    static retrieveVEdgeForEdge(edgeA) {
+        let rtn = false;
+        let element;
         if (EdgeFactory._vEdges.length > 0) {
             element = EdgeFactory._vEdges.filter(function (vEdgeB) {
-                var edgeB = vEdgeB.edge;
+                let edgeB = vEdgeB.edge;
                 if (EdgeFactory.compareEdges(edgeA, edgeB))
                     return true;
             })[0];
@@ -138,17 +137,17 @@ var EdgeFactory = /** @class */ (function () {
         // NOTE: does this mean that the element retrieved from the list of vEdges is not a VEdge? Or does it mean that
         // the element could be a boolean (false)? Please advise.
         return rtn;
-    };
-    EdgeFactory.isThereOpenEdge = function () {
-        var rtn = false;
+    }
+    static isThereOpenEdge() {
+        let rtn = false;
         if (EdgeFactory._vEdgeBuffer) {
             rtn = true;
         }
         return rtn;
-    };
-    EdgeFactory.pushEdge = function (edge) {
+    }
+    static pushEdge(edge) {
         if (edge instanceof edge_1.Edge) {
-            var edgeInList = EdgeFactory.contains(EdgeFactory._edges, edge);
+            let edgeInList = EdgeFactory.contains(EdgeFactory._edges, edge);
             if (edgeInList) {
                 console.log("Duplicated edge. Weight increased by 1");
                 edgeInList.increaseWeight();
@@ -157,10 +156,10 @@ var EdgeFactory = /** @class */ (function () {
                 EdgeFactory._edges.push(edge);
             }
         }
-    };
-    EdgeFactory.pushVEdge = function (vEdge) {
+    }
+    static pushVEdge(vEdge) {
         if (vEdge instanceof vEdge_1.VEdge) {
-            var vEdgeInList = !EdgeFactory.contains(EdgeFactory._vEdges, vEdge);
+            let vEdgeInList = !EdgeFactory.contains(EdgeFactory._vEdges, vEdge);
             if (vEdgeInList) {
                 EdgeFactory._vEdges.push(vEdge);
             }
@@ -171,17 +170,17 @@ var EdgeFactory = /** @class */ (function () {
         else {
             console.log("vEdge duplicated");
         }
-    };
-    EdgeFactory.getLastEdge = function () {
+    }
+    static getLastEdge() {
         return EdgeFactory._edges.slice(-1)[0];
-    };
-    EdgeFactory.getLastVEdge = function () {
+    }
+    static getLastVEdge() {
         return EdgeFactory._vEdges.slice(-1)[0];
-    };
+    }
     /** Returns the first element in the list equal to the one in the parameter, else returns false.  Equality determined by source-target pairs */
-    EdgeFactory.contains = function (list, edgeA) {
-        var rtn = false;
-        var element;
+    static contains(list, edgeA) {
+        let rtn = false;
+        let element;
         if (list.length > 0) {
             element = list.filter(function (edgeB) {
                 if (EdgeFactory.compareEdges(edgeA, edgeB))
@@ -191,16 +190,16 @@ var EdgeFactory = /** @class */ (function () {
         if (element)
             rtn = element;
         return rtn;
-    };
+    }
     /** Serves to evaluate if two edges are equal by comparing their source and target pajekIndexes.
      * @param edgeA : either Edge or VEdge
      * @param edgeB : either Edge or VEdge
      */
-    EdgeFactory.compareEdges = function (edgeA, edgeB) {
-        var rtn = false;
+    static compareEdges(edgeA, edgeB) {
+        let rtn = false;
         // compare pajek indexes
         if (edgeA && edgeB) {
-            var A = void 0, B = void 0;
+            let A, B;
             if (edgeA.target) {
                 A = [edgeA.source.idCat.pajekIndex, edgeA.target.idCat.pajekIndex];
             }
@@ -217,8 +216,8 @@ var EdgeFactory = /** @class */ (function () {
         }
         // compare kinds for edges
         if (rtn == true) {
-            var A = edgeA;
-            var B = edgeB;
+            let A = edgeA;
+            let B = edgeB;
             if (edgeA instanceof vEdge_1.VEdge) {
                 A = edgeA.edge;
             }
@@ -228,34 +227,34 @@ var EdgeFactory = /** @class */ (function () {
             rtn = A.kind === B.kind;
         }
         return rtn;
-    };
-    EdgeFactory.getBufferEdge = function () {
+    }
+    static getBufferEdge() {
         return EdgeFactory._edgeBuffer;
-    };
-    EdgeFactory.getBufferVEdge = function () {
+    }
+    static getBufferVEdge() {
         return EdgeFactory._vEdgeBuffer;
-    };
-    EdgeFactory.setBufferEdge = function (edge) {
+    }
+    static setBufferEdge(edge) {
         EdgeFactory._edgeBuffer = edge;
-    };
-    EdgeFactory.setBufferVEdge = function (vEdge) {
+    }
+    static setBufferVEdge(vEdge) {
         EdgeFactory._vEdgeBuffer = vEdge;
-    };
-    EdgeFactory.clearBuffer = function () {
+    }
+    static clearBuffer() {
         // reset variables
         EdgeFactory._edgeBuffer = undefined;
         EdgeFactory._vEdgeBuffer = undefined;
-    };
+    }
     /** The logic here is this: the user operates on the vEdge. The moment she presses the Escape button or call this function
      * by any other mean, it is assumed that it is an user decision. So, the deletion trickels down from visual elements down
      * to logic elements.
      */
-    EdgeFactory.recallBuffer = function () {
+    static recallBuffer() {
         if (EdgeFactory._vEdgeBuffer) {
             // get the VNode for the source
-            var sourceVNode = EdgeFactory._vEdgeBuffer.source.vNodeObserver;
+            let sourceVNode = EdgeFactory._vEdgeBuffer.source.vNodeObserver;
             // get the connectors for the source
-            var sourceConnector = EdgeFactory._vEdgeBuffer.edge.getSourceConnector();
+            let sourceConnector = EdgeFactory._vEdgeBuffer.edge.getSourceConnector();
             // delete the edge here otherwise connector won't be empty for deletion */
             sourceVNode.node.disconnectEdge(EdgeFactory._vEdgeBuffer.edge);
             // remove visual connectors from VNode
@@ -266,21 +265,19 @@ var EdgeFactory = /** @class */ (function () {
                 // the same process might need to be done with the target
             }
         }
-    };
+    }
     /**This is not the function used by the exportModalFrom. Look for the getJSON() function in VEdge class */
-    EdgeFactory.recordJSON = function (suffix) {
-        var filename = "vEdges.json";
+    static recordJSON(suffix) {
+        let filename = "vEdges.json";
         if (suffix) {
             filename = suffix + "_" + filename;
         }
-        var output = [];
-        for (var index = 0; index < EdgeFactory._vEdges.length; index++) {
+        let output = [];
+        for (let index = 0; index < EdgeFactory._vEdges.length; index++) {
             output.push(EdgeFactory._vEdges[index].getJSON());
         }
         main_1.gp5.saveJSON(output, filename);
-    };
-    EdgeFactory._edges = [];
-    EdgeFactory._vEdges = [];
-    return EdgeFactory;
-}());
+    }
+}
 exports.EdgeFactory = EdgeFactory;
+//# sourceMappingURL=edgeFactory.js.map

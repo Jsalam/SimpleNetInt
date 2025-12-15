@@ -1,12 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Layout = void 0;
-var main_1 = require("../../main");
+const main_1 = require("../../main");
 /**
  * Instances of this class are associated with VClusters
  */
-var Layout = /** @class */ (function () {
-    function Layout() {
+class Layout {
+    width;
+    height;
+    margin;
+    area;
+    vNodes;
+    constructor() {
         this.width = main_1.gp5.width;
         this.height = main_1.gp5.height;
         this.margin = { left: 0, top: 0, right: 0, bottom: 0 };
@@ -14,19 +19,19 @@ var Layout = /** @class */ (function () {
         this.area = this.setArea();
         this.vNodes;
     }
-    Layout.prototype.subscribeVNodes = function (vNodes) {
+    subscribeVNodes(vNodes) {
         this.vNodes = vNodes;
-    };
-    Layout.prototype.setWidth = function (wdth) {
+    }
+    setWidth(wdth) {
         this.width = wdth;
         this.area = this.setArea(wdth, this.height);
-    };
-    Layout.prototype.setHeight = function (hght) {
+    }
+    setHeight(hght) {
         this.height = hght;
         this.area = this.setArea(this.width, hght);
-    };
-    Layout.prototype.setArea = function (wdth, hght) {
-        var w, h;
+    }
+    setArea(wdth, hght) {
+        let w, h;
         if (!wdth) {
             w = this.width - this.margin.left - this.margin.right;
         }
@@ -40,12 +45,12 @@ var Layout = /** @class */ (function () {
             h = hght;
         }
         return { width: w, height: h };
-    };
-    Layout.prototype.linearArray = function (stepX, stepY) {
-        var xCapacity = this.area.width / stepX;
-        var xPos = 0;
-        var yPos = 0;
-        for (var i = 0; i < this.vNodes.length; i++) {
+    }
+    linearArray(stepX, stepY) {
+        const xCapacity = this.area.width / stepX;
+        let xPos = 0;
+        let yPos = 0;
+        for (let i = 0; i < this.vNodes.length; i++) {
             if (i > 0 && i % xCapacity == 0) {
                 xPos = 0;
                 yPos += stepY;
@@ -54,23 +59,22 @@ var Layout = /** @class */ (function () {
             this.vNodes[i].setX(xPos);
             this.vNodes[i].setY(yPos);
         }
-    };
+    }
     /**
      * Based on NetInt Concentric Layouts. https://github.com/LeonardoResearchGroup/NetInt/blob/master/Java/CommunityVisualizationJUNG/src/netInt/containers/layout/ConcentricLayout.java
      * @param {Number} maxRadius
      */
-    Layout.prototype.concentricArray = function (maxRadius, gapFactor) {
-        var accLength = 0;
-        var maxCircumference = this._getCircumference(maxRadius);
-        var largest = 0;
-        var lastRadius = 0;
+    concentricArray(maxRadius, gapFactor) {
+        let accLength = 0;
+        let maxCircumference = this._getCircumference(maxRadius);
+        let largest = 0;
+        let lastRadius = 0;
         // The collection of Nodes belonging to each tier
-        var rings = [];
+        let rings = [];
         // Temporary collection of nodes
-        var tempVNodes = [];
-        for (var _i = 0, _a = this.vNodes; _i < _a.length; _i++) {
-            var vNode = _a[_i];
-            var nodeDiam = gapFactor * vNode.diam;
+        let tempVNodes = [];
+        for (const vNode of this.vNodes) {
+            let nodeDiam = gapFactor * vNode.diam;
             accLength += nodeDiam;
             // This is to get the largest node diameter
             if (nodeDiam > largest) {
@@ -107,12 +111,12 @@ var Layout = /** @class */ (function () {
         tempVNodes = [];
         // Return collection
         //  return rings;
-    };
-    Layout.prototype.setLocations = function (totalLength, lastRadius, gapFactor) {
+    }
+    setLocations(totalLength, lastRadius, gapFactor) {
         // Distribute all possible angles in all length units
-        var angleFraction = (Math.PI * 2) / this.vNodes.length; //totalLength;
+        let angleFraction = (Math.PI * 2) / this.vNodes.length; //totalLength;
         // Calculate the tier's radius
-        var radius = totalLength / (Math.PI * 2);
+        let radius = totalLength / (Math.PI * 2);
         // If the radius is too small
         if (radius < 200) {
             radius = 200;
@@ -122,23 +126,23 @@ var Layout = /** @class */ (function () {
             radius = lastRadius;
         }
         // Accumulated length
-        var accLength = 0;
-        for (var i = 0; i < this.vNodes.length; i++) {
-            var nodeLength = gapFactor * this.vNodes[i].diam;
-            var angle = i * angleFraction;
+        let accLength = 0;
+        for (let i = 0; i < this.vNodes.length; i++) {
+            let nodeLength = gapFactor * this.vNodes[i].diam;
+            let angle = i * angleFraction;
             accLength += nodeLength;
             // set the location for that vertex
-            var posX = Math.cos(angle) * radius;
-            var posY = Math.sin(angle) * radius;
+            let posX = Math.cos(angle) * radius;
+            let posY = Math.sin(angle) * radius;
             this.vNodes[i].setX(posX);
             this.vNodes[i].setY(posY);
         }
         return radius;
-    };
-    Layout.prototype._getCircumference = function (radius) {
-        var result = 2 * Math.PI * radius;
+    }
+    _getCircumference(radius) {
+        let result = 2 * Math.PI * radius;
         return result;
-    };
-    return Layout;
-}());
+    }
+}
 exports.Layout = Layout;
+//# sourceMappingURL=layout.js.map

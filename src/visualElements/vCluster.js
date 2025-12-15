@@ -1,48 +1,37 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VCluster = void 0;
-var vNode_1 = require("./vNode");
-var layout_1 = require("./layouts/layout");
-var transformerFactory_1 = require("../factories/transformerFactory");
-var button_1 = require("./button");
-var main_1 = require("../main");
-var colorFactory_1 = require("../factories/colorFactory");
-var canvas_1 = require("../canvas/canvas");
-var node_1 = require("../graphElements/node");
-var VCluster = /** @class */ (function (_super) {
-    __extends(VCluster, _super);
-    function VCluster(cluster, x, y, width, height, palette) {
-        var _this = _super.call(this, x, y, width, height) || this;
-        _this.sortingWidget = null;
-        _this.boundingBox = [0, 0, 0, 0];
-        _this.vNodes = [];
-        _this.cluster = cluster;
-        _this.palette = palette;
+const vNode_1 = require("./vNode");
+const layout_1 = require("./layouts/layout");
+const transformerFactory_1 = require("../factories/transformerFactory");
+const button_1 = require("./button");
+const main_1 = require("../main");
+const colorFactory_1 = require("../factories/colorFactory");
+const canvas_1 = require("../canvas/canvas");
+const node_1 = require("../graphElements/node");
+class VCluster extends button_1.Button {
+    sortingWidget = null;
+    vNodes;
+    cluster;
+    palette;
+    layout;
+    timestamp;
+    dimension;
+    boundingBox = [0, 0, 0, 0];
+    constructor(cluster, x, y, width, height, palette) {
+        super(x, y, width, height);
+        this.vNodes = [];
+        this.cluster = cluster;
+        this.palette = palette;
         // instantiate a layout
-        _this.layout = new layout_1.Layout();
-        _this.populateVNodes(cluster);
-        _this.layout.subscribeVNodes(_this.vNodes);
+        this.layout = new layout_1.Layout();
+        this.populateVNodes(cluster);
+        this.layout.subscribeVNodes(this.vNodes);
         // instantiate a tranformer for this vCluster
-        transformerFactory_1.TransFactory.initTransformer(_this);
-        return _this;
+        transformerFactory_1.TransFactory.initTransformer(this);
     }
     // Observing to Canvas
-    VCluster.prototype.fromCanvas = function (data) {
+    fromCanvas(data) {
         if (data.event instanceof MouseEvent) {
             // do something
         }
@@ -53,20 +42,19 @@ var VCluster = /** @class */ (function (_super) {
             // do something
         }
         return false;
-    };
-    VCluster.prototype.populateVNodes = function (cluster) {
-        for (var index = 0; index < cluster.nodes.length; index++) {
-            var node = cluster.nodes[index];
+    }
+    populateVNodes(cluster) {
+        for (let index = 0; index < cluster.nodes.length; index++) {
+            const node = cluster.nodes[index];
             // Create vNode
-            var vNodeTemp = void 0;
+            let vNodeTemp;
             if (node instanceof node_1.Node) {
                 // node size
-                var vNodeW = 10;
-                var vNodeH = 10;
+                let vNodeW = 10;
+                let vNodeH = 10;
                 // instantiation
                 vNodeTemp = new vNode_1.VNode(node, vNodeW, vNodeH, this);
-                for (var _i = 0, _a = vNodeTemp.node.connectors; _i < _a.length; _i++) {
-                    var connector = _a[_i];
+                for (const connector of vNodeTemp.node.connectors) {
                     vNodeTemp.addVConnector(connector);
                 }
             }
@@ -85,10 +73,10 @@ var VCluster = /** @class */ (function (_super) {
             // add to colecction
             this.addVNode(vNodeTemp, node.importedVNodeData);
         }
-    };
-    VCluster.prototype.addVNode = function (vNode, data) {
+    }
+    addVNode(vNode, data) {
         if (data) {
-            var pos = main_1.gp5.createVector(data.posX, data.posY, data.posZ);
+            const pos = main_1.gp5.createVector(data.posX, data.posY, data.posZ);
             vNode.updateCoords(pos, 0);
             vNode.setColor(data.color);
         }
@@ -100,19 +88,19 @@ var VCluster = /** @class */ (function (_super) {
         canvas_1.Canvas.subscribe(vNode);
         // add to collection
         this.vNodes.push(vNode);
-    };
-    VCluster.prototype.getVNode = function (node) {
-        return this.vNodes.filter(function (vN) {
+    }
+    getVNode(node) {
+        return this.vNodes.filter((vN) => {
             return vN.node.idCat === node.idCat;
         })[0];
-    };
-    VCluster.prototype.setPalette = function (palette) {
+    }
+    setPalette(palette) {
         if (palette) {
             this.palette = palette;
         }
-        var counter = 0;
+        let counter = 0;
         if (this.palette) {
-            for (var i = 0; i < this.vNodes.length; i++) {
+            for (let i = 0; i < this.vNodes.length; i++) {
                 if (counter >= this.palette.length) {
                     counter = 0;
                 }
@@ -120,9 +108,9 @@ var VCluster = /** @class */ (function (_super) {
                 counter++;
             }
         }
-    };
-    VCluster.prototype.highlight = function (vNode) { };
-    VCluster.prototype.show = function (renderer) {
+    }
+    highlight(vNode) { }
+    show(renderer) {
         renderer.textAlign(main_1.gp5.LEFT, main_1.gp5.TOP);
         if (this.cluster.label) {
             renderer.textSize(12);
@@ -131,11 +119,11 @@ var VCluster = /** @class */ (function (_super) {
             renderer.textLeading(12);
             renderer.text(this.cluster.label, this.pos.x, this.pos.y, 140);
         }
-    };
-    VCluster.prototype.updatePalette = function () { };
-    VCluster.prototype.getJSON = function () {
-        var trans = transformerFactory_1.TransFactory.getTransformerByVClusterID(this.cluster.id);
-        var rtn = {
+    }
+    updatePalette() { }
+    getJSON() {
+        let trans = transformerFactory_1.TransFactory.getTransformerByVClusterID(this.cluster.id);
+        let rtn = {
             clusterID: this.cluster.id,
             clusterLabel: this.cluster.label,
             clusterDescription: this.cluster.description,
@@ -144,12 +132,12 @@ var VCluster = /** @class */ (function (_super) {
             matrixComponents: JSON.stringify(trans.transform),
             nodes: [],
         };
-        this.vNodes.forEach(function (vNode) {
-            var tmpN = vNode.getJSON();
+        this.vNodes.forEach((vNode) => {
+            let tmpN = vNode.getJSON();
             rtn.nodes.push(tmpN);
         });
         return rtn;
-    };
-    return VCluster;
-}(button_1.Button));
+    }
+}
 exports.VCluster = VCluster;
+//# sourceMappingURL=vCluster.js.map

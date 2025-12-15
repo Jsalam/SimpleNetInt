@@ -1,17 +1,29 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VEdge = void 0;
-var edgeFactory_1 = require("../factories/edgeFactory");
-var DOMManager_1 = require("../GUI/DOM/DOMManager");
-var animejs_1 = require("animejs");
-var canvas_1 = require("../canvas/canvas");
-var p5_1 = require("p5");
-var colorFactory_1 = require("../factories/colorFactory");
-var main_1 = require("../main");
-var transformerFactory_1 = require("../factories/transformerFactory");
-var VirtualElementPool_1 = require("./VirtualElementPool");
-var VEdge = /** @class */ (function () {
-    function VEdge(edge) {
+const edgeFactory_1 = require("../factories/edgeFactory");
+const DOMManager_1 = require("../GUI/DOM/DOMManager");
+const animejs_1 = __importDefault(require("animejs"));
+const canvas_1 = require("../canvas/canvas");
+const p5_1 = __importDefault(require("p5"));
+const colorFactory_1 = require("../factories/colorFactory");
+const main_1 = require("../main");
+const transformerFactory_1 = require("../factories/transformerFactory");
+const VirtualElementPool_1 = require("./VirtualElementPool");
+class VEdge {
+    edge;
+    source;
+    target;
+    vSource;
+    vTarget;
+    color;
+    riseFactor;
+    controlOrg;
+    controlEnd;
+    constructor(edge) {
         this.edge = edge;
         this.source = edge.source;
         this.target;
@@ -27,19 +39,19 @@ var VEdge = /** @class */ (function () {
         this.controlEnd;
     }
     // Observing to Canvas
-    VEdge.prototype.fromCanvas = function (data) {
+    fromCanvas(data) {
         if (data.event instanceof MouseEvent) {
             // DOM event
             if (data.type == "DOMEvent") {
                 // get the checkbox
-                var DOMelementID_1 = data.event.target.id;
-                var DOMChecked = data.event.target.checked;
-                var elements = edgeFactory_1.EdgeFactory._vEdges.filter(function (vE) {
-                    if (vE.edge.kind == DOMelementID_1) {
+                let DOMelementID = data.event.target.id;
+                let DOMChecked = data.event.target.checked;
+                let elements = edgeFactory_1.EdgeFactory._vEdges.filter(function (vE) {
+                    if (vE.edge.kind == DOMelementID) {
                         return true;
                     }
                 });
-                var rise = void 0;
+                let rise;
                 if (DOMChecked) {
                     rise = 0.03;
                 }
@@ -58,8 +70,7 @@ var VEdge = /** @class */ (function () {
                     });
                 }
                 else {
-                    for (var _i = 0, elements_1 = elements; _i < elements_1.length; _i++) {
-                        var element = elements_1[_i];
+                    for (const element of elements) {
                         element.riseFactor = rise;
                     }
                     canvas_1.Canvas.update();
@@ -72,26 +83,25 @@ var VEdge = /** @class */ (function () {
         else {
         }
         return false;
-    };
-    VEdge.prototype.setVSource = function (vNode) {
+    }
+    setVSource(vNode) {
         this.vSource = vNode;
         // this.setColor(vNode.vConnectors[0].color);
         this.controlOrg = vNode.pos;
-    };
-    VEdge.prototype.setVTarget = function (vNode) {
+    }
+    setVTarget(vNode) {
         this.vTarget = vNode;
         // vConctr.setColor(this.color);
         this.controlEnd = vNode.pos;
-    };
-    VEdge.prototype.setColor = function (color) {
+    }
+    setColor(color) {
         this.color = color;
-    };
-    VEdge.prototype.show = function (renderer) {
-        var _this = this;
-        var displayEdge = false;
-        var alpha;
+    }
+    show(renderer) {
+        let displayEdge = false;
+        let alpha;
         // visible only of the source and target are visible
-        var sourceTargetVisible = false;
+        let sourceTargetVisible = false;
         if (this.vTarget) {
             sourceTargetVisible = this.vSource.visible && this.vTarget.visible;
         }
@@ -111,7 +121,7 @@ var VEdge = /** @class */ (function () {
             }
         }
         // Highligted when the source connector is selected in the GUI menu
-        var vCnctrSource = this.vSource.vConnectors.filter(function (vCnctr) { return vCnctr.connector.kind == _this.edge.kind; })[0];
+        let vCnctrSource = this.vSource.vConnectors.filter((vCnctr) => vCnctr.connector.kind == this.edge.kind)[0];
         if (vCnctrSource.selected) {
             // displayEdge = true;
             alpha = "85";
@@ -128,11 +138,11 @@ var VEdge = /** @class */ (function () {
             //     }
             // }
             // get stroke color
-            var baseColor = colorFactory_1.ColorFactory.dictionaries.connectors[this.edge.kind];
+            let baseColor = colorFactory_1.ColorFactory.dictionaries.connectors[this.edge.kind];
             if (!baseColor)
                 baseColor = this.vSource.color;
-            var strokeColor = this._getStrokeColor(baseColor, alpha);
-            var strokeWeight = this._getStrokeWeight(Number(DOMManager_1.DOM.sliders.edgeTickness.value)); // the parameter attenuates the thickness
+            let strokeColor = this._getStrokeColor(baseColor, alpha);
+            let strokeWeight = this._getStrokeWeight(Number(DOMManager_1.DOM.sliders.edgeTickness.value)); // the parameter attenuates the thickness
             // Handle polymorphism for gp5.color()
             if (typeof strokeColor === "string") {
                 strokeColor = main_1.gp5.color(strokeColor); // Handle string input
@@ -148,7 +158,7 @@ var VEdge = /** @class */ (function () {
                 strokeColor = main_1.gp5.color(0); // Fallback to black
             }
             if (vCnctrSource.selected) {
-                var tr = transformerFactory_1.TransFactory.getTransformerByVClusterID(this.source.idCat.cluster);
+                const tr = transformerFactory_1.TransFactory.getTransformerByVClusterID(this.source.idCat.cluster);
                 strokeColor.setAlpha(main_1.gp5.map(tr.scaleFactor, 1, 0.3, 140, 1));
             }
             this.showBezierArcs(renderer, strokeColor, strokeWeight);
@@ -156,13 +166,13 @@ var VEdge = /** @class */ (function () {
         else {
             VirtualElementPool_1.VirtualElementPool.hide(this, "edge-label");
         }
-    };
-    VEdge.prototype._getStrokeColor = function (_baseColor, _alpha) {
-        var baseColor = _baseColor;
+    }
+    _getStrokeColor(_baseColor, _alpha) {
+        let baseColor = _baseColor;
         // default color
-        var strokeColor = baseColor;
-        var inPropagation = "#FF0000";
-        var alpha;
+        let strokeColor = baseColor;
+        let inPropagation = "#FF0000";
+        let alpha;
         if (_alpha) {
             alpha = _alpha;
         }
@@ -198,17 +208,17 @@ var VEdge = /** @class */ (function () {
             strokeColor = baseColor;
         }
         return strokeColor.concat(alpha);
-    };
+    }
     /**
      *
      * @param {Numeric} factor A value between 1 and 0
      * @returns
      */
-    VEdge.prototype._getStrokeWeight = function (factor) {
+    _getStrokeWeight(factor) {
         // default color
-        var strokeWeight = 1;
-        var thick = 4;
-        var light = 2;
+        let strokeWeight = 1;
+        let thick = 4;
+        let light = 2;
         if (DOMManager_1.DOM.boxChecked("forward") && DOMManager_1.DOM.boxChecked("backward")) {
             if (this.source.inFwdPropagation ||
                 (this.edge.target && this.edge.target.inBkwPropagation)) {
@@ -240,25 +250,25 @@ var VEdge = /** @class */ (function () {
         if (!factor || factor > 1)
             factor = 1;
         return strokeWeight * this.edge.weight * factor;
-    };
-    VEdge.prototype.getOrgCoords = function (vNode, _kind) {
-        var pos, kind;
+    }
+    getOrgCoords(vNode, _kind) {
+        let pos, kind;
         if (!_kind) {
             kind = this.edge.kind;
         }
-        var vConnector = vNode.vConnectors.filter(function (vCnctr) { return vCnctr.connector.kind == kind; })[0];
+        let vConnector = vNode.vConnectors.filter((vCnctr) => vCnctr.connector.kind == kind)[0];
         pos = main_1.gp5.createVector(vConnector.pos.x, vConnector.pos.y);
         return pos;
-    };
-    VEdge.prototype.showBezierArcs = function (renderer, color, weight) {
+    }
+    showBezierArcs(renderer, color, weight) {
         // line thickness
         renderer.strokeWeight(weight);
         renderer.stroke(color);
         renderer.noFill();
         // general properties
-        var factor = 1 / 2;
-        var org = this.getOrgCoords(this.vSource);
-        var end;
+        let factor = 1 / 2;
+        let org = this.getOrgCoords(this.vSource);
+        let end;
         // If the edge does not have target yet
         if (!this.vTarget) {
             end = main_1.gp5.createVector(canvas_1.Canvas._mouse.x, canvas_1.Canvas._mouse.y);
@@ -267,8 +277,8 @@ var VEdge = /** @class */ (function () {
             end = this.getOrgCoords(this.vTarget);
         }
         // estimate arm length
-        var distBtwnNodes = main_1.gp5.dist(org.x, org.y, end.x, org.y);
-        var arm = factor * distBtwnNodes;
+        let distBtwnNodes = main_1.gp5.dist(org.x, org.y, end.x, org.y);
+        let arm = factor * distBtwnNodes;
         // this.riseFactor = 0;
         // set control points
         // when the link direction points to the left
@@ -301,7 +311,7 @@ var VEdge = /** @class */ (function () {
             this.vSource.mouseIsOver ||
             (this.vTarget && this.vTarget.mouseIsOver)) {
             // get the color in string format
-            var colorHex = "#ffffff";
+            let colorHex = "#ffffff";
             if (color instanceof p5_1.default.Color) {
                 colorHex = colorFactory_1.ColorFactory.convertP5ColorToHex(color);
             }
@@ -311,17 +321,21 @@ var VEdge = /** @class */ (function () {
                 overflow: "hidden",
                 display: "block",
                 color: colorHex,
-                transform: "\n                translate(".concat(canvas_1.Canvas._offset.x, "px, ").concat(canvas_1.Canvas._offset.y, "px)\n                scale(").concat(canvas_1.Canvas._zoom, ")\n                translate(").concat(10 + (this.controlOrg.x + this.controlEnd.x) / 2, "px, ").concat((this.controlOrg.y + this.controlEnd.y) / 2, "px)\n            "),
+                transform: `
+                translate(${canvas_1.Canvas._offset.x}px, ${canvas_1.Canvas._offset.y}px)
+                scale(${canvas_1.Canvas._zoom})
+                translate(${10 + (this.controlOrg.x + this.controlEnd.x) / 2}px, ${(this.controlOrg.y + this.controlEnd.y) / 2}px)
+            `,
             });
         }
         else {
             VirtualElementPool_1.VirtualElementPool.hide(this, "edge-label");
         }
-    };
-    VEdge.prototype.getJSON = function () {
-        var org = this.getOrgCoords(this.vSource);
-        var end = this.getOrgCoords(this.vTarget);
-        var rtn = {
+    }
+    getJSON() {
+        let org = this.getOrgCoords(this.vSource);
+        let end = this.getOrgCoords(this.vTarget);
+        let rtn = {
             edge: this.edge.getJSON(),
             vSource: this.vSource.getJSON(),
             vTarget: this.vTarget.getJSON(),
@@ -341,7 +355,7 @@ var VEdge = /** @class */ (function () {
             },
         };
         return rtn;
-    };
-    return VEdge;
-}());
+    }
+}
 exports.VEdge = VEdge;
+//# sourceMappingURL=vEdge.js.map

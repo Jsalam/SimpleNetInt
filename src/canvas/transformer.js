@@ -1,13 +1,53 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Transformer = void 0;
 /**
  * This example uses glmatrix.js to perform efficient matrix operations. See http://glmatrix.net/
  */
-var glMatrix = require("gl-matrix");
-var canvas_1 = require("./canvas");
-var Transformer = /** @class */ (function () {
-    function Transformer(vCluster) {
+const glMatrix = __importStar(require("gl-matrix"));
+const canvas_1 = require("./canvas");
+class Transformer {
+    vCluster;
+    transform;
+    invert;
+    scaleFactor;
+    transformed;
+    active;
+    needsUpdate;
+    constructor(vCluster) {
         // The cluster this transformer is associated with
         this.vCluster = vCluster;
         // The transformation matrix
@@ -24,8 +64,8 @@ var Transformer = /** @class */ (function () {
         this.needsUpdate = false;
     }
     // Observing to Canvas
-    Transformer.prototype.fromCanvas = function (data) {
-        var handled = false;
+    fromCanvas(data) {
+        let handled = false;
         // MouseEvents
         if (data.event instanceof MouseEvent) {
             if (data.type == "mouseclick") {
@@ -53,22 +93,22 @@ var Transformer = /** @class */ (function () {
             }
         }
         return handled;
-    };
-    Transformer.prototype.pushVCluster = function (vCluster) {
+    }
+    pushVCluster(vCluster) {
         if (!this.needsUpdate)
             return;
         //  if (this.active) {
-        var vC = vCluster;
+        let vC = vCluster;
         // if missing parameter
         if (!vC)
             vC = this.vCluster;
-        for (var i = 0; i < vC.vNodes.length; i++) {
-            var vN = vC.vNodes[i];
+        for (let i = 0; i < vC.vNodes.length; i++) {
+            let vN = vC.vNodes[i];
             // A VNode can belong to multiple VClusters, but it only transforms with its current "parent"
             if (vN.parentVCluster != null && vN.parentVCluster !== vC) {
                 continue;
             }
-            var tmp = [];
+            let tmp = [];
             glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.invert);
             glMatrix.vec2.transformMat2d(tmp, tmp, this.transform);
             vN.pos.set(tmp);
@@ -76,47 +116,47 @@ var Transformer = /** @class */ (function () {
         }
         this._getInvert();
         this.needsUpdate = false;
-    };
-    Transformer.prototype.popVCluster = function (vCluster) {
-        var vC = vCluster;
+    }
+    popVCluster(vCluster) {
+        let vC = vCluster;
         // if missing parameter
         if (!vC)
             vC = this.vCluster;
-        for (var i = 0; i < vC.vNodes.length; i++) {
-            var vN = vC.vNodes[i];
-            var tmp = [];
+        for (let i = 0; i < vC.vNodes.length; i++) {
+            let vN = vC.vNodes[i];
+            let tmp = [];
             glMatrix.vec2.transformMat2d(tmp, [vN.pos.x, vN.pos.y], this.invert);
             vN.pos.set(tmp);
         }
-    };
+    }
     /** Applies the last computed tranformation to the given vectors */
-    Transformer.prototype.pushTo = function (p5vectors) {
+    pushTo(p5vectors) {
         if (this.active) {
-            for (var i = 0; i < p5vectors.length; i++) {
-                var tmp = [];
-                var vector = p5vectors[i];
+            for (let i = 0; i < p5vectors.length; i++) {
+                let tmp = [];
+                const vector = p5vectors[i];
                 glMatrix.vec2.transformMat2d(tmp, [vector.x, vector.y], this.transform);
                 vector.set(tmp);
             }
         }
-    };
+    }
     /** Restores the given vectors to the invert of the transformation */
-    Transformer.prototype.popTo = function (p5vectors) {
+    popTo(p5vectors) {
         if (this.active) {
-            for (var i = 0; i < p5vectors.length; i++) {
-                var vector = p5vectors[i];
-                var tmp = [];
+            for (let i = 0; i < p5vectors.length; i++) {
+                const vector = p5vectors[i];
+                let tmp = [];
                 glMatrix.vec2.transformMat2d(tmp, [vector.x, vector.y], this.invert);
                 vector.set(tmp);
             }
         }
-    };
+    }
     // from: https://medium.com/@benjamin.botto/zooming-at-the-mouse-coordinates-with-affine-transformations-86e7312fd50b
     // Zoom the world by amount about position.
     // @param amount The amount to zoom (e.g. 1.1 to zoom in by 110%).
     // @param point The position to zoom about as a vec2.
-    Transformer.prototype.zoom = function (amount, _point) {
-        var point = _point;
+    zoom(amount, _point) {
+        let point = _point;
         if (!point) {
             // Point to scale about.
             point = glMatrix.vec2.fromValues(canvas_1.Canvas._mouse.x, canvas_1.Canvas._mouse.y);
@@ -125,11 +165,11 @@ var Transformer = /** @class */ (function () {
         if (this.active) {
             // Translation matrix that moves the world such that the mouse point is at
             // the top of the canvas (where 0,0 would normally be).
-            var toPoint = glMatrix.mat2d.fromTranslation(glMatrix.mat2d.create(), glMatrix.vec2.fromValues(-point[0], -point[1]));
+            const toPoint = glMatrix.mat2d.fromTranslation(glMatrix.mat2d.create(), glMatrix.vec2.fromValues(-point[0], -point[1]));
             // Scale (zoom) matrix.
-            var scale = glMatrix.mat2d.fromScaling(glMatrix.mat2d.create(), glMatrix.vec2.fromValues(amount, amount));
+            const scale = glMatrix.mat2d.fromScaling(glMatrix.mat2d.create(), glMatrix.vec2.fromValues(amount, amount));
             // Translation matrix which translates the world back to where it started.
-            var fromPoint = glMatrix.mat2d.fromTranslation(glMatrix.mat2d.create(), point);
+            const fromPoint = glMatrix.mat2d.fromTranslation(glMatrix.mat2d.create(), point);
             // The new world transformation matrix is:
             // fromPoint * scale * toPoint * worldTrans.
             // Matrix multiplication is _not_ commutative and operates right to left.
@@ -142,15 +182,15 @@ var Transformer = /** @class */ (function () {
             // active Flag
             this.transformed = true;
         }
-    };
+    }
     /** Private function to get the invert of current transform matrix */
-    Transformer.prototype._getInvert = function () {
+    _getInvert() {
         glMatrix.mat2d.invert(this.invert, this.transform);
-    };
-    Transformer.prototype.setActive = function (val) {
+    }
+    setActive(val) {
         this.active = val;
-    };
-    Transformer.prototype.reset = function () {
+    }
+    reset() {
         if (this.active) {
             this.transform = glMatrix.mat2d.create();
             this.scaleFactor = 1;
@@ -158,11 +198,11 @@ var Transformer = /** @class */ (function () {
             this.transformed = false;
             this.needsUpdate = true;
         }
-    };
-    Transformer.prototype.initFromDataValues = function (data) {
-        var rtn = false;
+    }
+    initFromDataValues(data) {
+        let rtn = false;
         if (data.matrixComponents) {
-            var comp = JSON.parse(data.matrixComponents);
+            let comp = JSON.parse(data.matrixComponents);
             glMatrix.mat2d.set(this.transform, comp[0], comp[1], comp[2], comp[3], comp[4], comp[5]);
             this._getInvert();
             this.transformed = true;
@@ -173,7 +213,7 @@ var Transformer = /** @class */ (function () {
             rtn = true;
         }
         return rtn;
-    };
-    return Transformer;
-}());
+    }
+}
 exports.Transformer = Transformer;
+//# sourceMappingURL=transformer.js.map

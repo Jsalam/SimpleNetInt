@@ -1,9 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Connector = void 0;
-var Connector = /** @class */ (function () {
-    function Connector(id, _kind, _index) {
-        this.vConnectorObserver = null;
+class Connector {
+    vConnectorObserver = null;
+    id;
+    kind;
+    edgeObservers;
+    constructor(id, _kind, _index) {
         this.id = {
             cluster: id.cluster,
             cat: id.index,
@@ -15,8 +18,8 @@ var Connector = /** @class */ (function () {
         this.vConnectorObserver; // the subscribed vNode
         this.edgeObservers = [];
     }
-    Connector.prototype.equals = function (conn) {
-        var rtn = false;
+    equals(conn) {
+        let rtn = false;
         if (this.id.cluster == conn.id.cluster &&
             this.id.cat == conn.id.cat &&
             this.id.pajekIndex == conn.id.pajekIndex) {
@@ -26,20 +29,20 @@ var Connector = /** @class */ (function () {
             rtn = this.kind === conn.kind;
         }
         return rtn;
-    };
-    Connector.prototype.subscribeEdgeObserver = function (edge) {
+    }
+    subscribeEdgeObserver(edge) {
         edge.kind = this.kind;
         this.edgeObservers.push(edge);
-    };
-    Connector.prototype.subscribeVConnector = function (observer) {
+    }
+    subscribeVConnector(observer) {
         this.vConnectorObserver = observer;
-    };
-    Connector.prototype.notifyVConnector = function (data) {
+    }
+    notifyVConnector(data) {
         this.vConnectorObserver.getData(data);
-    };
-    Connector.prototype.getJSON = function () {
+    }
+    getJSON() {
         // return this.kind;
-    };
-    return Connector;
-}());
+    }
+}
 exports.Connector = Connector;
+//# sourceMappingURL=connector.js.map

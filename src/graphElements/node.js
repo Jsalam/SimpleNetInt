@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Node = void 0;
-var connector_1 = require("./connector");
-var edgeFactory_1 = require("../factories/edgeFactory");
-var edge_1 = require("./edge");
-var ContextualGUI_1 = require("../GUI/ContextualGUIs/ContextualGUI");
-var DOMManager_1 = require("../GUI/DOM/DOMManager");
+const connector_1 = require("./connector");
+const edgeFactory_1 = require("../factories/edgeFactory");
+const edge_1 = require("./edge");
+const ContextualGUI_1 = require("../GUI/ContextualGUIs/ContextualGUI");
+const DOMManager_1 = require("../GUI/DOM/DOMManager");
 /**
  * The node has connectors. each connector is of a different type, so each kind of connectors have its own collection,
  * grouped in a single collection
@@ -13,8 +13,23 @@ var DOMManager_1 = require("../GUI/DOM/DOMManager");
  * @param _indexInCluster: the index in this cluster
  * @param _count: the pajekIndex
  */
-var Node = /** @class */ (function () {
-    function Node(clusterID, _indexInCluster, _count) {
+class Node {
+    id;
+    idCat;
+    connectors;
+    label;
+    description;
+    attributes;
+    inFwdPropagation;
+    inBkwPropagation;
+    vNodeObserver;
+    importedVNodeData;
+    // TODO: verify these are correct
+    cluster;
+    index;
+    polarity;
+    taken;
+    constructor(clusterID, _indexInCluster, _count) {
         this.idCat = {
             cluster: clusterID,
             index: _indexInCluster,
@@ -31,38 +46,37 @@ var Node = /** @class */ (function () {
         // get the degrees using the getDegree, getInDegree and getOutDegree functions
     }
     /**** OBSERVER ****/
-    Node.prototype.subscribe = function (vNode) {
+    subscribe(vNode) {
         this.vNodeObserver = vNode;
-    };
+    }
     /**
      * Returns true if the ID is equal to another node
      * @param {Node} node
      * @returns
      */
-    Node.prototype.equals = function (node) {
-        var rtn = false;
+    equals(node) {
+        let rtn = false;
         if (this.idCat.cluster == node.idCat.cluster &&
             this.idCat.index == node.idCat.index &&
             this.idCat.pajekIndex == node.idCat.pajekIndex) {
             rtn = true;
         }
         return rtn;
-    };
+    }
     /**** FILTERS *****/
     /**
      * This method matches the user selections on the gui with the connectors of this node.
      * If any, the corresponding VConnector AND VNODE are marked as selected.
      * This method should be handled by the VNode subcribed to this node
      */
-    Node.prototype.filterConnectors = function () {
+    filterConnectors() {
         // on a DOM Event (similar to contextualGUI)/ this should be handled by the VNode subcribed to this node
-        var filteredConnectors = this.connectors.filter(function (cnctr) {
-            var rtn = false;
+        let filteredConnectors = this.connectors.filter(function (cnctr) {
+            let rtn = false;
             // mark vConnector as unselected
             cnctr.vConnectorObserver.selected = false;
             // iterate over the gui checkboxes
-            for (var _i = 0, _a = DOMManager_1.DOM.currentCheckboxes; _i < _a.length; _i++) {
-                var ckbx = _a[_i];
+            for (const ckbx of DOMManager_1.DOM.currentCheckboxes) {
                 // check which checkboxes are checked and get the keys
                 // if any of the keys match the connectors of this node
                 if (ckbx.value == true && cnctr.kind == ckbx.key) {
@@ -81,27 +95,26 @@ var Node = /** @class */ (function () {
             this.vNodeObserver.selected = false;
         }
         return filteredConnectors;
-    };
+    }
     /**** CONNECTORS ****/
     /** Adds a connector to the collection of this node
      * @param {String} kind kind of connector
      * @param {Number} index index for connector ID
      */
-    Node.prototype.addConnector = function (kind, index) {
-        var tmpConnector = new connector_1.Connector(this.idCat, kind, index);
+    addConnector(kind, index) {
+        let tmpConnector = new connector_1.Connector(this.idCat, kind, index);
         this.connectors.push(tmpConnector);
         return tmpConnector;
-    };
+    }
     /** Finds an edge and removes it from the collection of connectors observers
      * @param {Edge} edge the edge to be removed
      */
-    Node.prototype.disconnectEdge = function (edge) {
+    disconnectEdge(edge) {
         // for each connector
-        for (var _i = 0, _a = this.connectors; _i < _a.length; _i++) {
-            var conn = _a[_i];
+        for (const conn of this.connectors) {
             // go over the edgeObservers collection
-            for (var i = 0; i < conn.edgeObservers.length; i++) {
-                var obs = conn.edgeObservers[i];
+            for (let i = 0; i < conn.edgeObservers.length; i++) {
+                let obs = conn.edgeObservers[i];
                 // if one of the edges is equal to the edge of this vEdge
                 if (obs.equals(edge)) {
                     // remove that element from the collection
@@ -109,13 +122,13 @@ var Node = /** @class */ (function () {
                 }
             }
         }
-    };
+    }
     /** Removes a connector matching the given connector from the connectors observers
      * @param {Connector} conn the connector to be removed
      */
-    Node.prototype.removeConnector = function (conn) {
+    removeConnector(conn) {
         this.connectors = this.connectors.filter(function (cnctr) {
-            var rtn = true;
+            let rtn = true;
             if (cnctr.equals(conn)) {
                 if (cnctr.edgeObservers.length <= 1) {
                     rtn = false;
@@ -124,66 +137,63 @@ var Node = /** @class */ (function () {
             // removes connector if false
             return rtn;
         });
-    };
+    }
     /** gets all the connectors
      *
      */
-    Node.prototype.getConnectors = function () {
+    getConnectors() {
         return this.connectors;
-    };
+    }
     /** resets this connectros and observer vNode vConnectors
      *
      */
-    Node.prototype.resetConnectors = function () {
+    resetConnectors() {
         this.connectors = [];
         this.vNodeObserver.resetVConnectors();
-    };
+    }
     /**** ATTRIBUTES ****/
-    Node.prototype.setLabel = function (label) {
+    setLabel(label) {
         this.label = label;
-    };
-    Node.prototype.setDescription = function (description) {
+    }
+    setDescription(description) {
         this.description = description;
-    };
-    Node.prototype.setAttributes = function (attributes) {
+    }
+    setAttributes(attributes) {
         this.attributes = attributes;
-    };
-    Node.prototype.setImportedVNodeData = function (obj) {
+    }
+    setImportedVNodeData(obj) {
         this.importedVNodeData = obj;
-    };
-    Node.prototype.getDegree = function () {
-        var degree = 0;
-        for (var _i = 0, _a = this.connectors; _i < _a.length; _i++) {
-            var connector = _a[_i];
+    }
+    getDegree() {
+        let degree = 0;
+        for (let connector of this.connectors) {
             degree += connector.edgeObservers.length;
         }
         return degree;
-    };
-    Node.prototype.getInDegree = function () {
-        var inDegree = 0;
-        for (var _i = 0, _a = this.connectors; _i < _a.length; _i++) {
-            var connector = _a[_i];
+    }
+    getInDegree() {
+        let inDegree = 0;
+        for (let connector of this.connectors) {
             if (connector.edgeObservers[0].target.equals(this))
                 inDegree += connector.edgeObservers.length;
         }
         return inDegree;
-    };
-    Node.prototype.getOutDegree = function () {
-        var outDegree = 0;
-        for (var _i = 0, _a = this.connectors; _i < _a.length; _i++) {
-            var connector = _a[_i];
+    }
+    getOutDegree() {
+        let outDegree = 0;
+        for (let connector of this.connectors) {
             if (connector.edgeObservers[0].source.equals(this))
                 outDegree += connector.edgeObservers.length;
         }
         return outDegree;
-    };
+    }
     /**** PROPAGATION ****/
-    Node.prototype.propagate = function (node, clicked) {
+    propagate(node, clicked) {
         console.log("__ From __ " + this.label);
         this.propagateForward2(node, clicked);
         this.propagateBackward2(node, clicked);
-    };
-    Node.prototype.updatePropagation2 = function () {
+    }
+    updatePropagation2() {
         if (this.inFwdPropagation && DOMManager_1.DOM.boxChecked("forward")) {
             console.log("______ Updated From __ " + this.label);
             this.propagateForward2(this, true);
@@ -192,10 +202,9 @@ var Node = /** @class */ (function () {
             console.log("______ Updated From __ " + this.label);
             this.propagateBackward2(this, true);
         }
-    };
-    Node.prototype.propagateForward2 = function (cat, clicked) {
+    }
+    propagateForward2(cat, clicked) {
         //console.log("____ cat: " + cat.label + " fwd_Prop: " + cat.inFwdPropagation + " clicked: " + clicked)
-        var _this = this;
         if (clicked) {
             //if (!cat.inFwdPropagation) {
             //console.log("-> 1 In prop " + cat.label)
@@ -203,14 +212,14 @@ var Node = /** @class */ (function () {
                 if (DOMManager_1.DOM.boxChecked("forward")) {
                     // i) retrive a subset of edges whose SOURCE is this category
                     cat.inFwdPropagation = clicked;
-                    var edgesTmp = this.getForwardEdges(cat);
+                    let edgesTmp = this.getForwardEdges(cat);
                     // ii) retrieve the list of TARGET categories linked to this category
-                    edgesTmp.forEach(function (edg) {
+                    edgesTmp.forEach((edg) => {
                         if (edg.target == undefined) {
                             return false;
                         }
                         else {
-                            var obs = edg.target;
+                            let obs = edg.target;
                             // for each of those categories, repeat i), ii)
                             // console.log("__ To " + obs.label)
                             if (!obs.inFwdPropagation) {
@@ -224,9 +233,9 @@ var Node = /** @class */ (function () {
                                         ". Already in propagation chain");
                                 }
                                 // in case this node is not the end of the propagation branch.
-                                else if (_this.getForwardEdges(obs).length != 0) {
+                                else if (this.getForwardEdges(obs).length != 0) {
                                     // console.log("Blocked successor propagation from " + cat.label + ".\n** Recursion Error thrown **")
-                                    var nError = new Error(cat.label);
+                                    let nError = new Error(cat.label);
                                     nError.name = "Recursion";
                                     throw nError;
                                 }
@@ -238,14 +247,14 @@ var Node = /** @class */ (function () {
             catch (error) {
                 if (error.name == "Recursion") {
                     alert("** RECURSIVE PROPAGATION **\nThere is a closed loop of successors that might crash the application. Successors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)");
-                    var box = DOMManager_1.DOM.boxChecked("forward");
+                    let box = DOMManager_1.DOM.boxChecked("forward");
                     box = "";
                 }
                 else if (error instanceof RangeError) {
                     alert("infinite forward propadation. \nThe path of successors from " +
                         cat.label +
                         " draws a closed loop. \nPropagation will be dissabled");
-                    var box = DOMManager_1.DOM.boxChecked("forward");
+                    let box = DOMManager_1.DOM.boxChecked("forward");
                     box = "";
                 }
                 else {
@@ -258,9 +267,9 @@ var Node = /** @class */ (function () {
             //** RESET CURRENT and ALL SUCCESSORS **
             cat.inFwdPropagation = false;
             try {
-                var edgesTmp = this.getForwardEdges(cat);
-                edgesTmp.forEach(function (edg) {
-                    var obs = edg.target;
+                let edgesTmp = this.getForwardEdges(cat);
+                edgesTmp.forEach((edg) => {
+                    let obs = edg.target;
                     obs.propagateForward2(obs, false);
                 });
             }
@@ -280,24 +289,23 @@ var Node = /** @class */ (function () {
                 }
             }
         }
-    };
-    Node.prototype.propagateBackward2 = function (cat, clicked) {
+    }
+    propagateBackward2(cat, clicked) {
         //console.log("____ cat: " + cat.label + " fwd_Prop: " + cat.inFwdPropagation + " clicked: " + clicked)
-        var _this = this;
         if (clicked) {
             // console.log("-> 1 In prop " + cat.label)
             try {
                 if (DOMManager_1.DOM.boxChecked("backward")) {
                     // i) retrive a subset of edges whose TARGET is this category
                     cat.inBkwPropagation = clicked;
-                    var edgesTmp = this.getBackwardEdges(cat);
+                    let edgesTmp = this.getBackwardEdges(cat);
                     // ii) retrieve the list of SOURCE categories linked to this category
-                    edgesTmp.forEach(function (edg) {
+                    edgesTmp.forEach((edg) => {
                         if (edg.source == undefined) {
                             return false;
                         }
                         else {
-                            var obs = edg.source;
+                            let obs = edg.source;
                             // for each of those categories, repeat i), ii)
                             console.log("__ To " + obs.label);
                             if (!obs.inBkwPropagation) {
@@ -311,11 +319,11 @@ var Node = /** @class */ (function () {
                                         ". Already in propagation chain");
                                 }
                                 // in case this node is not the end of the propagation branch.
-                                else if (_this.getBackwardEdges(obs).length != 0) {
+                                else if (this.getBackwardEdges(obs).length != 0) {
                                     console.log("Blocked predecessor propagation from " +
                                         cat.label +
                                         ".\n** Recursion Error thrown **");
-                                    var nError = new Error(cat.label);
+                                    let nError = new Error(cat.label);
                                     nError.name = "Recursion";
                                     throw nError;
                                 }
@@ -327,14 +335,14 @@ var Node = /** @class */ (function () {
             catch (error) {
                 if (error.name == "Recursion") {
                     alert("** RECURSIVE PROPAGATION **\nThere is a closed loop of predecessors that might crash the application. Predecessors propagation will be dissabled\nTry to delete the last edge (by pressing SHIFT+E)");
-                    var box = DOMManager_1.DOM.boxChecked("backward");
+                    let box = DOMManager_1.DOM.boxChecked("backward");
                     box = "";
                 }
                 else if (error instanceof RangeError) {
                     alert("infinite backward propadation. \nThe path of predecessors from " +
                         cat.label +
                         " draws a closed loop. \nPropagation will be dissabled");
-                    var box = DOMManager_1.DOM.boxChecked("backward");
+                    let box = DOMManager_1.DOM.boxChecked("backward");
                     box = "";
                 }
                 else {
@@ -347,9 +355,9 @@ var Node = /** @class */ (function () {
             //** RESET CURRENT and ALL SUCCESSORS **
             cat.inBkwPropagation = false;
             try {
-                var edgesTmp = this.getBackwardEdges(cat);
-                edgesTmp.forEach(function (edg) {
-                    var obs = edg.source;
+                let edgesTmp = this.getBackwardEdges(cat);
+                edgesTmp.forEach((edg) => {
+                    let obs = edg.source;
                     obs.propagateBackward2(obs, false);
                 });
             }
@@ -369,13 +377,13 @@ var Node = /** @class */ (function () {
                 }
             }
         }
-    };
+    }
     /******** BUILD EDGE ******** */
     /** Work in the last edge if any. If there is a last edge, and it is open, then close it.
      * If there is no edge, or the edge is closed, create a new one.
      * */
-    Node.prototype.workOnEdgeBuffer = function () {
-        var buffEdge;
+    workOnEdgeBuffer() {
+        let buffEdge;
         if (DOMManager_1.DOM.boxChecked("edit")) {
             // get the edge un EdgeFactory buffer
             buffEdge = edgeFactory_1.EdgeFactory.getBufferEdge();
@@ -387,7 +395,7 @@ var Node = /** @class */ (function () {
                 }
                 else {
                     // retrieve the connector type choosen value on the Contextual Menu
-                    var kind = ContextualGUI_1.ContextualGUI.edgeMenuChoice;
+                    let kind = ContextualGUI_1.ContextualGUI.edgeMenuChoice;
                     if (kind == undefined) {
                         kind = "default";
                     }
@@ -401,7 +409,7 @@ var Node = /** @class */ (function () {
             }
             else {
                 // retrieve the connector type choosen value on the Contextual Menu
-                var kind = void 0;
+                let kind;
                 if (ContextualGUI_1.ContextualGUI.edgeMenuChoice) {
                     kind = ContextualGUI_1.ContextualGUI.edgeMenuChoice;
                 }
@@ -417,34 +425,34 @@ var Node = /** @class */ (function () {
             }
         }
         return buffEdge;
-    };
-    Node.prototype.sproutEdge = function (kind) {
+    }
+    sproutEdge(kind) {
         // create a new one
-        var buffEdge = new edge_1.Edge(this);
+        let buffEdge = new edge_1.Edge(this);
         edgeFactory_1.EdgeFactory.setBufferEdge(buffEdge);
         // link edge to connector and set edge's kind
-        var connector = this.sproutConnector(kind);
+        let connector = this.sproutConnector(kind);
         connector.subscribeEdgeObserver(buffEdge);
         return buffEdge;
-    };
-    Node.prototype.sproutConnector = function (kind) {
+    }
+    sproutConnector(kind) {
         // look if there is a connector of this kind
-        var connectorList = this.connectors.filter(function (cnctr) { return cnctr.kind === kind; });
-        var connector = connectorList[0];
+        let connectorList = this.connectors.filter((cnctr) => cnctr.kind === kind);
+        let connector = connectorList[0];
         // if this is a new kind of connector
         if (!connector) {
             // instantiate the connector and add it to this node
-            var index = this.connectors.length;
+            let index = this.connectors.length;
             connector = this.addConnector(kind, index);
             // Notify vNode to create vConnector (and vEdge?)
             this.vNodeObserver.fromNode(connector);
         }
         return connector;
-    };
-    Node.prototype.popConnector = function (kind) {
+    }
+    popConnector(kind) {
         // look if there is a connector of this kind
-        var connectorList = this.connectors.filter(function (cnctr) { return cnctr.kind === kind; });
-        var connector = connectorList[0];
+        let connectorList = this.connectors.filter((cnctr) => cnctr.kind === kind);
+        let connector = connectorList[0];
         // if there is a connector
         if (connector) {
             // if the connector is linked to no more than one edges
@@ -453,11 +461,11 @@ var Node = /** @class */ (function () {
                 console.log("delete connector " + connector.kind);
             this.removeConnector(connector);
         }
-    };
-    Node.prototype.destroyConnector = function (kind) {
+    }
+    destroyConnector(kind) {
         // look if there is a connector of this kind
-        var connectorList = this.connectors.filter(function (cnctr) { return cnctr.kind === kind; });
-        var connector = connectorList[0];
+        let connectorList = this.connectors.filter((cnctr) => cnctr.kind === kind);
+        let connector = connectorList[0];
         // if there is a connector
         if (connector) {
             // if the connector is linked to no more than one edges
@@ -465,11 +473,11 @@ var Node = /** @class */ (function () {
                 // pop the connector and the vConnector
                 this.removeConnector(connector);
         }
-    };
-    Node.prototype.closeEdge = function (buffEdge) {
+    }
+    closeEdge(buffEdge) {
         // set target
         if (buffEdge.setTarget(this)) {
-            var connector = this.sproutConnector(buffEdge.kind);
+            let connector = this.sproutConnector(buffEdge.kind);
             connector.subscribeEdgeObserver(buffEdge);
             // close edge
             buffEdge.open = false;
@@ -477,43 +485,42 @@ var Node = /** @class */ (function () {
         else {
             console.log("Issues closing edge");
         }
-    };
-    Node.prototype.recallEdge = function () {
+    }
+    recallEdge() {
         // remove temporary edge
         edgeFactory_1.EdgeFactory._edges.pop();
         //vEdges.pop();
         this.taken = false;
-    };
-    Node.prototype.getForwardEdges = function (cat) {
-        var edgesTmp = [];
-        edgeFactory_1.EdgeFactory._edges.forEach(function (edg) {
-            var obs = edg.source;
+    }
+    getForwardEdges(cat) {
+        let edgesTmp = [];
+        edgeFactory_1.EdgeFactory._edges.forEach((edg) => {
+            let obs = edg.source;
             if (obs.idCat === cat.idCat) {
                 // console.log(obs.label);
                 edgesTmp.push(edg);
             }
         });
         return edgesTmp;
-    };
-    Node.prototype.getBackwardEdges = function (cat) {
-        var edgesTmp = [];
-        edgeFactory_1.EdgeFactory._edges.forEach(function (edg) {
-            var obs = edg.target;
+    }
+    getBackwardEdges(cat) {
+        let edgesTmp = [];
+        edgeFactory_1.EdgeFactory._edges.forEach((edg) => {
+            let obs = edg.target;
             if (obs.idCat === cat.idCat) {
                 // console.log(obs.label);
                 edgesTmp.push(edg);
             }
         });
         return edgesTmp;
-    };
+    }
     /** This is not being used at this point because the json us made by the vNode */
-    Node.prototype.getJSON = function () {
-        var cnctrs = [];
-        for (var _i = 0, _a = this.connectors; _i < _a.length; _i++) {
-            var connector = _a[_i];
+    getJSON() {
+        let cnctrs = [];
+        for (const connector of this.connectors) {
             cnctrs.push(connector.getJSON());
         }
-        var rtn = {
+        let rtn = {
             id: this.idCat.index,
             nodeLabel: this.label,
             nodeDescription: this.description,
@@ -522,7 +529,7 @@ var Node = /** @class */ (function () {
             pajekIndex: this.idCat.pajekIndex,
         };
         return rtn;
-    };
-    return Node;
-}());
+    }
+}
 exports.Node = Node;
+//# sourceMappingURL=node.js.map

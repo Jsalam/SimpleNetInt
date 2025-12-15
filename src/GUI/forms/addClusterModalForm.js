@@ -1,12 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDataCluster = getDataCluster;
 exports.addClusterToModalFormList = addClusterToModalFormList;
 exports.clearClusterModalFormList = clearClusterModalFormList;
-var jquery_1 = require("jquery");
-var clusterFactory_1 = require("../../factories/clusterFactory");
-var transformerFactory_1 = require("../../factories/transformerFactory");
-var ContextualGUI_1 = require("../ContextualGUIs/ContextualGUI");
+const jquery_1 = __importDefault(require("jquery"));
+const clusterFactory_1 = require("../../factories/clusterFactory");
 // addClusterModalForm = function() {
 //     document.getElementById("SubmitAddClusterModal").onclick = getDataCluster
 // }
@@ -19,10 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 function getDataCluster() {
-    var name = document.getElementById("clusterName").value;
-    var description = document.getElementById("clusterDescription").value;
-    var id = clusterFactory_1.ClusterFactory.clusters.length + 1;
-    var dataTmp = {
+    let name = document.getElementById("clusterName").value;
+    let description = document.getElementById("clusterDescription").value;
+    let id = clusterFactory_1.ClusterFactory.clusters.length + 1;
+    let dataTmp = {
         clusterID: id.toString(),
         clusterLabel: name,
         clusterDescription: description,
@@ -30,21 +31,21 @@ function getDataCluster() {
     };
     clusterFactory_1.ClusterFactory.makeCluster(dataTmp);
     // add checkboxes to space contextual menu. Contextual menu created in ContextualGUI.init()
-    var transformerTemp = transformerFactory_1.TransFactory.getTransformerByVClusterID(id);
-    ContextualGUI_1.ContextualGUI.spacesMenu.addBoolean(name, false, function (val) {
-        transformerTemp.setActive(val);
-    });
+    // let transformerTemp = TransFactory.getTransformerByVClusterID(id);
+    // ContextualGUI.spacesMenu.addBoolean(name, false, (val) => {
+    //   transformerTemp.setActive(val);
+    // });
 }
 function addClusterToModalFormList(id, name) {
     // Create input
-    var input = document.createElement("input");
+    let input = document.createElement("input");
     input.setAttribute("type", "radio");
     input.setAttribute("id", "cluster" + id);
     input.setAttribute("name", "cluster");
-    var tmp = parseInt(id) - 1;
+    let tmp = parseInt(id) - 1;
     input.setAttribute("value", tmp.toString());
     // Create input label
-    var label = document.createElement("label");
+    let label = document.createElement("label");
     label.setAttribute("for", "cluster" + id);
     label.setAttribute("class", "labelRadioButton");
     label.innerHTML = name;
@@ -54,12 +55,13 @@ function addClusterToModalFormList(id, name) {
     addToDOM("clusterChoice", label);
 }
 function clearClusterModalFormList() {
-    var element = document.getElementById("clusterChoice");
+    let element = document.getElementById("clusterChoice");
     while (element.firstChild) {
         element.removeChild(element.lastChild);
     }
 }
 function addToDOM(elementID, addition) {
-    var element = document.getElementById(elementID);
+    let element = document.getElementById(elementID);
     element.appendChild(addition);
 }
+//# sourceMappingURL=addClusterModalForm.js.map

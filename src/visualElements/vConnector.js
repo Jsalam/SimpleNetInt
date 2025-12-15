@@ -1,38 +1,23 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VConnector = void 0;
-var button_1 = require("./button");
-var main_1 = require("../main");
-var VConnector = /** @class */ (function (_super) {
-    __extends(VConnector, _super);
-    function VConnector(connector) {
-        var _this = _super.call(this, 0, 0, 10, 10) || this;
-        _this.connector = connector;
-        _this.color = "#d4d4d4";
-        connector.subscribeVConnector(_this);
-        return _this;
+const button_1 = require("./button");
+const main_1 = require("../main");
+class VConnector extends button_1.Button {
+    connector;
+    color;
+    constructor(connector) {
+        super(0, 0, 10, 10);
+        this.connector = connector;
+        this.color = "#d4d4d4";
+        connector.subscribeVConnector(this);
     }
     // Observing connector
-    VConnector.prototype.getData = function (data) {
+    getData(data) {
         // do domething
-    };
+    }
     // Observing to Canvas
-    VConnector.prototype.fromVNode = function (data) {
+    fromVNode(data) {
         if (data.event instanceof MouseEvent) {
             if (data.type == "mouseup") {
                 // do something
@@ -56,21 +41,21 @@ var VConnector = /** @class */ (function (_super) {
         else {
             // do something
         }
-    };
-    VConnector.prototype.setColor = function (color) {
+    }
+    setColor(color) {
         this.color = color;
-    };
-    VConnector.prototype.updateCoords = function (pos, sequence, height) {
+    }
+    updateCoords(pos, sequence, height) {
         this.setPos(main_1.gp5.createVector(pos.x - this.width, pos.y + sequence * height));
         this.setHeight(height);
         this.setWidth(height);
-    };
-    VConnector.prototype.updateCoordsByAngle = function (center, angle, radius) {
-        var x = Math.cos(angle) * (radius - this.width / 2);
-        var y = Math.sin(angle) * (radius - this.width / 2);
+    }
+    updateCoordsByAngle(center, angle, radius) {
+        let x = Math.cos(angle) * (radius - this.width / 2);
+        let y = Math.sin(angle) * (radius - this.width / 2);
         this.setPos(main_1.gp5.createVector(center.x + x, center.y + y));
-    };
-    VConnector.prototype.show = function (renderer, fillColor, strokeColor) {
+    }
+    show(renderer, fillColor, strokeColor) {
         renderer.ellipseMode(main_1.gp5.CENTER);
         // Fill color
         if (typeof fillColor === "string") {
@@ -94,10 +79,10 @@ var VConnector = /** @class */ (function (_super) {
         // renderer.fill('#000000');
         // renderer.noStroke();
         //renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
-    };
-    VConnector.prototype.getJSON = function () {
+    }
+    getJSON() {
         return this.connector.kind;
-    };
-    return VConnector;
-}(button_1.Button));
+    }
+}
 exports.VConnector = VConnector;
+//# sourceMappingURL=vConnector.js.map

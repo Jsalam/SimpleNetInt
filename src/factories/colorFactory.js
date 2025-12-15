@@ -1,30 +1,42 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ColorFactory = void 0;
-var chroma_js_1 = require("chroma-js");
-var main_1 = require("../main");
-var canvas_1 = require("../canvas/canvas");
-var ColorFactory = /** @class */ (function () {
-    function ColorFactory() {
-    }
-    ColorFactory.loadPalettes = function (path, names, thenFunction) {
+const chroma_js_1 = __importDefault(require("chroma-js"));
+const main_1 = require("../main");
+const canvas_1 = require("../canvas/canvas");
+class ColorFactory {
+    static dictionaries = {};
+    static palettes = [];
+    static basic = {
+        r: "#cc0033",
+        g: "#00cc99",
+        b: "#0040ff",
+        y: "#ffbf00",
+        k: "#000000",
+    };
+    static brewerNames = Object.keys(chroma_js_1.default.brewer);
+    static chroma = chroma_js_1.default;
+    static loadPalettes(path, names, thenFunction) {
         // TODO: Create a promise-returning wrapper function for `loadStrings`
-        return new Promise(function (resolve) {
+        return new Promise((resolve) => {
             resolve(
             // First palette
-            main_1.gp5.loadStrings(path + names[0], function (data) {
+            main_1.gp5.loadStrings(path + names[0], (data) => {
                 ColorFactory.palettes.push(data);
                 // console.log(0 + ", :" + ColorFactory.palettes.length);
                 // Second palette
-                main_1.gp5.loadStrings(path + names[1], function (data) {
+                main_1.gp5.loadStrings(path + names[1], (data) => {
                     ColorFactory.palettes.push(data);
                     // console.log(1 + ", :" + ColorFactory.palettes.length);
                     // Third palette
-                    main_1.gp5.loadStrings(path + names[2], function (data) {
+                    main_1.gp5.loadStrings(path + names[2], (data) => {
                         ColorFactory.palettes.push(data);
                         // console.log(2 + ", :" + ColorFactory.palettes.length);
                         // Fourth palette
-                        main_1.gp5.loadStrings(path + names[3], function (data) {
+                        main_1.gp5.loadStrings(path + names[3], (data) => {
                             ColorFactory.palettes.push(data);
                             // console.log(3 + ", :" + ColorFactory.palettes.length);
                             // Call the "then" function once all the palettes are completed
@@ -38,12 +50,12 @@ var ColorFactory = /** @class */ (function () {
                 });
             }));
         });
-    };
-    ColorFactory.getPalette = function (n) {
+    }
+    static getPalette(n) {
         // let tempIndex = n % ColorFactory.palettes.length;
         // return ColorFactory.palettes[tempIndex];
         if (typeof n === "number") {
-            var tempIndex = n % ColorFactory.palettes.length;
+            let tempIndex = n % ColorFactory.palettes.length;
             return ColorFactory.palettes[tempIndex];
         }
         else if (typeof n === "string") {
@@ -51,13 +63,13 @@ var ColorFactory = /** @class */ (function () {
         }
         else
             return ColorFactory.palettes[0];
-    };
-    ColorFactory.getColor = function (palette, index) {
-        var tmpIndex = index % palette.length;
+    }
+    static getColor(palette, index) {
+        let tmpIndex = index % palette.length;
         return palette[tmpIndex];
-    };
-    ColorFactory.getColorFor = function (kind) {
-        var rtn;
+    }
+    static getColorFor(kind) {
+        let rtn;
         if (typeof kind === "string") {
             kind = Number(kind);
         }
@@ -81,10 +93,10 @@ var ColorFactory = /** @class */ (function () {
                 }
         }
         return rtn;
-    };
-    ColorFactory.makeDictionary = function (list, palette, name) {
-        var dic = {};
-        var arr = [];
+    }
+    static makeDictionary(list, palette, name) {
+        let dic = {};
+        let arr = [];
         if (list instanceof Array) {
             arr = list;
         }
@@ -92,7 +104,7 @@ var ColorFactory = /** @class */ (function () {
             arr = list.split(",");
         }
         if (arr.length <= palette.length) {
-            for (var i = 0; i < arr.length; i++) {
+            for (let i = 0; i < arr.length; i++) {
                 // if the palete is a name of the colorBrewer insert the array of colors
                 if (ColorFactory.brewerNames.includes(palette[i])) {
                     dic[arr[i]] = chroma_js_1.default.brewer[palette[i]];
@@ -109,14 +121,14 @@ var ColorFactory = /** @class */ (function () {
             ColorFactory.updateDictionary(name, dic);
             // console.log("TODO update dictionary")
         }
-    };
+    }
     /**
      * This was intended to update the dictionary of colors. It is not working yet.
      * @param {*} name
      */
-    ColorFactory.updateDictionary = function (name, dic) {
+    static updateDictionary(name, dic) {
         ColorFactory.dictionaries[name] = dic;
-    };
+    }
     /**
      * A public collection of colors stored in an object one or more key:value pairs.
      * The key is the name of the entry and the value is an object that contains either
@@ -129,12 +141,10 @@ var ColorFactory = /** @class */ (function () {
      * @returns the color of the palete in the the index position. White if the color is
      * not defined or there is an error.
      */
-    ColorFactory.getColorFromDictionary = function (key1, key2, index) {
-        if (key2 === void 0) { key2 = ""; }
-        if (index === void 0) { index = 0; }
+    static getColorFromDictionary(key1, key2 = "", index = 0) {
         try {
-            var entry = ColorFactory.dictionaries[key1];
-            var rtn = void 0;
+            let entry = ColorFactory.dictionaries[key1];
+            let rtn;
             // if the key2 is not empty, it means that the dictionary is a dictionary of arrays
             if (key2 !== "") {
                 // get the color at the index position from the internal array named with key2
@@ -155,13 +165,13 @@ var ColorFactory = /** @class */ (function () {
         catch (error) {
             return "#FFFFFF";
         }
-    };
-    ColorFactory.convertP5ColorToHex = function (color) {
-        var r = main_1.gp5.red(color);
-        var g = main_1.gp5.green(color);
-        var b = main_1.gp5.blue(color);
-        var a = main_1.gp5.alpha(color);
-        var hex = "#" +
+    }
+    static convertP5ColorToHex(color) {
+        let r = main_1.gp5.red(color);
+        let g = main_1.gp5.green(color);
+        let b = main_1.gp5.blue(color);
+        let a = main_1.gp5.alpha(color);
+        let hex = "#" +
             ((1 << 24) + (r << 16) + (g << 8) + b)
                 .toString(16)
                 .slice(1)
@@ -170,18 +180,7 @@ var ColorFactory = /** @class */ (function () {
             hex += Math.round(a).toString(16).padStart(2, "0").toUpperCase();
         }
         return hex;
-    };
-    ColorFactory.dictionaries = {};
-    ColorFactory.palettes = [];
-    ColorFactory.basic = {
-        r: "#cc0033",
-        g: "#00cc99",
-        b: "#0040ff",
-        y: "#ffbf00",
-        k: "#000000",
-    };
-    ColorFactory.brewerNames = Object.keys(chroma_js_1.default.brewer);
-    ColorFactory.chroma = chroma_js_1.default;
-    return ColorFactory;
-}());
+    }
+}
 exports.ColorFactory = ColorFactory;
+//# sourceMappingURL=colorFactory.js.map

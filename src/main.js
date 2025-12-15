@@ -1,21 +1,25 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.gp5 = void 0;
-var p5_1 = require("p5");
-var DOMManager_1 = require("./GUI/DOM/DOMManager");
-var colorFactory_1 = require("./factories/colorFactory");
-var canvas_1 = require("./canvas/canvas");
+const p5_1 = __importDefault(require("p5"));
+const DOMManager_1 = require("./GUI/DOM/DOMManager");
+const colorFactory_1 = require("./factories/colorFactory");
+const canvas_1 = require("./canvas/canvas");
 require("bootstrap/dist/js/bootstrap.min.js");
 require("bootstrap/dist/css/bootstrap.min.css");
 require("./style.css");
 require("./styleSortingList.css");
+require("./styleClusterSettings.css");
 exports.gp5 = new p5_1.default(main, document.querySelector("#model"));
 // main function
 function main(p5) {
     // variables
-    var graphics;
+    let graphics;
     // font
-    var myFont;
+    let myFont;
     // Networks path
     DOMManager_1.DOM.pathNetworks = "./files/Networks/";
     // Preload
@@ -23,13 +27,13 @@ function main(p5) {
         // get font
         myFont = exports.gp5.loadFont("./fonts/Roboto-Light.ttf");
         // get color palette
-        var paletteNames = [
+        let paletteNames = [
             "palette1.txt",
             "palette2.txt",
             "palette3.txt",
             "palette4.txt",
         ];
-        colorFactory_1.ColorFactory.loadPalettes("./files/colorPalettes/originalPalettes/", paletteNames, function () { });
+        colorFactory_1.ColorFactory.loadPalettes("./files/colorPalettes/originalPalettes/", paletteNames, () => { });
     };
     // Setup variables
     p5.setup = function () {
@@ -37,8 +41,8 @@ function main(p5) {
         exports.gp5.createCanvas(window.innerWidth, window.innerHeight);
         exports.gp5.pixelDensity(2);
         // set pixel density based on display
-        var canvas4KWidth = 3840;
-        var canvas4KHeight = 2160;
+        const canvas4KWidth = 3840;
+        const canvas4KHeight = 2160;
         // create non-iterative renderer
         graphics = exports.gp5.createGraphics(canvas4KWidth, canvas4KHeight);
         // set text font
@@ -85,8 +89,9 @@ function main(p5) {
         // Canvas.displayValues(gp5.createVector(gp5.width - 10, 10), gp5);
         // Canvas.showLegend(gp5.createVector(gp5.width - 10, gp5.height - 85), gp5);
     };
-    window.onresize = function (evt) {
+    window.onresize = (evt) => {
         exports.gp5.resizeCanvas(window.innerWidth, window.innerHeight);
         DOMManager_1.DOM.event = evt;
     };
 }
+//# sourceMappingURL=main.js.map

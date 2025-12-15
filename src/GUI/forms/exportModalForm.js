@@ -1,24 +1,27 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveJSON = saveJSON;
-var jquery_1 = require("jquery");
-var clusterFactory_1 = require("../../factories/clusterFactory");
-var edgeFactory_1 = require("../../factories/edgeFactory");
-var main_1 = require("../../main");
+const jquery_1 = __importDefault(require("jquery"));
+const clusterFactory_1 = require("../../factories/clusterFactory");
+const edgeFactory_1 = require("../../factories/edgeFactory");
+const main_1 = require("../../main");
 function saveJSON() {
-    var fileSuffix = document.getElementById("exportFileSuffix").value;
+    let fileSuffix = document.getElementById("exportFileSuffix").value;
     if (fileSuffix) {
-        var output = [];
-        var nodes = [];
-        var edges = [];
-        for (var index = 0; index < clusterFactory_1.ClusterFactory.clusters.length; index++) {
+        let output = [];
+        let nodes = [];
+        let edges = [];
+        for (let index = 0; index < clusterFactory_1.ClusterFactory.clusters.length; index++) {
             nodes.push(clusterFactory_1.ClusterFactory.vClusters[index].getJSON());
         }
-        for (var index = 0; index < edgeFactory_1.EdgeFactory._edges.length; index++) {
+        for (let index = 0; index < edgeFactory_1.EdgeFactory._edges.length; index++) {
             edges.push(edgeFactory_1.EdgeFactory._edges[index].getJSON());
         }
         output = { nodes: nodes, edges: edges };
-        var filename = "network.json";
+        let filename = "network.json";
         if (fileSuffix) {
             filename = fileSuffix + "_" + filename;
         }
@@ -36,3 +39,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+//# sourceMappingURL=exportModalForm.js.map

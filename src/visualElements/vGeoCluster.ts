@@ -497,31 +497,50 @@ export class VGeoCluster extends VCluster {
     }
     if (min === Infinity || max === -Infinity) return;
 
-    const scale = chroma
-      .scale(this.paletteByDimension[this.dimension])
-      .domain([this.scalarTransform(1), this.scalarTransform(max - min + 1)]);
 
-    // Set a base color for every silhoutte 
+    console.log(this.paletteByDimension)
+    const colorScale = chroma
+      .scale(this.paletteByDimension[this.dimension])
+
+    // Set a grey base color for every silhoutte 
     for (let i = 0; i < this.numFeatures; ++i) {
-      this._palette.set(i, 0, [...scale(min).rgb(), 255]);
+      this._palette.set(i, 0, [65, 65, 65, 255]);
     }
 
     for (const vNode of this.vNodes) {
       const attributes = vNode.node.attributes;
       const geocode = attributes?.attGeo!["geocode"];
       const featureIndex = this.featureIndexByGeocode[geocode];
+
       if (!featureIndex) continue;
-      const value = this.scalarTransform(
-        Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]) -
-        min +
-        1,
-      );
-      // assign mapped color to each silhoutte
-      this._palette.set(
-        featureIndex,
-        0,
-        value === -1 ? [0, 0, 0, 0] : [...scale(value).rgb(), 255],
-      );
+      const rawValue = Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]);
+      let value;
+
+      if (this.scalarTransform === VGeoCluster.scalarTransforms.log) {
+        value = gp5.map(this.scalarTransform(rawValue + 1), this.scalarTransform(min + 1), this.scalarTransform(max + 1), 0, 1);
+      } else {
+        value = gp5.map(this.scalarTransform(rawValue), this.scalarTransform(min), this.scalarTransform(max), 0, 1);
+      }
+
+      if (value == 0) {
+        // assign mapped color to each silhoutte
+        this._palette.set(
+          featureIndex,
+          0,
+          [75, 75, 75, 255]
+        );
+
+      } else {
+        // assign mapped color to each silhoutte
+        this._palette.set(
+          featureIndex,
+          0,
+          rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255],
+        );
+
+      }
+
+
     }
     this._palette.updatePixels();
   }

@@ -1,16 +1,19 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.importNetworkModalForm = importNetworkModalForm;
 exports.getDataImport = getDataImport;
 exports.buildClustersImport = buildClustersImport;
-var jquery_1 = require("jquery");
-var DOMManager_1 = require("../DOM/DOMManager");
-var canvas_1 = require("../../canvas/canvas");
-var clusterFactory_1 = require("../../factories/clusterFactory");
-var edgeFactory_1 = require("../../factories/edgeFactory");
-var VirtualElementPool_1 = require("../../visualElements/VirtualElementPool");
-var nodesImported;
-var edgesImported;
+const jquery_1 = __importDefault(require("jquery"));
+const DOMManager_1 = require("../DOM/DOMManager");
+const canvas_1 = require("../../canvas/canvas");
+const clusterFactory_1 = require("../../factories/clusterFactory");
+const edgeFactory_1 = require("../../factories/edgeFactory");
+const VirtualElementPool_1 = require("../../visualElements/VirtualElementPool");
+let nodesImported;
+let edgesImported;
 function importNetworkModalForm() {
     var networkFile = document.getElementById("dragDropNetwork");
     makeDroppable(networkFile, callbackNetwork);
@@ -34,16 +37,15 @@ function callbackNetwork(files) {
     }
 }
 function loadFile(file) {
-    var reader = new FileReader();
+    let reader = new FileReader();
     // Closure to capture the file information.
     reader.onload = (function (theFile) {
         return function (e) {
-            var _a;
             if (e.target instanceof FileReader &&
                 typeof e.target.result === "string") {
                 try {
                     // Safely parse the JSON string
-                    var data = JSON.parse(e.target.result);
+                    let data = JSON.parse(e.target.result);
                     // Assign parsed data to the appropriate variables
                     nodesImported = data.nodes;
                     edgesImported = data.edges;
@@ -54,7 +56,7 @@ function loadFile(file) {
                 }
             }
             else {
-                console.error("Unexpected FileReader result type:", (_a = e.target) === null || _a === void 0 ? void 0 : _a.result);
+                console.error("Unexpected FileReader result type:", e.target?.result);
                 alert("Failed to read the file. Please try again.");
             }
         };
@@ -124,3 +126,4 @@ function buildEdgesImport(result) {
     edgeFactory_1.EdgeFactory.reset();
     edgeFactory_1.EdgeFactory.buildEdges(result, clusterFactory_1.ClusterFactory.clusters);
 }
+//# sourceMappingURL=importModalForm.js.map

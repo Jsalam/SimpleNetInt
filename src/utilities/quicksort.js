@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.quickSort = quickSort;
-var comparator_1 = require("./comparator");
+const comparator_1 = require("./comparator");
 /** *********** QUICK SORT ALGORITHM *********** */
 // Partition function
 /**
@@ -17,14 +17,14 @@ var comparator_1 = require("./comparator");
  */
 function partition(arr, low, high, functionName, attrName) {
     // Choose the pivot
-    var pivot = arr[high];
+    let pivot = arr[high];
     // Index of smaller element and indicates
     // the right position of pivot found so far
-    var i = low - 1;
+    let i = low - 1;
     // Traverse arr[low..high] and move all smaller
     // elements to the left side. Elements from low to
     // i are smaller after every iteration
-    for (var j = low; j <= high - 1; j++) {
+    for (let j = low; j <= high - 1; j++) {
         if (comparator_1.Comparator[functionName](arr[j][attrName], pivot[attrName]) < 0) { // Dynamically invoke the specified internal function
             i++;
             swap(arr, i, j);
@@ -37,7 +37,7 @@ function partition(arr, low, high, functionName, attrName) {
 }
 // Swap function
 function swap(arr, i, j) {
-    var temp = arr[i];
+    let temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
 }
@@ -45,10 +45,11 @@ function swap(arr, i, j) {
 function quickSort(arr, low, high, functionName, attrName) {
     if (low < high) {
         // pi is the partition return index of pivot
-        var pi = partition(arr, low, high, functionName, attrName);
+        let pi = partition(arr, low, high, functionName, attrName);
         // Recursion calls for smaller elements
         // and greater or equals elements
         quickSort(arr, low, pi - 1, functionName, attrName);
         quickSort(arr, pi + 1, high, functionName, attrName);
     }
 }
+//# sourceMappingURL=quicksort.js.map

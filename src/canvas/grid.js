@@ -1,9 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Grid = void 0;
-var main_1 = require("../main");
+const main_1 = require("../main");
 /** Class for adding a grid on top of the canvas */
-var Grid = /** @class */ (function () {
+class Grid {
+    org;
+    width;
+    height;
+    hStep;
+    vStep;
+    stroke;
+    scaleFactor;
+    visible;
     /**
      *
      * @param {vector} org vector with origin coordinate system
@@ -13,7 +21,7 @@ var Grid = /** @class */ (function () {
      * @param {numeric} vPartitions number of steps
      * @param {numeric} scaleFactor the cell width or height representing an output unit scale. E.g., scaleFactor = 100 at width=50 meters and step=5 meter means that 100 pixels represent 10 meters (50/5) output units
      */
-    function Grid(org, width, height, hPartitions, vPartitions, scaleFactor) {
+    constructor(org, width, height, hPartitions, vPartitions, scaleFactor) {
         this.org = org;
         this.width = width * scaleFactor;
         this.height = height * scaleFactor;
@@ -24,7 +32,7 @@ var Grid = /** @class */ (function () {
         this.scaleFactor = scaleFactor;
         this.visible = true;
     }
-    Grid.prototype.show = function (renderer) {
+    show(renderer) {
         if (this.visible) {
             renderer.strokeWeight(1);
             renderer.stroke(this.stroke);
@@ -32,27 +40,27 @@ var Grid = /** @class */ (function () {
             renderer.textSize(10);
             renderer.textAlign(main_1.gp5.CENTER, main_1.gp5.CENTER);
             // vertical lines
-            for (var i = 0; i < this.width + 1; i += this.hStep) {
-                var x = this.org.x + i;
+            for (let i = 0; i < this.width + 1; i += this.hStep) {
+                const x = this.org.x + i;
                 renderer.line(x, this.org.y, x, this.org.y - this.height);
                 renderer.text(i / this.scaleFactor, x, this.org.y);
             }
             // horizontal lines
-            for (var i = 0; i < this.height + 1; i += this.vStep) {
-                var y = this.org.y - i;
+            for (let i = 0; i < this.height + 1; i += this.vStep) {
+                const y = this.org.y - i;
                 renderer.line(this.org.x, y, this.org.x + this.width, y);
                 renderer.text(i / this.scaleFactor, this.org.x + 12, y);
             }
             // this.showScale(renderer, gp5.width - 500, 25);
         }
-    };
-    Grid.prototype.showScale = function (renderer, x, y) {
+    }
+    showScale(renderer, x, y) {
         // areas
         renderer.strokeWeight(0.5);
         renderer.noFill();
         renderer.stroke("#00000033");
         renderer.rect(x, y, this.hStep, this.vStep);
-        var meter = this._meterToFeet();
+        const meter = this._meterToFeet();
         renderer.rect(x, y + 12, meter, meter);
         // bars
         renderer.strokeWeight(2);
@@ -67,19 +75,19 @@ var Grid = /** @class */ (function () {
         renderer.text("0", x - 8, y + 12);
         renderer.text("1 foot", x + this.hStep + 3, y);
         renderer.text("1 m", x + meter + 3, y + 12);
-    };
-    Grid.prototype._feetToMeters = function (val) {
-        var factor = 3.28084;
+    }
+    _feetToMeters(val) {
+        const factor = 3.28084;
         return val / factor;
-    };
-    Grid.prototype._meterToFeet = function () {
-        var factor = 3.28084;
+    }
+    _meterToFeet() {
+        const factor = 3.28084;
         return this.hStep * factor;
-    };
-    Grid.prototype._inchesToCentimeters = function (val) {
-        var factor = 0.393701;
+    }
+    _inchesToCentimeters(val) {
+        const factor = 0.393701;
         return val / factor;
-    };
-    return Grid;
-}());
+    }
+}
 exports.Grid = Grid;
+//# sourceMappingURL=grid.js.map

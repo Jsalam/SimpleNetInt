@@ -1,15 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Item = void 0;
-var main_1 = require("../../../main");
+const main_1 = require("../../../main");
 /**
  * The item is a simplier representation of a vNode that does not have connectors and cannot be linked to other vNodes or items
  */
-var Item = /** @class */ (function () {
-    function Item(vNode) {
-        this.vNode = vNode;
-        this.label = String(vNode.node.label);
-        this.value = Math.random() * 1; // Use the length of the word as the value
+class Item {
+    vNodes;
+    label;
+    value; // The value associated with the item, can be a number or a string
+    width;
+    height;
+    classID;
+    svgNS;
+    element;
+    constructor(vNodes) {
+        this.vNodes = vNodes; // one node for each cluster in the dataset
+        this.label = String(vNodes[0].node.label);
+        this.value = 0; // Math.random() * 1; // Use the length of the word as the value
         this.width = 0;
         this.height = 0;
         this.classID = this.label
@@ -23,17 +31,16 @@ var Item = /** @class */ (function () {
      * @param data the data to update the item with
      * This method is called when the vNode is updated
      */
-    Item.prototype.fromVNode = function (data) {
-        var _a, _b;
+    fromVNode(data) {
         // This method is called when the vNode is updated
         // You can check the event type or use data.detail for custom data
         if (data.event instanceof MouseEvent) {
             // Trigger an event of the HTML element that represents this item
             if (data.event.type === "mouseover") {
-                (_a = this.element) === null || _a === void 0 ? void 0 : _a.dispatchEvent(data.event);
+                this.element?.dispatchEvent(data.event);
             }
             else if (data.event.type === "mouseout") {
-                (_b = this.element) === null || _b === void 0 ? void 0 : _b.dispatchEvent(data.event);
+                this.element?.dispatchEvent(data.event);
             }
         }
         else if (data.event instanceof KeyboardEvent) {
@@ -42,7 +49,7 @@ var Item = /** @class */ (function () {
         else {
             // do something
         }
-    };
+    }
     /** MAKERS */
     /**
      *
@@ -53,9 +60,9 @@ var Item = /** @class */ (function () {
      * @param {*} maxValue the maximum value for the chart
      * @returns a svg group element containing the line segment and label for the bar chart item
      */
-    Item.prototype.makeBarGroup = function (xStep, yPos, index, minValue, maxValue) {
+    makeBarGroup(xStep, yPos, index, minValue, maxValue) {
         // create a group for each item
-        var group = document.createElementNS(this.svgNS, "g");
+        let group = document.createElementNS(this.svgNS, "g");
         //  group.setAttribute('class', this.classID); // Replace spaces with underscores for valid ID
         // Remove all non-alphanumeric characters and periods, replace with underscores
         group.setAttribute("class", "itemGroup " + this.classID); // Replace spaces with underscores for valid ID
@@ -63,16 +70,16 @@ var Item = /** @class */ (function () {
          * THERE IS A PROBLE HERE WITH THE TYPE OF VALUE. SOMETIMES IT IS A STRING AND SOMETIMES A NUMBER. WE NEED TO
          * HANDLE THIS CASE.
          */
-        var y = this.value;
+        let y = this.value;
         if (minValue == maxValue) {
             y = yPos - this.value;
         }
         else {
-            y = yPos - main_1.gp5.map(this.value, minValue, maxValue, 5, yPos);
+            y = yPos - main_1.gp5.map(this.value, minValue, maxValue, 1, yPos);
         } // Scale the height for visibility
         // Create a line and label
-        var lineSegment = this.makeLineSegment(index, xStep, yPos, y);
-        var segmentLabel = this.makeSegmentLabel(index, xStep, yPos);
+        let lineSegment = this.makeLineSegment(index, xStep, yPos, y);
+        let segmentLabel = this.makeSegmentLabel(index, xStep, yPos);
         // add the to SVG
         group.appendChild(segmentLabel);
         group.appendChild(lineSegment);
@@ -80,53 +87,56 @@ var Item = /** @class */ (function () {
         this.element = group; // Store the group element in the item
         this.subscribeMouseEvents(this.element);
         return group;
-    };
-    Item.prototype.makeLineSegment = function (index, xStep, yPos, y) {
-        var line = document.createElementNS(this.svgNS, "line");
+    }
+    makeLineSegment(index, xStep, yPos, y) {
+        let line = document.createElementNS(this.svgNS, "line");
         line.setAttribute("class", "line-style");
         line.setAttribute("x1", (index * xStep + xStep / 2).toString());
         line.setAttribute("y1", yPos.toString());
         line.setAttribute("x2", (index * xStep + xStep / 2).toString());
         line.setAttribute("y2", y.toString()); // Scale the height for visibility
         return line;
-    };
-    Item.prototype.makeSegmentLabel = function (index, xStep, yPos) {
-        var text = document.createElementNS(this.svgNS, "text");
+    }
+    makeSegmentLabel(index, xStep, yPos) {
+        let text = document.createElementNS(this.svgNS, "text");
         text.setAttribute("class", "textLabel");
         text.setAttribute("x", (index * xStep + xStep / 2).toString());
         text.setAttribute("y", yPos.toString()); // Position below the line
         text.textContent = this.label;
-        text.setAttribute("transform", "rotate(-90, ".concat(index * xStep + xStep / 2, ", ").concat(yPos + 5, ")"));
+        text.setAttribute("transform", `rotate(-90, ${index * xStep + xStep / 2}, ${yPos + 5}) translate(10, 0)`);
         text.setAttribute("dy", "8"); // Leave a 5px gap
-        text.setAttribute("text-anchor", "end"); // Justify to the top
+        text.setAttribute("text-anchor", "start"); // Justify to the top
+        //text.setAttribute('display', 'none')
         return text;
-    };
+    }
     /** GETTERS */
-    Item.prototype.getNumChars = function () {
+    getNumChars() {
         return this.label.length; // Return the number of characters in the word
-    };
-    Item.prototype.getValue = function () {
+    }
+    getValue() {
         return this.value; // Return the value associated with the word
-    };
+    }
     /** LISTENERS */
-    Item.prototype.subscribeMouseEvents = function (element) {
-        var _this = this;
-        var matchingGroups;
-        element.addEventListener("mouseover", function () {
-            matchingGroups = document.querySelectorAll(".".concat(_this.classID));
+    subscribeMouseEvents(element) {
+        let matchingGroups;
+        element.addEventListener("mouseover", () => {
+            matchingGroups = document.querySelectorAll(`.${this.classID}`);
             // Highlight all the instances of the matching group
-            matchingGroups.forEach(function (group) {
+            matchingGroups.forEach((group) => {
                 // evalute if the group is a <g> element
                 if (group.tagName.toLowerCase() == "g") {
-                    var line = group.querySelector(".line-style");
-                    var text = group.querySelector(".textLabel");
+                    let line = group.querySelector(".line-style");
+                    let text = group.querySelector(".textLabel");
                     if (line) {
-                        line.style.stroke = "#ff0000";
+                        line.style.stroke = "rgb(158, 175, 1)";
                         line.style.strokeWidth = "3px"; // Increase line width
+                        line.style.display = 'none';
                     }
                     if (text) {
-                        text.style.fill = "#ff0000"; // Change text color to red
-                        text.style.fontSize = "18px"; // Make text bold
+                        text.style.display = 'block';
+                        text.style.fill = "rgb(182, 202, 4)"; // Change text color to red
+                        text.style.fontSize = "12px"; // Make text bold
+                        text.style.width = "200px";
                     }
                 }
                 else {
@@ -135,21 +145,22 @@ var Item = /** @class */ (function () {
                 }
             });
         });
-        element.addEventListener("mouseout", function () {
-            matchingGroups = document.querySelectorAll(".".concat(_this.classID));
+        element.addEventListener("mouseout", () => {
+            matchingGroups = document.querySelectorAll(`.${this.classID}`);
             // Highlight all the instances of the matching group
-            matchingGroups.forEach(function (group) {
+            matchingGroups.forEach((group) => {
                 // evalute if the group is a <g> element
                 if (group.tagName.toLowerCase() == "g") {
-                    var line = group.querySelector(".line-style");
-                    var text = group.querySelector(".textLabel");
+                    let line = group.querySelector(".line-style");
+                    let text = group.querySelector(".textLabel");
                     if (line) {
                         line.style.stroke = "#9E9E9E";
                         line.style.strokeWidth = "1px";
+                        line.style.display = 'block';
                     } // Reset line color
                     if (text) {
-                        text.style.fill = "darkgrey";
-                        text.style.fontSize = "12px"; // Reset text color
+                        text.style.fill = "rgba(169, 163, 163, 0.315)";
+                        text.style.fontSize = "6px"; // Reset text color
                     } // Reset text color
                 }
                 else {
@@ -161,7 +172,7 @@ var Item = /** @class */ (function () {
         // element.addEventListener('click', (evt: Event) => {
         //     console.log(this.vNode)
         // });
-    };
-    return Item;
-}());
+    }
+}
 exports.Item = Item;
+//# sourceMappingURL=item.js.map
