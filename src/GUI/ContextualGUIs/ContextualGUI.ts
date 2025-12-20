@@ -90,7 +90,7 @@ export class ContextualGUI {
         document.getElementById("model")!,
       );
       // Switch it off if the checkbox is off
-      if (!DOM.checkboxes.edit.checked) {
+      if (!DOM.checkboxes.editEdgeMenu.checked) {
         ContextualGUI.edgeMenu.toggleVisibility();
       }
       resolve();

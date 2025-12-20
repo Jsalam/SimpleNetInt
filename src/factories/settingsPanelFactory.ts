@@ -93,10 +93,11 @@ export class SettingsPanelFactory {
             position: "absolute",
             left: "0",
             top: "10px",
-            bottom: "0",
+            // bottom: "0",
             width: "250px",
             overflowY: "scroll",
             scrollbarWidth: "none",
+            height:'fitContent'
         });
         // Add inline styles for WebKit browsers (Chrome, Edge, Safari)
         tmp.style.cssText += "::-webkit-scrollbar { display: none; }";

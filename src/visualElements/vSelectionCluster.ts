@@ -2,6 +2,7 @@ import p5 from "p5";
 import { Cluster } from "../graphElements/cluster";
 import { gp5 } from "../main";
 import { VCluster } from "./vCluster";
+import { Scale } from "chroma-js";
 
 export class VSelectionCluster extends VCluster {
   constructor(
@@ -10,7 +11,7 @@ export class VSelectionCluster extends VCluster {
     y: number,
     width: number,
     height: number,
-    palette: string[],
+    palette: string[]|Scale,
   ) {
     super(cluster, x, y, width, height, palette);
   }

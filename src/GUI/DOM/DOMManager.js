@@ -71,10 +71,9 @@ class DOM {
         DOM.checkboxes.showInEdges = document.getElementById("showInEdges");
         DOM.checkboxes.showOutEdges = document.getElementById("showOutEdges");
         DOM.checkboxes.magnifyingEffect = document.getElementById("magnifyingEffect");
-        // DOM.checkboxes.spacesMenu = document.getElementById(
-        //   "spaces",
-        // ) as HTMLInputElement;
-        DOM.checkboxes.edit.onclick = (evt) => DOM.toggleContextualEdgeMenu(evt);
+        DOM.checkboxes.editEdgeMenu = document.getElementById("editEdgeMenu")
+
+        DOM.checkboxes.edit.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.backward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.backgroundContrast.onclick = (evt) => DOM.switchBkgnd(evt);
@@ -84,9 +83,8 @@ class DOM {
         DOM.checkboxes.showInEdges.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.showOutEdges.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.magnifyingEffect.onclick = (evt) => DOM.toggleMagnifyingEffect(evt);
-        // DOM.checkboxes.spacesMenu.onclick = (evt) =>
-        //   DOM.toggleContextualSpacesMenu(evt);
-        // Sliders
+        DOM.checkboxes.editEdgeMenu.onclick = (evt) = DOM.toggleContextualEdgeMenu(evt);
+
         DOM.sliders.nodeConnectorFilter = document.getElementById("nodeConnectorFilter");
         DOM.sliders.nodeDegreeFilter = document.getElementById("nodeDegreeFilter");
         DOM.sliders.nodeSizeFactor = document.getElementById("nodeSizeFactor");
@@ -286,16 +284,8 @@ class DOM {
         DOM.resetEdgeContextualMenuInputContent(connectorKinds);
         // Initialize the list of Edge Menu contextual GUI. Contextual menu created in ContextualGUI.init()
         ContextualGUI_1.ContextualGUI.init(connectorKinds);
-        // Add checkboxes to Space Menu contextual GUI. Contextual menu created in ContextualGUI.init()
-        // if (ContextualGUI.spacesMenu) {
-        // for (const cluster of ClusterFactory.clusters) {
-        //   let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
-        //   ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val:boolean) => {
-        //     transformerTemp.setActive(val);
-        //   });
-        // }}
         // Create color dictionary for connectors
-        colorFactory_1.ColorFactory.makeDictionary(connectorKinds, colorFactory_1.ColorFactory.getPalette(1), "connectors");
+        colorFactory_1.ColorFactory.makeDictionary(connectorKinds, colorFactory_1.ColorFactory.getCategoricalPalette('palette1'), "connectors");
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
     }

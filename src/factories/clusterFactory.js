@@ -47,7 +47,7 @@ class ClusterFactory {
             let posY = 20;
             let width = ClusterFactory.wdth;
             let height = ClusterFactory.hght;
-            let palette = colorFactory_1.ColorFactory.getPalette(index);
+            let palette = colorFactory_1.ColorFactory.getCategoricalPalette('palette'+(index+1));
             // vCluster instantiation
             let tmp;
             if (cluster.type === "geo") {
@@ -79,10 +79,10 @@ class ClusterFactory {
         let index = ClusterFactory.clusters.length - 1;
         let tmp;
         if (data.clusterType === "selection") {
-            tmp = new vSelectionCluster_1.VSelectionCluster(ClusterFactory.clusters[index], 15 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getPalette(index));
+            tmp = new vSelectionCluster_1.VSelectionCluster(ClusterFactory.clusters[index], 15 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getCategoricalPalette('palette'+(index+1)));
         }
         else {
-            tmp = new vCluster_1.VCluster(ClusterFactory.clusters[index], 15 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getPalette(index));
+            tmp = new vCluster_1.VCluster(ClusterFactory.clusters[index], 15 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getCategoricalPalette('palette'+(index+1)));
         }
         settingsPanelFactory_1.SettingsPanelFactory.add(tmp, true, document.getElementById('cSettingsMain'));
         canvas_1.Canvas.subscribe(tmp);

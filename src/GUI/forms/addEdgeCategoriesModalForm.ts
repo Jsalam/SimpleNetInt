@@ -24,7 +24,7 @@ export function getTextBoxContent(evt: Event) {
   // Create color dictionary for connectors
   ColorFactory.makeDictionary(
     DOM.textboxes.edgeKinds.value,
-    ColorFactory.getPalette(1)!,
+    ColorFactory.getCategoricalPalette('palette2'),
     "connectors",
   );
 }

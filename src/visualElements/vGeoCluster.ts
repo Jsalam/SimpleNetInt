@@ -10,6 +10,8 @@ import { Feature, FeatureCollection, Geometry, Position } from "geojson";
 import { CustomEvent } from "../types";
 import { ClusterFactory } from "../factories/clusterFactory";
 import { VNode } from "./vNode";
+import { ColorFactory } from "../factories/colorFactory";
+import { Scale } from "chroma-js";
 
 const { mat4, vec4, vec3 } = glMatrix;
 
@@ -23,16 +25,6 @@ type GeometryCache = {
 export class VGeoCluster extends VCluster {
   static all: VGeoCluster[] = [];
   static visible: VGeoCluster[] = [];
-
-  // These are the tranformations applied to color mapping.
-  static scalarTransforms: Record<
-    "linear" | "log" | "sqrt",
-    (v: number) => number
-  > = {
-      linear: (v) => v,
-      log: Math.log10,
-      sqrt: Math.sqrt,
-    };
 
   static _pixelTarget: p5.Graphics;
   static _idTarget: p5.Graphics;
@@ -329,7 +321,8 @@ export class VGeoCluster extends VCluster {
 
   static applyZoom(direction: 1 | -1) {
     for (const vCluster of this.all) {
-      vCluster.scale *= vCluster.zoomDirection == direction ? 1.02 : 0.98;
+      if (vCluster.zoomDirection != 0)
+        vCluster.scale *= vCluster.zoomDirection == direction ? 1.02 : 0.98;
     }
   }
 
@@ -367,7 +360,7 @@ export class VGeoCluster extends VCluster {
   index: number;
   scale: 1 | -1 = 1;
   zoomDirection = 1;
-  scalarTransform = VGeoCluster.scalarTransforms.linear;
+  scalarTransform = ColorFactory.scalarTransforms.linear;
 
   /**
    * ************************** constructor **************************
@@ -385,11 +378,11 @@ export class VGeoCluster extends VCluster {
     posY: number,
     width: number,
     height: number,
-    palette: string[],
+    palette: string[] | Scale,
     bbox: [number, number, number, number],
     cartography: string,
     secondaryCartography: string,
-    private paletteByDimension: Record<string, [string, string]>,
+    private paletteByDimension: Record<string, string[]>,
   ) {
     super(cluster, posX, posY, width, height, palette);
 
@@ -497,10 +490,8 @@ export class VGeoCluster extends VCluster {
     }
     if (min === Infinity || max === -Infinity) return;
 
-
-    console.log(this.paletteByDimension)
-    const colorScale = chroma
-      .scale(this.paletteByDimension[this.dimension])
+    const colorScale = chroma.scale(this.paletteByDimension[this.dimension]);
+    // ColorFactory.addSequentialPalette(this.dimension, colorScale)
 
     // Set a grey base color for every silhoutte 
     for (let i = 0; i < this.numFeatures; ++i) {
@@ -516,31 +507,19 @@ export class VGeoCluster extends VCluster {
       const rawValue = Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]);
       let value;
 
-      if (this.scalarTransform === VGeoCluster.scalarTransforms.log) {
+      if (this.scalarTransform === ColorFactory.scalarTransforms.log) {
         value = gp5.map(this.scalarTransform(rawValue + 1), this.scalarTransform(min + 1), this.scalarTransform(max + 1), 0, 1);
       } else {
         value = gp5.map(this.scalarTransform(rawValue), this.scalarTransform(min), this.scalarTransform(max), 0, 1);
       }
 
+      // assign mapped color to each silhoutte
       if (value == 0) {
-        // assign mapped color to each silhoutte
-        this._palette.set(
-          featureIndex,
-          0,
-          [75, 75, 75, 255]
-        );
-
+        this._palette.set(featureIndex, 0, [75, 75, 75, 255]);
       } else {
-        // assign mapped color to each silhoutte
-        this._palette.set(
-          featureIndex,
-          0,
-          rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255],
+        this._palette.set(featureIndex, 0, rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255],
         );
-
       }
-
-
     }
     this._palette.updatePixels();
   }

@@ -1,6 +1,7 @@
 import { gp5 } from "../../../main";
 import { VNode } from "../../../visualElements/vNode";
 import { CustomEvent } from "../../../types";
+import { Scale } from "chroma-js";
 
 /**
  * The item is a simplier representation of a vNode that does not have connectors and cannot be linked to other vNodes or items
@@ -9,12 +10,15 @@ import { CustomEvent } from "../../../types";
 export class Item {
   vNodes: VNode[];
   label: string;
-  value: number; // The value associated with the item, can be a number or a string
+  value: any; // The value associated with the item, can be a number or a string
   width: number;
   height: number;
   classID: string;
   svgNS: string;
   element: SVGElement | undefined;
+  normalizedValue: any;
+  palette: any;
+  color: string = "#9E9E9E";
 
   constructor(vNodes: VNode[]) {
     this.vNodes = vNodes; // one node for each cluster in the dataset
@@ -22,7 +26,7 @@ export class Item {
     this.value = 0 // Math.random() * 1; // Use the length of the word as the value
     this.width = 0;
     this.height = 0;
-    this.classID = this.label
+    this.classID = "ID"+String(vNodes[0].node.idCat.index) //this.label
       .replace(/[^a-zA-Z0-9.]/g, "_")
       .replace(/\./g, "_");
     this.svgNS = "http://www.w3.org/2000/svg";
@@ -78,12 +82,16 @@ export class Item {
      * THERE IS A PROBLE HERE WITH THE TYPE OF VALUE. SOMETIMES IT IS A STRING AND SOMETIMES A NUMBER. WE NEED TO
      * HANDLE THIS CASE.
      */
-    let y: number = this.value;
+    let y: any = this.value;
     if (minValue == maxValue) {
       y = yPos - this.value;
     } else {
-      y = yPos - gp5.map(this.value, minValue, maxValue, 1, yPos);
-    } // Scale the height for visibility
+      // store normalized value
+      this.normalizedValue = gp5.map(this.value, minValue, maxValue, 0, 1);
+      y = (yPos - this.normalizedValue * yPos) + 1; // 1 added to make the item height at least 1 px.
+    }
+    // set the stroke color to this item
+    if (this.palette) this.color = this.palette(this.normalizedValue).hex();
 
     // Create a line and label
     let lineSegment = this.makeLineSegment(index, xStep, yPos, y);
@@ -106,6 +114,7 @@ export class Item {
     line.setAttribute("y1", yPos.toString());
     line.setAttribute("x2", (index * xStep + xStep / 2).toString());
     line.setAttribute("y2", y.toString()); // Scale the height for visibility
+    line.setAttribute("stroke", this.color);
     return line;
   }
 
@@ -122,7 +131,7 @@ export class Item {
     );
     text.setAttribute("dy", "8"); // Leave a 5px gap
     text.setAttribute("text-anchor", "start"); // Justify to the top
-   //text.setAttribute('display', 'none')
+    //text.setAttribute('display', 'none')
     return text;
   }
 
@@ -131,7 +140,7 @@ export class Item {
     return this.label.length; // Return the number of characters in the word
   }
 
-  getValue(): number {
+  getValue(): any {
     return this.value; // Return the value associated with the word
   }
 
@@ -141,15 +150,14 @@ export class Item {
     let matchingGroups: NodeListOf<SVGElement>;
 
     element.addEventListener("mouseover", () => {
+      console.log(this.classID)
       matchingGroups = document.querySelectorAll(`.${this.classID}`);
 
       // Highlight all the instances of the matching group
       matchingGroups.forEach((group: SVGElement) => {
         // evalute if the group is a <g> element
         if (group.tagName.toLowerCase() == "g") {
-          let line = group.querySelector(
-            ".line-style",
-          ) as SVGLineElement | null;
+          let line = group.querySelector(".line-style",) as SVGLineElement | null;
           let text = group.querySelector(".textLabel") as SVGTextElement | null;
 
           if (line) {
@@ -162,7 +170,6 @@ export class Item {
             (text as SVGTextElement).style.fill = "rgb(182, 202, 4)"; // Change text color to red
             (text as SVGTextElement).style.fontSize = "12px"; // Make text bold
             (text as SVGTextElement).style.width = "200px";
-
           }
         } else {
           (group as SVGElement).style.color = "#ff0000";
@@ -177,12 +184,11 @@ export class Item {
       matchingGroups.forEach((group: SVGElement) => {
         // evalute if the group is a <g> element
         if (group.tagName.toLowerCase() == "g") {
-          let line = group.querySelector(
-            ".line-style",
-          ) as SVGLineElement | null;
+          let line = group.querySelector(".line-style") as SVGLineElement | null;
           let text = group.querySelector(".textLabel") as SVGTextElement | null;
           if (line) {
-            (line as SVGLineElement).style.stroke = "#9E9E9E";
+            // (line as SVGLineElement).style.stroke = "#9E9E9E";
+            (line as SVGLineElement).style.stroke = this.color;
             (line as SVGLineElement).style.strokeWidth = "1px";
             (line as SVGLineElement).style.display = 'block';
           } // Reset line color

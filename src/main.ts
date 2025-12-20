@@ -30,19 +30,7 @@ function main(p5: p5) {
   p5.preload = function () {
     // get font
     myFont = gp5.loadFont("./fonts/Roboto-Light.ttf");
-
-    // get color palette
-    let paletteNames = [
-      "palette1.txt",
-      "palette2.txt",
-      "palette3.txt",
-      "palette4.txt",
-    ];
-    ColorFactory.loadPalettes(
-      "./files/colorPalettes/originalPalettes/",
-      paletteNames,
-      () => {},
-    );
+    ColorFactory.init();
   };
 
   // Setup variables

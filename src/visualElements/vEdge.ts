@@ -149,7 +149,9 @@ export class VEdge implements Observer {
       // }
 
       // get stroke color
-      let baseColor = ColorFactory.dictionaries.connectors[this.edge.kind!];
+      let baseColor =ColorFactory.getColor(
+        ColorFactory.getCategoricalPalette('palette2'),
+        ColorFactory.dictionaries.connectors[this.edge.kind!]);
 
       if (!baseColor) baseColor = this.vSource!.color!;
 

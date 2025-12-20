@@ -58,7 +58,7 @@ export interface ClusterInit extends TransformerInit {
   nodes?: NodeInit[];
   timestamps?: string[];
   dimensions?: DimensionCategory;
-  palette?: Record<string, [string, string]>;
+  palette?: Record<string, string[]>;
 }
 
 /**
@@ -89,18 +89,32 @@ export class ClusterFactory {
 
     for (let index = 0; index < Object.keys(data).length; index++) {
       this.instantiateCluster(data[index]);
+      let paletteTmp = data[index].palette
+
+      if (paletteTmp) {
+        // get the palette keys
+        let keys = Object.keys(paletteTmp!);
+
+        for (let i = 0; i < keys.length; i++) {
+          const key = keys[i]
+          ColorFactory.addSequentialPalette(key, paletteTmp[key])
+        }
+      }
     }
+
+    // 
+    //   if (data[index].palette) 
 
     //** Visual cluster section
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
     for (let index = 0; index < ClusterFactory.clusters.length; index++) {
       //  vCluster parameters
       let cluster = ClusterFactory.clusters[index];
-      let posX = 25 + x * index;
+      let posX = 270 + x * index;
       let posY = 20;
       let width = ClusterFactory.wdth;
       let height = ClusterFactory.hght;
-      let palette = ColorFactory.getPalette(index);
+      let palette = ColorFactory.getCategoricalPalette('palette' + (index + 1));
 
       // vCluster instantiation
       let tmp: any;
@@ -121,9 +135,9 @@ export class ClusterFactory {
         tmp = new VCluster(cluster, posX, posY, width, height, palette);
       }
       // Builds the cluster settings menu on the left side of the screen
-      
+
       SettingsPanelFactory.add(tmp, true);
-      
+
       // set the VCluster transformer from data imported
       if (
         TransFactory.getTransformerByVClusterID(
@@ -157,19 +171,19 @@ export class ClusterFactory {
         10,
         ClusterFactory.wdth,
         ClusterFactory.hght,
-        ColorFactory.getPalette(index),
+        ColorFactory.getCategoricalPalette('palette' + (index + 1)),
       );
     } else {
       tmp = new VCluster(
         ClusterFactory.clusters[index],
-        15 + x * index,
+        270 + x * index,
         10,
         ClusterFactory.wdth,
         ClusterFactory.hght,
-        ColorFactory.getPalette(index),
+        ColorFactory.getCategoricalPalette('palette' + (index + 1)),
       );
     }
-    SettingsPanelFactory.add(tmp,true, document.getElementById('cSettingsMain')!);
+    SettingsPanelFactory.add(tmp, true, document.getElementById('cSettingsMain')!);
     Canvas.subscribe(tmp);
     ClusterFactory.vClusters.push(tmp);
     return tmp;

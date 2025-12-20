@@ -1,5 +1,6 @@
 import { Canvas } from "../../canvas/canvas";
 import { DimensionCategory, Dimensions } from "../../factories/clusterFactory";
+import { ColorFactory } from "../../factories/colorFactory";
 import { VCluster } from "../../visualElements/vCluster";
 import { VGeoCluster } from "../../visualElements/vGeoCluster";
 import {
@@ -32,7 +33,10 @@ export class ClusterSettings {
    * This is very useful to control alternative visualizations of vNodes as in the case of sorting lists.
    */
   constructor(private vCluster: VCluster, updateVCluster: boolean) {
-    this.levels = this.getDepth(vCluster.cluster.dimensions) - 1;
+
+    this.levels = this.getDepth(vCluster.cluster.dimensions);
+
+    if (vCluster.cluster.type == 'geo') this.levels -= 1;
 
     this.dimensionViewModels = this.makeDimensionControlViewModels();
     this.dimensionControls = this.makeDimensionControls("CSSelect", updateVCluster);
@@ -85,14 +89,25 @@ export class ClusterSettings {
    *   construction of this ClusterSettings instance.
    */
   public makeElementsForVClusterUpdate(vCluster: VCluster) {
-    return this.makeContainer('CSContainer',
-      this.makeTitle(vCluster.cluster.label!, 'CSTitle'),
-      this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
-      this.makeControl("Period", 'CSControl selectElementFlex', this.timeControl),
-      this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
-      this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
-      createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
-    );
+
+    if (vCluster instanceof VGeoCluster) {
+      return this.makeContainer('CSContainer',
+        this.makeTitle(vCluster.cluster.label!, 'CSTitle'),
+        this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
+        this.makeControl("Period", 'CSControl selectElementFlex', this.timeControl),
+        this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
+        this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
+        createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
+      );
+    } else {
+      return this.makeContainer('CSContainer',
+        this.makeTitle(vCluster.cluster.label!, 'CSTitle'),
+        this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
+        this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
+        this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
+        createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
+      )
+    }
 
   }
 
@@ -122,27 +137,28 @@ export class ClusterSettings {
     return this.makeContainer('CSContainer', tmp)
   }
 
-  public getCurrentSelection():string[]|void {
+  public getCurrentSelection(): string[] | void {
     let selectionHierarchy: string[] = [];
     // this for prints out al the enabled labels of the dimension hierarchy.  
     for (let i = 0; i < this.levels; i++) {
       selectionHierarchy.push(this.dimensionControls[i].value)
     }
-   // console.log(selectionHierarchy)
+    // console.log(selectionHierarchy)
     return selectionHierarchy;
   }
 
-  public getDimensionControls(){
+  public getDimensionControls() {
     return this.dimensionControls;
   }
 
-  public getYearControl(){
+  public getYearControl() {
     return this.timeControl;
   }
 
   /*  Private methods  */
 
   private getDepth(dimension: Dimensions): number {
+    
     if ("key" in dimension) return 1;
     return (
       Math.max(0, ...dimension.children.map((dim) => this.getDepth(dim))) + 1
@@ -242,7 +258,10 @@ export class ClusterSettings {
         {
           name: "out",
           value: "-1",
-        },
+        },{
+          name: "hold",
+          value:"0"
+        }
       ],
       null, className,
       this.zoomControlListener()
@@ -270,7 +289,7 @@ export class ClusterSettings {
     );
   }
 
-  private onDimensionSelect(index: number, updateVCluster: boolean): string[]|void {
+  private onDimensionSelect(index: number, updateVCluster: boolean): string[] | void {
     if (index < this.levels - 1) {
       this.dimensionViewModels[index + 1] = this.dimensionViewModels[index].children.find(
         (dim) => dim.name === this.dimensionControls[index].value,
@@ -333,19 +352,19 @@ export class ClusterSettings {
         if (this.vCluster instanceof VGeoCluster) {
           // TODO: refactor this
           const value = (e.target as HTMLSelectElement)
-            .value as keyof typeof VGeoCluster.scalarTransforms;
+            .value as keyof typeof ColorFactory.scalarTransforms;
           switch (value) {
             case "log":
               this.vCluster.scalarTransform =
-                VGeoCluster.scalarTransforms.log;
+                ColorFactory.scalarTransforms.log;
               break;
             case "sqrt":
               this.vCluster.scalarTransform =
-                VGeoCluster.scalarTransforms.sqrt;
+                ColorFactory.scalarTransforms.sqrt;
               break;
             default:
               this.vCluster.scalarTransform =
-                VGeoCluster.scalarTransforms.linear;
+                ColorFactory.scalarTransforms.linear;
               break;
           }
         }

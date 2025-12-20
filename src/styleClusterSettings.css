@@ -1,6 +1,7 @@
 .CSContainer {
     padding-left: "10px";
     font-family: "roboto-light", sans-serif;
+ /*   background-color: rgba(0, 0, 0, 0.165);*/
 }
 
 .CSSelect {
@@ -41,4 +42,8 @@
     background-color: transparent;
     color: gray;
     border: none;
+}
+
+#cSettingsMain{
+    background-color: rgba(50, 50, 50, 0.178);
 }

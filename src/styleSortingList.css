@@ -33,7 +33,7 @@
 
  /* SVG ELEMENTS TYLE */
  .line-style {
-     stroke: rgba(158, 158, 158, 0.248);
+     /* stroke: rgba(158, 158, 158, 0.248); */
      fill: none;
      stroke-miterlimit: 10;
  }

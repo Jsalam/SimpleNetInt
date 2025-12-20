@@ -47,7 +47,7 @@ export class DOM {
   static labels: Record<string, HTMLElement> = {};
   // the collection of lists of elements in the Filters dropdown in the GUI bar
   static lists: Record<string, HTMLElement> = {};
-  static showLegend = true;
+  static showLegend = false;
   static elements: Record<string, HTMLElement> = {};
 
   // This constructor is not needed, but it is here because the documentation generatior requires it to format the documentation
@@ -83,7 +83,8 @@ export class DOM {
 
 
     // Checkboxes
-    DOM.checkboxes.edit = document.getElementById("edit") as HTMLInputElement;
+    DOM.checkboxes.edit = document.getElementById(
+      "edit") as HTMLInputElement;
     DOM.checkboxes.forward = document.getElementById(
       "forward",
     ) as HTMLInputElement;
@@ -109,11 +110,11 @@ export class DOM {
     DOM.checkboxes.magnifyingEffect = document.getElementById(
       "magnifyingEffect",
     ) as HTMLInputElement;
-    // DOM.checkboxes.spacesMenu = document.getElementById(
-    //   "spaces",
-    // ) as HTMLInputElement;
+    DOM.checkboxes.editEdgeMenu = document.getElementById(
+      "editEdgeMenu",
+    ) as HTMLInputElement;
 
-    DOM.checkboxes.edit.onclick = (evt) => DOM.toggleContextualEdgeMenu(evt);
+    DOM.checkboxes.edit.onclick = (evt) => DOM.eventTriggered(evt);
     DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
     DOM.checkboxes.backward.onclick = (evt) => DOM.checkPropagation(evt);
     DOM.checkboxes.backgroundContrast.onclick = (evt) => DOM.switchBkgnd(evt);
@@ -122,10 +123,8 @@ export class DOM {
     DOM.checkboxes.showEdges.onclick = (evt) => DOM.eventTriggered(evt);
     DOM.checkboxes.showInEdges.onclick = (evt) => DOM.eventTriggered(evt);
     DOM.checkboxes.showOutEdges.onclick = (evt) => DOM.eventTriggered(evt);
-    DOM.checkboxes.magnifyingEffect.onclick = (evt) =>
-      DOM.toggleMagnifyingEffect(evt);
-    // DOM.checkboxes.spacesMenu.onclick = (evt) =>
-    //   DOM.toggleContextualSpacesMenu(evt);
+    DOM.checkboxes.magnifyingEffect.onclick = (evt) =>DOM.toggleMagnifyingEffect(evt);
+    DOM.checkboxes.editEdgeMenu.onclick = (evt) => DOM.toggleContextualEdgeMenu(evt);
 
     // Sliders
     DOM.sliders.nodeConnectorFilter = document.getElementById(
@@ -340,6 +339,8 @@ export class DOM {
     ClusterFactory.reset();
     SettingsPanelFactory.reset();
     EdgeFactory.reset();
+   // 
+    
 
     // Reset TransFactory After reseting the clusters
     TransFactory.reset();
@@ -347,6 +348,8 @@ export class DOM {
 
     // reset the list of edge kinds
     DOM.reset();
+
+    ColorFactory.resetSequentialPalettes();
 
     // get nodes and edges
     let nodesTemp = data.nodes;
@@ -378,19 +381,10 @@ export class DOM {
     // Initialize the list of Edge Menu contextual GUI. Contextual menu created in ContextualGUI.init()
     ContextualGUI.init(connectorKinds);
 
-    // Add checkboxes to Space Menu contextual GUI. Contextual menu created in ContextualGUI.init()
-    // if (ContextualGUI.spacesMenu) {
-    // for (const cluster of ClusterFactory.clusters) {
-    //   let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
-    //   ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val:boolean) => {
-    //     transformerTemp.setActive(val);
-    //   });
-    // }}
-
     // Create color dictionary for connectors
     ColorFactory.makeDictionary(
       connectorKinds,
-      ColorFactory.getPalette(1)!,
+      ColorFactory.getCategoricalPalette('palette2'),
       "connectors",
     );
 
@@ -494,15 +488,6 @@ export class DOM {
     ContextualGUI.edgeMenu.toggleVisibility();
     DOM.eventTriggered(evt);
   }
-
-  /**
-   *
-   * @param evt changes the visibility of the contextual menu for spaces
-   */
-  // static toggleContextualSpacesMenu(evt: UIEvent) {
-  //   ContextualGUI.spacesMenu.toggleVisibility();
-  //   DOM.eventTriggered(evt);
-  // }
 
   static toggleMagnifyingEffect(evt: UIEvent) {
     DOM.updateCheckboxes(evt);
@@ -626,3 +611,5 @@ export class DOM {
     }
   }
 }
+// Attach DOMManager to the global window object
+(window as any).DOM = DOM;

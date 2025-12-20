@@ -2,18 +2,13 @@ import $ from "jquery";
 import { ClusterFactory } from "../../factories/clusterFactory";
 import { VNode } from "../../visualElements/vNode";
 import { NodeAttributes, NodeInit } from "../../graphElements/node";
-import { Item } from "../widgets/listWidget/item";
+import { Modal } from 'bootstrap';
 
 export function getData() {
-  let cluster = document.querySelector(
-    'input[name="cluster"]:checked',
-  ) as HTMLInputElement;
+  let cluster = document.querySelector('input[name="cluster"]:checked',) as HTMLInputElement;
   let name = (document.getElementById("catName") as HTMLInputElement).value;
-  let description = (
-    document.getElementById("catDescription") as HTMLInputElement
-  ).value;
-  let attr = (document.getElementById("catAttributesOther") as HTMLInputElement)
-    .value;
+  let description = (document.getElementById("catDescription") as HTMLInputElement).value;
+  let attr = (document.getElementById("catAttributesOther") as HTMLInputElement).value;
 
   if (cluster) {
     // get the cluster object
@@ -50,11 +45,13 @@ export function getData() {
       }
     }
 
-   // vClustTmp.sortingWidget!.addItem(new Item(vNodeTmp));
+    // vClustTmp.sortingWidget!.addItem(new Item(vNodeTmp));
 
     // add to collections
     clusterTmp.addNode(nodeTmp);
     vClustTmp.addVNode(vNodeTmp);
+
+
   } else {
     alert(
       "You forgot to choose a cluster. Please try again, your data isn't lost.",
@@ -62,10 +59,24 @@ export function getData() {
   }
 }
 
+// Function to close the modal
+// function closeModal(id: string) {
+//   const modalElement = document.getElementById(id);
+
+//   if (modalElement) {
+//     // getOrCreateInstance prevents creating multiple copies of the same modal
+//     const modalInstance = Modal.getOrCreateInstance(modalElement);
+//     modalInstance.hide();
+//     // Accessibility Fix: Return focus to the body or a specific button
+//     (document.activeElement as HTMLElement)?.blur();
+//   }
+// }
+
+
 document.addEventListener("DOMContentLoaded", function () {
-  $("#addNodeModal").on("hide.bs.modal", function () {
-    if (document.activeElement) {
-      (document.activeElement as HTMLInputElement).blur();
+  document.getElementById('addNodeModal')?.addEventListener("hide.bs.modal", function () {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement?.blur();
     }
   });
 });

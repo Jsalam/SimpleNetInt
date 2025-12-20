@@ -18,6 +18,7 @@ import { ClusterFactory } from '../../../factories/clusterFactory';
 import { SettingsPanelFactory } from '../../../factories/settingsPanelFactory';
 import { Utilities } from '../../../utilities/utilities';
 import { NodeAttributes } from '../../../graphElements/node';
+import {ColorFactory} from '../../../factories/colorFactory'
 
 
 export class SortingWidget {
@@ -29,6 +30,9 @@ export class SortingWidget {
     minValue: number | undefined;
     maxValue: number | undefined;
     sortingAttributes: string[] = [];
+    sortingSettings: ClusterSettings | undefined;
+    currentPalette:any;
+
 
     // constructor
     constructor(items: Item[], label: string, width?: number, height?: number) {
@@ -39,8 +43,8 @@ export class SortingWidget {
         this.id = `${this.label.replace(/\s+/g, '_')}_${Date.now()}`;
 
         // Set the sorting chart limits before creating the chart
-        this.minValue = undefined;
-        this.maxValue = undefined;
+        this.minValue = -Infinity;
+        this.maxValue = Infinity;
     }
 
     /** 
@@ -108,7 +112,7 @@ export class SortingWidget {
                 else
                     console.warn("node attributes do not have 'attAll' property. Nodes might not belong to a GEO cluster")
             } catch (error) {
-                console.warn('Error reading the attributes of a node index: '+ i)
+                console.warn('Error reading the attributes of a node index: ' + i)
             }
         }
 
@@ -116,6 +120,7 @@ export class SortingWidget {
     }
 
     makeChart(labelNew: string) {
+
         this.setValueLimits(this.items); // Set the limits for the chart
 
         //the container element
@@ -133,17 +138,15 @@ export class SortingWidget {
         // Get the sorting attributes from the vNodes
         this.sortingAttributes = this.getSortingAttributesFromVNodes();
 
-        // console.log(this.sortingAttributes);
-
         // Create the settings panel in the provided HTML element
-        let tmp = SettingsPanelFactory.add(ClusterFactory.getVClusterByLabel(labelNew), false, chartHeader);
+        this.sortingSettings = SettingsPanelFactory.add(ClusterFactory.getVClusterByLabel(labelNew), false, chartHeader);
 
         // This is to change the layout elements from column to row
-        let lmnt = tmp.getDimensionControls()[0]
-        lmnt.parentElement!.classList.add('selectElementFlex')
+        let elmnt = this.sortingSettings.getDimensionControls()[0]
+        elmnt.parentElement!.classList.add('selectElementFlex')
 
         //Register the sorting listener
-        this.addListenerToClusterSettings(tmp)
+        this.addListenerToClusterSettings(this.sortingSettings)
 
         chart.appendChild(chartHeader); // Add the header
 
@@ -161,8 +164,8 @@ export class SortingWidget {
         svg.setAttribute('transform', 'translate(8,0)'); // add margin on the right
 
         // Add groups to the SVG for each item in the array
-        let xStep = (this.width-16) / this.items.length;
-        let yPos = this.height ;
+        let xStep = (this.width - 16) / this.items.length;
+        let yPos = this.height;
         let groupContainer = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         groupContainer.setAttribute('class', 'itemsContainer'); // Replace spaces with underscores for valid ID
 
@@ -209,8 +212,8 @@ export class SortingWidget {
      * This method iterates through the items and sets the minimum and maximum values based on their values.
      */
     private setValueLimits(items: Item[]) {
-        this.minValue = undefined;
-        this.maxValue = undefined;
+        this.minValue = -Infinity;
+        this.maxValue = Infinity;
         /**
          * WHEN THE CASE IS ABOUT STRINGS, THE MIN AND MAX VALUES ARE SET TO THE LENGTH OF THE STRING
          * WHEN THE CASE IS ABOUT NUMBERS, THE MIN AND MAX VALUES ARE SET TO THE NUMBER ITSELF
@@ -219,17 +222,17 @@ export class SortingWidget {
          */
         for (let item of items) {
             let value = item.getValue();
+
             // Check if value can be casted as a number
             if (!isNaN(Number(value))) {
                 value = Number(value);
+            } else if (value instanceof String) {
+                value = value.length; // Use the length of the string as the value if it is not a number
             }
-            // else if (value instanceof  String) {
-            //     value = value.length; // Use the length of the string as the value if it is not a number
-            // }
-            if (this.minValue === undefined || value < this.minValue) {
+            if (this.minValue === -Infinity || value < this.minValue!) {
                 this.minValue = value;
             }
-            if (this.maxValue === undefined || value > this.maxValue) {
+            if (this.maxValue === Infinity || value > this.maxValue!) {
                 this.maxValue = value;
             }
         }
@@ -342,9 +345,8 @@ export class SortingWidget {
             const vNode = this.items[0].vNodes[i];
             const clusterName = vNode.parentVCluster?.cluster.label
             index = i;
-            if (clusterName == this.label) {
-                break
-            }
+            if (clusterName == this.label) break
+
         }
 
         for (let i = 0; i < this.items.length; i++) {
@@ -372,9 +374,10 @@ export class SortingWidget {
                 try {
                     Utilities.traverse(Object.values(attributes)[index] as Object,
                         (datum: any) => {
-                            // console.log("datum key: " + datum.key)
+                             
                             if (datum.key == selectedValue) {
                                 attrValue = datum.value;
+                                this.currentPalette = ColorFactory.getSequentialPalette(datum.key);
                                 return;
                             }
                         }, path);
@@ -395,6 +398,8 @@ export class SortingWidget {
                 if (!isNaN(Number(attrValue))) {
                     //console.log('before =' + item.value);
                     item.value = Number(attrValue);
+                    // assign a color corresponding to the value 
+                    item.palette = this.currentPalette;
                     //console.log('after =' + item.value);
                     // Use the numeric comparator if attrValue is a number
                     comparatorName = "compareValue";
@@ -412,6 +417,9 @@ export class SortingWidget {
 
         //sort the array and make a new chart
         quickSort(this.items, 0, this.items.length - 1, comparatorName, "value"); // Sort the items based on the selected criteria
+
+        //TODO : ************ create a function that takes the list of items and assign a mapped color by
+        // this.currentPalette to each item. The color is for items  to the be used when rendered
 
         this.updateVisuals()
     }

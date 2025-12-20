@@ -18,6 +18,7 @@ import { VirtualElementPool } from "./VirtualElementPool";
 import { Item } from "../GUI/widgets/listWidget/item";
 import { Utilities } from "../utilities/utilities";
 import { VCluster } from "./vCluster";
+import { Color } from "chroma-js";
 
 export interface VNodeInit {
   posX: number;
@@ -87,7 +88,7 @@ export class VNode extends Button {
           rtn = false;
           console.log(
             "unsubscribed vConnector " +
-              JSON.stringify(subscriber.connector.id),
+            JSON.stringify(subscriber.connector.id),
           );
         }
       }
@@ -129,6 +130,7 @@ export class VNode extends Button {
     // MouseEvents
     if (data.event instanceof MouseEvent) {
       if (data.type == "mouseclick") {
+          
         this.mouseClickedEvents(data);
       }
       if (data.type == "mouseup") {
@@ -332,11 +334,13 @@ export class VNode extends Button {
       this.node.filterConnectors();
 
       // get the visual properties
+      const pal2 = ColorFactory.getCategoricalPalette('palette2');
+
       let fillColors = this._getFillColor(
-        ColorFactory.getColorFor(this.node.idCat.cluster),
+        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster))
       );
       this.strokeColor = this._getStrokeColor(
-        ColorFactory.getColorFor(this.node.idCat.cluster),
+        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster))
       );
       let strokeWeight = this._getStrokeWeight();
 
@@ -385,7 +389,7 @@ export class VNode extends Button {
 
         // show node description
         if (this.mouseIsOver) {
-          this._showDescription(newPos);
+          this._showDescription(newPos);//
           // this.notifyObservers({
           //   event: new MouseEvent("mouseover"),
           //   type: "mouseIsOver",
@@ -413,7 +417,10 @@ export class VNode extends Button {
         for (const vCnctr of this.vConnectors) {
           // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
           let strokeCnctrColor: string | string[] | p5.Color =
-            ColorFactory.dictionaries.connectors[vCnctr.connector.kind];
+            ColorFactory.getColor(
+              ColorFactory.getCategoricalPalette('palette2'),
+              ColorFactory.dictionaries.connectors[vCnctr.connector.kind]
+            );
 
           if (!strokeCnctrColor) strokeCnctrColor = this.color!;
 
@@ -486,7 +493,7 @@ export class VNode extends Button {
       transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
                 scale(${Canvas._zoom})
-                translate(${x - translation}px, ${y}px)
+                translate(${x - translation}px, ${y - (10 - (10 * Number(DOM.sliders.nodeSizeFactor.value)))}px)
                 rotate(-45deg)
             `,
     });
@@ -503,7 +510,7 @@ export class VNode extends Button {
     let fillColor: string | p5.Color = baseColor;
     let labelColor: string | p5.Color = "#111111";
     if (Canvas.currentBackground < 150) {
-      labelColor = "#444444";
+      labelColor = "#838282ff";
     }
     let filtered = baseColor;
 
@@ -698,7 +705,7 @@ export class VNode extends Button {
 
           let otherCluster = { source: "", target: "" };
 
-          // Do not do these opeartions if the edge is open
+          // Do not do these operations if the edge is open
           if (!edgeTmp.open) {
             if (this.node.idCat.cluster != edgeTmp.id!.source.cluster) {
               otherCluster.source =
@@ -711,8 +718,6 @@ export class VNode extends Button {
                 "Cluster: " +
                 ClusterFactory.getCluster(edgeTmp.id!.target.cluster).label;
             }
-
-            //console.log(otherCluster['source']);
 
             // out
             if (edgeTmp.source.idCat.pajekIndex == this.node.idCat.pajekIndex) {
@@ -770,22 +775,21 @@ export class VNode extends Button {
       overflow: "hidden",
       marginLeft: "10px",
       pointerEvents: "none",
-      background: "#00000066",
+      background: "#00000034",
       whiteSpace: "pre-line",
       fontSize: "11px",
       padding: "5px",
       width: "220px",
+      borderRadius: '5px',
       color: Canvas.currentBackground < 150 ? "#EEEEEE" : "#111111",
-      // transform: `
-      //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
-      //     scale(${Canvas._zoom})
-      //     translate(${x}px, ${y + 5}px)
-      //     translateY(-100%)
-      // `,
+      transform: `
+          translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
+          scale(${Canvas._zoom})
+          translate(${x}px, ${y + 5}px)
+          translateY(-100%)
+      `,
 
-    transform:`
-    translateX(100%)
-    `
+     // transform: `translateX(100%)`
     });
   }
 
@@ -828,9 +832,9 @@ export class VNode extends Button {
 
   mouseClickedEvents(data: CustomEvent) {
     // FIXME
-    if (ClusterFactory.getCluster(this.node.idCat.cluster).type === "geo") {
-      return;
-    }
+    // if (ClusterFactory.getCluster(this.node.idCat.cluster).type === "geo") {
+    //   return;
+    // }
 
     /** Note: this.dragged is true at the slightest drag motion. Sometimes
      * this is imperceptible thus the click behavior of vNodes is not as
@@ -844,6 +848,7 @@ export class VNode extends Button {
         this.delete();
       } else {
         // *** BEGINIG OF EDGE CREATION ***
+
         // instantiate edge from node
         let bufferEdge = this.node.workOnEdgeBuffer();
 

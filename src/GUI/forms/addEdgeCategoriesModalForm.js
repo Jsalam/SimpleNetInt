@@ -25,7 +25,7 @@ function getTextBoxContent(evt) {
     //   });
     // }
     // Create color dictionary for connectors
-    colorFactory_1.ColorFactory.makeDictionary(DOMManager_1.DOM.textboxes.edgeKinds.value, colorFactory_1.ColorFactory.getPalette(1), "connectors");
+    colorFactory_1.ColorFactory.makeDictionary(DOMManager_1.DOM.textboxes.edgeKinds.value, colorFactory_1.ColorFactory.getCategoricalPalette('palette1'), "connectors");
 }
 //Prevent focus on modal close
 document.addEventListener("DOMContentLoaded", function () {
