@@ -138,7 +138,7 @@ class VEdge {
             //     }
             // }
             // get stroke color
-            let baseColor = colorFactory_1.ColorFactory.dictionaries.connectors[this.edge.kind];
+            let baseColor = colorFactory_1.ColorFactory.getColor(colorFactory_1.ColorFactory.getCategoricalPalette('palette2'), colorFactory_1.ColorFactory.dictionaries.connectors[this.edge.kind]);
             if (!baseColor)
                 baseColor = this.vSource.color;
             let strokeColor = this._getStrokeColor(baseColor, alpha);

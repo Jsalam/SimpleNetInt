@@ -73,7 +73,7 @@ class ContextualGUI {
             console.log("Creating edge menu");
             ContextualGUI.edgeMenu = quicksettings_1.default.create(window.innerWidth - 240, window.innerHeight - 240, "Edge options", document.getElementById("model"));
             // Switch it off if the checkbox is off
-            if (!DOMManager_1.DOM.checkboxes.edit.checked) {
+            if (!DOMManager_1.DOM.checkboxes.editEdgeMenu.checked) {
                 ContextualGUI.edgeMenu.toggleVisibility();
             }
             resolve();

@@ -1,18 +1,13 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getData = getData;
-const jquery_1 = __importDefault(require("jquery"));
 const clusterFactory_1 = require("../../factories/clusterFactory");
 const vNode_1 = require("../../visualElements/vNode");
 function getData() {
     let cluster = document.querySelector('input[name="cluster"]:checked');
     let name = document.getElementById("catName").value;
     let description = document.getElementById("catDescription").value;
-    let attr = document.getElementById("catAttributesOther")
-        .value;
+    let attr = document.getElementById("catAttributesOther").value;
     if (cluster) {
         // get the cluster object
         let clusterTmp = clusterFactory_1.ClusterFactory.clusters[parseInt(cluster.value)];
@@ -47,10 +42,21 @@ function getData() {
         alert("You forgot to choose a cluster. Please try again, your data isn't lost.");
     }
 }
+// Function to close the modal
+// function closeModal(id: string) {
+//   const modalElement = document.getElementById(id);
+//   if (modalElement) {
+//     // getOrCreateInstance prevents creating multiple copies of the same modal
+//     const modalInstance = Modal.getOrCreateInstance(modalElement);
+//     modalInstance.hide();
+//     // Accessibility Fix: Return focus to the body or a specific button
+//     (document.activeElement as HTMLElement)?.blur();
+//   }
+// }
 document.addEventListener("DOMContentLoaded", function () {
-    (0, jquery_1.default)("#addNodeModal").on("hide.bs.modal", function () {
-        if (document.activeElement) {
-            document.activeElement.blur();
+    document.getElementById('addNodeModal')?.addEventListener("hide.bs.modal", function () {
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement?.blur();
         }
     });
 });

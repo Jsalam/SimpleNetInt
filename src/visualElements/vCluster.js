@@ -104,7 +104,7 @@ class VCluster extends button_1.Button {
                 if (counter >= this.palette.length) {
                     counter = 0;
                 }
-                this.vNodes[i].setColor(this.palette[counter]);
+                this.vNodes[i].setColor(colorFactory_1.ColorFactory.getColor(this.palette, counter));
                 counter++;
             }
         }

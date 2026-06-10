@@ -45,17 +45,12 @@ const DOMManager_1 = require("../GUI/DOM/DOMManager");
 const canvas_1 = require("../canvas/canvas");
 const vCluster_1 = require("./vCluster");
 const clusterFactory_1 = require("../factories/clusterFactory");
+const colorFactory_1 = require("../factories/colorFactory");
 const { mat4, vec4, vec3 } = glMatrix;
 class VGeoCluster extends vCluster_1.VCluster {
     paletteByDimension;
     static all = [];
     static visible = [];
-    // These are the tranformations applied to color mapping.
-    static scalarTransforms = {
-        linear: (v) => v,
-        log: Math.log10,
-        sqrt: Math.sqrt,
-    };
     static _pixelTarget;
     static _idTarget;
     static geometryCache = {};
@@ -298,7 +293,8 @@ class VGeoCluster extends vCluster_1.VCluster {
     }
     static applyZoom(direction) {
         for (const vCluster of this.all) {
-            vCluster.scale *= vCluster.zoomDirection == direction ? 1.02 : 0.98;
+            if (vCluster.zoomDirection != 0)
+                vCluster.scale *= vCluster.zoomDirection == direction ? 1.02 : 0.98;
         }
     }
     numFeatures = 1;
@@ -328,7 +324,7 @@ class VGeoCluster extends vCluster_1.VCluster {
     index;
     scale = 1;
     zoomDirection = 1;
-    scalarTransform = VGeoCluster.scalarTransforms.linear;
+    scalarTransform = colorFactory_1.ColorFactory.scalarTransforms.linear;
     /**
      * ************************** constructor **************************
      * @param {Cluster} cluster The cluster object with nodes and edges
@@ -407,12 +403,11 @@ class VGeoCluster extends vCluster_1.VCluster {
         }
         if (min === Infinity || max === -Infinity)
             return;
-        const scale = chroma_js_1.default
-            .scale(this.paletteByDimension[this.dimension])
-            .domain([this.scalarTransform(1), this.scalarTransform(max - min + 1)]);
-        // Set a base color for every silhoutte 
+        const colorScale = chroma_js_1.default.scale(this.paletteByDimension[this.dimension]);
+        // ColorFactory.addSequentialPalette(this.dimension, colorScale)
+        // Set a grey base color for every silhoutte 
         for (let i = 0; i < this.numFeatures; ++i) {
-            this._palette.set(i, 0, [...scale(min).rgb(), 255]);
+            this._palette.set(i, 0, [65, 65, 65, 255]);
         }
         for (const vNode of this.vNodes) {
             const attributes = vNode.node.attributes;
@@ -420,11 +415,21 @@ class VGeoCluster extends vCluster_1.VCluster {
             const featureIndex = this.featureIndexByGeocode[geocode];
             if (!featureIndex)
                 continue;
-            const value = this.scalarTransform(Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]) -
-                min +
-                1);
+            const rawValue = Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]);
+            let value;
+            if (this.scalarTransform === colorFactory_1.ColorFactory.scalarTransforms.log) {
+                value = main_1.gp5.map(this.scalarTransform(rawValue + 1), this.scalarTransform(min + 1), this.scalarTransform(max + 1), 0, 1);
+            }
+            else {
+                value = main_1.gp5.map(this.scalarTransform(rawValue), this.scalarTransform(min), this.scalarTransform(max), 0, 1);
+            }
             // assign mapped color to each silhoutte
-            this._palette.set(featureIndex, 0, value === -1 ? [0, 0, 0, 0] : [...scale(value).rgb(), 255]);
+            if (value == 0) {
+                this._palette.set(featureIndex, 0, [75, 75, 75, 255]);
+            }
+            else {
+                this._palette.set(featureIndex, 0, rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255]);
+            }
         }
         this._palette.updatePixels();
     }
@@ -582,7 +587,6 @@ class VGeoCluster extends vCluster_1.VCluster {
         const geocode = attributes?.attGeo["geocode"];
         const featureIndex = this.featureIndexByGeocode[geocode];
         VGeoCluster.selectedLayerId = this.index;
-        console.log(featureIndex);
         VGeoCluster.selectedFeatureId = featureIndex;
     }
     renderToBuffer(buffer, geometry, shader) {

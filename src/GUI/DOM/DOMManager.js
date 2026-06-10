@@ -33,7 +33,7 @@ class DOM {
     static labels = {};
     // the collection of lists of elements in the Filters dropdown in the GUI bar
     static lists = {};
-    static showLegend = true;
+    static showLegend = false;
     static elements = {};
     // This constructor is not needed, but it is here because the documentation generatior requires it to format the documentation
     constructor() { }
@@ -71,8 +71,7 @@ class DOM {
         DOM.checkboxes.showInEdges = document.getElementById("showInEdges");
         DOM.checkboxes.showOutEdges = document.getElementById("showOutEdges");
         DOM.checkboxes.magnifyingEffect = document.getElementById("magnifyingEffect");
-        DOM.checkboxes.editEdgeMenu = document.getElementById("editEdgeMenu")
-
+        DOM.checkboxes.editEdgeMenu = document.getElementById("editEdgeMenu");
         DOM.checkboxes.edit.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.forward.onclick = (evt) => DOM.checkPropagation(evt);
         DOM.checkboxes.backward.onclick = (evt) => DOM.checkPropagation(evt);
@@ -83,8 +82,8 @@ class DOM {
         DOM.checkboxes.showInEdges.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.showOutEdges.onclick = (evt) => DOM.eventTriggered(evt);
         DOM.checkboxes.magnifyingEffect.onclick = (evt) => DOM.toggleMagnifyingEffect(evt);
-        DOM.checkboxes.editEdgeMenu.onclick = (evt) = DOM.toggleContextualEdgeMenu(evt);
-
+        DOM.checkboxes.editEdgeMenu.onclick = (evt) => DOM.toggleContextualEdgeMenu(evt);
+        // Sliders
         DOM.sliders.nodeConnectorFilter = document.getElementById("nodeConnectorFilter");
         DOM.sliders.nodeDegreeFilter = document.getElementById("nodeDegreeFilter");
         DOM.sliders.nodeSizeFactor = document.getElementById("nodeSizeFactor");
@@ -254,11 +253,13 @@ class DOM {
         clusterFactory_1.ClusterFactory.reset();
         settingsPanelFactory_1.SettingsPanelFactory.reset();
         edgeFactory_1.EdgeFactory.reset();
+        // 
         // Reset TransFactory After reseting the clusters
         transformerFactory_1.TransFactory.reset();
         transformerFactory_1.TransFactory.init();
         // reset the list of edge kinds
         DOM.reset();
+        colorFactory_1.ColorFactory.resetSequentialPalettes();
         // get nodes and edges
         let nodesTemp = data.nodes;
         let edgesTemp = data.edges;
@@ -285,7 +286,7 @@ class DOM {
         // Initialize the list of Edge Menu contextual GUI. Contextual menu created in ContextualGUI.init()
         ContextualGUI_1.ContextualGUI.init(connectorKinds);
         // Create color dictionary for connectors
-        colorFactory_1.ColorFactory.makeDictionary(connectorKinds, colorFactory_1.ColorFactory.getCategoricalPalette('palette1'), "connectors");
+        colorFactory_1.ColorFactory.makeDictionary(connectorKinds, colorFactory_1.ColorFactory.getCategoricalPalette('palette2'), "connectors");
         DOM.updateCheckboxes(evt);
         DOM.event = evt;
     }
@@ -375,14 +376,6 @@ class DOM {
         ContextualGUI_1.ContextualGUI.edgeMenu.toggleVisibility();
         DOM.eventTriggered(evt);
     }
-    /**
-     *
-     * @param evt changes the visibility of the contextual menu for spaces
-     */
-    // static toggleContextualSpacesMenu(evt: UIEvent) {
-    //   ContextualGUI.spacesMenu.toggleVisibility();
-    //   DOM.eventTriggered(evt);
-    // }
     static toggleMagnifyingEffect(evt) {
         DOM.updateCheckboxes(evt);
         DOM.eventTriggered(evt);
@@ -487,4 +480,6 @@ class DOM {
     }
 }
 exports.DOM = DOM;
+// Attach DOMManager to the global window object
+window.DOM = DOM;
 //# sourceMappingURL=DOMManager.js.map

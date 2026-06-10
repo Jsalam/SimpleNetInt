@@ -26,14 +26,7 @@ function main(p5) {
     p5.preload = function () {
         // get font
         myFont = exports.gp5.loadFont("./fonts/Roboto-Light.ttf");
-        // get color palette
-        let paletteNames = [
-            "palette1.txt",
-            "palette2.txt",
-            "palette3.txt",
-            "palette4.txt",
-        ];
-        colorFactory_1.ColorFactory.loadPalettes("./files/colorPalettes/originalPalettes/", paletteNames, () => { });
+        colorFactory_1.ColorFactory.init();
     };
     // Setup variables
     p5.setup = function () {

@@ -16,6 +16,7 @@ const DOMManager_1 = require("../../DOM/DOMManager");
 const clusterFactory_1 = require("../../../factories/clusterFactory");
 const settingsPanelFactory_1 = require("../../../factories/settingsPanelFactory");
 const utilities_1 = require("../../../utilities/utilities");
+const colorFactory_1 = require("../../../factories/colorFactory");
 class SortingWidget {
     items; // The items to be sorted in the chart
     width;
@@ -25,6 +26,8 @@ class SortingWidget {
     minValue;
     maxValue;
     sortingAttributes = [];
+    sortingSettings;
+    currentPalette;
     // constructor
     constructor(items, label, width, height) {
         this.items = items;
@@ -33,8 +36,8 @@ class SortingWidget {
         this.label = label;
         this.id = `${this.label.replace(/\s+/g, '_')}_${Date.now()}`;
         // Set the sorting chart limits before creating the chart
-        this.minValue = undefined;
-        this.maxValue = undefined;
+        this.minValue = -Infinity;
+        this.maxValue = Infinity;
     }
     /**
      * This method ...
@@ -62,19 +65,20 @@ class SortingWidget {
     getSortingAttributesFromVNodes() {
         let attributes = [];
         let path = [];
-        let index = -1;
-        for (let i = 0; i < this.items[0].vNodes.length; i++) {
-            // get the vCluster name
-            const vNode = this.items[0].vNodes[i];
-            const clusterName = vNode.parentVCluster?.cluster.label;
-            index = i;
-            if (clusterName == this.label) {
-                break;
-            }
-        }
-        for (let i = 0; i < this.items.length; i++) {
+        // let index: number = -1;
+        let vNodesTemp = clusterFactory_1.ClusterFactory.getVClusterByLabel(this.label).vNodes;
+        // for (let i = 0; i < vNodesTemp.length; i++) {
+        //     // get the vCluster name
+        //     const vNode = vNodesTemp[i];
+        //     const clusterName = vNode.parentVCluster?.cluster.label
+        //     index = i;
+        //     if (clusterName == this.label) {
+        //         break
+        //     }
+        // }
+        for (let i = 0; i < vNodesTemp.length; i++) {
             //for (let i = 0; i < 1; i++) {
-            let vNode = this.items[i].vNodes[index]; ////// THI NEEDS TO BE CORRECTED!!!!!!!!!!!!
+            let vNode = vNodesTemp[i];
             try {
                 let attrib = vNode.node.attributes?.attAll;
                 if (!attrib) {
@@ -111,14 +115,13 @@ class SortingWidget {
         let svg = this.makeSVG(); // Create the SVG element
         // Get the sorting attributes from the vNodes
         this.sortingAttributes = this.getSortingAttributesFromVNodes();
-        // console.log(this.sortingAttributes);
         // Create the settings panel in the provided HTML element
-        let tmp = settingsPanelFactory_1.SettingsPanelFactory.add(clusterFactory_1.ClusterFactory.getVClusterByLabel(labelNew), false, chartHeader);
+        this.sortingSettings = settingsPanelFactory_1.SettingsPanelFactory.add(clusterFactory_1.ClusterFactory.getVClusterByLabel(labelNew), false, chartHeader);
         // This is to change the layout elements from column to row
-        let lmnt = tmp.getDimensionControls()[0];
-        lmnt.parentElement.classList.add('selectElementFlex');
+        let elmnt = this.sortingSettings.getDimensionControls()[0];
+        elmnt.parentElement.classList.add('selectElementFlex');
         //Register the sorting listener
-        this.addListenerToClusterSettings(tmp);
+        this.addListenerToClusterSettings(this.sortingSettings);
         chart.appendChild(chartHeader); // Add the header
         chart.appendChild(svg); // Add the SVG
         return chart;
@@ -175,8 +178,8 @@ class SortingWidget {
      * This method iterates through the items and sets the minimum and maximum values based on their values.
      */
     setValueLimits(items) {
-        this.minValue = undefined;
-        this.maxValue = undefined;
+        this.minValue = -Infinity;
+        this.maxValue = Infinity;
         /**
          * WHEN THE CASE IS ABOUT STRINGS, THE MIN AND MAX VALUES ARE SET TO THE LENGTH OF THE STRING
          * WHEN THE CASE IS ABOUT NUMBERS, THE MIN AND MAX VALUES ARE SET TO THE NUMBER ITSELF
@@ -189,13 +192,15 @@ class SortingWidget {
             if (!isNaN(Number(value))) {
                 value = Number(value);
             }
-            // else if (value instanceof  String) {
-            //     value = value.length; // Use the length of the string as the value if it is not a number
-            // }
-            if (this.minValue === undefined || value < this.minValue) {
+            else if (value instanceof String) {
+                value = value.length; // Use the length of the string as the value if it is not a number
+            }
+            if (value === -1)
+                continue; // skip invalid values
+            if (this.minValue === -Infinity || value < this.minValue) {
                 this.minValue = value;
             }
-            if (this.maxValue === undefined || value > this.maxValue) {
+            if (this.maxValue === Infinity || value > this.maxValue) {
                 this.maxValue = value;
             }
         }
@@ -285,25 +290,24 @@ class SortingWidget {
         const selectedValue = currentSelectionInSettingsPanel.at(-1); // Get the selected value from the dropdown
         let comparatorName = 'compareAlphabetically'; // Default comparator
         // get the index of the vNode corresponding to the widget vCluster. Use the Widget label
-        let index = -1;
-        for (let i = 0; i < this.items[0].vNodes.length; i++) {
-            // get the vCluster name
-            const vNode = this.items[0].vNodes[i];
-            const clusterName = vNode.parentVCluster?.cluster.label;
-            index = i;
-            if (clusterName == this.label) {
-                break;
-            }
-        }
+        // let index: number = -1;
+        let vNodesTemp = clusterFactory_1.ClusterFactory.getVClusterByLabel(this.label).vNodes;
+        // for (let i = 0; i < this.items[0].vNodes.length; i++) {
+        //     // get the vCluster name
+        //     const vNode = this.items[0].vNodes[i];
+        //     const clusterName = vNode.parentVCluster?.cluster.label
+        //     index = i;
+        //     if (clusterName == this.label) break
+        // }
         for (let i = 0; i < this.items.length; i++) {
             let item = this.items[i];
             let attributes;
             let attrValue = undefined;
             try {
                 // Access the attribute value from the vNode using the selectedValue as the key
-                attributes = item.vNodes[index].node.attributes?.attAll;
+                attributes = item.vNode.node.attributes?.attAll;
                 if (!attributes) {
-                    attributes = item.vNodes[index].node.attributes;
+                    attributes = item.vNode.node.attributes;
                 }
             }
             catch (error) {
@@ -319,9 +323,9 @@ class SortingWidget {
                     index = 1;
                 try {
                     utilities_1.Utilities.traverse(Object.values(attributes)[index], (datum) => {
-                        // console.log("datum key: " + datum.key)
                         if (datum.key == selectedValue) {
                             attrValue = datum.value;
+                            this.currentPalette = colorFactory_1.ColorFactory.getSequentialPalette(datum.key);
                             return;
                         }
                     }, path);
@@ -338,6 +342,8 @@ class SortingWidget {
                 if (!isNaN(Number(attrValue))) {
                     //console.log('before =' + item.value);
                     item.value = Number(attrValue);
+                    // assign a color corresponding to the value 
+                    item.palette = this.currentPalette;
                     //console.log('after =' + item.value);
                     // Use the numeric comparator if attrValue is a number
                     comparatorName = "compareValue";
@@ -355,6 +361,8 @@ class SortingWidget {
         // console.log("Trying to sort items by: " + selectedValue + " using comparator: " + comparatorName);
         //sort the array and make a new chart
         (0, quicksort_1.quickSort)(this.items, 0, this.items.length - 1, comparatorName, "value"); // Sort the items based on the selected criteria
+        //TODO : ************ create a function that takes the list of items and assign a mapped color by
+        // this.currentPalette to each item. The color is for items  to the be used when rendered
         this.updateVisuals();
     }
 }

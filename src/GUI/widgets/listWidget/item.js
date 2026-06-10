@@ -6,7 +6,7 @@ const main_1 = require("../../../main");
  * The item is a simplier representation of a vNode that does not have connectors and cannot be linked to other vNodes or items
  */
 class Item {
-    vNodes;
+    vNode;
     label;
     value; // The value associated with the item, can be a number or a string
     width;
@@ -14,13 +14,16 @@ class Item {
     classID;
     svgNS;
     element;
-    constructor(vNodes) {
-        this.vNodes = vNodes; // one node for each cluster in the dataset
-        this.label = String(vNodes[0].node.label);
+    normalizedValue;
+    palette;
+    color = "#9E9E9E";
+    constructor(vNode) {
+        this.vNode = vNode; // one node for each cluster in the dataset
+        this.label = String(vNode.node.label);
         this.value = 0; // Math.random() * 1; // Use the length of the word as the value
         this.width = 0;
         this.height = 0;
-        this.classID = this.label
+        this.classID = 'ID' + String(vNode.node.idCat.index) //this.label
             .replace(/[^a-zA-Z0-9.]/g, "_")
             .replace(/\./g, "_");
         this.svgNS = "http://www.w3.org/2000/svg";
@@ -75,8 +78,13 @@ class Item {
             y = yPos - this.value;
         }
         else {
-            y = yPos - main_1.gp5.map(this.value, minValue, maxValue, 1, yPos);
-        } // Scale the height for visibility
+            // store normalized value
+            this.normalizedValue = main_1.gp5.map(this.value, minValue, maxValue, 0, 1);
+            y = (yPos - this.normalizedValue * yPos) + 1; // 1 added to make the item height at least 1 px.
+        }
+        // set the stroke color to this item
+        if (this.palette)
+            this.color = this.palette(this.normalizedValue).hex();
         // Create a line and label
         let lineSegment = this.makeLineSegment(index, xStep, yPos, y);
         let segmentLabel = this.makeSegmentLabel(index, xStep, yPos);
@@ -95,6 +103,7 @@ class Item {
         line.setAttribute("y1", yPos.toString());
         line.setAttribute("x2", (index * xStep + xStep / 2).toString());
         line.setAttribute("y2", y.toString()); // Scale the height for visibility
+        line.setAttribute("stroke", this.color);
         return line;
     }
     makeSegmentLabel(index, xStep, yPos) {
@@ -121,6 +130,8 @@ class Item {
         let matchingGroups;
         element.addEventListener("mouseover", () => {
             matchingGroups = document.querySelectorAll(`.${this.classID}`);
+            // console.log(this.vNode)
+            this.vNode.highlight(true);
             // Highlight all the instances of the matching group
             matchingGroups.forEach((group) => {
                 // evalute if the group is a <g> element
@@ -148,13 +159,15 @@ class Item {
         element.addEventListener("mouseout", () => {
             matchingGroups = document.querySelectorAll(`.${this.classID}`);
             // Highlight all the instances of the matching group
+            this.vNode.highlight(false);
             matchingGroups.forEach((group) => {
                 // evalute if the group is a <g> element
                 if (group.tagName.toLowerCase() == "g") {
                     let line = group.querySelector(".line-style");
                     let text = group.querySelector(".textLabel");
                     if (line) {
-                        line.style.stroke = "#9E9E9E";
+                        // (line as SVGLineElement).style.stroke = "#9E9E9E";
+                        line.style.stroke = this.color;
                         line.style.strokeWidth = "1px";
                         line.style.display = 'block';
                     } // Reset line color

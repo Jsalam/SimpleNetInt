@@ -37,17 +37,28 @@ class ClusterFactory {
         (0, addClusterModalForm_1.clearClusterModalFormList)();
         for (let index = 0; index < Object.keys(data).length; index++) {
             this.instantiateCluster(data[index]);
+            let paletteTmp = data[index].palette;
+            if (paletteTmp) {
+                // get the palette keys
+                let keys = Object.keys(paletteTmp);
+                for (let i = 0; i < keys.length; i++) {
+                    const key = keys[i];
+                    colorFactory_1.ColorFactory.addSequentialPalette(key, paletteTmp[key]);
+                }
+            }
         }
+        // 
+        //   if (data[index].palette) 
         //** Visual cluster section
         let x = ClusterFactory.wdth + ClusterFactory.gutter;
         for (let index = 0; index < ClusterFactory.clusters.length; index++) {
             //  vCluster parameters
             let cluster = ClusterFactory.clusters[index];
-            let posX = 25 + x * index;
+            let posX = 270 + x * index;
             let posY = 20;
             let width = ClusterFactory.wdth;
             let height = ClusterFactory.hght;
-            let palette = colorFactory_1.ColorFactory.getCategoricalPalette('palette'+(index+1));
+            let palette = colorFactory_1.ColorFactory.getCategoricalPalette('palette' + (index + 1));
             // vCluster instantiation
             let tmp;
             if (cluster.type === "geo") {
@@ -79,10 +90,10 @@ class ClusterFactory {
         let index = ClusterFactory.clusters.length - 1;
         let tmp;
         if (data.clusterType === "selection") {
-            tmp = new vSelectionCluster_1.VSelectionCluster(ClusterFactory.clusters[index], 15 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getCategoricalPalette('palette'+(index+1)));
+            tmp = new vSelectionCluster_1.VSelectionCluster(ClusterFactory.clusters[index], 15 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getCategoricalPalette('palette' + (index + 1)));
         }
         else {
-            tmp = new vCluster_1.VCluster(ClusterFactory.clusters[index], 15 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getCategoricalPalette('palette'+(index+1)));
+            tmp = new vCluster_1.VCluster(ClusterFactory.clusters[index], 270 + x * index, 10, ClusterFactory.wdth, ClusterFactory.hght, colorFactory_1.ColorFactory.getCategoricalPalette('palette' + (index + 1)));
         }
         settingsPanelFactory_1.SettingsPanelFactory.add(tmp, true, document.getElementById('cSettingsMain'));
         canvas_1.Canvas.subscribe(tmp);

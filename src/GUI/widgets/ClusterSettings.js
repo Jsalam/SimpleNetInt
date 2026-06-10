@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClusterSettings = void 0;
 const canvas_1 = require("../../canvas/canvas");
+const colorFactory_1 = require("../../factories/colorFactory");
 const vGeoCluster_1 = require("../../visualElements/vGeoCluster");
 const DOMUtils_1 = require("../ContextualGUIs/DOMUtils");
 /**
@@ -25,7 +26,9 @@ class ClusterSettings {
      */
     constructor(vCluster, updateVCluster) {
         this.vCluster = vCluster;
-        this.levels = this.getDepth(vCluster.cluster.dimensions) - 1;
+        this.levels = this.getDepth(vCluster.cluster.dimensions);
+        if (vCluster.cluster.type == 'geo')
+            this.levels -= 1;
         this.dimensionViewModels = this.makeDimensionControlViewModels();
         this.dimensionControls = this.makeDimensionControls("CSSelect", updateVCluster);
         this.timeControl = this.makeTimeControl("CSSelect", this.yearDataListener(updateVCluster));
@@ -74,7 +77,12 @@ class ClusterSettings {
      *   construction of this ClusterSettings instance.
      */
     makeElementsForVClusterUpdate(vCluster) {
-        return this.makeContainer('CSContainer', this.makeTitle(vCluster.cluster.label, 'CSTitle'), this.makeControl("Dimension", 'CSControl', ...this.dimensionControls), this.makeControl("Period", 'CSControl selectElementFlex', this.timeControl), this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')), this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')), (0, DOMUtils_1.createElement)("hr", { border: "1px solid rgba(110, 117, 124)" }));
+        if (vCluster instanceof vGeoCluster_1.VGeoCluster) {
+            return this.makeContainer('CSContainer', this.makeTitle(vCluster.cluster.label, 'CSTitle'), this.makeControl("Dimension", 'CSControl', ...this.dimensionControls), this.makeControl("Period", 'CSControl selectElementFlex', this.timeControl), this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')), this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')), (0, DOMUtils_1.createElement)("hr", { border: "1px solid rgba(110, 117, 124)" }));
+        }
+        else {
+            return this.makeContainer('CSContainer', this.makeTitle(vCluster.cluster.label, 'CSTitle'), this.makeControl("Dimension", 'CSControl', ...this.dimensionControls), this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')), this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')), (0, DOMUtils_1.createElement)("hr", { border: "1px solid rgba(110, 117, 124)" }));
+        }
     }
     /**
      * Creates a compact settings container used for displaying cluster controls in a "sorting list" mode.
@@ -181,7 +189,10 @@ class ClusterSettings {
             {
                 name: "out",
                 value: "-1",
-            },
+            }, {
+                name: "hold",
+                value: "0"
+            }
         ], null, className, this.zoomControlListener());
     }
     makeColorTransformControl(className) {
@@ -257,15 +268,15 @@ class ClusterSettings {
                     switch (value) {
                         case "log":
                             this.vCluster.scalarTransform =
-                                vGeoCluster_1.VGeoCluster.scalarTransforms.log;
+                                colorFactory_1.ColorFactory.scalarTransforms.log;
                             break;
                         case "sqrt":
                             this.vCluster.scalarTransform =
-                                vGeoCluster_1.VGeoCluster.scalarTransforms.sqrt;
+                                colorFactory_1.ColorFactory.scalarTransforms.sqrt;
                             break;
                         default:
                             this.vCluster.scalarTransform =
-                                vGeoCluster_1.VGeoCluster.scalarTransforms.linear;
+                                colorFactory_1.ColorFactory.scalarTransforms.linear;
                             break;
                     }
                 }
