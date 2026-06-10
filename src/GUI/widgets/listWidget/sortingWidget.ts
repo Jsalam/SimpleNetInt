@@ -78,20 +78,21 @@ export class SortingWidget {
         let path: string[] = [];
 
 
-        let index: number = -1;
-        for (let i = 0; i < this.items[0].vNodes.length; i++) {
-            // get the vCluster name
-            const vNode = this.items[0].vNodes[i];
-            const clusterName = vNode.parentVCluster?.cluster.label
-            index = i;
-            if (clusterName == this.label) {
-                break
-            }
-        }
+       // let index: number = -1;
+        let vNodesTemp = ClusterFactory.getVClusterByLabel(this.label).vNodes;
+        // for (let i = 0; i < vNodesTemp.length; i++) {
+        //     // get the vCluster name
+        //     const vNode = vNodesTemp[i];
+        //     const clusterName = vNode.parentVCluster?.cluster.label
+        //     index = i;
+        //     if (clusterName == this.label) {
+        //         break
+        //     }
+        // }
 
-        for (let i = 0; i < this.items.length; i++) {
+        for (let i = 0; i < vNodesTemp.length; i++) {
             //for (let i = 0; i < 1; i++) {
-            let vNode = this.items[i].vNodes[index]; ////// THI NEEDS TO BE CORRECTED!!!!!!!!!!!!
+            let vNode = vNodesTemp[i];
 
             try {
                 let attrib: any = vNode.node.attributes?.attAll
@@ -229,6 +230,8 @@ export class SortingWidget {
             } else if (value instanceof String) {
                 value = value.length; // Use the length of the string as the value if it is not a number
             }
+            if (value === -1) continue; // skip invalid values
+            
             if (this.minValue === -Infinity || value < this.minValue!) {
                 this.minValue = value;
             }
@@ -339,15 +342,16 @@ export class SortingWidget {
 
         // get the index of the vNode corresponding to the widget vCluster. Use the Widget label
 
-        let index: number = -1;
-        for (let i = 0; i < this.items[0].vNodes.length; i++) {
-            // get the vCluster name
-            const vNode = this.items[0].vNodes[i];
-            const clusterName = vNode.parentVCluster?.cluster.label
-            index = i;
-            if (clusterName == this.label) break
+        // let index: number = -1;
+        let vNodesTemp = ClusterFactory.getVClusterByLabel(this.label).vNodes;
+        // for (let i = 0; i < this.items[0].vNodes.length; i++) {
+        //     // get the vCluster name
+        //     const vNode = this.items[0].vNodes[i];
+        //     const clusterName = vNode.parentVCluster?.cluster.label
+        //     index = i;
+        //     if (clusterName == this.label) break
 
-        }
+        // }
 
         for (let i = 0; i < this.items.length; i++) {
             let item = this.items[i];
@@ -356,8 +360,8 @@ export class SortingWidget {
 
             try {
                 // Access the attribute value from the vNode using the selectedValue as the key
-                attributes = item.vNodes[index].node.attributes?.attAll;
-                if (!attributes) { attributes = item.vNodes[index].node.attributes }
+                attributes = item.vNode.node.attributes?.attAll;
+                if (!attributes) { attributes = item.vNode.node.attributes }
             } catch (error) {
                 console.warn('item at ' + i + ' does not have ' + this.label + ' data')
             }

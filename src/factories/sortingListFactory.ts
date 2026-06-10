@@ -10,23 +10,23 @@ export class SortingListFactory {
   static widgets: SortingWidget[];
 
   /**
-   *  This method creates a new sorting widget from an array of vNodes. It is mainly ised in the DOMManager file
+   *  This method creates a new sorting widget from an array of vNodes. It is mainly used in the DOMManager file
    * @param label The name of the space or cluster
    * @param width The widget width
    * @param height The widget height
    * @returns the sorting widget object
    */
   static makeSortingWidget(
-    label: string,
+    label: string, // this is the cluster name 
     width?: number,
     height?: number,
   ): SortingWidget {
 
     // get the vNodes to create the items for the sorting list
-    let vNodes = SortingListFactory.getVNodeLookup() ?? [];
+    // let vNodes = SortingListFactory.getVNodeLookup() ?? [];
 
     // Create a list of items from the vNodes
-    let items: Item[] = SortingListFactory.makeItems(vNodes);
+    let items: Item[] = SortingListFactory.makeItems2(label);
 
     // Create a new sorting list
     let sortingWidget = new SortingWidget(items, label, width, height);
@@ -37,20 +37,34 @@ export class SortingListFactory {
     return sortingWidget;
   }
 
-
-  static makeItems(vNodesById: Record<string, VNode[]>) {
+  static makeItems2(clusterLabel: string) {
     let items: Item[] = [];
-    for (const [id, vNodes] of Object.entries(vNodesById)) {
-      let item = new Item(vNodes);
+
+    for (const vNode of ClusterFactory.getVClusterByLabel(clusterLabel).vNodes) {
+      let item = new Item(vNode);
+
       // observer pattern
-      for (const vNode of vNodes) {
-        vNode.subscribe(item);
-      }
+      vNode.subscribe(item);
+
       // add item to collection
       items.push(item);
     }
     return items;
   }
+
+  // static makeItems(vNodesById: Record<string, VNode[]>) {
+  //   let items: Item[] = [];
+  //   for (const [id, vNodes] of Object.entries(vNodesById)) {
+  //     let item = new Item(vNodes);
+  //     // observer pattern
+  //     for (const vNode of vNodes) {
+  //       vNode.subscribe(item);
+  //     }
+  //     // add item to collection
+  //     items.push(item);
+  //   }
+  //   return items;
+  // }
 
   /**
    * @param label

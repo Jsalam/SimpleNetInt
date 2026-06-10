@@ -304,8 +304,8 @@ export class VNode extends Button {
   }
 
   highlight(on = true) {
-    this.mouseIsOver = on;
-    // this.shouldShowButton = on;
+   // this.mouseIsOver = on;
+    this.shouldShowButton = on;
     this.shouldShowText = on;
     Canvas.renderGate = true;
     this.parentVCluster?.highlight(this);

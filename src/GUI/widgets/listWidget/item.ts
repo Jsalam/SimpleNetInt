@@ -8,7 +8,7 @@ import { Scale } from "chroma-js";
  */
 
 export class Item {
-  vNodes: VNode[];
+  vNode: VNode;
   label: string;
   value: any; // The value associated with the item, can be a number or a string
   width: number;
@@ -20,13 +20,13 @@ export class Item {
   palette: any;
   color: string = "#9E9E9E";
 
-  constructor(vNodes: VNode[]) {
-    this.vNodes = vNodes; // one node for each cluster in the dataset
-    this.label = String(vNodes[0].node.label);
+  constructor(vNode: VNode) {
+    this.vNode = vNode; // one node for each cluster in the dataset
+    this.label = String(vNode.node.label);
     this.value = 0 // Math.random() * 1; // Use the length of the word as the value
     this.width = 0;
     this.height = 0;
-    this.classID = "ID"+String(vNodes[0].node.idCat.index) //this.label
+    this.classID = 'ID' + String(vNode.node.idCat.index) //this.label
       .replace(/[^a-zA-Z0-9.]/g, "_")
       .replace(/\./g, "_");
     this.svgNS = "http://www.w3.org/2000/svg";
@@ -150,8 +150,10 @@ export class Item {
     let matchingGroups: NodeListOf<SVGElement>;
 
     element.addEventListener("mouseover", () => {
-      console.log(this.classID)
       matchingGroups = document.querySelectorAll(`.${this.classID}`);
+      // console.log(this.vNode)
+
+      this.vNode.highlight(true);
 
       // Highlight all the instances of the matching group
       matchingGroups.forEach((group: SVGElement) => {
@@ -181,6 +183,8 @@ export class Item {
     element.addEventListener("mouseout", () => {
       matchingGroups = document.querySelectorAll(`.${this.classID}`);
       // Highlight all the instances of the matching group
+      this.vNode.highlight(false);
+
       matchingGroups.forEach((group: SVGElement) => {
         // evalute if the group is a <g> element
         if (group.tagName.toLowerCase() == "g") {

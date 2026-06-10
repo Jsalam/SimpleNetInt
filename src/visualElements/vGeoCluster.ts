@@ -754,7 +754,6 @@ export class VGeoCluster extends VCluster {
     const geocode = attributes?.attGeo!["geocode"];
     const featureIndex = this.featureIndexByGeocode[geocode];
     VGeoCluster.selectedLayerId = this.index;
-    console.log(featureIndex);
     VGeoCluster.selectedFeatureId = featureIndex;
   }
 
