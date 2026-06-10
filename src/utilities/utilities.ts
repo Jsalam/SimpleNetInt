@@ -182,4 +182,26 @@ export class Utilities {
       );
     }
   }
+
+  static traverse(obj: Object, callback: Function, path: string[] = []) {
+    // Skip null and non-objects
+    if (obj === null || typeof obj !== "object") {
+      return;
+    }
+
+    for (const [key, value] of Object.entries(obj)) {
+      // the expression creates a new array containing all elements from 
+      // path followed by key. So if path is ["a","b"] and key is "c", currentPath 
+      // becomes ["a","b","c"].
+      const currentPath = [...path, key];
+
+      // Call the callback with key, value, and full path
+      callback({ key, value, path: currentPath });
+
+      // If value is an object or array, recurse
+      if (value !== null && typeof value === "object") {
+        this.traverse(value, callback, currentPath);
+      }
+    }
+  }
 }

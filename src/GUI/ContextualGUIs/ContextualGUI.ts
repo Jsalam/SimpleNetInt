@@ -15,7 +15,7 @@ export class ContextualGUI {
     Categories: { value: string };
     [key: string]: any;
   }>;
-  static spacesMenu: QuickSettingsPanel;
+  //static spacesMenu: QuickSettingsPanel;
   static observers: Observer[] = [];
   static edgeCategories: string[] = [];
   static edgeMenuChoice: string;
@@ -52,14 +52,11 @@ export class ContextualGUI {
       // populate contextual menu
       if (kinds instanceof Array) ContextualGUI.edgeCategories = kinds;
       else ContextualGUI.edgeCategories = kinds.split(",");
-      ContextualGUI.addEdgeCheckboxes(
-        "Categories",
-        ContextualGUI.edgeCategories,
-      );
+      ContextualGUI.addEdgeCheckboxes('',  ContextualGUI.edgeCategories,);
     });
 
     // Create Contextual GUI spaces
-    ContextualGUI.createSpacesMenu();
+    // ContextualGUI.createSpacesMenu();
   }
 
   /**
@@ -89,11 +86,11 @@ export class ContextualGUI {
       ContextualGUI.edgeMenu = QuickSettings.create(
         window.innerWidth - 240,
         window.innerHeight - 240,
-        "Edge Menu",
+        "Edge options",
         document.getElementById("model")!,
       );
       // Switch it off if the checkbox is off
-      if (!DOM.checkboxes.edit.checked) {
+      if (!DOM.checkboxes.editEdgeMenu.checked) {
         ContextualGUI.edgeMenu.toggleVisibility();
       }
       resolve();
@@ -102,27 +99,29 @@ export class ContextualGUI {
 
   /**
    * The menu to toggle individual transformation spaces
+   *
+   * @deprecated This function is not being used. Nov 2025.
    */
-  static createSpacesMenu() {
-    console.log("Creating spaces menu");
+  // static createSpacesMenu() {
+  //   console.log("Creating spaces menu");
 
-    // Check first if this already exists
-    if (!ContextualGUI.spacesMenu) {
-      ContextualGUI.spacesMenu = QuickSettings.create(
-        window.innerWidth - 540,
-        window.innerHeight - 240,
-        "Spaces Menu",
-        document.getElementById("model")!,
-      );
-    } else {
-      ContextualGUI.clearFloatingMenu(ContextualGUI.spacesMenu);
-      //  ContextualGUI.spacesMenu.destroy();
-    }
-    //Switch it off is the checkbox is off
-    if (!DOM.checkboxes.spacesMenu.checked) {
-      ContextualGUI.spacesMenu.toggleVisibility();
-    }
-  }
+  //   // Check first if this already exists
+  //   if (!ContextualGUI.spacesMenu) {
+  //     ContextualGUI.spacesMenu = QuickSettings.create(
+  //       window.innerWidth - 540,
+  //       window.innerHeight - 240,
+  //       "Spaces Menu",
+  //       document.getElementById("model")!,
+  //     );
+  //   } else {
+  //     ContextualGUI.clearFloatingMenu(ContextualGUI.spacesMenu);
+  //     //  ContextualGUI.spacesMenu.destroy();
+  //   }
+  //   //Switch it off is the checkbox is off
+  //   if (!DOM.checkboxes.spacesMenu.checked) {
+  //     ContextualGUI.spacesMenu.toggleVisibility();
+  //   }
+  // }
 
   static addEdgeCheckboxes(label: string, items: DropDownItems<unknown>) {
     // the callback here is used when a new option is chosen
@@ -131,7 +130,8 @@ export class ContextualGUI {
       ContextualGUI.notifyObservers(val.value);
     });
     // get the value of first selected item in the dropdown at the moment of adding new checkboxes
-    let tmp = ContextualGUI.edgeMenu.getValue("Categories").value;
+    // Using '' as label to get the first value because the list of edge options is titled ''.
+    let tmp = ContextualGUI.edgeMenu.getValue('').value;
     ContextualGUI.notifyObservers(tmp);
     ContextualGUI.edgeMenuChoice = tmp;
   }

@@ -10,12 +10,18 @@ import { ColorFactory } from "../factories/colorFactory";
 import { Canvas } from "../canvas/canvas";
 import { Node } from "../graphElements/node";
 import { SortingWidget } from "../GUI/widgets/listWidget/sortingWidget";
+import { Scale } from "chroma-js";
 
 export class VCluster extends Button implements Observer {
+  sortingWidget: SortingWidget | null = null;
   vNodes: VNode[];
   cluster: Cluster;
-  palette: string[];
+  palette: string[] | Scale;
   layout: Layout;
+  timestamp: string | undefined;
+  dimension: string | undefined;
+
+  boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
   constructor(
     cluster: Cluster,
@@ -23,7 +29,7 @@ export class VCluster extends Button implements Observer {
     y: number,
     width: number,
     height: number,
-    palette: string[],
+    palette: string[]|Scale,
   ) {
     super(x, y, width, height);
     this.vNodes = [];
@@ -48,6 +54,7 @@ export class VCluster extends Button implements Observer {
     } else {
       // do something
     }
+    return false;
   }
 
   populateVNodes(cluster: Cluster) {
@@ -62,7 +69,7 @@ export class VCluster extends Button implements Observer {
         let vNodeH = 10;
 
         // instantiation
-        vNodeTemp = new VNode(node, vNodeW, vNodeH);
+        vNodeTemp = new VNode(node, vNodeW, vNodeH, this);
         for (const connector of vNodeTemp.node.connectors) {
           vNodeTemp.addVConnector(connector);
         }
@@ -127,11 +134,13 @@ export class VCluster extends Button implements Observer {
         if (counter >= this.palette.length) {
           counter = 0;
         }
-        this.vNodes[i].setColor(this.palette[counter]);
+        this.vNodes[i].setColor(ColorFactory.getColor(this.palette,counter));
         counter++;
       }
     }
   }
+
+  highlight(vNode: VNode) {}
 
   show(renderer: p5) {
     renderer.textAlign(gp5.LEFT, gp5.TOP);
@@ -142,9 +151,9 @@ export class VCluster extends Button implements Observer {
       renderer.textLeading(12);
       renderer.text(this.cluster.label, this.pos!.x, this.pos!.y, 140);
     }
-
-
   }
+
+  updatePalette() {}
 
   getJSON() {
     let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);

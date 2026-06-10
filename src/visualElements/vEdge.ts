@@ -81,6 +81,7 @@ export class VEdge implements Observer {
       // do something
     } else {
     }
+    return false;
   }
 
   setVSource(vNode: VNode) {
@@ -148,11 +149,16 @@ export class VEdge implements Observer {
       // }
 
       // get stroke color
-      let baseColor = ColorFactory.dictionaries.connectors[this.edge.kind!];
+      let baseColor =ColorFactory.getColor(
+        ColorFactory.getCategoricalPalette('palette2'),
+        ColorFactory.dictionaries.connectors[this.edge.kind!]);
 
       if (!baseColor) baseColor = this.vSource!.color!;
 
-      let strokeColor: string | string[] | p5.Color = this._getStrokeColor( baseColor, alpha!);
+      let strokeColor: string | string[] | p5.Color = this._getStrokeColor(
+        baseColor,
+        alpha!,
+      );
       let strokeWeight = this._getStrokeWeight(
         Number(DOM.sliders.edgeTickness.value),
       ); // the parameter attenuates the thickness
@@ -371,7 +377,7 @@ export class VEdge implements Observer {
         fontSize: "12px",
         overflow: "hidden",
         display: "block",
-        color:  colorHex,
+        color: colorHex,
         transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
                 scale(${Canvas._zoom})

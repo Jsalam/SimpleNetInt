@@ -7,6 +7,7 @@ import { Vector } from "p5";
 import { VCluster } from "../visualElements/vCluster";
 import { CustomEvent } from "../types";
 import { Canvas } from "./canvas";
+import { VNode } from "../visualElements/vNode";
 
 export interface TransformerInit {
   matrixComponents?: string;
@@ -47,6 +48,7 @@ export class Transformer {
 
   // Observing to Canvas
   fromCanvas(data: CustomEvent) {
+    let handled = false;
     // MouseEvents
     if (data.event instanceof MouseEvent) {
       if (data.type == "mouseclick") {
@@ -66,11 +68,13 @@ export class Transformer {
       if (data.type == "keydown") {
         if (data.event.key == this.vCluster.cluster.id) {
           this.active = !this.active;
+          handled = true;
         }
       }
       if (data.type == "keyup") {
       }
     }
+    return handled;
   }
 
   pushVCluster(vCluster?: VCluster) {
@@ -82,7 +86,11 @@ export class Transformer {
     if (!vC) vC = this.vCluster;
 
     for (let i = 0; i < vC.vNodes.length; i++) {
-      let vN = vC.vNodes[i];
+      let vN: VNode = vC.vNodes[i];
+      // A VNode can belong to multiple VClusters, but it only transforms with its current "parent"
+      if (vN.parentVCluster != null && vN.parentVCluster !== vC) {
+        continue;
+      }
       let tmp: number[] = [];
       glMatrix.vec2.transformMat2d(
         tmp as vec2,

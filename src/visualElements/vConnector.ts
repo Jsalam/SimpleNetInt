@@ -33,7 +33,7 @@ export class VConnector extends Button {
         // do something
       }
       if (data.type == "mousemove") {
-        this.mouseOver();
+        this.mouseOver(data);
       }
       if (data.type == "mousewheel") {
       }

@@ -15,16 +15,16 @@ export function getTextBoxContent(evt: Event) {
   // Initialize the list of Edge Menu contextual GUI. Contextual menu created in ContextualGUI.init()
   ContextualGUI.init(DOM.textboxes.edgeKinds.value);
   // Add checkboxes to Space Menu contextual GUI. Contextual menu created in ContextualGUI.init()
-  for (const cluster of ClusterFactory.clusters) {
-    let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
-    ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val) => {
-      transformerTemp.setActive(val);
-    });
-  }
+  // for (const cluster of ClusterFactory.clusters) {
+  //   let transformerTemp = TransFactory.getTransformerByVClusterID(cluster.id);
+  //   ContextualGUI.spacesMenu.addBoolean(cluster.label!, false, (val) => {
+  //     transformerTemp.setActive(val);
+  //   });
+  // }
   // Create color dictionary for connectors
   ColorFactory.makeDictionary(
     DOM.textboxes.edgeKinds.value,
-    ColorFactory.getPalette(1)!,
+    ColorFactory.getCategoricalPalette('palette2'),
     "connectors",
   );
 }

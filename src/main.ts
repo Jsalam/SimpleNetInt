@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./style.css";
 import "./styleSortingList.css";
+import "./styleClusterSettings.css";
 
 export const gp5 = new p5(
   main,
@@ -29,19 +30,7 @@ function main(p5: p5) {
   p5.preload = function () {
     // get font
     myFont = gp5.loadFont("./fonts/Roboto-Light.ttf");
-
-    // get color palette
-    let paletteNames = [
-      "palette1.txt",
-      "palette2.txt",
-      "palette3.txt",
-      "palette4.txt",
-    ];
-    ColorFactory.loadPalettes(
-      "./files/colorPalettes/originalPalettes/",
-      paletteNames,
-      () => {},
-    );
+    ColorFactory.init();
   };
 
   // Setup variables

@@ -13,17 +13,59 @@ import { TransformerInit } from "../canvas/transformer";
 import { Canvas } from "../canvas/canvas";
 import { VNode } from "../visualElements/vNode";
 import { gp5 } from "../main";
+import { SettingsPanelFactory } from "./settingsPanelFactory";
+import { VSelectionCluster } from "../visualElements/vSelectionCluster";
+import { Vector } from "p5";
 
+/**
+ * @interface DimensionCategory
+ * @description This interface represents a category of dimensions, which can contain child dimensions or subcategories.
+ * It includes a name for the category and an array of children, which can be either DimensionCategory or DimensionID.
+ */
+export interface DimensionCategory {
+  name: string;
+  children: Dimensions[];
+}
+
+/**
+ * @interface DimensionID
+ * @description This interface represents a specific dimension identified by a name and a key.
+ */
+export interface DimensionID {
+  name: string;
+  key: string;
+}
+
+/**
+ * @typedef {DimensionCategory | DimensionID} Dimensions
+ * @description This type can be either a DimensionCategory or a DimensionID, allowing for a hierarchical structure of dimensions.
+ */
+export type Dimensions = DimensionCategory | DimensionID;
+
+/**
+ * @interface ClusterInit
+ * @description This interface defines the structure for initializing a Cluster object. It extends the TransformerInit interface and includes properties for cluster identification,
+ * labeling, description, mapping, bounding box, nodes, timestamps, dimensions, and color palette.
+ */
 export interface ClusterInit extends TransformerInit {
   clusterID: string;
   clusterType?: string;
   clusterLabel: string;
   clusterDescription: string;
-  keyAttribute?: string;
   mapName?: string;
+  secondaryMapName?: string;
+  bbox?: [number, number, number, number];
   nodes?: NodeInit[];
+  timestamps?: string[];
+  dimensions?: DimensionCategory;
+  palette?: Record<string, string[]>;
 }
 
+/**
+ * @class ClusterFactory
+ * @description This class is responsible for creating and managing clusters and their visual representations (vClusters) in the application.
+ * It provides methods to initialize clusters from data, create new clusters, manage layout parameters, and handle node deletion.
+ */
 export class ClusterFactory {
   static clusters: Cluster[];
   static vClusters: VCluster[];
@@ -32,6 +74,10 @@ export class ClusterFactory {
   static hght = 10;
   // The distance between vClusters origin
   static gutter = 150;
+
+  static selectionStart: Vector | null = null;
+  static selectionEnd: Vector | null = null;
+  static nextSelectionId = 0;
 
   static makeClusters(data: ClusterInit[]) {
     ClusterFactory.initParameters();
@@ -43,21 +89,35 @@ export class ClusterFactory {
 
     for (let index = 0; index < Object.keys(data).length; index++) {
       this.instantiateCluster(data[index]);
+      let paletteTmp = data[index].palette
+
+      if (paletteTmp) {
+        // get the palette keys
+        let keys = Object.keys(paletteTmp!);
+
+        for (let i = 0; i < keys.length; i++) {
+          const key = keys[i]
+          ColorFactory.addSequentialPalette(key, paletteTmp[key])
+        }
+      }
     }
+
+    // 
+    //   if (data[index].palette) 
 
     //** Visual cluster section
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
     for (let index = 0; index < ClusterFactory.clusters.length; index++) {
       //  vCluster parameters
       let cluster = ClusterFactory.clusters[index];
-      let posX = 25 + x * index;
+      let posX = 270 + x * index;
       let posY = 20;
       let width = ClusterFactory.wdth;
       let height = ClusterFactory.hght;
-      let palette = ColorFactory.getPalette(index);
+      let palette = ColorFactory.getCategoricalPalette('palette' + (index + 1));
 
       // vCluster instantiation
-      let tmp;
+      let tmp: any;
       if (cluster.type === "geo") {
         tmp = new VGeoCluster(
           cluster,
@@ -66,12 +126,18 @@ export class ClusterFactory {
           width,
           height,
           palette,
-          data[index].keyAttribute!,
+          data[index].bbox!,
           data[index].mapName!,
+          data[index].secondaryMapName!,
+          data[index].palette!,
         ); //  /files/Cartographies/Brazil_Amazon.geojson
       } else {
         tmp = new VCluster(cluster, posX, posY, width, height, palette);
       }
+      // Builds the cluster settings menu on the left side of the screen
+
+      SettingsPanelFactory.add(tmp, true);
+
       // set the VCluster transformer from data imported
       if (
         TransFactory.getTransformerByVClusterID(
@@ -97,16 +163,30 @@ export class ClusterFactory {
     this.instantiateCluster(data);
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
     let index = ClusterFactory.clusters.length - 1;
-    let tmp = new VCluster(
-      ClusterFactory.clusters[index],
-      15 + x * index,
-      10,
-      ClusterFactory.wdth,
-      ClusterFactory.hght,
-      ColorFactory.getPalette(index),
-    );
+    let tmp;
+    if (data.clusterType === "selection") {
+      tmp = new VSelectionCluster(
+        ClusterFactory.clusters[index],
+        15 + x * index,
+        10,
+        ClusterFactory.wdth,
+        ClusterFactory.hght,
+        ColorFactory.getCategoricalPalette('palette' + (index + 1)),
+      );
+    } else {
+      tmp = new VCluster(
+        ClusterFactory.clusters[index],
+        270 + x * index,
+        10,
+        ClusterFactory.wdth,
+        ClusterFactory.hght,
+        ColorFactory.getCategoricalPalette('palette' + (index + 1)),
+      );
+    }
+    SettingsPanelFactory.add(tmp, true, document.getElementById('cSettingsMain')!);
     Canvas.subscribe(tmp);
     ClusterFactory.vClusters.push(tmp);
+    return tmp;
   }
 
   /**
@@ -126,7 +206,12 @@ export class ClusterFactory {
   }
 
   static instantiateCluster(data: ClusterInit) {
-    let cluster = new Cluster(data.clusterID, data.clusterType!);
+    let cluster = new Cluster(
+      data.clusterID,
+      data.clusterType!,
+      data.timestamps,
+      data.dimensions,
+    );
     cluster.setLabel(data.clusterLabel);
     cluster.setDescription(data.clusterDescription);
     this.makeNodes(cluster, data);
@@ -284,6 +369,64 @@ export class ClusterFactory {
       }
     }
     return rtn;
+  }
+
+  static showSelectedArea() {
+    if (!this.selectionStart || !this.selectionEnd) return;
+    gp5.push();
+    gp5.stroke(255);
+    gp5.strokeWeight(4);
+    gp5.noFill();
+    gp5.rect(
+      Math.min(this.selectionEnd.x, this.selectionStart.x),
+      Math.min(this.selectionEnd.y, this.selectionStart.y),
+      Math.abs(this.selectionEnd.x - this.selectionStart.x),
+      Math.abs(this.selectionEnd.y - this.selectionStart.y),
+    );
+    gp5.pop();
+  }
+
+  static createSelection() {
+    if (!this.selectionStart || !this.selectionEnd) return;
+    const minX = Math.min(this.selectionEnd.x, this.selectionStart.x);
+    const minY = Math.min(this.selectionEnd.y, this.selectionStart.y);
+    const maxX = Math.max(this.selectionEnd.x, this.selectionStart.x);
+    const maxY = Math.max(this.selectionEnd.y, this.selectionStart.y);
+
+    const selectedVNodes: VNode[] = [];
+    this.vClusters.forEach((cluster) => {
+      cluster.vNodes.forEach((vNode) => {
+        if (
+          vNode.pos &&
+          vNode.pos.x >= minX &&
+          vNode.pos.x <= maxX &&
+          vNode.pos.y >= minY &&
+          vNode.pos.y <= maxY
+        ) {
+          selectedVNodes.push(vNode);
+        }
+      });
+    });
+
+    if (selectedVNodes.length > 0) {
+      const selectionVCluster = this.makeCluster({
+        clusterType: "selection",
+        clusterDescription: "Cluster description",
+        clusterID: "selection-" + this.nextSelectionId,
+        clusterLabel: "Selection " + this.nextSelectionId,
+        nodes: [],
+      });
+      this.nextSelectionId++;
+      selectionVCluster.boundingBox = [minX, minY, maxX - minX, maxY - minY];
+      selectionVCluster.vNodes = selectedVNodes;
+      selectionVCluster.cluster.nodes = selectedVNodes.map(
+        (vNode) => vNode.node,
+      );
+      selectedVNodes.forEach((vNode) => {
+        vNode.parentVCluster = selectionVCluster;
+      });
+    }
+    this.selectionStart = this.selectionEnd = null;
   }
 }
 

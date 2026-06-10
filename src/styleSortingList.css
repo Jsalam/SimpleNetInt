@@ -3,7 +3,7 @@
  #sortingWidgetsHolder {
      position: absolute;
      bottom: 0px;
-     left: 5vw;
+     left: 1vw;
      width: fit-content;
      height: fit-content;
      background-color: rgba(50, 55, 55, 0.95);
@@ -33,7 +33,7 @@
 
  /* SVG ELEMENTS TYLE */
  .line-style {
-     stroke: rgb(158, 158, 158);
+     /* stroke: rgba(158, 158, 158, 0.248); */
      fill: none;
      stroke-miterlimit: 10;
  }
@@ -42,19 +42,20 @@
      cursor: pointer;
  }
 
- .itemGroup:hover .line-style {
+ /* .itemGroup:hover .line-style {
      stroke: red;
      stroke-width: 3px;
  }
 
  .itemGroup:hover .textLabel {
      fill: red;
- }
+     font-size: 6px;
+ } */
 
  .textLabel {
-     font-family: Arial, sans-serif;
-     font-size: 12px;
-     fill: rgb(169, 163, 163);
+     font-family: 'Roboto', sans-serif;
+     font-size: 6px;
+     fill: rgba(169, 163, 163, 0.315);
  }
 
  /* #chartHolder {
@@ -68,9 +69,9 @@
 
  .chart {
      margin-bottom: 5px;
-     overflow-y: scroll;
-      border-bottom: rgba(172, 255, 47, 0.18) 0.5px solid; 
-      padding-bottom: 10px;
+     overflow-y:visible;
+     border-bottom: rgba(172, 255, 47, 0.18) 0.5px solid;
+     padding-bottom: 10px;
  }
 
  .chartHeader {
@@ -79,9 +80,9 @@
  }
 
  .title {
-     font-family: Arial, sans-serif;
+     font-family: 'Roboto', sans-serif;
      font-size: 12px;
-     color: rgb(187, 167, 167);
+     color: rgb(19, 190, 190);
      width: fit-content;
      padding: 0.3em 0.5em;
      /* background-color: rgba(126, 10, 56, 0.969); */
@@ -89,18 +90,20 @@
  }
 
  .sorting_dropdown {
-     font-size: 12px;
+     display: block;
+     width: 100%;
+     font-size: 0.8em;
      background-color: rgba(126, 10, 56, 0.0069);
      color: rgb(187, 167, 167);
      border: none;
  }
 
-  .menuTitle:hover {
+ .menuTitle:hover {
      cursor: pointer;
  }
 
- 
-/* .menuTitle:hover .menuList  {
+
+ /* .menuTitle:hover .menuList  {
      display: inline
  }
 

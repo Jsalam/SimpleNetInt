@@ -2,7 +2,7 @@
 <html>
 
 <head profile="http://www.w3.org/2005/10/profile">
-    <link rel="icon" type="image/ico" href="files/favicon.ico">
+    <link rel="icon" type="image/ico" href="files/icons/favicon.ico">
     <!-- Enable responsiveness on mobile devices-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -22,7 +22,7 @@
 
         <!-- EDITOR SECTION -->
         <div class="menu">
-            <div id="logo"> <img src="files/logo.png" height="20px"> &nbsp Simple NetInt Sketchpad</div>
+            <div id="logo"> <img src="files/icons/logo.png" height="20px"> &nbsp Simple NetInt Sketchpad</div>
 
             <!-- File -->
             <div class="dropdown">
@@ -31,10 +31,11 @@
                     <div class="customButton">
                         <div> <label>Network from library</label></div>
                         <select id="modelChoice">
-                            <option value="0">Empty canvas</option>
+                            <option value="0" selected>Empty canvas</option>
                             <option value="1">Firefly & Serenity Experimental Timeline</option>
-                            <option value="2" selected>Test</option>
-                            <option value="3">VGeoCluster</option>
+                            <option value="2">Test</option>
+                            <option value="3">Trajetorias Dataset paired</option>
+                            <option value="4">Trajetorias Dataset</option>
                         </select>
                     </div>
                     <hr>
@@ -53,13 +54,17 @@
             <div class="dropdown">
                 <div class="dropdownTitle" id="networkTitle">Network</div>
                 <div class="dropdownContent" id="networkSection">
-
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="edit" checked>
+                        <label class="labelCheckbox" for="edit" style=" font-size: .8em">Edit network</label>
+                    </div>
+                    <hr>
                     <div class="customButton" data-bs-toggle="modal" data-bs-target="#addClusterModal">Add space</div>
                     <div class="customButton" data-bs-toggle="modal" data-bs-target="#addNodeModal">Add node</div>
                     <hr>
-                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addKindModal">Link Categories
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addKindModal">Edge Categories
                     </div>
-                    <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
+                    <div class="customButton" id="clearEdges" name="clearEdgs">Clear all edges</div>
                 </div>
             </div>
 
@@ -88,7 +93,7 @@
                         <label class="labelSlider" for="nodeDegreeFilter">0</label>
                     </div>
                     <div class="sliderItem">
-                        <input type="range" id="nodeSizeFactor" min="0" max="1" step="0.1" value="1" />
+                        <input type="range" id="nodeSizeFactor" min="0" max="1" step="0.1" value="0.25" />
                         <label class="labelSlider" for="nodeSizeFactor">Node size factor</label>
                         <label class="labelSlider" for="nodeSizeFactor">0</label>
                     </div>
@@ -114,7 +119,7 @@
                     <hr>
                     <!-- OTHER -->
                     <div class="checkboxItem">
-                        <input type="checkbox" id="toggle_instructions" checked>
+                        <input type="checkbox" id="toggle_instructions">
                         <label class="labelCheckbox" for="toggle_instructions">Instructions legend</label><br>
                     </div>
                     <div class="checkboxItem">
@@ -128,13 +133,13 @@
                     </div>
                     <hr>
                     <div class="checkboxItem">
-                        <input type="checkbox" id="edit" checked>
-                        <label class="labelCheckbox" for="edit" style=" font-size: .8em">Edge menu</label>
+                        <input type="checkbox" id="editEdgeMenu" checked>
+                        <label class="labelCheckbox" for="editEdgeMenu" style=" font-size: .8em">Edge menu</label>
                     </div>
-                    <div class="checkboxItem">
+                    <!-- <div class="checkboxItem">
                         <input type="checkbox" id="spaces" checked>
                         <label class="labelCheckbox" for="spaces" style=" font-size: .8em">Spaces menu</label>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -163,7 +168,6 @@
         </div>
 
     </div>
-
     <!-- Navigation Bar -->
     <nav>
         <!-- <div class="d-inline-flex flex-row-reverse" style="align-items: initial;"> -->
@@ -289,7 +293,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Add link categories</h3>
+                    <h3 class="modal-title">Add edge categories</h3>
                 </div>
                 <div class="modal-body">
 
@@ -298,8 +302,8 @@
                         "friend" category represents the friendship between the nodes. The "classmate" category
                         represents beign in the academic course.</p>
 
-                    <p>In Simple NetInt every link between nodes must belong to a category. The links are directional.
-                        If you want to represent bidirectional relatioships you need to create a link in each direction.
+                    <p>In Simple NetInt every egde between nodes must belong to a category. The links are directional.
+                        If you want to represent bidirectional relatioships you need to create an edge in each direction.
                     </p>
 
                     <p>Enter the categories you want to use in this network separated by comas. For example:
