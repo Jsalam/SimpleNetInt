@@ -1,10 +1,8 @@
 {
-    "vEdge": {
-        "edge": "Edge json",
-        "vSource": "vNode json",
-        "vTarget": "vNode json",
-        "controlPoints": [
-
-        ]
-    }
+  "vEdge": {
+    "edge": "Edge json",
+    "vSource": "vNode json",
+    "vTarget": "vNode json",
+    "controlPoints": []
+  }
 }

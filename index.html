@@ -2,83 +2,18 @@
 <html>
 
 <head profile="http://www.w3.org/2005/10/profile">
-    <link rel="icon" type="image/ico" href="files/favicon.ico">
+    <link rel="icon" type="image/ico" href="files/icons/favicon.ico">
     <!-- Enable responsiveness on mobile devices-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
     <title>Simple NetInt Sketchpad</title>
 
     <style>
-        @font-face {
-            font-family: Roboto;
-            src: url(./fonts/Roboto-Light.ttf);
-        }
+
     </style>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- GUI Quicksettings -->
-    <script src=https://cdn.jsdelivr.net/npm/quicksettings@latest/quicksettings.min.js></script>
-    <link href="css/quicksettings.min.css" type="text/css" rel="stylesheet">
-
-    <!-- Animation -->
-    <script src="libs/anime.min.js"></script>
-
-    <!-- Matrix operations -->
-    <script src='libs/gl-matrix-min.js'></script>
-
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gl-matrix@3.4.3/gl-matrix-min.min.js"></script>
-
-    <!-- GUI -->
-    <script src="src/GUI/DOM/DOMManager.js"></script>
-    <script src="src/GUI/ContextualGUIs/ContextualGUI.js"></script>
-
-    <!-- COLOR -->
-    <script src="libs/chroma.min.js"></script>
-
-    <!-- Control -->
-    <script src="src/main.js"></script>
-    <script src="src/canvas/canvas.js"></script>
-    <script src='src/canvas/transformer.js'></script>
-    <script src="src/GUI/forms/addClusterModalForm.js"></script>
-    <script src="src/GUI/forms/addEdgeCategoriesModalForm.js"></script>
-    <script src="src/GUI/forms/addNodeModalForm.js"></script>
-    <script src="src/GUI/forms/exportModalForm.js"></script>
-    <script src="src/GUI/forms/importModalForm.js"></script>
-    
-
-    <!-- Model -->
-    <script src="src/graphElements/node.js"></script>
-    <script src="src/graphElements/connector.js"></script>
-    <script src="src/graphElements/edge.js"></script>
-    <script src="src/graphElements/cluster.js"></script>
-    <script src="src/factories/edgeFactory.js"></script>
-    <script src="src/factories/clusterFactory.js"></script>
-    <script src="src/factories/colorFactory.js"></script>
-    <script src="src/factories/transformerFactory.js"></script>
-
-    <!-- View -->
-    <script src="src/visualElements/VirtualElementPool.js"></script>
-    <script src="src/visualElements/button.js"></script>
-    <script src="src/visualElements/vNode.js"></script>
-    <script src="src/visualElements/vConnector.js"></script>
-    <script src="src/visualElements/vEdge.js"></script>
-    <script src="src/visualElements/vCluster.js"></script>
-    <script src="src/visualElements/layouts/layout.js"></script>
-    <script src="src/visualElements/vGeoCluster.js"></script>
-    <script src="src/canvas/grid.js"></script>
-
-    <!-- Utils-->
-    <script src="src/utilities/utilities.js"></script>
-    <script src="src/utilities/utilitiesNetworkJSON.js"></script>
-
+    <link rel="stylesheet" href="dist/main.css">
+    <script defer src="dist/main.js"></script>
 </head>
 
 <body>
@@ -87,7 +22,7 @@
 
         <!-- EDITOR SECTION -->
         <div class="menu">
-            <div id="logo"> <img src="files/logo.png" height="20px"> &nbsp Simple NetInt Sketchpad</div>
+            <div id="logo"> <img src="files/icons/logo.png" height="20px"> &nbsp Simple NetInt Sketchpad</div>
 
             <!-- File -->
             <div class="dropdown">
@@ -96,18 +31,21 @@
                     <div class="customButton">
                         <div> <label>Network from library</label></div>
                         <select id="modelChoice">
-                            <option value="0">Empty canvas</option>
+                            <option value="0" selected>Empty canvas</option>
                             <option value="1">Firefly & Serenity Experimental Timeline</option>
-                            <option value="2" selected>Test</option>
-                            <option value="3">VGeoCluster</option>
+                            <option value="2">Test</option>
+                            <option value="3">Trajetorias Dataset paired</option>
+                            <option value="4">Trajetorias Dataset</option>
                         </select>
                     </div>
                     <hr>
-                    <div class="customButton" data-toggle="modal" data-target="#exportNetworkModal">Save/Export file
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#exportNetworkModal">Save/Export
+                        file
                     </div>
-                    <div class="customButton" data-toggle="modal" data-target="#importNetworkModal">Open/Import file
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#importNetworkModal">Open/Import
+                        file
                     </div>
-                    <div id="version">v. 10_2024</div>
+                    <div id="version">v. 0.1_2025</div>
                 </div>
 
             </div>
@@ -116,12 +54,17 @@
             <div class="dropdown">
                 <div class="dropdownTitle" id="networkTitle">Network</div>
                 <div class="dropdownContent" id="networkSection">
-
-                    <div class="customButton" data-toggle="modal" data-target="#addClusterModal">Add space</div>
-                    <div class="customButton" data-toggle="modal" data-target="#addNodeModal">Add node</div>
+                    <div class="checkboxItem">
+                        <input type="checkbox" id="edit" checked>
+                        <label class="labelCheckbox" for="edit" style=" font-size: .8em">Edit network</label>
+                    </div>
                     <hr>
-                    <div class="customButton" data-toggle="modal" data-target="#addKindModal">Link Categories</div>
-                    <div class="customButton" id="clearEdges" name="clearEdgs">Clear all links</div>
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addClusterModal">Add space</div>
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addNodeModal">Add node</div>
+                    <hr>
+                    <div class="customButton" data-bs-toggle="modal" data-bs-target="#addKindModal">Edge Categories
+                    </div>
+                    <div class="customButton" id="clearEdges" name="clearEdgs">Clear all edges</div>
                 </div>
             </div>
 
@@ -150,7 +93,7 @@
                         <label class="labelSlider" for="nodeDegreeFilter">0</label>
                     </div>
                     <div class="sliderItem">
-                        <input type="range" id="nodeSizeFactor" min="0" max="1" step="0.1" value="1" />
+                        <input type="range" id="nodeSizeFactor" min="0" max="1" step="0.1" value="0.25" />
                         <label class="labelSlider" for="nodeSizeFactor">Node size factor</label>
                         <label class="labelSlider" for="nodeSizeFactor">0</label>
                     </div>
@@ -176,7 +119,7 @@
                     <hr>
                     <!-- OTHER -->
                     <div class="checkboxItem">
-                        <input type="checkbox" id="toggle_instructions" checked>
+                        <input type="checkbox" id="toggle_instructions">
                         <label class="labelCheckbox" for="toggle_instructions">Instructions legend</label><br>
                     </div>
                     <div class="checkboxItem">
@@ -190,13 +133,13 @@
                     </div>
                     <hr>
                     <div class="checkboxItem">
-                        <input type="checkbox" id="edit" checked>
-                        <label class="labelCheckbox" for="edit" style=" font-size: .8em">Edge menu</label>
+                        <input type="checkbox" id="editEdgeMenu" checked>
+                        <label class="labelCheckbox" for="editEdgeMenu" style=" font-size: .8em">Edge menu</label>
                     </div>
-                    <div class="checkboxItem">
+                    <!-- <div class="checkboxItem">
                         <input type="checkbox" id="spaces" checked>
                         <label class="labelCheckbox" for="spaces" style=" font-size: .8em">Spaces menu</label>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -225,15 +168,15 @@
         </div>
 
     </div>
-
     <!-- Navigation Bar -->
     <nav>
         <!-- <div class="d-inline-flex flex-row-reverse" style="align-items: initial;"> -->
-        <div onclick="DOM.toggle_visibility('navbarHideableHeader')" data-toggle="collapse"
-            data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false"
-            aria-label="Toggle navigation">
+        <div onclick="DOM.toggle_visibility('navbarHideableHeader')" data-bs-toggle="collapse"
+            data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+            aria-expanded="false" aria-label="Toggle navigation">
 
             <div id="navbarHideableHeader">
+                <div id="currentFile">Current File</div>
                 <div id="menuButton">menu</div>
             </div>
         </div>
@@ -288,14 +231,13 @@
                     <hr>
                     <h4>Node description</h4>
                     <p>Describe briefly the content of the new node. Give credits to third parties if any. </p>
-                    <textarea class="form-control" rows="3" id="catDescription">Node description</textarea>
+                    <textarea class="form-control" rows="3" id="catDescription"></textarea>
                     <hr>
 
                     </textarea>
                     <h4>Attributes</h4>
                     <p>Add attributes in comma separated "key":"value" pairs. </p>
                     <textarea class="form-control" rows="3" id="catAttributesOther">
-                    "Attribute A":"", "Attribute B":""
                     </textarea>
                     <hr>
                 </div>
@@ -351,7 +293,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Add link categories</h3>
+                    <h3 class="modal-title">Add edge categories</h3>
                 </div>
                 <div class="modal-body">
 
@@ -360,8 +302,8 @@
                         "friend" category represents the friendship between the nodes. The "classmate" category
                         represents beign in the academic course.</p>
 
-                    <p>In Simple NetInt every link between nodes must belong to a category. The links are directional.
-                        If you want to represent bidirectional relatioships you need to create a link in each direction.
+                    <p>In Simple NetInt every egde between nodes must belong to a category. The links are directional.
+                        If you want to represent bidirectional relatioships you need to create an edge in each direction.
                     </p>
 
                     <p>Enter the categories you want to use in this network separated by comas. For example:
@@ -382,6 +324,15 @@
     <div id="screenMessage">
         <div> Something</div>
         <div class="dot-flashing"></div>
+    </div>
+
+    <!-- Sorting lists holder -->
+    <div id="sortingWidgetsHolder">
+        <hr>
+        <div class="title menuTitle" id="sortingWidgetsTitle">Sorting lists</div>
+        <div id="sortingWidgets"></div>
+        <div class="title" id="addSortingWidget"></div>
+
     </div>
 
     <!-- SCRIPTS -->

@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "clusterID": 1,
+      "clusterID": "1",
       "clusterLabel": "main space",
       "clusterDescription": "The default space built on initialization",
       "nodes": [
@@ -18,7 +18,7 @@
           "connectors": [],
           "pajekIndex": 1,
           "vNode": {
-            "posX": 171,
+            "posX": 321,
             "posY": 204,
             "posZ": 0,
             "color": "#253493"
@@ -47,7 +47,7 @@
           ],
           "pajekIndex": 2,
           "vNode": {
-            "posX": 296,
+            "posX": 466,
             "posY": 205,
             "posZ": 0,
             "color": "#63eeff"
@@ -69,7 +69,7 @@
           ],
           "pajekIndex": 4,
           "vNode": {
-            "posX": 500,
+            "posX": 670,
             "posY": 383,
             "posZ": 0,
             "color": "#8aadb4"
@@ -98,7 +98,7 @@
           ],
           "pajekIndex": 3,
           "vNode": {
-            "posX": 554,
+            "posX": 724,
             "posY": 172,
             "posZ": 0,
             "color": "#f5c378"

@@ -1,3 +1,0 @@
-class VGeoNode extends VNode {
-
-}

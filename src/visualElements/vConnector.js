@@ -1,19 +1,23 @@
-class VConnector extends Button {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VConnector = void 0;
+const button_1 = require("./button");
+const main_1 = require("../main");
+class VConnector extends button_1.Button {
+    connector;
+    color;
     constructor(connector) {
         super(0, 0, 10, 10);
         this.connector = connector;
-        this.color = '#d4d4d4';
+        this.color = "#d4d4d4";
         connector.subscribeVConnector(this);
     }
-
     // Observing connector
     getData(data) {
         // do domething
     }
-
     // Observing to Canvas
     fromVNode(data) {
-
         if (data.event instanceof MouseEvent) {
             if (data.type == "mouseup") {
                 // do something
@@ -25,55 +29,60 @@ class VConnector extends Button {
                 // do something
             }
             if (data.type == "mousemove") {
-                this.mouseOver();
+                this.mouseOver(data);
             }
             if (data.type == "mousewheel") {
-
             }
             // do something
-        } else if (data.event instanceof KeyboardEvent) {
+        }
+        else if (data.event instanceof KeyboardEvent) {
             // do something
-        } else {
+        }
+        else {
             // do something
         }
     }
-
     setColor(color) {
         this.color = color;
     }
-
     updateCoords(pos, sequence, height) {
-        this.setPos(gp5.createVector(pos.x - this.width, pos.y + (sequence * height)));
+        this.setPos(main_1.gp5.createVector(pos.x - this.width, pos.y + sequence * height));
         this.setHeight(height);
-        this.setWidth(width);
+        this.setWidth(height);
     }
-
     updateCoordsByAngle(center, angle, radius) {
-
         let x = Math.cos(angle) * (radius - this.width / 2);
         let y = Math.sin(angle) * (radius - this.width / 2);
-
-        this.setPos(gp5.createVector(center.x + x, center.y + y));
+        this.setPos(main_1.gp5.createVector(center.x + x, center.y + y));
     }
-
     show(renderer, fillColor, strokeColor) {
-        renderer.ellipseMode(gp5.CENTER);
+        renderer.ellipseMode(main_1.gp5.CENTER);
+        // Fill color
+        if (typeof fillColor === "string") {
+            fillColor = renderer.color(fillColor);
+        }
         renderer.fill(fillColor);
         renderer.stroke(fillColor);
-        if (strokeColor) renderer.stroke(strokeColor);
+        // Stroke color
+        if (typeof strokeColor === "string") {
+            strokeColor = renderer.color(strokeColor);
+        }
+        if (strokeColor)
+            renderer.stroke(strokeColor);
         //renderer.rect(this.pos.x, this.pos.y, this.width, this.height);
-       // let radius =  * Number(DOM.sliders.nodeSizeFactor.value);
+        // let radius =  * Number(DOM.sliders.nodeSizeFactor.value);
         // if (radius < 3) radius = 3;
-        renderer.ellipse(this.pos.x, this.pos.y, this.width)
-            // label
-            // renderer.textSize(5);
-            // renderer.textAlign(gp5.RIGHT, gp5.CENTER);
-            // renderer.fill('#000000');
-            // renderer.noStroke();
-            //renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
+        renderer.ellipse(this.pos.x, this.pos.y, this.width);
+        // label
+        // renderer.textSize(5);
+        // renderer.textAlign(gp5.RIGHT, gp5.CENTER);
+        // renderer.fill('#000000');
+        // renderer.noStroke();
+        //renderer.text(this.connector.kind, this.pos.x - 2, this.pos.y);
     }
-
     getJSON() {
         return this.connector.kind;
     }
 }
+exports.VConnector = VConnector;
+//# sourceMappingURL=vConnector.js.map

@@ -1,9 +1,25 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Button = void 0;
+const main_1 = require("../main");
+const canvas_1 = require("../canvas/canvas");
 /**
- * Base class for nodes, connectors or any other visual element with an area. 
+ * Base class for nodes, connectors or any other visual element with an area.
  */
 class Button {
+    pos;
+    width;
+    height;
+    mouseIsOver;
+    clicked;
+    dragged;
+    delta;
+    selected;
+    transformed;
+    localScale;
+    visible;
     constructor(posX, posY, width, height) {
-        this.pos = gp5.createVector(posX, posY, 0);
+        this.pos = main_1.gp5.createVector(posX, posY, 0);
         this.width = width;
         this.height = height;
         this.mouseIsOver = false;
@@ -15,63 +31,74 @@ class Button {
         this.transformed = false;
         this.localScale = 1;
         this.visible = true;
-
     }
-
-    show() {
+    show(renderer, fillColor, strokeColor) {
         if (!this.mouseIsOver) {
-            gp5.noFill();
-        } else {
-            gp5.fill("#F0F0F080");
+            main_1.gp5.noFill();
         }
-
-        gp5.rect(this.pos.x, this.pos.y, this.width, this.height);
+        else {
+            main_1.gp5.fill("#F0F0F080");
+        }
+        main_1.gp5.rect(this.pos.x, this.pos.y, this.width, this.height);
     }
-
     setPos(pos) {
         this.pos = pos;
     }
-
     setX(xpos) {
         this.pos.x = xpos;
     }
-
     setY(ypos) {
-        this.pos.y = ypos
+        this.pos.y = ypos;
     }
-
     setHeight(h) {
         this.height = h;
     }
-
     setWidth(w) {
         this.width = w;
     }
-
-    mouseOver() {
+    mouseOver(data) {
+        const mousWasOver = this.mouseIsOver;
         if (this.visible) {
             this.mouseIsOver = false;
-            if (Canvas._mouse.x > this.pos.x - this.width * this.localScale / 2 &&
-                Canvas._mouse.x < this.pos.x + this.width * this.localScale / 2 &&
-                Canvas._mouse.y > this.pos.y - this.height * this.localScale / 2 &&
-                Canvas._mouse.y < this.pos.y + this.height * this.localScale / 2) {
+            if (canvas_1.Canvas._mouse.x > this.pos.x - (this.width * this.localScale) / 2 &&
+                canvas_1.Canvas._mouse.x < this.pos.x + (this.width * this.localScale) / 2 &&
+                canvas_1.Canvas._mouse.y > this.pos.y - (this.height * this.localScale) / 2 &&
+                canvas_1.Canvas._mouse.y < this.pos.y + (this.height * this.localScale) / 2) {
                 this.mouseIsOver = true;
             }
-        } else {
+        }
+        else {
             this.mouseIsOver = false;
         }
+        if (mousWasOver !== this.mouseIsOver) {
+            if (this.mouseIsOver) {
+                this.notifyObservers({
+                    event: new MouseEvent("mouseover"),
+                    type: "mouseIsOver",
+                    pos: data.pos,
+                });
+            }
+            else {
+                this.notifyObservers({
+                    event: new MouseEvent("mouseout"),
+                    type: "mouseIsOut",
+                    pos: data.pos,
+                });
+            }
+        }
     }
-
+    notifyObservers(data) { }
     getDeltaMouse() {
-        let rtn = gp5.createVector(0, 0);
+        let rtn = main_1.gp5.createVector(0, 0);
         if (this.mouseIsOver) {
-            rtn.x = Canvas._mouse.x - this.pos.x;
-            rtn.y = Canvas._mouse.y - this.pos.y;
+            rtn.x = canvas_1.Canvas._mouse.x - this.pos.x;
+            rtn.y = canvas_1.Canvas._mouse.y - this.pos.y;
         }
         return rtn;
     }
-
     getDistToMouse() {
-        return (gp5.dist(Canvas._mouse.x, Canvas._mouse.y, this.pos.x, this.pos.y));
+        return main_1.gp5.dist(canvas_1.Canvas._mouse.x, canvas_1.Canvas._mouse.y, this.pos.x, this.pos.y);
     }
 }
+exports.Button = Button;
+//# sourceMappingURL=button.js.map
