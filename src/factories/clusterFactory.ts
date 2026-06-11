@@ -212,6 +212,7 @@ export class ClusterFactory {
       data.timestamps,
       data.dimensions,
     );
+
     cluster.setLabel(data.clusterLabel);
     cluster.setDescription(data.clusterDescription);
     this.makeNodes(cluster, data);

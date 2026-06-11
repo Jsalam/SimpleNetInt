@@ -105,6 +105,7 @@ export class VGeoCluster extends VCluster {
   static drawShape(geom: Geometry, center: Vector, scale: number) {
     function traverse(rings: Position[][]) {
       if (rings.length === 0) return;
+
       VGeoCluster.pixelTarget.beginShape();
       for (let [lon, lat] of rings[0]) {
         const [x, y] = VGeoCluster.projectMercator(lon, lat, center, scale);
@@ -123,7 +124,7 @@ export class VGeoCluster extends VCluster {
   }
 
   // TODO: comments
-  static drawOutline(geom: Geometry, center: Vector, scale: number) {
+  static drawOutline(geom: Geometry, center: Vector, scale: number, thicknessFactor: number = 1) {
     function traverse(rings: Position[][]) {
       if (rings.length === 0) return;
       const N = rings[0].length;
@@ -134,7 +135,7 @@ export class VGeoCluster extends VCluster {
         const [x1, y1] = VGeoCluster.projectMercator(lon1, lat1, center, scale);
         const [x2, y2] = VGeoCluster.projectMercator(lon2, lat2, center, scale);
         const forward = new p5.Vector(x2 - x1, y2 - y1).normalize();
-        const offset = new p5.Vector(-forward.y, forward.x).mult(1);
+        const offset = new p5.Vector(-forward.y, forward.x).mult(thicknessFactor);
 
         VGeoCluster.pixelTarget.beginShape();
         VGeoCluster.pixelTarget.vertex(x1 + offset.x, y1 + offset.y);
@@ -152,9 +153,9 @@ export class VGeoCluster extends VCluster {
         const [x2, y2] = VGeoCluster.projectMercator(lon2, lat2, center, scale);
         const [x3, y3] = VGeoCluster.projectMercator(lon3, lat3, center, scale);
         const forward1 = new p5.Vector(x2 - x1, y2 - y1).normalize();
-        const offset1 = new p5.Vector(-forward1.y, forward1.x).mult(1);
+        const offset1 = new p5.Vector(-forward1.y, forward1.x).mult(thicknessFactor);
         const forward2 = new p5.Vector(x3 - x2, y3 - y2).normalize();
-        const offset2 = new p5.Vector(-forward2.y, forward2.x).mult(1);
+        const offset2 = new p5.Vector(-forward2.y, forward2.x).mult(thicknessFactor);
         if (forward1.cross(forward2).z > 0) {
           VGeoCluster.pixelTarget.beginShape();
           VGeoCluster.pixelTarget.vertex(x2, y2);
@@ -208,12 +209,10 @@ export class VGeoCluster extends VCluster {
               () => {
                 for (let [i, feature] of features.entries()) {
                   VGeoCluster.pixelTarget.noStroke();
-                  VGeoCluster.pixelTarget.fill(
-                    0, // ((i + 1) >> 16) & 0xff,
-                    ((i + 1) >> 8) & 0xff,
-                    ((i + 1) >> 0) & 0xff,
-                  );
+                  VGeoCluster.pixelTarget.fill(250, 250, 250);
                   this.drawShape(feature.geometry, center, scale);
+                 // this.drawOutline(feature.geometry, center, scale, 0.03);
+
                 }
               },
             );
@@ -252,14 +251,14 @@ export class VGeoCluster extends VCluster {
               center,
               scale,
             );
-            // @ts-expect-error
+            // @ts-expect-error  
             // Error reported in: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/72658
             const geometry: p5.Geometry = VGeoCluster.pixelTarget.buildGeometry(
               () => {
                 for (let [i, feature] of features.entries()) {
                   VGeoCluster.pixelTarget.noStroke();
                   VGeoCluster.pixelTarget.fill(128, 128, 128);
-                  this.drawOutline(feature.geometry, center, scale);
+                  this.drawOutline(feature.geometry, center, scale, 0.1);
                 }
               },
             );
@@ -809,3 +808,7 @@ export class VGeoCluster extends VCluster {
     }
   }
 }
+
+(window as any).VGeoCluster = VGeoCluster;
+
+

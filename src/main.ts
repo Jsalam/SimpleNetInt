@@ -4,10 +4,15 @@ import { ColorFactory } from "./factories/colorFactory";
 import { Canvas } from "./canvas/canvas";
 
 import "bootstrap/dist/js/bootstrap.min.js";
+// Ignore missing type declarations for side-effect CSS import
+// @ts-ignore
 import "bootstrap/dist/css/bootstrap.min.css";
 
+// @ts-ignore
 import "./style.css";
+// @ts-ignore
 import "./styleSortingList.css";
+// @ts-ignore
 import "./styleClusterSettings.css";
 
 export const gp5 = new p5(

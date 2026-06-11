@@ -1,0 +1,1046 @@
+{
+  "nodes": [
+    {
+      "clusterID": 1,
+      "clusterType": "geo",
+      "clusterLabel": "Elecciones 2026",
+      "clusterDescription": "Resultados",
+      "mapName": "gadm41_COL_2.json",
+      "secondaryMapName": "gadm41_COL_1.json",
+      "bbox": [-80.0, -4.0, -66.0, 14],
+      "timestamps": ["Primera_Vuelta", "Segunda_Vuelta"],
+      "palette": {},
+      "dimensions": {
+        "name": "Environmental",
+        "children": [
+          {
+            "name": "Habitat loss",
+            "children": [
+              {
+                "name": "Deforestation",
+                "children": [
+                  {
+                    "name": "deorg",
+                    "key": "deorg"
+                  },
+                  {
+                    "name": "defor",
+                    "key": "defor"
+                  }
+                ]
+              },
+              {
+                "name": "Forest degradation",
+                "children": [
+                  {
+                    "name": "dgorg",
+                    "key": "dgorg"
+                  },
+                  {
+                    "name": "dgfor",
+                    "key": "dgfor"
+                  }
+                ]
+              },
+              {
+                "name": "Fires",
+                "children": [
+                  {
+                    "name": "fire",
+                    "key": "fire"
+                  }
+                ]
+              },
+              {
+                "name": "Mining",
+                "children": [
+                  {
+                    "name": "mining",
+                    "key": "mining"
+                  }
+                ]
+              },
+              {
+                "name": "Vegetation fragmentation",
+                "children": [
+                  {
+                    "name": "core",
+                    "key": "core"
+                  },
+                  {
+                    "name": "edge",
+                    "key": "edge"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Land Use and Land Cover",
+            "children": [
+              {
+                "name": "Remanent forest",
+                "children": [
+                  {
+                    "name": "refor",
+                    "key": "refor"
+                  }
+                ]
+              },
+              {
+                "name": "Secondary vegetation",
+                "children": [
+                  {
+                    "name": "secveg",
+                    "key": "secveg"
+                  }
+                ]
+              },
+              {
+                "name": "Pasture",
+                "children": [
+                  {
+                    "name": "pasture",
+                    "key": "pasture"
+                  }
+                ]
+              },
+              {
+                "name": "Crop",
+                "children": [
+                  {
+                    "name": "crop",
+                    "key": "crop"
+                  }
+                ]
+              },
+              {
+                "name": "Urban area",
+                "children": [
+                  {
+                    "name": "urban",
+                    "key": "urban"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Transportation networks",
+            "children": [
+              {
+                "name": "Roads network",
+                "children": [
+                  {
+                    "name": "road",
+                    "key": "road"
+                  }
+                ]
+              },
+              {
+                "name": "Waterways network",
+                "children": [
+                  {
+                    "name": "river",
+                    "key": "river"
+                  }
+                ]
+              },
+              {
+                "name": "Ports",
+                "children": [
+                  {
+                    "name": "port",
+                    "key": "port"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Climatic anomalies",
+            "children": [
+              {
+                "name": "Precipitation",
+                "children": [
+                  {
+                    "name": "precp",
+                    "key": "precp"
+                  },
+                  {
+                    "name": "precn",
+                    "key": "precn"
+                  }
+                ]
+              },
+              {
+                "name": "Temperature",
+                "children": [
+                  {
+                    "name": "tempp",
+                    "key": "tempp"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": 60010,
+          "nodeLabel": "El Encanto",
+          "nodeDescription": "",
+          "nodeAttributes": {
+            "attGeo": {
+              "geocode": 60010,
+              "municipality": "ElEncanto",
+              "state": "Amazonas"
+            },
+            "attAll": {
+              "Primera_Vuelta": [
+                {
+                  "party_code": 7,
+                  "candidate_code": 1,
+                  "sort_order": 1,
+                  "president": "IVÁN CEPEDA CASTRO",
+                  "vice_president": "AIDA MARINA QUILCUE VIVAS",
+                  "votes": 216,
+                  "votes_pct": "80,00%"
+                },
+                {
+                  "party_code": 10,
+                  "candidate_code": 4,
+                  "sort_order": 5,
+                  "president": "ABELARDO DE LA ESPRIELLA",
+                  "vice_president": "JOSÉ MANUEL RESTREPO ABONDANO",
+                  "votes": 37,
+                  "votes_pct": "13,70%"
+                },
+                {
+                  "party_code": 2,
+                  "candidate_code": 11,
+                  "sort_order": 12,
+                  "president": "PALOMA VALENCIA LASERNA",
+                  "vice_president": "JUAN DANIEL OVIEDO ARANGO",
+                  "votes": 8,
+                  "votes_pct": "2,96%"
+                },
+                {
+                  "party_code": 11,
+                  "candidate_code": 2,
+                  "sort_order": 3,
+                  "president": "CLAUDIA LÓPEZ",
+                  "vice_president": "LEONARDO HUMBERTO HUERTA GUTIÉRREZ",
+                  "votes": 3,
+                  "votes_pct": "1,11%"
+                },
+                {
+                  "party_code": 14,
+                  "candidate_code": 5,
+                  "sort_order": 6,
+                  "president": "ÓSCAR MAURICIO LIZCANO ARANGO",
+                  "vice_president": "PEDRO LUIS DE LA TORRE MARQUEZ",
+                  "votes": 2,
+                  "votes_pct": "0,74%"
+                },
+                {
+                  "party_code": 4,
+                  "candidate_code": 6,
+                  "sort_order": 7,
+                  "president": "MIGUEL URIBE LONDOÑO",
+                  "vice_president": "LUISA FERNANDA VILLEGAS ARAQUE",
+                  "votes": 1,
+                  "votes_pct": "0,37%"
+                },
+                {
+                  "party_code": 6,
+                  "candidate_code": 8,
+                  "sort_order": 9,
+                  "president": "ROY LEONARDO BARRERAS MONTEALEGRE",
+                  "vice_president": "MARTHA LUCÍA ZAMORA ÁVILA",
+                  "votes": 1,
+                  "votes_pct": "0,37%"
+                },
+                {
+                  "party_code": 3,
+                  "candidate_code": 12,
+                  "sort_order": 13,
+                  "president": "SERGIO FAJARDO VALDERRAMA",
+                  "vice_president": "EDNA CRISTINA DEL SOCORRO BONILLA SEBA",
+                  "votes": 1,
+                  "votes_pct": "0,37%"
+                },
+                {
+                  "party_code": 9,
+                  "candidate_code": 7,
+                  "sort_order": 8,
+                  "president": "SONDRA MACOLLINS GARVIN PINTO",
+                  "vice_president": "LEONARDO KARAM HELO",
+                  "votes": 1,
+                  "votes_pct": "0,37%"
+                },
+                {
+                  "party_code": 13,
+                  "candidate_code": 9,
+                  "sort_order": 10,
+                  "president": "CARLOS EDUARDO CAICEDO OMAR",
+                  "vice_president": "NELSON JAVIER ALARCÓN SUÁREZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 5,
+                  "candidate_code": 10,
+                  "sort_order": 11,
+                  "president": "GUSTAVO MATAMOROS CAMACHO",
+                  "vice_president": "MILA MARÍA PAZ CAMPAZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 12,
+                  "candidate_code": 13,
+                  "sort_order": 14,
+                  "president": "LUIS GILBERTO MURILLO URRUTIA",
+                  "vice_president": "LUZ MARÍA ZAPATA ZAPATA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 8,
+                  "candidate_code": 3,
+                  "sort_order": 4,
+                  "president": "RAÚL SANTIAGO BOTERO JARAMILLO",
+                  "vice_president": "CARLOS FERNANDO CUEVAS ROMERO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                }
+              ],
+              "Segunda_Vuelta": []
+            }
+          },
+          "connectors": [],
+          "pajekIndex": 0,
+          "vNode": {
+            "posX": 100,
+            "posY": 100,
+            "posZ": 0,
+            "color": "#ffffff"
+          }
+        },
+        {
+          "id": 60013,
+          "nodeLabel": "La Chorrera",
+          "nodeDescription": "",
+          "nodeAttributes": {
+            "attGeo": {
+              "geocode": 60013,
+              "municipality": "LaChorrera",
+              "state": "Amazonas"
+            },
+            "attAll": {
+              "Primera_Vuelta": [
+                {
+                  "party_code": 7,
+                  "candidate_code": 1,
+                  "sort_order": 1,
+                  "president": "IVÁN CEPEDA CASTRO",
+                  "vice_president": "AIDA MARINA QUILCUE VIVAS",
+                  "votes": 544,
+                  "votes_pct": "92,99%"
+                },
+                {
+                  "party_code": 10,
+                  "candidate_code": 4,
+                  "sort_order": 5,
+                  "president": "ABELARDO DE LA ESPRIELLA",
+                  "vice_president": "JOSÉ MANUEL RESTREPO ABONDANO",
+                  "votes": 25,
+                  "votes_pct": "4,27%"
+                },
+                {
+                  "party_code": 2,
+                  "candidate_code": 11,
+                  "sort_order": 12,
+                  "president": "PALOMA VALENCIA LASERNA",
+                  "vice_president": "JUAN DANIEL OVIEDO ARANGO",
+                  "votes": 12,
+                  "votes_pct": "2,05%"
+                },
+                {
+                  "party_code": 11,
+                  "candidate_code": 2,
+                  "sort_order": 3,
+                  "president": "CLAUDIA LÓPEZ",
+                  "vice_president": "LEONARDO HUMBERTO HUERTA GUTIÉRREZ",
+                  "votes": 1,
+                  "votes_pct": "0,17%"
+                },
+                {
+                  "party_code": 8,
+                  "candidate_code": 3,
+                  "sort_order": 4,
+                  "president": "RAÚL SANTIAGO BOTERO JARAMILLO",
+                  "vice_president": "CARLOS FERNANDO CUEVAS ROMERO",
+                  "votes": 1,
+                  "votes_pct": "0,17%"
+                },
+                {
+                  "party_code": 13,
+                  "candidate_code": 9,
+                  "sort_order": 10,
+                  "president": "CARLOS EDUARDO CAICEDO OMAR",
+                  "vice_president": "NELSON JAVIER ALARCÓN SUÁREZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 5,
+                  "candidate_code": 10,
+                  "sort_order": 11,
+                  "president": "GUSTAVO MATAMOROS CAMACHO",
+                  "vice_president": "MILA MARÍA PAZ CAMPAZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 12,
+                  "candidate_code": 13,
+                  "sort_order": 14,
+                  "president": "LUIS GILBERTO MURILLO URRUTIA",
+                  "vice_president": "LUZ MARÍA ZAPATA ZAPATA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 4,
+                  "candidate_code": 6,
+                  "sort_order": 7,
+                  "president": "MIGUEL URIBE LONDOÑO",
+                  "vice_president": "LUISA FERNANDA VILLEGAS ARAQUE",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 14,
+                  "candidate_code": 5,
+                  "sort_order": 6,
+                  "president": "ÓSCAR MAURICIO LIZCANO ARANGO",
+                  "vice_president": "PEDRO LUIS DE LA TORRE MARQUEZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 6,
+                  "candidate_code": 8,
+                  "sort_order": 9,
+                  "president": "ROY LEONARDO BARRERAS MONTEALEGRE",
+                  "vice_president": "MARTHA LUCÍA ZAMORA ÁVILA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 3,
+                  "candidate_code": 12,
+                  "sort_order": 13,
+                  "president": "SERGIO FAJARDO VALDERRAMA",
+                  "vice_president": "EDNA CRISTINA DEL SOCORRO BONILLA SEBA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 9,
+                  "candidate_code": 7,
+                  "sort_order": 8,
+                  "president": "SONDRA MACOLLINS GARVIN PINTO",
+                  "vice_president": "LEONARDO KARAM HELO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                }
+              ],
+              "Segunda_Vuelta": []
+            }
+          },
+          "connectors": [],
+          "pajekIndex": 0,
+          "vNode": {
+            "posX": 100,
+            "posY": 100,
+            "posZ": 0,
+            "color": "#ffffff"
+          }
+        },
+        {
+          "id": 60016,
+          "nodeLabel": "La Pedrera",
+          "nodeDescription": "",
+          "nodeAttributes": {
+            "attGeo": {
+              "geocode": 60016,
+              "municipality": "LaPedrera",
+              "state": "Amazonas"
+            },
+            "attAll": {
+              "Primera_Vuelta": [
+                {
+                  "party_code": 7,
+                  "candidate_code": 1,
+                  "sort_order": 1,
+                  "president": "IVÁN CEPEDA CASTRO",
+                  "vice_president": "AIDA MARINA QUILCUE VIVAS",
+                  "votes": 327,
+                  "votes_pct": "81,75%"
+                },
+                {
+                  "party_code": 10,
+                  "candidate_code": 4,
+                  "sort_order": 5,
+                  "president": "ABELARDO DE LA ESPRIELLA",
+                  "vice_president": "JOSÉ MANUEL RESTREPO ABONDANO",
+                  "votes": 49,
+                  "votes_pct": "12,25%"
+                },
+                {
+                  "party_code": 2,
+                  "candidate_code": 11,
+                  "sort_order": 12,
+                  "president": "PALOMA VALENCIA LASERNA",
+                  "vice_president": "JUAN DANIEL OVIEDO ARANGO",
+                  "votes": 7,
+                  "votes_pct": "1,75%"
+                },
+                {
+                  "party_code": 11,
+                  "candidate_code": 2,
+                  "sort_order": 3,
+                  "president": "CLAUDIA LÓPEZ",
+                  "vice_president": "LEONARDO HUMBERTO HUERTA GUTIÉRREZ",
+                  "votes": 3,
+                  "votes_pct": "0,75%"
+                },
+                {
+                  "party_code": 4,
+                  "candidate_code": 6,
+                  "sort_order": 7,
+                  "president": "MIGUEL URIBE LONDOÑO",
+                  "vice_president": "LUISA FERNANDA VILLEGAS ARAQUE",
+                  "votes": 3,
+                  "votes_pct": "0,75%"
+                },
+                {
+                  "party_code": 3,
+                  "candidate_code": 12,
+                  "sort_order": 13,
+                  "president": "SERGIO FAJARDO VALDERRAMA",
+                  "vice_president": "EDNA CRISTINA DEL SOCORRO BONILLA SEBA",
+                  "votes": 3,
+                  "votes_pct": "0,75%"
+                },
+                {
+                  "party_code": 14,
+                  "candidate_code": 5,
+                  "sort_order": 6,
+                  "president": "ÓSCAR MAURICIO LIZCANO ARANGO",
+                  "vice_president": "PEDRO LUIS DE LA TORRE MARQUEZ",
+                  "votes": 2,
+                  "votes_pct": "0,50%"
+                },
+                {
+                  "party_code": 12,
+                  "candidate_code": 13,
+                  "sort_order": 14,
+                  "president": "LUIS GILBERTO MURILLO URRUTIA",
+                  "vice_president": "LUZ MARÍA ZAPATA ZAPATA",
+                  "votes": 1,
+                  "votes_pct": "0,25%"
+                },
+                {
+                  "party_code": 8,
+                  "candidate_code": 3,
+                  "sort_order": 4,
+                  "president": "RAÚL SANTIAGO BOTERO JARAMILLO",
+                  "vice_president": "CARLOS FERNANDO CUEVAS ROMERO",
+                  "votes": 1,
+                  "votes_pct": "0,25%"
+                },
+                {
+                  "party_code": 6,
+                  "candidate_code": 8,
+                  "sort_order": 9,
+                  "president": "ROY LEONARDO BARRERAS MONTEALEGRE",
+                  "vice_president": "MARTHA LUCÍA ZAMORA ÁVILA",
+                  "votes": 1,
+                  "votes_pct": "0,25%"
+                },
+                {
+                  "party_code": 13,
+                  "candidate_code": 9,
+                  "sort_order": 10,
+                  "president": "CARLOS EDUARDO CAICEDO OMAR",
+                  "vice_president": "NELSON JAVIER ALARCÓN SUÁREZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 5,
+                  "candidate_code": 10,
+                  "sort_order": 11,
+                  "president": "GUSTAVO MATAMOROS CAMACHO",
+                  "vice_president": "MILA MARÍA PAZ CAMPAZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 9,
+                  "candidate_code": 7,
+                  "sort_order": 8,
+                  "president": "SONDRA MACOLLINS GARVIN PINTO",
+                  "vice_president": "LEONARDO KARAM HELO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                }
+              ],
+              "Segunda_Vuelta": []
+            }
+          },
+          "connectors": [],
+          "pajekIndex": 0,
+          "vNode": {
+            "posX": 100,
+            "posY": 100,
+            "posZ": 0,
+            "color": "#ffffff"
+          }
+        },
+        {
+          "id": 60017,
+          "nodeLabel": "La Victoria",
+          "nodeDescription": "",
+          "nodeAttributes": {
+            "attGeo": {
+              "geocode": 60017,
+              "municipality": "LaVictoria",
+              "state": "Amazonas"
+            },
+            "attAll": {
+              "Primera_Vuelta": [
+                {
+                  "party_code": 7,
+                  "candidate_code": 1,
+                  "sort_order": 1,
+                  "president": "IVÁN CEPEDA CASTRO",
+                  "vice_president": "AIDA MARINA QUILCUE VIVAS",
+                  "votes": 28,
+                  "votes_pct": "96,55%"
+                },
+                {
+                  "party_code": 10,
+                  "candidate_code": 4,
+                  "sort_order": 5,
+                  "president": "ABELARDO DE LA ESPRIELLA",
+                  "vice_president": "JOSÉ MANUEL RESTREPO ABONDANO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 13,
+                  "candidate_code": 9,
+                  "sort_order": 10,
+                  "president": "CARLOS EDUARDO CAICEDO OMAR",
+                  "vice_president": "NELSON JAVIER ALARCÓN SUÁREZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 11,
+                  "candidate_code": 2,
+                  "sort_order": 3,
+                  "president": "CLAUDIA LÓPEZ",
+                  "vice_president": "LEONARDO HUMBERTO HUERTA GUTIÉRREZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 5,
+                  "candidate_code": 10,
+                  "sort_order": 11,
+                  "president": "GUSTAVO MATAMOROS CAMACHO",
+                  "vice_president": "MILA MARÍA PAZ CAMPAZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 12,
+                  "candidate_code": 13,
+                  "sort_order": 14,
+                  "president": "LUIS GILBERTO MURILLO URRUTIA",
+                  "vice_president": "LUZ MARÍA ZAPATA ZAPATA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 4,
+                  "candidate_code": 6,
+                  "sort_order": 7,
+                  "president": "MIGUEL URIBE LONDOÑO",
+                  "vice_president": "LUISA FERNANDA VILLEGAS ARAQUE",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 14,
+                  "candidate_code": 5,
+                  "sort_order": 6,
+                  "president": "ÓSCAR MAURICIO LIZCANO ARANGO",
+                  "vice_president": "PEDRO LUIS DE LA TORRE MARQUEZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 2,
+                  "candidate_code": 11,
+                  "sort_order": 12,
+                  "president": "PALOMA VALENCIA LASERNA",
+                  "vice_president": "JUAN DANIEL OVIEDO ARANGO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 8,
+                  "candidate_code": 3,
+                  "sort_order": 4,
+                  "president": "RAÚL SANTIAGO BOTERO JARAMILLO",
+                  "vice_president": "CARLOS FERNANDO CUEVAS ROMERO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 6,
+                  "candidate_code": 8,
+                  "sort_order": 9,
+                  "president": "ROY LEONARDO BARRERAS MONTEALEGRE",
+                  "vice_president": "MARTHA LUCÍA ZAMORA ÁVILA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 3,
+                  "candidate_code": 12,
+                  "sort_order": 13,
+                  "president": "SERGIO FAJARDO VALDERRAMA",
+                  "vice_president": "EDNA CRISTINA DEL SOCORRO BONILLA SEBA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 9,
+                  "candidate_code": 7,
+                  "sort_order": 8,
+                  "president": "SONDRA MACOLLINS GARVIN PINTO",
+                  "vice_president": "LEONARDO KARAM HELO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                }
+              ],
+              "Segunda_Vuelta": []
+            }
+          },
+          "connectors": [],
+          "pajekIndex": 0,
+          "vNode": {
+            "posX": 100,
+            "posY": 100,
+            "posZ": 0,
+            "color": "#ffffff"
+          }
+        },
+        {
+          "id": 60001,
+          "nodeLabel": "Leticia",
+          "nodeDescription": "",
+          "nodeAttributes": {
+            "attGeo": {
+              "geocode": 60001,
+              "municipality": "Leticia",
+              "state": "Amazonas"
+            },
+            "attAll": {
+              "Primera_Vuelta": [
+                {
+                  "party_code": 7,
+                  "candidate_code": 1,
+                  "sort_order": 1,
+                  "president": "IVÁN CEPEDA CASTRO",
+                  "vice_president": "AIDA MARINA QUILCUE VIVAS",
+                  "votes": 10415,
+                  "votes_pct": "50,27%"
+                },
+                {
+                  "party_code": 10,
+                  "candidate_code": 4,
+                  "sort_order": 5,
+                  "president": "ABELARDO DE LA ESPRIELLA",
+                  "vice_president": "JOSÉ MANUEL RESTREPO ABONDANO",
+                  "votes": 7328,
+                  "votes_pct": "35,37%"
+                },
+                {
+                  "party_code": 2,
+                  "candidate_code": 11,
+                  "sort_order": 12,
+                  "president": "PALOMA VALENCIA LASERNA",
+                  "vice_president": "JUAN DANIEL OVIEDO ARANGO",
+                  "votes": 1414,
+                  "votes_pct": "6,82%"
+                },
+                {
+                  "party_code": 3,
+                  "candidate_code": 12,
+                  "sort_order": 13,
+                  "president": "SERGIO FAJARDO VALDERRAMA",
+                  "vice_president": "EDNA CRISTINA DEL SOCORRO BONILLA SEBA",
+                  "votes": 476,
+                  "votes_pct": "2,29%"
+                },
+                {
+                  "party_code": 8,
+                  "candidate_code": 3,
+                  "sort_order": 4,
+                  "president": "RAÚL SANTIAGO BOTERO JARAMILLO",
+                  "vice_president": "CARLOS FERNANDO CUEVAS ROMERO",
+                  "votes": 303,
+                  "votes_pct": "1,46%"
+                },
+                {
+                  "party_code": 11,
+                  "candidate_code": 2,
+                  "sort_order": 3,
+                  "president": "CLAUDIA LÓPEZ",
+                  "vice_president": "LEONARDO HUMBERTO HUERTA GUTIÉRREZ",
+                  "votes": 187,
+                  "votes_pct": "0,90%"
+                },
+                {
+                  "party_code": 14,
+                  "candidate_code": 5,
+                  "sort_order": 6,
+                  "president": "ÓSCAR MAURICIO LIZCANO ARANGO",
+                  "vice_president": "PEDRO LUIS DE LA TORRE MARQUEZ",
+                  "votes": 54,
+                  "votes_pct": "0,26%"
+                },
+                {
+                  "party_code": 4,
+                  "candidate_code": 6,
+                  "sort_order": 7,
+                  "president": "MIGUEL URIBE LONDOÑO",
+                  "vice_president": "LUISA FERNANDA VILLEGAS ARAQUE",
+                  "votes": 39,
+                  "votes_pct": "0,18%"
+                },
+                {
+                  "party_code": 13,
+                  "candidate_code": 9,
+                  "sort_order": 10,
+                  "president": "CARLOS EDUARDO CAICEDO OMAR",
+                  "vice_president": "NELSON JAVIER ALARCÓN SUÁREZ",
+                  "votes": 25,
+                  "votes_pct": "0,12%"
+                },
+                {
+                  "party_code": 6,
+                  "candidate_code": 8,
+                  "sort_order": 9,
+                  "president": "ROY LEONARDO BARRERAS MONTEALEGRE",
+                  "vice_president": "MARTHA LUCÍA ZAMORA ÁVILA",
+                  "votes": 25,
+                  "votes_pct": "0,12%"
+                },
+                {
+                  "party_code": 9,
+                  "candidate_code": 7,
+                  "sort_order": 8,
+                  "president": "SONDRA MACOLLINS GARVIN PINTO",
+                  "vice_president": "LEONARDO KARAM HELO",
+                  "votes": 21,
+                  "votes_pct": "0,10%"
+                },
+                {
+                  "party_code": 12,
+                  "candidate_code": 13,
+                  "sort_order": 14,
+                  "president": "LUIS GILBERTO MURILLO URRUTIA",
+                  "vice_president": "LUZ MARÍA ZAPATA ZAPATA",
+                  "votes": 20,
+                  "votes_pct": "0,09%"
+                },
+                {
+                  "party_code": 5,
+                  "candidate_code": 10,
+                  "sort_order": 11,
+                  "president": "GUSTAVO MATAMOROS CAMACHO",
+                  "vice_president": "MILA MARÍA PAZ CAMPAZ",
+                  "votes": 7,
+                  "votes_pct": "0,03%"
+                }
+              ],
+              "Segunda_Vuelta": []
+            }
+          },
+          "connectors": [],
+          "pajekIndex": 0,
+          "vNode": {
+            "posX": 100,
+            "posY": 100,
+            "posZ": 0,
+            "color": "#ffffff"
+          }
+        },
+        {
+          "id": 60019,
+          "nodeLabel": "Miriti Parana",
+          "nodeDescription": "",
+          "nodeAttributes": {
+            "attGeo": {
+              "geocode": 60019,
+              "municipality": "MiritiParana",
+              "state": "Amazonas"
+            },
+            "attAll": {
+              "Primera_Vuelta": [
+                {
+                  "party_code": 7,
+                  "candidate_code": 1,
+                  "sort_order": 1,
+                  "president": "IVÁN CEPEDA CASTRO",
+                  "vice_president": "AIDA MARINA QUILCUE VIVAS",
+                  "votes": 89,
+                  "votes_pct": "92,70%"
+                },
+                {
+                  "party_code": 10,
+                  "candidate_code": 4,
+                  "sort_order": 5,
+                  "president": "ABELARDO DE LA ESPRIELLA",
+                  "vice_president": "JOSÉ MANUEL RESTREPO ABONDANO",
+                  "votes": 4,
+                  "votes_pct": "4,16%"
+                },
+                {
+                  "party_code": 2,
+                  "candidate_code": 11,
+                  "sort_order": 12,
+                  "president": "PALOMA VALENCIA LASERNA",
+                  "vice_president": "JUAN DANIEL OVIEDO ARANGO",
+                  "votes": 1,
+                  "votes_pct": "1,04%"
+                },
+                {
+                  "party_code": 13,
+                  "candidate_code": 9,
+                  "sort_order": 10,
+                  "president": "CARLOS EDUARDO CAICEDO OMAR",
+                  "vice_president": "NELSON JAVIER ALARCÓN SUÁREZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 11,
+                  "candidate_code": 2,
+                  "sort_order": 3,
+                  "president": "CLAUDIA LÓPEZ",
+                  "vice_president": "LEONARDO HUMBERTO HUERTA GUTIÉRREZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 5,
+                  "candidate_code": 10,
+                  "sort_order": 11,
+                  "president": "GUSTAVO MATAMOROS CAMACHO",
+                  "vice_president": "MILA MARÍA PAZ CAMPAZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 12,
+                  "candidate_code": 13,
+                  "sort_order": 14,
+                  "president": "LUIS GILBERTO MURILLO URRUTIA",
+                  "vice_president": "LUZ MARÍA ZAPATA ZAPATA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 4,
+                  "candidate_code": 6,
+                  "sort_order": 7,
+                  "president": "MIGUEL URIBE LONDOÑO",
+                  "vice_president": "LUISA FERNANDA VILLEGAS ARAQUE",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 14,
+                  "candidate_code": 5,
+                  "sort_order": 6,
+                  "president": "ÓSCAR MAURICIO LIZCANO ARANGO",
+                  "vice_president": "PEDRO LUIS DE LA TORRE MARQUEZ",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 8,
+                  "candidate_code": 3,
+                  "sort_order": 4,
+                  "president": "RAÚL SANTIAGO BOTERO JARAMILLO",
+                  "vice_president": "CARLOS FERNANDO CUEVAS ROMERO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 6,
+                  "candidate_code": 8,
+                  "sort_order": 9,
+                  "president": "ROY LEONARDO BARRERAS MONTEALEGRE",
+                  "vice_president": "MARTHA LUCÍA ZAMORA ÁVILA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 3,
+                  "candidate_code": 12,
+                  "sort_order": 13,
+                  "president": "SERGIO FAJARDO VALDERRAMA",
+                  "vice_president": "EDNA CRISTINA DEL SOCORRO BONILLA SEBA",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                },
+                {
+                  "party_code": 9,
+                  "candidate_code": 7,
+                  "sort_order": 8,
+                  "president": "SONDRA MACOLLINS GARVIN PINTO",
+                  "vice_president": "LEONARDO KARAM HELO",
+                  "votes": 0,
+                  "votes_pct": "0%"
+                }
+              ],
+              "Segunda_Vuelta": []
+            }
+          },
+          "connectors": [],
+          "pajekIndex": 0,
+          "vNode": {
+            "posX": 100,
+            "posY": 100,
+            "posZ": 0,
+            "color": "#ffffff"
+          }
+        }
+      ]
+    }
+  ],
+  "edges": []
+}
