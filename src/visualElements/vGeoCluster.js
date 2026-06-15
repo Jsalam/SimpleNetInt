@@ -187,6 +187,7 @@ class VGeoCluster extends vCluster_1.VCluster {
     }
     static computeCentroids(features, center, scale) {
         const index = {};
+        console.log(features)
         for (const feature of features) {
             const geocode = feature.properties.GEOCODIGO;
             index[geocode] = this.getCentroid(feature.geometry, center, scale);
@@ -200,6 +201,7 @@ class VGeoCluster extends vCluster_1.VCluster {
             this.geometryCache[url] = new Promise((resolve) => {
                 main_1.gp5.loadJSON(url, ({ features }) => {
                     const centroidByGeocode = this.computeCentroids(features, center, scale);
+                    console.log(centroidByGeocode)
                     // @ts-expect-error
                     // Error reported in: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/72658
                     const geometry = VGeoCluster.pixelTarget.buildGeometry(() => {
@@ -234,6 +236,7 @@ class VGeoCluster extends vCluster_1.VCluster {
             this.geometryCache[url] = new Promise((resolve) => {
                 main_1.gp5.loadJSON(url, ({ features }) => {
                     const centroidByGeocode = this.computeCentroids(features, center, scale);
+                    console.log(centroidByGeocode)
                     // @ts-expect-error
                     // Error reported in: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/72658
                     const geometry = VGeoCluster.pixelTarget.buildGeometry(() => {

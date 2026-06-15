@@ -2174,7 +2174,7 @@
         "TYPE_2": "CorregimientoDepartamental",
         "ENGTYPE_2": "CorregimientoDepartamental",
         "CC_2": "NA",
-        "HASC_2": "CO.BY.LV"
+        "HASC_2": "CO.AM.LV"
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -235474,7 +235474,7 @@
         "TYPE_2": "CorregimientoDepartamental",
         "ENGTYPE_2": "CorregimientoDepartamental",
         "CC_2": "NA",
-        "HASC_2": "CO.BY.LV"
+        "HASC_2": "CO.VC.LV"
       },
       "geometry": {
         "type": "MultiPolygon",

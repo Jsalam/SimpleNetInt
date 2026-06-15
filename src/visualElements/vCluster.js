@@ -29,6 +29,7 @@ class VCluster extends button_1.Button {
         this.layout.subscribeVNodes(this.vNodes);
         // instantiate a tranformer for this vCluster
         transformerFactory_1.TransFactory.initTransformer(this);
+        this.dimensions = [];
     }
     // Observing to Canvas
     fromCanvas(data) {

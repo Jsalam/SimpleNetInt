@@ -12,14 +12,12 @@ import {
 
 /**
  * GUI widget for controlling cluster settings such as dimension, time, zoom direction, and color transform.
- * It provides a user interface for interacting with VCluster instances and Sorting Lists.
- * 
+ * It provides a graphic user interface for interacting with VCluster instances and Sorting Lists.
+ *
  * The updateVCluster boolean parameter creates a menu on the left side of the screen with controls for each VCluster added.
  */
 
-
 export class ClusterSettings {
-
   root: HTMLElement;
   private levels: number;
   private dimensionViewModels: DimensionCategory[] = [];
@@ -27,20 +25,28 @@ export class ClusterSettings {
   private timeControl: HTMLSelectElement;
 
   /**
-   * 
-   * @param vCluster the vCluster to be used to extract its attributes into a menu 
-   * @param updateVCluster A boolean variable that defines wether user selections change the visualization of vClusters or not. 
+   *
+   * @param vCluster the vCluster to be used to extract its attributes into a menu
+   * @param updateVCluster A boolean variable that defines wether user selections change the visualization of vClusters or not.
    * This is very useful to control alternative visualizations of vNodes as in the case of sorting lists.
    */
-  constructor(private vCluster: VCluster, updateVCluster: boolean) {
-
+  constructor(
+    private vCluster: VCluster,
+    updateVCluster: boolean,
+  ) {
     this.levels = this.getDepth(vCluster.cluster.dimensions);
 
-    if (vCluster.cluster.type == 'geo') this.levels -= 1;
+    if (vCluster.cluster.type == "geo") this.levels -= 1;
 
     this.dimensionViewModels = this.makeDimensionControlViewModels();
-    this.dimensionControls = this.makeDimensionControls("CSSelect", updateVCluster);
-    this.timeControl = this.makeTimeControl("CSSelect", this.yearDataListener(updateVCluster));
+    this.dimensionControls = this.makeDimensionControls(
+      "CSSelect",
+      updateVCluster,
+    );
+    this.timeControl = this.makeTimeControl(
+      "CSSelect",
+      this.yearDataListener(updateVCluster),
+    );
 
     if (updateVCluster) {
       this.root = this.makeElementsForVClusterUpdate(vCluster);
@@ -73,7 +79,7 @@ export class ClusterSettings {
    *
    * Each control uses the instance's existing helper methods to create selects and bind event listeners,
    * so interacting with the returned controls will update the associated VCluster (palette, timestamp,
-   * dimension, zoom direction, color transform) and trigger Canvas updates where applicable.
+   * bottomTierDimension, zoom direction, color transform) and trigger Canvas updates where applicable.
    *
    * Note: This method only creates and returns the element; it does not attach it to the document.
    *
@@ -89,26 +95,46 @@ export class ClusterSettings {
    *   construction of this ClusterSettings instance.
    */
   public makeElementsForVClusterUpdate(vCluster: VCluster) {
-
     if (vCluster instanceof VGeoCluster) {
-      return this.makeContainer('CSContainer',
-        this.makeTitle(vCluster.cluster.label!, 'CSTitle'),
-        this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
-        this.makeControl("Period", 'CSControl selectElementFlex', this.timeControl),
-        this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
-        this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
+      return this.makeContainer(
+        "CSContainer",
+        this.makeTitle(vCluster.cluster.label!, "CSTitle"),
+        this.makeControl("Dimension", "CSControl", ...this.dimensionControls),
+        this.makeControl(
+          "Period",
+          "CSControl selectElementFlex",
+          this.timeControl,
+        ),
+        this.makeControl(
+          "Zoom Direction",
+          "CSControl selectElementFlex",
+          this.makeZoomDirectionControl("CSDropSelect"),
+        ),
+        this.makeControl(
+          "Color Transform",
+          "CSControl selectElementFlex",
+          this.makeColorTransformControl("CSDropSelect"),
+        ),
         createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
       );
     } else {
-      return this.makeContainer('CSContainer',
-        this.makeTitle(vCluster.cluster.label!, 'CSTitle'),
-        this.makeControl("Dimension", 'CSControl', ...this.dimensionControls),
-        this.makeControl("Zoom Direction", 'CSControl selectElementFlex', this.makeZoomDirectionControl('CSDropSelect')),
-        this.makeControl("Color Transform", 'CSControl selectElementFlex', this.makeColorTransformControl('CSDropSelect')),
+      return this.makeContainer(
+        "CSContainer",
+        this.makeTitle(vCluster.cluster.label!, "CSTitle"),
+        this.makeControl("Dimension", "CSControl", ...this.dimensionControls),
+        this.makeControl(
+          "Zoom Direction",
+          "CSControl selectElementFlex",
+          this.makeZoomDirectionControl("CSDropSelect"),
+        ),
+        this.makeControl(
+          "Color Transform",
+          "CSControl selectElementFlex",
+          this.makeColorTransformControl("CSDropSelect"),
+        ),
         createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
-      )
+      );
     }
-
   }
 
   /**
@@ -132,16 +158,20 @@ export class ClusterSettings {
    *          - Control row: 'CSControl CSSelect'
    */
   public makeElementsForSortingList() {
-    let tmp = this.makeControl("", 'CSControl CSSelect', ...this.dimensionControls);
-    tmp.appendChild(this.timeControl)
-    return this.makeContainer('CSContainer', tmp)
+    let tmp = this.makeControl(
+      "",
+      "CSControl CSSelect",
+      ...this.dimensionControls,
+    );
+    tmp.appendChild(this.timeControl);
+    return this.makeContainer("CSContainer", tmp);
   }
 
   public getCurrentSelection(): string[] | void {
     let selectionHierarchy: string[] = [];
-    // this for prints out al the enabled labels of the dimension hierarchy.  
+    // this for prints out al the enabled labels of the dimension hierarchy.
     for (let i = 0; i < this.levels; i++) {
-      selectionHierarchy.push(this.dimensionControls[i].value)
+      selectionHierarchy.push(this.dimensionControls[i].value);
     }
     // console.log(selectionHierarchy)
     return selectionHierarchy;
@@ -158,63 +188,79 @@ export class ClusterSettings {
   /*  Private methods  */
 
   private getDepth(dimension: Dimensions): number {
-    
     if ("key" in dimension) return 1;
     return (
-      Math.max(0, ...dimension.children.map((dim) => this.getDepth(dim))) + 1
+      Math.max(0, ...dimension.children.map((dim: any) => this.getDepth(dim))) +
+      1
     );
   }
 
   private makeContainer(className: string, ...children: HTMLElement[]) {
-    return createElement("div", null, className, null, ...children,);
+    return createElement("div", null, className, null, ...children);
   }
 
   private makeTitle(title: string, className: string): HTMLElement {
-    return createElement("div",
+    return createElement(
+      "div",
       null,
       className,
       null,
-      createElement("label", null, null, null, title,),
-      createInputElement({ marginLeft: "10px", fontSize: "1em" }, {
-        type: "checkbox",
-        checked: true,
-        onclick: (e) => {
-          this.vCluster.visible = (e.target as HTMLInputElement).checked;
-          // TODO: refactor this logic
-          VGeoCluster.visible = VGeoCluster.all.filter(
-            (cluster) => cluster.visible,
-          );
+      createElement("label", null, null, null, title),
+      createInputElement(
+        { marginLeft: "10px", fontSize: "1em" },
+        {
+          type: "checkbox",
+          checked: true,
+          onclick: (e) => {
+            this.vCluster.visible = (e.target as HTMLInputElement).checked;
+            // TODO: refactor this logic
+            VGeoCluster.visible = VGeoCluster.all.filter(
+              (cluster) => cluster.visible,
+            );
+          },
         },
-      }),
+      ),
     );
   }
 
   private makeInputLabel(text: string): HTMLElement {
-    return createElement(
-      "div", null, null, null, text,
-    );
+    return createElement("div", null, null, null, text);
   }
 
-  private makeControl(label: string, className: string | null, ...controls: HTMLElement[]): HTMLElement {
-    let tmp = createElement("div", null, className, null, this.makeInputLabel(label), ...controls);
+  private makeControl(
+    label: string,
+    className: string | null,
+    ...controls: HTMLElement[]
+  ): HTMLElement {
+    let tmp = createElement(
+      "div",
+      null,
+      className,
+      null,
+      this.makeInputLabel(label),
+      ...controls,
+    );
     return tmp;
   }
 
   private makeSelectElement(
     options: Array<{ name: string; value: string }>,
     properties?: Partial<HTMLSelectElement> | null,
-    className?: string
+    className?: string,
   ) {
     return createSelectElement(options, null, className, properties);
   }
 
-  private makeTimeControl(className: string, timeProps: Partial<HTMLSelectElement>): HTMLSelectElement {
+  private makeTimeControl(
+    className: string,
+    timeProps: Partial<HTMLSelectElement>,
+  ): HTMLSelectElement {
     let tmp = this.makeSelectElement(
-      this.vCluster.cluster.timestamps.map((t) => ({ name: t, value: t, })),
+      this.vCluster.cluster.timestamps.map((t) => ({ name: t, value: t })),
       timeProps,
-      className
+      className,
     );
-    return tmp
+    return tmp;
   }
 
   private makeDimensionControlViewModels(): DimensionCategory[] {
@@ -225,14 +271,17 @@ export class ClusterSettings {
       cur = cur.children[0];
     }
     return viewModels;
-
   }
 
   private makeDimensionControls(className: string, updateVCluster: boolean) {
     const controls: HTMLSelectElement[] = [];
     for (let i = 0; i < this.levels; ++i) {
       controls.push(
-        this.makeSelectElement([], this.dimListener(i, updateVCluster), className),
+        this.makeSelectElement(
+          [],
+          this.dimListener(i, updateVCluster),
+          className,
+        ),
       );
     }
     return controls;
@@ -258,13 +307,15 @@ export class ClusterSettings {
         {
           name: "out",
           value: "-1",
-        },{
+        },
+        {
           name: "hold",
-          value:"0"
-        }
+          value: "0",
+        },
       ],
-      null, className,
-      this.zoomControlListener()
+      null,
+      className,
+      this.zoomControlListener(),
     );
   }
 
@@ -284,19 +335,26 @@ export class ClusterSettings {
           value: "sqrt",
         },
       ],
-      null, className,
-      this.colorTransformListener()
+      null,
+      className,
+      this.colorTransformListener(),
     );
   }
 
-  private onDimensionSelect(index: number, updateVCluster: boolean): string[] | void {
+  private onDimensionSelect(
+    index: number,
+    updateVCluster: boolean,
+  ): string[] | void {
     if (index < this.levels - 1) {
-      this.dimensionViewModels[index + 1] = this.dimensionViewModels[index].children.find(
+      this.dimensionViewModels[index + 1] = this.dimensionViewModels[
+        index
+      ].children.find(
         (dim) => dim.name === this.dimensionControls[index].value,
       ) as DimensionCategory;
 
       for (let i = index + 2; i < this.levels; ++i) {
-        this.dimensionViewModels[i] = this.dimensionViewModels[i - 1].children[0] as DimensionCategory;
+        this.dimensionViewModels[i] = this.dimensionViewModels[i - 1]
+          .children[0] as DimensionCategory;
       }
 
       for (let i = index + 1; i < this.levels; ++i) {
@@ -311,7 +369,14 @@ export class ClusterSettings {
 
   private updateDimension() {
     if (this.levels == 0) return;
-    this.vCluster.dimension = this.dimensionControls[this.levels - 1].value;
+
+    let dimensions: string[] = [];
+
+    for (let i = 0; i < this.levels; i++) {
+      dimensions.push(this.dimensionControls[i].value);
+    }
+    console.log(this.dimensionViewModels);
+    this.vCluster.updateDimensions(dimensions);
     this.vCluster.updatePalette();
     Canvas.update();
   }
@@ -322,7 +387,7 @@ export class ClusterSettings {
     Canvas.update();
   }
 
-  //***** EVENT PROPERTIES */ 
+  //***** EVENT PROPERTIES */
 
   private yearDataListener(bol: boolean): Partial<HTMLSelectElement> {
     return {
@@ -337,13 +402,16 @@ export class ClusterSettings {
     };
   }
 
-  private dimListener(index: number, updateVCluster: boolean): Partial<HTMLSelectElement> {
+  private dimListener(
+    index: number,
+    updateVCluster: boolean,
+  ): Partial<HTMLSelectElement> {
     return {
       onchange: (e) => {
         this.onDimensionSelect(index, updateVCluster);
         (e.target as HTMLSelectElement).blur();
       },
-    }
+    };
   }
 
   private colorTransformListener(): Partial<HTMLSelectElement> {
@@ -355,8 +423,7 @@ export class ClusterSettings {
             .value as keyof typeof ColorFactory.scalarTransforms;
           switch (value) {
             case "log":
-              this.vCluster.scalarTransform =
-                ColorFactory.scalarTransforms.log;
+              this.vCluster.scalarTransform = ColorFactory.scalarTransforms.log;
               break;
             case "sqrt":
               this.vCluster.scalarTransform =
@@ -370,8 +437,8 @@ export class ClusterSettings {
         }
         this.vCluster.updatePalette();
         Canvas.update();
-      }
-    }
+      },
+    };
   }
 
   private zoomControlListener(): Partial<HTMLSelectElement> {
@@ -383,7 +450,7 @@ export class ClusterSettings {
           );
         }
       },
-    }
+    };
   }
 }
 // Attach ClusterFactory to the global window object

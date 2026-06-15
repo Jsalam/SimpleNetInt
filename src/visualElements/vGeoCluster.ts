@@ -63,7 +63,7 @@ export class VGeoCluster extends VCluster {
     lat: number,
     center = gp5.createVector(),
     scale = 1,
-  ) {
+  ): [number, number] {
     const x = (1 / (2 * Math.PI)) * lon * (Math.PI / 180);
     const y =
       (1 / (2 * Math.PI)) *
@@ -124,7 +124,12 @@ export class VGeoCluster extends VCluster {
   }
 
   // TODO: comments
-  static drawOutline(geom: Geometry, center: Vector, scale: number, thicknessFactor: number = 1) {
+  static drawOutline(
+    geom: Geometry,
+    center: Vector,
+    scale: number,
+    thicknessFactor: number = 1,
+  ) {
     function traverse(rings: Position[][]) {
       if (rings.length === 0) return;
       const N = rings[0].length;
@@ -135,7 +140,9 @@ export class VGeoCluster extends VCluster {
         const [x1, y1] = VGeoCluster.projectMercator(lon1, lat1, center, scale);
         const [x2, y2] = VGeoCluster.projectMercator(lon2, lat2, center, scale);
         const forward = new p5.Vector(x2 - x1, y2 - y1).normalize();
-        const offset = new p5.Vector(-forward.y, forward.x).mult(thicknessFactor);
+        const offset = new p5.Vector(-forward.y, forward.x).mult(
+          thicknessFactor,
+        );
 
         VGeoCluster.pixelTarget.beginShape();
         VGeoCluster.pixelTarget.vertex(x1 + offset.x, y1 + offset.y);
@@ -153,9 +160,13 @@ export class VGeoCluster extends VCluster {
         const [x2, y2] = VGeoCluster.projectMercator(lon2, lat2, center, scale);
         const [x3, y3] = VGeoCluster.projectMercator(lon3, lat3, center, scale);
         const forward1 = new p5.Vector(x2 - x1, y2 - y1).normalize();
-        const offset1 = new p5.Vector(-forward1.y, forward1.x).mult(thicknessFactor);
+        const offset1 = new p5.Vector(-forward1.y, forward1.x).mult(
+          thicknessFactor,
+        );
         const forward2 = new p5.Vector(x3 - x2, y3 - y2).normalize();
-        const offset2 = new p5.Vector(-forward2.y, forward2.x).mult(thicknessFactor);
+        const offset2 = new p5.Vector(-forward2.y, forward2.x).mult(
+          thicknessFactor,
+        );
         if (forward1.cross(forward2).z > 0) {
           VGeoCluster.pixelTarget.beginShape();
           VGeoCluster.pixelTarget.vertex(x2, y2);
@@ -184,8 +195,39 @@ export class VGeoCluster extends VCluster {
   static computeCentroids(features: Feature[], center: Vector, scale: number) {
     const index: Record<string, Vector> = {};
     for (const feature of features) {
-      const geocode = feature.properties!.GEOCODIGO;
+      let geocode;
+      if (feature.properties!.GEOCODIGO) {
+        geocode = feature.properties!.GEOCODIGO;
+      } else if (feature.properties!.GID_2) {
+        geocode = feature.properties!.GID_2;
+      }
+
       index[geocode] = this.getCentroid(feature.geometry, center, scale);
+    }
+    return index;
+  }
+
+  static computeCoords(nodes: any[], center: Vector, scale: number) {
+    const index: Record<string, Vector> = {};
+    for (const node of nodes) {
+      let code;
+      if (node.attributes!.attGeo!.geocode) {
+        code = node.attributes!.attGeo!.geocode;
+      } else if (node.attributes!.attGeo!.GID_2) {
+        code = node.attributes!.attGeo!.GID_2;
+      }
+
+      const coords = node.attributes!.attGeo!.coords;
+      if (!coords) break;
+
+      let projection = VGeoCluster.projectMercator(
+        coords.lon,
+        coords.lat,
+        center,
+        scale,
+      );
+
+      index[code] = gp5.createVector(projection[0], projection[1]);
     }
     return index;
   }
@@ -209,17 +251,24 @@ export class VGeoCluster extends VCluster {
               () => {
                 for (let [i, feature] of features.entries()) {
                   VGeoCluster.pixelTarget.noStroke();
-                  VGeoCluster.pixelTarget.fill(250, 250, 250);
+                  VGeoCluster.pixelTarget.fill(
+                    0, // ((i + 1) >> 16) & 0xff,
+                    ((i + 1) >> 8) & 0xff,
+                    ((i + 1) >> 0) & 0xff,
+                  );
                   this.drawShape(feature.geometry, center, scale);
-                 // this.drawOutline(feature.geometry, center, scale, 0.03);
-
+                  //this.drawOutline(feature.geometry, center, scale, 0.1);
                 }
               },
             );
 
             const featureIndexByGeocode: Record<string, number> = {};
             for (let [i, feature] of features.entries()) {
-              featureIndexByGeocode[feature.properties!.GEOCODIGO] = i;
+              if (feature.properties!.GEOCODIGO) {
+                featureIndexByGeocode[feature.properties!.GEOCODIGO] = i;
+              } else if (feature.properties!.GID_2) {
+                featureIndexByGeocode[feature.properties!.GID_2] = i;
+              }
             }
 
             resolve({
@@ -251,14 +300,15 @@ export class VGeoCluster extends VCluster {
               center,
               scale,
             );
-            // @ts-expect-error  
+            // @ts-expect-error
             // Error reported in: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/72658
             const geometry: p5.Geometry = VGeoCluster.pixelTarget.buildGeometry(
               () => {
                 for (let [i, feature] of features.entries()) {
                   VGeoCluster.pixelTarget.noStroke();
                   VGeoCluster.pixelTarget.fill(128, 128, 128);
-                  this.drawOutline(feature.geometry, center, scale, 0.1);
+                  this.drawOutline(feature.geometry, center, scale, 0.3);
+                  //this.drawOutline(feature.geometry, center,gp5.random(6547.37, 8658.37), 0.3)
                 }
               },
             );
@@ -328,11 +378,13 @@ export class VGeoCluster extends VCluster {
   numFeatures = 1;
   featureIndexByGeocode: Record<string, number> = {};
   centroidByGeocode: Record<string, Vector> = {};
+  mappedCoords: Record<string, Vector> = {};
   clusterGeometry: p5.Geometry | null = null;
   secondaryClusterGeometry: p5.Geometry | null = null;
   pixelShader: p5.Shader | null = null;
   idShader: p5.Shader | null = null;
   outlineShader: p5.Shader | null = null;
+  vNodePositioning: string = "coords"; // either 'centroid' or 'coords'
 
   r1 = 10;
   r2 = 15;
@@ -429,6 +481,14 @@ export class VGeoCluster extends VCluster {
       (VGeoCluster.height - 2 * VGeoCluster.PADDING) / (yMax - yMin),
     );
 
+    if (cluster.nodes) {
+      this.mappedCoords = VGeoCluster.computeCoords(
+        cluster.nodes,
+        center,
+        scale,
+      );
+    }
+
     VGeoCluster.loadGeometry(geoJsonUrl, center, scale).then((data) => {
       console.log("GEOMETRY LOADED from", geoJsonUrl);
       DOM.hideMessage();
@@ -470,8 +530,13 @@ export class VGeoCluster extends VCluster {
     );
   }
 
+  override updateDimensions(dimensions: string[]): void {
+    this.dimensions = dimensions;
+    console.log(dimensions);
+  }
+
   override updatePalette() {
-    if (!this.timestamp || !this.dimension) return;
+    if (!this.timestamp || !this.dimensions.at(-1)) return;
     this._palette = gp5.createImage(this.numFeatures, 1);
     this._palette.loadPixels();
 
@@ -479,20 +544,45 @@ export class VGeoCluster extends VCluster {
     let max = -Infinity;
     for (const vNode of this.vNodes) {
       const attributes = vNode.node.attributes;
+
       for (const attrs of Object.values(attributes?.attAll!)) {
-        const value = attrs[this.dimension];
+        // for each attrs, look for the bottomTierDimension and retrieve the value
+        let value: any;
+        const bottomTierDimension = this.dimensions.at(-1);
+        if (!bottomTierDimension) continue;
+
+        // When the attributes are inside a collection instead of a single key:value
+        if (Array.isArray(attrs)) {
+          for (const attr of attrs) {
+            if (
+              attr &&
+              typeof attr === "object" &&
+              bottomTierDimension in attr
+            ) {
+              value = attr[bottomTierDimension];
+              break;
+            }
+          }
+        } else {
+          value = attrs?.[bottomTierDimension];
+        }
+
+        // These are the total max min values after reading all the attributes in the dataset
         if (value !== undefined && value !== -1) {
           min = Math.min(min, Number(value));
           max = Math.max(max, Number(value));
         }
       }
     }
+    console.log("min: " + min + ", max: " + max);
     if (min === Infinity || max === -Infinity) return;
 
-    const colorScale = chroma.scale(this.paletteByDimension[this.dimension]);
-    // ColorFactory.addSequentialPalette(this.dimension, colorScale)
+    const bottomTierDimension = this.dimensions.at(-1);
+    if (!bottomTierDimension) return;
+    const colorScale = chroma.scale(this.paletteByDimension[bottomTierDimension]).mode('lab');
+    // ColorFactory.addSequentialPalette(bottomTierDimension, colorScale)
 
-    // Set a grey base color for every silhoutte 
+    // Set a grey base color for every silhoutte
     for (let i = 0; i < this.numFeatures; ++i) {
       this._palette.set(i, 0, [65, 65, 65, 255]);
     }
@@ -503,20 +593,49 @@ export class VGeoCluster extends VCluster {
       const featureIndex = this.featureIndexByGeocode[geocode];
 
       if (!featureIndex) continue;
-      const rawValue = Number(attributes?.attAll?.[this.timestamp]?.[this.dimension]);
+
+      const timestampRecords = attributes?.attAll?.[this.timestamp];
+      const selectedRecord = Array.isArray(timestampRecords)? timestampRecords.find((rec: any) => rec?.candidate_code === 1)
+        : timestampRecords;
+  
+      const rawValue = Number(
+        selectedRecord?.[bottomTierDimension]
+      );
+
+     
+
       let value;
 
       if (this.scalarTransform === ColorFactory.scalarTransforms.log) {
-        value = gp5.map(this.scalarTransform(rawValue + 1), this.scalarTransform(min + 1), this.scalarTransform(max + 1), 0, 1);
+        value = gp5.map(
+          this.scalarTransform(rawValue + 1),
+          this.scalarTransform(min + 1),
+          this.scalarTransform(max + 1),
+          0,
+          1,
+        );
       } else {
-        value = gp5.map(this.scalarTransform(rawValue), this.scalarTransform(min), this.scalarTransform(max), 0, 1);
+        value = gp5.map(
+          this.scalarTransform(rawValue),
+          this.scalarTransform(min),
+          this.scalarTransform(max),
+          0,
+          1,
+        );
       }
 
+      //  console.log (vNode.node.label + " : " + rawValue + ", mapped: " + value);
+      //  console.log (colorScale(value).rgb())
+
       // assign mapped color to each silhoutte
-      if (value == 0) {
-        this._palette.set(featureIndex, 0, [75, 75, 75, 255]);
+      if (Number.isNaN(value)) {
+        this._palette.set(featureIndex, 0, [275, 75, 75, 255]); // red
+      } else if (value == 0) {
+        this._palette.set(featureIndex, 0, [75, 75, 75, 255]); // grey
       } else {
-        this._palette.set(featureIndex, 0, rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255],
+
+        this._palette.set(featureIndex,0,
+          rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255], // mapped value
         );
       }
     }
@@ -529,7 +648,7 @@ export class VGeoCluster extends VCluster {
       return (
         this.s1 * r +
         ((this.s1 - this.s2) * (r - this.r1) * (r - this.r1)) /
-        (2.0 * (this.r1 - this.r2))
+          (2.0 * (this.r1 - this.r2))
       );
     }
     return (
@@ -567,7 +686,7 @@ export class VGeoCluster extends VCluster {
         visibleIndex -
         this.layerIndexInFocus);
 
-    // PARAMETERS TO SHIFT THE MAPS WHEN LOADED. 
+    // PARAMETERS TO SHIFT THE MAPS WHEN LOADED.
     const xOffset = -300 * zOffset;
     const yOffset = 0;
 
@@ -609,35 +728,76 @@ export class VGeoCluster extends VCluster {
     mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
     for (let vNode of this.vNodes) {
-      const geocode = vNode.node.attributes!.attGeo!.geocode;
-      if (!this.centroidByGeocode[geocode]) continue;
+      //console.log(vNode.node.attributes!.attGeo!);
 
-      const vIn = this.centroidByGeocode[geocode].copy();
-      vIn.sub(this.mouseX_object!, this.mouseY_object);
-      const r = this.warp(vIn.mag());
-      vIn.setMag(r);
-      vIn.add(this.mouseX_object!, this.mouseY_object);
-      const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
-
-      const position_NDC = vec4.transformMat4(
-        vec4.create(),
-        position_object,
-        MVP,
+      const attGeo = vNode.node.attributes!.attGeo!;
+      const hasCoords = Object.prototype.hasOwnProperty.call(attGeo, "coords");
+      const hasGeocode = Object.prototype.hasOwnProperty.call(
+        attGeo,
+        "geocode",
       );
 
-      vNode.shouldShowText = r < this.focusRadius && r < this.focusRadius;
-      vNode.shouldShowButton =
-        r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+      const geocode = vNode.node.attributes!.attGeo!.geocode;
 
-      vNode.pos = gp5
-        .createVector(
-          position_NDC[0] / position_NDC[3],
-          position_NDC[1] / position_NDC[3],
-          position_NDC[3],
-        )
-        .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
-        .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
+      // ***** change the attribute this.vNodePositioning to 'coords' or 'centroids' to define how
+      if (hasCoords) {
+        if (!this.mappedCoords[geocode]) continue;
+        const vInCoords = this.mappedCoords[geocode].copy();
+        vInCoords.sub(this.mouseX_object!, this.mouseY_object);
+        const rCoords = this.warp(vInCoords.mag());
+        vInCoords.setMag(rCoords);
+        vInCoords.add(this.mouseX_object!, this.mouseY_object);
+        const position_objectCoords = vec4.fromValues(
+          vInCoords.x,
+          vInCoords.y,
+          0,
+          1,
+        );
+        const position_NDCCoords = vec4.transformMat4(
+          vec4.create(),
+          position_objectCoords,
+          MVP,
+        );
 
+        vNode.shouldShowText =
+          rCoords < this.focusRadius && rCoords < this.focusRadius;
+        vNode.shouldShowButton =
+          rCoords < this.focusRadius &&
+          this.index === VGeoCluster.selectedLayerId;
+
+        vNode.pos = gp5
+          .createVector(
+            position_NDCCoords[0] / position_NDCCoords[3],
+            position_NDCCoords[1] / position_NDCCoords[3],
+            position_NDCCoords[3],
+          )
+          .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
+          .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
+      } else if (hasGeocode) {
+        if (!this.centroidByGeocode[geocode]) continue;
+        const vIn = this.centroidByGeocode[geocode].copy();
+        vIn.sub(this.mouseX_object!, this.mouseY_object);
+        const r = this.warp(vIn.mag());
+        vIn.setMag(r);
+        vIn.add(this.mouseX_object!, this.mouseY_object);
+        const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
+        const position_NDC = vec4.transformMat4(
+          vec4.create(),
+          position_object,
+          MVP,
+        );
+        vNode.shouldShowText = r < this.focusRadius && r < this.focusRadius;
+        vNode.shouldShowButton =
+          r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+        vNode.pos = gp5
+          .createVector(
+            position_NDC[0] / position_NDC[3],
+            position_NDC[1] / position_NDC[3],
+            position_NDC[3],
+          )
+          .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
+          .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
+      }
       // Update the internal connectors
       vNode.updateConnectorsCoords();
     }
@@ -810,5 +970,3 @@ export class VGeoCluster extends VCluster {
 }
 
 (window as any).VGeoCluster = VGeoCluster;
-
-

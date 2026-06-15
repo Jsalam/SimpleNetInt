@@ -19,7 +19,8 @@ export class VCluster extends Button implements Observer {
   palette: string[] | Scale;
   layout: Layout;
   timestamp: string | undefined;
-  dimension: string | undefined;
+  // bottomTierDimension: string | undefined;
+  dimensions: string[] = [];
 
   boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
@@ -154,6 +155,8 @@ export class VCluster extends Button implements Observer {
   }
 
   updatePalette() {}
+
+  updateDimensions(dimensions:String[]){}
 
   getJSON() {
     let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);

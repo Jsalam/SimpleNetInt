@@ -160,6 +160,7 @@ export class ClusterFactory {
    * @param {Object} data cluster attributes. Usually entered with a form
    */
   static makeCluster(data: ClusterInit) {
+   
     this.instantiateCluster(data);
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
     let index = ClusterFactory.clusters.length - 1;
