@@ -9,9 +9,14 @@ const DOMManager_1 = require("./GUI/DOM/DOMManager");
 const colorFactory_1 = require("./factories/colorFactory");
 const canvas_1 = require("./canvas/canvas");
 require("bootstrap/dist/js/bootstrap.min.js");
+// Ignore missing type declarations for side-effect CSS import
+// @ts-ignore
 require("bootstrap/dist/css/bootstrap.min.css");
+// @ts-ignore
 require("./style.css");
+// @ts-ignore
 require("./styleSortingList.css");
+// @ts-ignore
 require("./styleClusterSettings.css");
 exports.gp5 = new p5_1.default(main, document.querySelector("#model"));
 // main function

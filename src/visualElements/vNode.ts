@@ -19,6 +19,9 @@ import { Item } from "../GUI/widgets/listWidget/item";
 import { Utilities } from "../utilities/utilities";
 import { VCluster } from "./vCluster";
 import { Color } from "chroma-js";
+import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
+import { DataEntry} from "../utilities/injections";
+import { formatVNodeDescription } from "../utilities/injections";
 
 export interface VNodeInit {
   posX: number;
@@ -88,7 +91,7 @@ export class VNode extends Button {
           rtn = false;
           console.log(
             "unsubscribed vConnector " +
-            JSON.stringify(subscriber.connector.id),
+              JSON.stringify(subscriber.connector.id),
           );
         }
       }
@@ -130,7 +133,6 @@ export class VNode extends Button {
     // MouseEvents
     if (data.event instanceof MouseEvent) {
       if (data.type == "mouseclick") {
-          
         this.mouseClickedEvents(data);
       }
       if (data.type == "mouseup") {
@@ -304,7 +306,7 @@ export class VNode extends Button {
   }
 
   highlight(on = true) {
-   // this.mouseIsOver = on;
+    // this.mouseIsOver = on;
     this.shouldShowButton = on;
     this.shouldShowText = on;
     Canvas.renderGate = true;
@@ -334,13 +336,13 @@ export class VNode extends Button {
       this.node.filterConnectors();
 
       // get the visual properties
-      const pal2 = ColorFactory.getCategoricalPalette('palette2');
+      const pal2 = ColorFactory.getCategoricalPalette("palette2");
 
       let fillColors = this._getFillColor(
-        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster))
+        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)),
       );
       this.strokeColor = this._getStrokeColor(
-        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster))
+        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)),
       );
       let strokeWeight = this._getStrokeWeight();
 
@@ -353,10 +355,7 @@ export class VNode extends Button {
       renderer.ellipseMode(gp5.CENTER);
 
       // set diameter
-      this.diam =
-        this.width *
-        this.localScale! *
-        Number(DOM.sliders.nodeSizeFactor.value);
+      this.diam = this.width * this.localScale! * Number(DOM.sliders.nodeSizeFactor.value);
 
       // Ajust diameter to global transformation
       if (this.transformed) {
@@ -367,10 +366,10 @@ export class VNode extends Button {
       this.updateConnectorsCoords(newPos, this.width);
 
       if (this.shouldShowButton) {
-        renderer.ellipse(
+        renderer.circle(
           newPos.x,
           newPos.y,
-          this.diam + 7 + this.node.connectors.length * 3,
+          this.diam ,//+ this.node.connectors.length * 3
         );
       }
 
@@ -389,7 +388,14 @@ export class VNode extends Button {
 
         // show node description
         if (this.mouseIsOver) {
-          this._showDescription(newPos);//
+          this._showDescription(
+            newPos,
+            formatVNodeDescription as (
+              vNode: VNode,
+              data: DataEntry[],
+              params?: string[],
+            ) => string, 
+          ); //
           // this.notifyObservers({
           //   event: new MouseEvent("mouseover"),
           //   type: "mouseIsOver",
@@ -418,8 +424,8 @@ export class VNode extends Button {
           // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
           let strokeCnctrColor: string | string[] | p5.Color =
             ColorFactory.getColor(
-              ColorFactory.getCategoricalPalette('palette2'),
-              ColorFactory.dictionaries.connectors[vCnctr.connector.kind]
+              ColorFactory.getCategoricalPalette("palette2"),
+              ColorFactory.dictionaries.connectors[vCnctr.connector.kind],
             );
 
           if (!strokeCnctrColor) strokeCnctrColor = this.color!;
@@ -493,7 +499,7 @@ export class VNode extends Button {
       transform: `
                 translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
                 scale(${Canvas._zoom})
-                translate(${x - translation}px, ${y - (10 - (10 * Number(DOM.sliders.nodeSizeFactor.value)))}px)
+                translate(${x - translation}px, ${y - (10 - 10 * Number(DOM.sliders.nodeSizeFactor.value))}px)
                 rotate(-45deg)
             `,
     });
@@ -517,7 +523,7 @@ export class VNode extends Button {
     // settings. see hex table https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
     let normal = "40"; // 60%
     let accent = "B3"; // 70%
-    let dimmed = "11"; // 
+    let dimmed = "11"; //
     //let dimmed = "33"; // 20%
     // attenuate
     if (this.mouseIsOver) {
@@ -623,7 +629,14 @@ export class VNode extends Button {
     }
   }
 
-  _showDescription(newPos: p5.Vector) {
+  _showDescription(
+    newPos: p5.Vector,
+    formatter?: (
+      vNode: VNode,
+      data: DataEntry[],
+      params?: string[],
+    ) => string,
+  ) {
     // Get coordinates
     let x = this.pos!.x - 150;
     let y = this.pos!.y;
@@ -633,54 +646,30 @@ export class VNode extends Button {
       y = newPos.y;
     }
 
-    // get attribute list
+    // Cluster name
+    let cluster = ClusterFactory.getCluster(this.node.idCat.cluster);
+    let clusterName = cluster.label;
 
-    let entryList = [];
+    // the attribute list in format key:value where value could be any dataType.
+    // This is a flat structure, not nested
+    let attributeList: DataEntry[] = [];
 
     // This nested structure flattens the nested structure of attribute objects to filter out the keys with void value
     for (const midLevel of Object.entries(this.node.attributes!)) {
       for (const innerLevel of Object.entries(midLevel[1])) {
-        entryList.push(innerLevel);
+        // take each inner level attribute and insert it into the attributeList array
+        attributeList.push({ key: innerLevel[0], value: innerLevel[1] });
       }
     }
 
-    // This filters remove empty value items from the list of attributes
-    let filteredAttributes = entryList.filter((attr) => attr[1] != "");
+    // console.log(attributeList);
 
-    // Show background
+    let complementaryTextString: string = "Attributes:\n";
 
-    // if (!this.descriptionEl) {
-    //     this.descriptionEl = document.createElement('div');
-    //     const canvasContainerEl = document.querySelector('#model');
-    //     if (canvasContainerEl) {
-    //         this.descriptionEl.style.position = 'absolute';
-    //         this.descriptionEl.style.left = '10px';
-    //         this.descriptionEl.style.top = '10px';
-    //         this.descriptionEl.style.fontFamily = 'Roboto';
-    //         this.descriptionEl.style.lineHeight = '15px';
-    //         this.descriptionEl.style.overflow = 'hidden';
-    //         this.descriptionEl.style.pointerEvents = 'none';
-    //         canvasContainerEl.append(this.descriptionEl);
-    //     }
-    // }
-    // this.descriptionEl.style.opacity = 1;
-    // this.descriptionEl.style.background = '#00000066';
-    // // this.descriptionEl.style.transform = `
-    // //     translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
-    // //     scale(${Canvas._zoom})
-    // //     translate(${x}px, ${y + 5}px)
-    // //     translateY(-100%)
-    // // `;
-    // this.descriptionEl.style.whiteSpace = 'pre-line';
-
-    // this.descriptionEl.style.color = '#111111';
-    // if (Canvas.currentBackground < 150) {
-    //     this.descriptionEl.style.color = '#EEEEEE';
-    // }
-
-    // this.descriptionEl.style.fontSize = '11px';
-
-    let clusterName = ClusterFactory.getCluster(this.node.idCat.cluster).label;
+    //******* Dependency Injection function
+    if (formatter) {
+      complementaryTextString = formatter(this, attributeList);
+    }
 
     let connectorsDescription = "Connectors:\n";
 
@@ -747,8 +736,8 @@ export class VNode extends Button {
       }
     }
 
+    // Default text string to show in the description box
     let textString =
-      "Name: " +
       this.node.label +
       "\n" +
       "Description: " +
@@ -756,17 +745,9 @@ export class VNode extends Button {
       "\nCluster: " +
       clusterName +
       "\n" +
-      connectorsDescription;
-
-    // renderer.text("Name: " + this.node.label, x + 5, y - 25, 650, 97);
-    // renderer.text("Description: " + this.node.description, x + 5, y - 40, 650, 97);
-
-    // this.descriptionEl.style.padding = '5px';
-    // this.descriptionEl.textContent = '\n' + textString;
-
-    // for (let i = 0; i < filteredAttributes.length; i++) {
-    //     this.descriptionEl.description = filteredAttributes[i][0] + ": " + filteredAttributes[i][1] + '\n' + textString;
-    // }
+      connectorsDescription +
+      "\n" +
+      complementaryTextString;
 
     VirtualElementPool.show(this, "node-description", textString, {
       display: "block",
@@ -780,7 +761,7 @@ export class VNode extends Button {
       fontSize: "11px",
       padding: "5px",
       width: "220px",
-      borderRadius: '5px',
+      borderRadius: "5px",
       color: Canvas.currentBackground < 150 ? "#EEEEEE" : "#111111",
       transform: `
           translate(${Canvas._offset.x}px, ${Canvas._offset.y}px)
@@ -788,8 +769,6 @@ export class VNode extends Button {
           translate(${x}px, ${y + 5}px)
           translateY(-100%)
       `,
-
-     // transform: `translateX(100%)`
     });
   }
 

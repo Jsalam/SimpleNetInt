@@ -9,6 +9,7 @@ const main_1 = require("../main");
 const colorFactory_1 = require("../factories/colorFactory");
 const canvas_1 = require("../canvas/canvas");
 const node_1 = require("../graphElements/node");
+const clusterFactory_1 = require("../factories/clusterFactory");
 class VCluster extends button_1.Button {
     sortingWidget = null;
     vNodes;
@@ -16,7 +17,7 @@ class VCluster extends button_1.Button {
     palette;
     layout;
     timestamp;
-    dimension;
+    dimensions = [];
     boundingBox = [0, 0, 0, 0];
     constructor(cluster, x, y, width, height, palette) {
         super(x, y, width, height);
@@ -29,7 +30,6 @@ class VCluster extends button_1.Button {
         this.layout.subscribeVNodes(this.vNodes);
         // instantiate a tranformer for this vCluster
         transformerFactory_1.TransFactory.initTransformer(this);
-        this.dimensions = [];
     }
     // Observing to Canvas
     fromCanvas(data) {
@@ -51,8 +51,8 @@ class VCluster extends button_1.Button {
             let vNodeTemp;
             if (node instanceof node_1.Node) {
                 // node size
-                let vNodeW = 10;
-                let vNodeH = 10;
+                let vNodeW = clusterFactory_1.ClusterFactory.wdth;
+                let vNodeH = clusterFactory_1.ClusterFactory.hght;
                 // instantiation
                 vNodeTemp = new vNode_1.VNode(node, vNodeW, vNodeH, this);
                 for (const connector of vNodeTemp.node.connectors) {
@@ -122,6 +122,7 @@ class VCluster extends button_1.Button {
         }
     }
     updatePalette() { }
+    updateDimensions(dimensions) { }
     getJSON() {
         let trans = transformerFactory_1.TransFactory.getTransformerByVClusterID(this.cluster.id);
         let rtn = {

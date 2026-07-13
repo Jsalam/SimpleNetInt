@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Button = void 0;
 const main_1 = require("../main");
 const canvas_1 = require("../canvas/canvas");
+const DOMManager_1 = require("../GUI/DOM/DOMManager");
 /**
  * Base class for nodes, connectors or any other visual element with an area.
  */
@@ -60,10 +61,15 @@ class Button {
         const mousWasOver = this.mouseIsOver;
         if (this.visible) {
             this.mouseIsOver = false;
-            if (canvas_1.Canvas._mouse.x > this.pos.x - (this.width * this.localScale) / 2 &&
-                canvas_1.Canvas._mouse.x < this.pos.x + (this.width * this.localScale) / 2 &&
-                canvas_1.Canvas._mouse.y > this.pos.y - (this.height * this.localScale) / 2 &&
-                canvas_1.Canvas._mouse.y < this.pos.y + (this.height * this.localScale) / 2) {
+            const diam = this.width / 2 *
+                this.localScale *
+                Number(DOMManager_1.DOM.sliders.nodeSizeFactor.value);
+            const withinRadius = this.getDistToMouse() <= diam;
+            const withinBoundingBox = canvas_1.Canvas._mouse.x > this.pos.x - (this.width / 2) * this.localScale &&
+                canvas_1.Canvas._mouse.x < this.pos.x + (this.width / 2) * this.localScale &&
+                canvas_1.Canvas._mouse.y > this.pos.y - (this.height / 2) * this.localScale &&
+                canvas_1.Canvas._mouse.y < this.pos.y + (this.height / 2) * this.localScale;
+            if (withinRadius) {
                 this.mouseIsOver = true;
             }
         }

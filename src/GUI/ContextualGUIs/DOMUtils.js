@@ -22,7 +22,7 @@ function createInputElement(style, properties) {
     Object.assign(el, properties);
     return el;
 }
-function createSelectElement(options, style, className, properties) {
+function createSelectElement(options, style, className, properties, name) {
     const el = document.createElement("select");
     for (const o of options) {
         const option = document.createElement("option");
@@ -35,10 +35,15 @@ function createSelectElement(options, style, className, properties) {
     if (className) {
         el.className = className;
     }
+    if (name) {
+        el.name = name;
+    }
     return el;
 }
-function updateSelectOptions(el, options) {
+function updateSelectOptions(el, options, elementName) {
     el.innerHTML = "";
+    if (elementName)
+        el.name = elementName;
     for (const o of options) {
         const option = document.createElement("option");
         option.value = o.value;

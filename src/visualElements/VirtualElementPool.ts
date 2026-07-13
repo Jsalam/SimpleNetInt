@@ -193,3 +193,5 @@ export class VirtualElementPool {
     this.activeElements.clear();
   }
 }
+// Attach VirtualElementPool to the global window object
+(window as any).VirtualElementPool = VirtualElementPool;

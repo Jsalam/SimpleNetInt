@@ -22,8 +22,8 @@ class ClusterFactory {
     static clusters;
     static vClusters;
     static countCat = 1;
-    static wdth = 10;
-    static hght = 10;
+    static wdth = 30;
+    static hght = 30;
     // The distance between vClusters origin
     static gutter = 150;
     static selectionStart = null;
@@ -112,7 +112,7 @@ class ClusterFactory {
         ClusterFactory.gutter = gutter;
     }
     static instantiateCluster(data) {
-        let cluster = new cluster_1.Cluster(data.clusterID, data.clusterType, data.timestamps, data.dimensions);
+        let cluster = new cluster_1.Cluster(data.clusterID, data.clusterType, data.timestamps, data.dimensions, data.lookupTable);
         cluster.setLabel(data.clusterLabel);
         cluster.setDescription(data.clusterDescription);
         this.makeNodes(cluster, data);

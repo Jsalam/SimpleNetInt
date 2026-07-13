@@ -12,6 +12,8 @@ import { ClusterFactory } from "../factories/clusterFactory";
 import { VNode } from "./vNode";
 import { ColorFactory } from "../factories/colorFactory";
 import { Scale } from "chroma-js";
+import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
+import { Utilities } from "../utilities/utilities";
 
 const { mat4, vec4, vec3 } = glMatrix;
 
@@ -30,7 +32,7 @@ export class VGeoCluster extends VCluster {
   static _idTarget: p5.Graphics;
   static geometryCache: Record<string, Promise<GeometryCache>> = {};
 
-  static PADDING = 300;
+  static PADDING = 100;
 
   static get width() {
     return gp5.width;
@@ -218,16 +220,23 @@ export class VGeoCluster extends VCluster {
       }
 
       const coords = node.attributes!.attGeo!.coords;
-      if (!coords) break;
-
-      let projection = VGeoCluster.projectMercator(
-        coords.lon,
-        coords.lat,
-        center,
-        scale,
-      );
-
-      index[code] = gp5.createVector(projection[0], projection[1]);
+      if (coords) {
+        let projection = VGeoCluster.projectMercator(
+          coords.lon,
+          coords.lat,
+          center,
+          scale,
+        );
+        index[code] = gp5.createVector(projection[0], projection[1]);
+      } else {
+        console.warn(
+          "NO COORDS " +
+            code +
+            " " +
+            node.attributes!.attGeo!.municipality +
+            "  CENTROID used instead.",
+        );
+      }
     }
     return index;
   }
@@ -530,115 +539,139 @@ export class VGeoCluster extends VCluster {
     );
   }
 
+  /** This function is used in ClusterSettings.updateDimension() to refresh the
+   * visual output of this vCluster
+   */
   override updateDimensions(dimensions: string[]): void {
     this.dimensions = dimensions;
-    console.log(dimensions);
   }
 
+  /**
+   * Recompute the palette used to color the geo cluster silhouettes.
+   *
+   * This method reads the current dimension and time period from the
+   * cluster settings (GUI), computes min/max attribute values, and builds a
+   * palette image with one color per feature. Invalid or empty values are
+   * handled with fallback colors.
+   *
+   * @returns void
+   */
   override updatePalette() {
-    if (!this.timestamp || !this.dimensions.at(-1)) return;
+    const params: Record<string, string> = {};
+
+    let minMaxValues:
+      | {
+          param: Record<string, string>;
+          absolute: number[];
+          relative: number[];
+        }
+      | undefined;
+
+    // Retrieve the maxMin Values. Using a tru catch here because the settings panel for 
+    // this vCluster might not be created when this function is invoked. 
+    try {
+      const GUIparams: string[][] | undefined =
+        SettingsPanelFactory.getSettingsByVCluster(this)?.getDimensionArray();
+      const periodParams: string | undefined =
+        SettingsPanelFactory.getSettingsByVCluster(this)?.getYearControl()
+          .value;
+
+      if (!GUIparams || !periodParams) return;
+
+      params["attrAllKey"] = periodParams;
+      params["variableKey"] = GUIparams[2][1];
+      params["filteringKey"] = GUIparams[0][0];
+      params["filteringValue"] = GUIparams[0][1];
+
+      minMaxValues = Utilities.getMinMax(this.vNodes, params);
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Validate minMax values
+    if (
+      minMaxValues == undefined ||
+      minMaxValues.absolute[0] === Infinity ||
+      minMaxValues.absolute[1] === -Infinity
+    ) {
+      console.log("Min Max values === Infinity or undefined");
+      return;
+    }
+
+    console.log(minMaxValues);
+
+    // Instantiate a color scale with hues defined in the JSON dataset for this VCluster
+    const colorScale = chroma
+      .scale(this.paletteByDimension[params.variableKey])
+      .mode("lab");
+
+    // Instantiate the image used to assign colors to the silhouttes
     this._palette = gp5.createImage(this.numFeatures, 1);
     this._palette.loadPixels();
-
-    let min = Infinity;
-    let max = -Infinity;
-    for (const vNode of this.vNodes) {
-      const attributes = vNode.node.attributes;
-
-      for (const attrs of Object.values(attributes?.attAll!)) {
-        // for each attrs, look for the bottomTierDimension and retrieve the value
-        let value: any;
-        const bottomTierDimension = this.dimensions.at(-1);
-        if (!bottomTierDimension) continue;
-
-        // When the attributes are inside a collection instead of a single key:value
-        if (Array.isArray(attrs)) {
-          for (const attr of attrs) {
-            if (
-              attr &&
-              typeof attr === "object" &&
-              bottomTierDimension in attr
-            ) {
-              value = attr[bottomTierDimension];
-              break;
-            }
-          }
-        } else {
-          value = attrs?.[bottomTierDimension];
-        }
-
-        // These are the total max min values after reading all the attributes in the dataset
-        if (value !== undefined && value !== -1) {
-          min = Math.min(min, Number(value));
-          max = Math.max(max, Number(value));
-        }
-      }
-    }
-    console.log("min: " + min + ", max: " + max);
-    if (min === Infinity || max === -Infinity) return;
-
-    const bottomTierDimension = this.dimensions.at(-1);
-    if (!bottomTierDimension) return;
-    const colorScale = chroma.scale(this.paletteByDimension[bottomTierDimension]).mode('lab');
-    // ColorFactory.addSequentialPalette(bottomTierDimension, colorScale)
 
     // Set a grey base color for every silhoutte
     for (let i = 0; i < this.numFeatures; ++i) {
       this._palette.set(i, 0, [65, 65, 65, 255]);
     }
 
-    for (const vNode of this.vNodes) {
-      const attributes = vNode.node.attributes;
-      const geocode = attributes?.attGeo!["geocode"];
-      const featureIndex = this.featureIndexByGeocode[geocode];
+    try {
+      for (const vNode of this.vNodes) {
+        const attributes = vNode.node.attributes;
+        const geocode = attributes?.attGeo!["geocode"];
+        const featureIndex = this.featureIndexByGeocode[geocode] + 1;
 
-      if (!featureIndex) continue;
+        if (!featureIndex) continue;
 
-      const timestampRecords = attributes?.attAll?.[this.timestamp];
-      const selectedRecord = Array.isArray(timestampRecords)? timestampRecords.find((rec: any) => rec?.candidate_code === 1)
-        : timestampRecords;
-  
-      const rawValue = Number(
-        selectedRecord?.[bottomTierDimension]
-      );
+        // get the
+        const timestampRecords = attributes?.attAll?.[params.attrAllKey];
+        const selectedRecord = Array.isArray(timestampRecords)
+          ? timestampRecords.find(
+              (rec: any) => rec[params.filteringKey] === params.filteringValue,
+            )
+          : timestampRecords;
 
-     
+        const rawValue = Number(selectedRecord?.[params.variableKey]);
 
-      let value;
+        let value;
 
-      if (this.scalarTransform === ColorFactory.scalarTransforms.log) {
-        value = gp5.map(
-          this.scalarTransform(rawValue + 1),
-          this.scalarTransform(min + 1),
-          this.scalarTransform(max + 1),
-          0,
-          1,
-        );
-      } else {
-        value = gp5.map(
-          this.scalarTransform(rawValue),
-          this.scalarTransform(min),
-          this.scalarTransform(max),
-          0,
-          1,
-        );
+        // Unpack the absolute and relative values.
+        const [absoluteMin, absoluteMax] = minMaxValues.absolute;
+
+        if (this.scalarTransform === ColorFactory.scalarTransforms.log) {
+          value = gp5.map(
+            this.scalarTransform(rawValue + 1),
+            this.scalarTransform(absoluteMin + 1),
+            this.scalarTransform(absoluteMax + 1),
+            0,
+            1,
+          );
+        } else {
+          value = gp5.map(
+            this.scalarTransform(rawValue),
+            this.scalarTransform(absoluteMin),
+            this.scalarTransform(absoluteMax),
+            0,
+            1,
+          );
+        }
+
+        // assign mapped color to each silhoutte
+        if (Number.isNaN(value)) {
+          this._palette.set(featureIndex, 0, [275, 75, 75, 255]); // red
+        } else if (value == 0) {
+          this._palette.set(featureIndex, 0, [75, 75, 75, 255]); // grey
+        } else {
+          this._palette.set(
+            featureIndex,
+            0,
+            rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255],
+          );
+        }
       }
-
-      //  console.log (vNode.node.label + " : " + rawValue + ", mapped: " + value);
-      //  console.log (colorScale(value).rgb())
-
-      // assign mapped color to each silhoutte
-      if (Number.isNaN(value)) {
-        this._palette.set(featureIndex, 0, [275, 75, 75, 255]); // red
-      } else if (value == 0) {
-        this._palette.set(featureIndex, 0, [75, 75, 75, 255]); // grey
-      } else {
-
-        this._palette.set(featureIndex,0,
-          rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255], // mapped value
-        );
-      }
+    } catch (e) {
+      console.error(e);
     }
+
     this._palette.updatePixels();
   }
 
@@ -799,6 +832,7 @@ export class VGeoCluster extends VCluster {
           .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
       }
       // Update the internal connectors
+
       vNode.updateConnectorsCoords();
     }
   }
@@ -911,7 +945,7 @@ export class VGeoCluster extends VCluster {
   highlight(vNode: VNode) {
     const attributes = vNode.node.attributes;
     const geocode = attributes?.attGeo!["geocode"];
-    const featureIndex = this.featureIndexByGeocode[geocode];
+    const featureIndex = this.featureIndexByGeocode[geocode] + 1;
     VGeoCluster.selectedLayerId = this.index;
     VGeoCluster.selectedFeatureId = featureIndex;
   }

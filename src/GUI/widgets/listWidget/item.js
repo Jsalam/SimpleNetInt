@@ -29,6 +29,9 @@ class Item {
         this.svgNS = "http://www.w3.org/2000/svg";
         this.element;
     }
+    setValue(newValue) {
+        this.value = newValue;
+    }
     /**
      *
      * @param data the data to update the item with

@@ -82,7 +82,7 @@ export class ContextualGUI {
    */
   static async createEdgeMenu(): Promise<void> {
     return new Promise((resolve) => {
-      console.log("Creating edge menu");
+      // console.log("Creating edge menu");
       ContextualGUI.edgeMenu = QuickSettings.create(
         window.innerWidth - 240,
         window.innerHeight - 240,

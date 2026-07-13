@@ -32,6 +32,7 @@ export function createSelectElement(
   style?: Partial<CSSStyleDeclaration> | null,
   className?: string | null,
   properties?: Partial<HTMLSelectElement> | null,
+  name?: string | null
 ): HTMLSelectElement {
   const el = document.createElement("select");
   for (const o of options) {
@@ -45,14 +46,19 @@ export function createSelectElement(
   if (className) {
     el.className = className;
   }
+  if (name){
+    el.name = name;
+  }
   return el;
 }
 
 export function updateSelectOptions(
   el: HTMLSelectElement,
   options: Array<{ name: string; value: string }>,
+  elementName?: string
 ) {
   el.innerHTML = "";
+  if (elementName) el.name = elementName;
 
   for (const o of options) {
     const option = document.createElement("option");

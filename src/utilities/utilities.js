@@ -150,6 +150,13 @@ class Utilities {
             });
         }
     }
+    /**
+     * It’s a generic recursive traversal helper for inspecting or processing every nested entry in a JSON-like object tree.
+     * @param obj The object or array to traverse recursively.
+     * @param callback Function called for each property, receiving an object with key, value, and path.
+     * @param path Current traversal path represented as an array of keys.
+     * @returns void
+     */
     static traverse(obj, callback, path = []) {
         // Skip null and non-objects
         if (obj === null || typeof obj !== "object") {

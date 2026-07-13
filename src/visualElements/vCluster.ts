@@ -11,6 +11,7 @@ import { Canvas } from "../canvas/canvas";
 import { Node } from "../graphElements/node";
 import { SortingWidget } from "../GUI/widgets/listWidget/sortingWidget";
 import { Scale } from "chroma-js";
+import { ClusterFactory } from "../factories/clusterFactory";
 
 export class VCluster extends Button implements Observer {
   sortingWidget: SortingWidget | null = null;
@@ -19,7 +20,6 @@ export class VCluster extends Button implements Observer {
   palette: string[] | Scale;
   layout: Layout;
   timestamp: string | undefined;
-  // bottomTierDimension: string | undefined;
   dimensions: string[] = [];
 
   boundingBox: [number, number, number, number] = [0, 0, 0, 0];
@@ -66,8 +66,8 @@ export class VCluster extends Button implements Observer {
       let vNodeTemp: VNode | undefined;
       if (node instanceof Node) {
         // node size
-        let vNodeW = 10;
-        let vNodeH = 10;
+        let vNodeW = ClusterFactory.wdth;
+        let vNodeH = ClusterFactory.hght;
 
         // instantiation
         vNodeTemp = new VNode(node, vNodeW, vNodeH, this);

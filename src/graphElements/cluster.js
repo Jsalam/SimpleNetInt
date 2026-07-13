@@ -4,18 +4,21 @@ exports.Cluster = void 0;
 class Cluster {
     timestamps;
     dimensions;
+    lookupTable;
     label;
     description;
     nodes;
     id;
     type;
-    constructor(id, type, timestamps = [], dimensions = { name: "", children: [] }) {
+    constructor(id, type, timestamps = [], dimensions = { name: "", children: [] }, lookupTable) {
         this.timestamps = timestamps;
         this.dimensions = dimensions;
-        this.label;
+        this.lookupTable = lookupTable;
         this.description;
-        this.nodes = [];
+        this.lookupTable;
         this.id = id;
+        this.label;
+        this.nodes = [];
         this.type = type;
     }
     addNode(cat) {
@@ -42,6 +45,9 @@ class Cluster {
             }
         }
         return rtn;
+    }
+    equals(cluster) {
+        return this.id === cluster.id;
     }
     getJSON() {
         let rtn = {

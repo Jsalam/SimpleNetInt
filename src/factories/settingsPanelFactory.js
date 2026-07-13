@@ -28,6 +28,24 @@ class SettingsPanelFactory {
     static getSettings(el) {
         return this._cSettingsMap.get(el);
     }
+    static getSettingsByIndex(i) {
+        const [uniqueMapEntry] = this._cSettingsMap.entries();
+        const indexOfCSettingsInMap = 1;
+        return uniqueMapEntry[indexOfCSettingsInMap][i];
+    }
+    static getSettingsByVCluster(vCluster) {
+        const cluster = vCluster.cluster;
+        const cSettings = Array.from(this._cSettingsMap.entries())[0];
+        if (cSettings) {
+            const cSettings2 = cSettings[1];
+            for (let i = 0; i < cSettings2.length; i++) {
+                let vCTemp = cSettings2[i].getVCluster();
+                if (vCTemp.cluster.id == cluster.id)
+                    return cSettings2[i];
+            }
+        }
+        return undefined;
+    }
     static deleteSettings(el) {
         this._cSettingsMap.delete(el);
     }
@@ -41,12 +59,12 @@ class SettingsPanelFactory {
         return undefined;
     }
     /**
-       * Add a new ClusterSettings widget for the given VCluster. The widget is appended to
-       * the specified container element or to the default container.
-       * @param vCluster the VCluster instance to create settings for
-       * @param updateVCluster true if the instance of ClusterSettings needs to update the vCluster visualization
-       * @param containerElement the container element to append the settings widget to (optional)
-       */
+     * Add a new ClusterSettings widget for the given VCluster. The widget is appended to
+     * the specified container element or to the default container.
+     * @param vCluster the VCluster instance to create settings for
+     * @param updateVCluster true if the instance of ClusterSettings needs to update the vCluster visualization
+     * @param containerElement the container element to append the settings widget to (optional)
+     */
     static add(vCluster, updateVCluster, containerElement) {
         const settings = new ClusterSettings_1.ClusterSettings(vCluster, updateVCluster);
         let containerTmp;
@@ -87,7 +105,7 @@ class SettingsPanelFactory {
             width: "250px",
             overflowY: "scroll",
             scrollbarWidth: "none",
-            height: 'fitContent'
+            height: "fitContent",
         });
         // Add inline styles for WebKit browsers (Chrome, Edge, Safari)
         tmp.style.cssText += "::-webkit-scrollbar { display: none; }";
@@ -107,7 +125,7 @@ class SettingsPanelFactory {
      */
     static reset() {
         // Delete children
-        let node = document.getElementById('cSettingsMain');
+        let node = document.getElementById("cSettingsMain");
         node?.replaceChildren();
         // remove main element
         node?.remove();

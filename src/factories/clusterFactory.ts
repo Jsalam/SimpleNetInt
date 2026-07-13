@@ -59,6 +59,7 @@ export interface ClusterInit extends TransformerInit {
   timestamps?: string[];
   dimensions?: DimensionCategory;
   palette?: Record<string, string[]>;
+  lookupTable?: Object;
 }
 
 /**
@@ -70,8 +71,8 @@ export class ClusterFactory {
   static clusters: Cluster[];
   static vClusters: VCluster[];
   static countCat = 1;
-  static wdth = 10;
-  static hght = 10;
+  static wdth = 30;
+  static hght = 30;
   // The distance between vClusters origin
   static gutter = 150;
 
@@ -197,8 +198,8 @@ export class ClusterFactory {
    * @param {number} gutter gap between columns of clusters
    */
   static initParameters(
-    wdth: number = 10,
-    hght: number = 10,
+    wdth: number = 15,
+    hght: number = 15,
     gutter: number = 150,
   ) {
     ClusterFactory.wdth = wdth;
@@ -212,6 +213,7 @@ export class ClusterFactory {
       data.clusterType!,
       data.timestamps,
       data.dimensions,
+      data.lookupTable,
     );
 
     cluster.setLabel(data.clusterLabel);

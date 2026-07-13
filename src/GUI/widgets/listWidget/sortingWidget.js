@@ -31,26 +31,26 @@ class SortingWidget {
     // constructor
     constructor(items, label, width, height) {
         this.items = items;
-        width ? this.width = width : this.width = window.innerWidth - 20; // Default width if not provided
-        height ? this.height = height : this.height = 70; // Default height if not provided
+        width ? (this.width = width) : (this.width = window.innerWidth - 20); // Default width if not provided
+        height ? (this.height = height) : (this.height = 70); // Default height if not provided
         this.label = label;
-        this.id = `${this.label.replace(/\s+/g, '_')}_${Date.now()}`;
+        this.id = `${this.label.replace(/\s+/g, "_")}_${Date.now()}`;
         // Set the sorting chart limits before creating the chart
         this.minValue = -Infinity;
         this.maxValue = Infinity;
     }
     /**
      * This method ...
-    */
+     */
     updateVisuals() {
         // Update the value limits
         this.setValueLimits(this.items); // Set the limits for the chart
         // get the chart element by its ID and replace it with a new chart
-        let tmpElement = DOMManager_1.DOM.elements.sortingWidgets.querySelectorAll('#' + this.id)[0];
+        let tmpElement = DOMManager_1.DOM.elements.sortingWidgets.querySelectorAll("#" + this.id)[0];
         // Replace the old chart with the new one
         //  let replacement = this.makeChart(this.label + " | value"); // Create a new chart with the updated items
         let svg = this.makeSVG();
-        let oldSVG = tmpElement.querySelector('svg');
+        let oldSVG = tmpElement.querySelector("svg");
         oldSVG?.replaceWith(svg);
         // tmpElement.innerHTML = ''; // Clear the old chart
         // tmpElement.appendChild(replacement); // Append the new chart to the old chart element
@@ -98,7 +98,7 @@ class SortingWidget {
                     console.warn("node attributes do not have 'attAll' property. Nodes might not belong to a GEO cluster");
             }
             catch (error) {
-                console.warn('Error reading the attributes of a node index: ' + i);
+                console.warn("Error reading the attributes of a node index: " + i);
             }
         }
         return attributes;
@@ -106,10 +106,10 @@ class SortingWidget {
     makeChart(labelNew) {
         this.setValueLimits(this.items); // Set the limits for the chart
         //the container element
-        let chart = document.createElement('div');
+        let chart = document.createElement("div");
         // Replace spaces with underscores for valid ID
-        chart.setAttribute('id', this.id);
-        chart.setAttribute('class', 'chart');
+        chart.setAttribute("id", this.id);
+        chart.setAttribute("class", "chart");
         // the chart header
         let chartHeader = this.makeHeader(labelNew);
         let svg = this.makeSVG(); // Create the SVG element
@@ -119,7 +119,7 @@ class SortingWidget {
         this.sortingSettings = settingsPanelFactory_1.SettingsPanelFactory.add(clusterFactory_1.ClusterFactory.getVClusterByLabel(labelNew), false, chartHeader);
         // This is to change the layout elements from column to row
         let elmnt = this.sortingSettings.getDimensionControls()[0];
-        elmnt.parentElement.classList.add('selectElementFlex');
+        elmnt.parentElement.classList.add("selectElementFlex");
         //Register the sorting listener
         this.addListenerToClusterSettings(this.sortingSettings);
         chart.appendChild(chartHeader); // Add the header
@@ -128,16 +128,16 @@ class SortingWidget {
     }
     makeSVG() {
         // Create an SVG element using the standard DOM API
-        let svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-        svg.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-        svg.setAttribute('width', (this.width).toString());
-        svg.setAttribute('height', this.height.toString());
-        svg.setAttribute('transform', 'translate(8,0)'); // add margin on the right
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        svg.setAttribute("width", this.width.toString());
+        svg.setAttribute("height", this.height.toString());
+        svg.setAttribute("transform", "translate(8,0)"); // add margin on the right
         // Add groups to the SVG for each item in the array
         let xStep = (this.width - 16) / this.items.length;
         let yPos = this.height;
-        let groupContainer = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-        groupContainer.setAttribute('class', 'itemsContainer'); // Replace spaces with underscores for valid ID
+        let groupContainer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        groupContainer.setAttribute("class", "itemsContainer"); // Replace spaces with underscores for valid ID
         for (let i = 0; i < this.items.length; i++) {
             // Create a group for each item
             let group = this.items[i].makeBarGroup(xStep, yPos, i, this.minValue, this.maxValue); // Create a group for each item
@@ -153,17 +153,17 @@ class SortingWidget {
      * @returns
      */
     makeHeader(label) {
-        let header = document.createElement('div');
-        let id = `${'header'}_${Date.now()}`;
-        header.setAttribute('id', id);
-        header.setAttribute('class', 'chartHeader');
+        let header = document.createElement("div");
+        let id = `${"header"}_${Date.now()}`;
+        header.setAttribute("id", id);
+        header.setAttribute("class", "chartHeader");
         let titleLabel = this.makeTitle(label);
         header.appendChild(titleLabel);
         return header;
     }
-    makeTitle(label, className = 'title') {
-        let title = document.createElement('div');
-        title.setAttribute('class', className);
+    makeTitle(label, className = "title") {
+        let title = document.createElement("div");
+        title.setAttribute("class", className);
         if (label) {
             title.innerHTML = label;
         }
@@ -204,15 +204,20 @@ class SortingWidget {
                 this.maxValue = value;
             }
         }
-        console.warn("The limits of list " + this.label + " changed to Min value: " + this.minValue + ", Max value: " + this.maxValue);
+        console.warn("The limits of list " +
+            this.label +
+            " changed to Min value: " +
+            this.minValue +
+            ", Max value: " +
+            this.maxValue);
     }
     /**
-    *   This method adds a new item to the item list.
-    *   It creates a new Item instance from the provided VNode and adds it to the items array.
-    *   It also notifies all subscribed widgets about the new item.
-    * @param vNode the VNode to create an Item from
-    * @returns void
-    */
+     *   This method adds a new item to the item list.
+     *   It creates a new Item instance from the provided VNode and adds it to the items array.
+     *   It also notifies all subscribed widgets about the new item.
+     * @param vNode the VNode to create an Item from
+     * @returns void
+     */
     addItem(item) {
         this.items.push(item);
         this.updateVisuals(); // Update the visuals after adding the item
@@ -223,11 +228,11 @@ class SortingWidget {
      * @param dropdown
      */
     addListenerToOneSelector(dropdown) {
-        dropdown.addEventListener('change', (event) => {
+        dropdown.addEventListener("change", (event) => {
             // get the selected value
             let target = event.target;
             let selectedValue = target.value; // Get the selected value from the dropdown
-            let comparatorName = 'compareAlphabetically'; // Default comparator
+            let comparatorName = "compareAlphabetically"; // Default comparator
             /**
              * I made an assumption that the items in the list have a vNode whose attribute names are
              * all the same across the vNodes. That is why I am using the first item in the list to get
@@ -264,7 +269,10 @@ class SortingWidget {
                 //     }
                 // }
             }
-            console.log("Sorting items by: " + selectedValue + " using comparator: " + comparatorName);
+            console.log("Sorting items by: " +
+                selectedValue +
+                " using comparator: " +
+                comparatorName);
             //sort the array and make a new chart
             (0, quicksort_1.quickSort)(this.items, 0, this.items.length - 1, comparatorName, "value"); // Sort the items based on the selected criteria
             this.updateVisuals();
@@ -272,98 +280,130 @@ class SortingWidget {
     }
     addListenerToClusterSettings(settings) {
         for (const dropdown of settings.getDimensionControls()) {
-            dropdown.addEventListener('change', (event) => {
+            dropdown.addEventListener("change", (event) => {
                 this.runSorting(settings);
             });
         }
-        settings.getYearControl().addEventListener('change', (event) => {
+        settings.getYearControl().addEventListener("change", (event) => {
             this.runSorting(settings);
         });
     }
     runSorting(settings) {
         // get the selected value
-        const currentSelectionInSettingsPanel = settings.getCurrentSelection();
-        if (!currentSelectionInSettingsPanel || currentSelectionInSettingsPanel.length === 0) {
+        const userSelection = settings.getDimensionMap();
+        if (!userSelection || userSelection.size === 0) {
             // nothing selected, abort sorting
             return;
         }
-        const selectedValue = currentSelectionInSettingsPanel.at(-1); // Get the selected value from the dropdown
-        let comparatorName = 'compareAlphabetically'; // Default comparator
-        // get the index of the vNode corresponding to the widget vCluster. Use the Widget label
-        // let index: number = -1;
+        // Get the selected value from the sorting widget dropdowns
+        const firstChoice = [...userSelection].at(0);
+        const firstKey = firstChoice[0];
+        const firstValue = firstChoice[1];
+        const lastChoice = [...userSelection].at(-1);
+        const lastKey = lastChoice[0];
+        const valueKey = lastChoice[1];
+        const periodSelected = settings.getYearControl().value; // Primera_Vuelta
+        let comparatorName = "compareAlphabetically"; // Default comparator
         let vNodesTemp = clusterFactory_1.ClusterFactory.getVClusterByLabel(this.label).vNodes;
-        // for (let i = 0; i < this.items[0].vNodes.length; i++) {
-        //     // get the vCluster name
-        //     const vNode = this.items[0].vNodes[i];
-        //     const clusterName = vNode.parentVCluster?.cluster.label
-        //     index = i;
-        //     if (clusterName == this.label) break
-        // }
-        for (let i = 0; i < this.items.length; i++) {
-            let item = this.items[i];
-            let attributes;
-            let attrValue = undefined;
-            try {
-                // Access the attribute value from the vNode using the selectedValue as the key
-                attributes = item.vNode.node.attributes?.attAll;
-                if (!attributes) {
-                    attributes = item.vNode.node.attributes;
-                }
-            }
-            catch (error) {
-                console.warn('item at ' + i + ' does not have ' + this.label + ' data');
-            }
-            if (attributes) {
-                let path = [];
-                let index = 0;
-                let year = settings.getYearControl().value;
-                if (year == '2004-2008' || year == '2006' || year == '2000')
-                    index = 0;
-                if (year == '2015-2019' || year == '2017' || year == '2010')
-                    index = 1;
+        // console.log("runSorting");
+        if (firstChoice && lastChoice && periodSelected) {
+            for (let i = 0; i < this.items.length; i++) {
+                let item = this.items[i];
+                let attributes;
+                let attrValue = undefined;
                 try {
-                    utilities_1.Utilities.traverse(Object.values(attributes)[index], (datum) => {
-                        if (datum.key == selectedValue) {
-                            attrValue = datum.value;
-                            this.currentPalette = colorFactory_1.ColorFactory.getSequentialPalette(datum.key);
-                            return;
-                        }
-                    }, path);
+                    // Access the attribute value from the vNode using the selectedValue as the key
+                    attributes = item.vNode.node.attributes?.attAll;
+                    if (!attributes) {
+                        attributes = item.vNode.node.attributes;
+                    }
                 }
                 catch (error) {
-                    console.warn(attributes.municipality + ' has settings different than other municipalities');
+                    console.warn("item at " + i + " does not have " + this.label + " data");
                 }
-            }
-            // console.log('attr value ' + attrValue)
-            if (attrValue !== undefined) {
-                item.value = NaN; // Reset the value to 0 before assigning a new value
-                // console.log(`Item ${item.label} in ${selectedValue} has value: ${attrValue}`);
-                // Determine if attrValue can be casted to a number
-                if (!isNaN(Number(attrValue))) {
-                    //console.log('before =' + item.value);
-                    item.value = Number(attrValue);
-                    // assign a color corresponding to the value 
-                    item.palette = this.currentPalette;
-                    //console.log('after =' + item.value);
-                    // Use the numeric comparator if attrValue is a number
-                    comparatorName = "compareValue";
+                let index = 0;
+                // This lookupTable is loaded from the JSON file.
+                const dataLookupTable = this.sortingSettings?.getVCluster().cluster.lookupTable;
+                if (dataLookupTable) {
+                    // Ensure we iterate over entries of the lookup table (it's an object, not an iterable)
+                    for (const entry of Object.entries(dataLookupTable)) {
+                        // entry is [key, value]
+                        if (periodSelected == entry[0])
+                            index = entry[1];
+                        break;
+                    }
+                }
+                if (attributes) {
+                    let index = 0;
+                    // This lookupTable is loaded from the JSON file.
+                    const dataLookupTable = this.sortingSettings?.getVCluster().cluster.lookupTable;
+                    if (dataLookupTable) {
+                        // Ensure we iterate over entries of the lookup table (it's an object, not an iterable)
+                        for (const entry of Object.entries(dataLookupTable)) {
+                            // entry is [key, value]
+                            if (periodSelected == entry[0]) {
+                                index = entry[1];
+                                break;
+                            }
+                        }
+                    }
+                    let data = Object.values(attributes)[index];
+                    // make data an object if it is not
+                    if (Array.isArray(data)) {
+                        data = { ...data };
+                    }
+                    const dataObject = data;
+                    if (Object.hasOwn(dataObject, valueKey)) {
+                        attrValue = dataObject[valueKey];
+                        this.currentPalette = colorFactory_1.ColorFactory.getSequentialPalette(valueKey);
+                    }
+                    else {
+                        for (const elementKey in dataObject) {
+                            const elementValue = dataObject[elementKey];
+                            if (elementValue &&
+                                typeof elementValue === "object" &&
+                                Object.hasOwn(elementValue, firstKey)) {
+                                const elementValueObject = elementValue;
+                                if (elementValueObject[firstKey] == firstValue) {
+                                    attrValue = elementValueObject[valueKey];
+                                    this.currentPalette =
+                                        colorFactory_1.ColorFactory.getSequentialPalette(valueKey);
+                                }
+                            }
+                        }
+                    }
+                }
+                // console.log('attr value ' + attrValue)
+                if (attrValue !== undefined) {
+                    item.setValue(NaN); // Reset the value to 0 before assigning a new value
+                    // console.log(`Item ${item.label} in ${selectedValue} has value: ${attrValue}`);
+                    // Determine if attrValue can be casted to a number
+                    if (!isNaN(Number(attrValue))) {
+                        //console.log('before =' + item.value);
+                        item.setValue(Number(attrValue));
+                        // assign a color corresponding to the value
+                        item.palette = this.currentPalette;
+                        //console.log('after =' + item.value);
+                        // Use the numeric comparator if attrValue is a number
+                        comparatorName = "compareValue";
+                    }
+                    else {
+                        item.setValue(attrValue);
+                        // Otherwise, use the alphabetical comparator
+                        comparatorName = "compareAlphabetically";
+                    }
                 }
                 else {
-                    item.value = attrValue;
-                    // Otherwise, use the alphabetical comparator
-                    comparatorName = 'compareAlphabetically';
+                    //  console.warn('selected value "' + selectedValue + '" not found in node attributes')
                 }
             }
-            else {
-                //  console.warn('selected value "' + selectedValue + '" not found in node attributes')
-            }
+            // console.log("Trying to sort items by: " + selectedValue + " using comparator: " + comparatorName);
+            //sort the array and make a new chart
+            (0, quicksort_1.quickSort)(this.items, 0, this.items.length - 1, comparatorName, "value"); // Sort the items based on the selected criteria
+            //TODO : ************ create a function that takes the list of items and assign a mapped color by
+            // this.currentPalette to each item. The color is for items  to the be used when rendered
+            this.updateVisuals();
         }
-        // console.log("Trying to sort items by: " + selectedValue + " using comparator: " + comparatorName);
-        //sort the array and make a new chart
-        (0, quicksort_1.quickSort)(this.items, 0, this.items.length - 1, comparatorName, "value"); // Sort the items based on the selected criteria
-        //TODO : ************ create a function that takes the list of items and assign a mapped color by
-        // this.currentPalette to each item. The color is for items  to the be used when rendered
-        this.updateVisuals();
     }
 }
 exports.SortingWidget = SortingWidget;

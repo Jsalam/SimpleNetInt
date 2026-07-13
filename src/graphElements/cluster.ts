@@ -13,11 +13,13 @@ export class Cluster {
     type: string,
     public timestamps: string[] = [],
     public dimensions: DimensionCategory = { name: "", children: [] },
+    public lookupTable:Object|undefined,
   ) {
-    this.label;
     this.description;
-    this.nodes = [];
+    this.lookupTable;
     this.id = id;
+    this.label;
+    this.nodes = [];
     this.type = type;
   }
 
@@ -49,6 +51,10 @@ export class Cluster {
       }
     }
     return rtn;
+  }
+
+  equals(cluster:Cluster){
+    return this.id === cluster.id
   }
 
   getJSON() {

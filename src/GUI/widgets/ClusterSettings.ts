@@ -27,7 +27,7 @@ export class ClusterSettings {
   /**
    *
    * @param vCluster the vCluster to be used to extract its attributes into a menu
-   * @param updateVCluster A boolean variable that defines wether user selections change the visualization of vClusters or not.
+   * @param updateVCluster A boolean variable that defines whether user selections change the visualization of vClusters or not.
    * This is very useful to control alternative visualizations of vNodes as in the case of sorting lists.
    */
   constructor(
@@ -167,14 +167,18 @@ export class ClusterSettings {
     return this.makeContainer("CSContainer", tmp);
   }
 
-  public getCurrentSelection(): string[] | void {
-    let selectionHierarchy: string[] = [];
-    // this for prints out al the enabled labels of the dimension hierarchy.
-    for (let i = 0; i < this.levels; i++) {
-      selectionHierarchy.push(this.dimensionControls[i].value);
-    }
-    // console.log(selectionHierarchy)
-    return selectionHierarchy;
+  // public getCurrentSelection(): Map<string, string> | void {
+  //   let cs: Map<string, string> = new Map;
+  //   // this for loop prints out al the enabled labels of the dimension hierarchy.
+  //   for (let i = 0; i < this.levels; i++) {
+  //     cs.set(this.dimensionControls[i].name, this.dimensionControls[i].value);
+  //   }
+  //   // console.log(selectionHierarchy)
+  //   return cs;
+  // }
+
+  public getVCluster(): VCluster {
+    return this.vCluster;
   }
 
   public getDimensionControls() {
@@ -183,6 +187,28 @@ export class ClusterSettings {
 
   public getYearControl() {
     return this.timeControl;
+  }
+
+  /** Returns a map with <key, value> pairs of the dimension.
+   * The key is the name of the HTML selector and the value is the current selection.
+   * The keys (names of HTML elements) are assigned once the JSON data is read to make each HTML element.
+   * See DOM.createSelectElement
+   */
+  public getDimensionMap(): Map<string, string> {
+    let dimensionsMap: Map<string, string> = new Map();
+
+    for (let i = 0; i < this.levels; i++) {
+      dimensionsMap.set(
+        this.dimensionControls[i].name,
+        this.dimensionControls[i].value,
+      );
+    }
+
+    return dimensionsMap;
+  }
+
+  public getDimensionArray():[string,string][] {
+    return [...this.getDimensionMap()];
   }
 
   /*  Private methods  */
@@ -247,8 +273,9 @@ export class ClusterSettings {
     options: Array<{ name: string; value: string }>,
     properties?: Partial<HTMLSelectElement> | null,
     className?: string,
+    name?: string,
   ) {
-    return createSelectElement(options, null, className, properties);
+    return createSelectElement(options, null, className, properties, name);
   }
 
   private makeTimeControl(
@@ -270,6 +297,7 @@ export class ClusterSettings {
       viewModels.push(cur);
       cur = cur.children[0];
     }
+
     return viewModels;
   }
 
@@ -281,20 +309,38 @@ export class ClusterSettings {
           [],
           this.dimListener(i, updateVCluster),
           className,
+          String(i),
         ),
       );
     }
     return controls;
   }
 
+  /**
+   * This function populates the control with the options and adds the name to the select element.
+   * @param i the element index in the control.
+   */
   private syncDimensionControl(i: number) {
-    updateSelectOptions(
-      this.dimensionControls[i],
-      this.dimensionViewModels[i].children.map((dim) => ({
-        name: dim.name,
-        value: "key" in dim ? dim.key : dim.name,
-      })),
-    );
+    const dimensioNameFromJSON = this.vCluster.cluster.dimensions.name;
+    if (i == 0) {
+      updateSelectOptions(
+        this.dimensionControls[i],
+        this.dimensionViewModels[i].children.map((dim) => ({
+          name: dim.name,
+          value: "key" in dim ? dim.key : dim.name,
+        })),
+        dimensioNameFromJSON, // dimensionName,
+      );
+    } else {
+      updateSelectOptions(
+        this.dimensionControls[i],
+        this.dimensionViewModels[i].children.map((dim) => ({
+          name: dim.name,
+          value: "key" in dim ? dim.key : dim.name,
+        })),
+        "option" + i, // dimensionName,
+      );
+    }
   }
 
   private makeZoomDirectionControl(className: string) {
@@ -344,7 +390,7 @@ export class ClusterSettings {
   private onDimensionSelect(
     index: number,
     updateVCluster: boolean,
-  ): string[] | void {
+  ): Map<string, string> {
     if (index < this.levels - 1) {
       this.dimensionViewModels[index + 1] = this.dimensionViewModels[
         index
@@ -364,7 +410,7 @@ export class ClusterSettings {
 
     if (updateVCluster) this.updateDimension();
 
-    return this.getCurrentSelection();
+    return this.getDimensionMap();
   }
 
   private updateDimension() {
@@ -375,7 +421,7 @@ export class ClusterSettings {
     for (let i = 0; i < this.levels; i++) {
       dimensions.push(this.dimensionControls[i].value);
     }
-    console.log(this.dimensionViewModels);
+
     this.vCluster.updateDimensions(dimensions);
     this.vCluster.updatePalette();
     Canvas.update();

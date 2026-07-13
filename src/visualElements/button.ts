@@ -2,6 +2,7 @@ import { gp5 } from "../main";
 import p5, { Vector } from "p5";
 import { Canvas } from "../canvas/canvas";
 import { CustomEvent } from "../types";
+import {DOM} from "../GUI/DOM/DOMManager"
 
 /**
  * Base class for nodes, connectors or any other visual element with an area.
@@ -68,12 +69,21 @@ export class Button {
     const mousWasOver = this.mouseIsOver;
     if (this.visible) {
       this.mouseIsOver = false;
-      if (
-        Canvas._mouse.x > this.pos!.x - (this.width * this.localScale!) / 2 &&
-        Canvas._mouse.x < this.pos!.x + (this.width * this.localScale!) / 2 &&
-        Canvas._mouse.y > this.pos!.y - (this.height * this.localScale!) / 2 &&
-        Canvas._mouse.y < this.pos!.y + (this.height * this.localScale!) / 2
-      ) {
+
+      const diam = 
+        this.width/2 *
+        this.localScale! *
+        Number(DOM.sliders.nodeSizeFactor.value);
+
+      const withinRadius = this.getDistToMouse() <= diam;
+
+      const withinBoundingBox =
+        Canvas._mouse.x > this.pos!.x - (this.width / 2) * this.localScale! &&
+        Canvas._mouse.x < this.pos!.x + (this.width / 2) * this.localScale! &&
+        Canvas._mouse.y > this.pos!.y - (this.height / 2) * this.localScale! &&
+        Canvas._mouse.y < this.pos!.y + (this.height / 2) * this.localScale!;
+
+      if (withinRadius) {
         this.mouseIsOver = true;
       }
     } else {

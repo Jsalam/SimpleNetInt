@@ -10,7 +10,7 @@ import { Scale } from "chroma-js";
 export class Item {
   vNode: VNode;
   label: string;
-  value: any; // The value associated with the item, can be a number or a string
+  private value: any; // The value associated with the item, can be a number or a string
   width: number;
   height: number;
   classID: string;
@@ -31,6 +31,10 @@ export class Item {
       .replace(/\./g, "_");
     this.svgNS = "http://www.w3.org/2000/svg";
     this.element;
+  }
+
+  setValue(newValue:any){
+    this.value = newValue;
   }
 
   /**

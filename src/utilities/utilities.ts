@@ -1,6 +1,7 @@
 import { gp5 } from "../main";
 import { EdgeInit } from "../graphElements/edge";
 import { ClusterInit } from "../factories/clusterFactory";
+import { VNode } from "../visualElements/vNode";
 
 export interface JSONFile {
   nodes: Array<ClusterInit>;
@@ -183,6 +184,13 @@ export class Utilities {
     }
   }
 
+  /**
+   * It’s a generic recursive traversal helper for inspecting or processing every nested entry in a JSON-like object tree.
+   * @param obj The object or array to traverse recursively.
+   * @param callback Function called for each property, receiving an object with key, value, and path.
+   * @param path Current traversal path represented as an array of keys.
+   * @returns void
+   */
   static traverse(obj: Object, callback: Function, path: string[] = []) {
     // Skip null and non-objects
     if (obj === null || typeof obj !== "object") {
@@ -190,8 +198,8 @@ export class Utilities {
     }
 
     for (const [key, value] of Object.entries(obj)) {
-      // the expression creates a new array containing all elements from 
-      // path followed by key. So if path is ["a","b"] and key is "c", currentPath 
+      // the expression creates a new array containing all elements from
+      // path followed by key. So if path is ["a","b"] and key is "c", currentPath
       // becomes ["a","b","c"].
       const currentPath = [...path, key];
 
@@ -203,5 +211,91 @@ export class Utilities {
         this.traverse(value, callback, currentPath);
       }
     }
+  }
+
+  /**
+   * Calculate minimum and maximum values for a collection of nodes.
+   *
+   * This method computes two ranges for the provided node list:
+   *  - absolute range: the min/max values found for every occurrence of the target variable
+   *    in the specified attribute group.
+   *  - relative range: the min/max values found for entries matching the filter criteria.
+   *
+   * @param vNodes Array of VNode objects to inspect.
+   * @param param2 Configuration object used to select attribute groups and filter values.
+   * @param param2.attrAllKey The key identifying the attribute group inside node.attributes.attAll.
+   * @param param2.variableKey The property name whose numeric min/max values should be tracked.
+   * @param param2.filteringKey The property name used to filter objects for the relative range.
+   * @param param2.filteringValue The required value of filteringKey for relative range comparisons.
+   * @returns Object with param, absolute, and relative value ranges.
+   */
+  static getMinMax(
+    vNodes: VNode[],
+    param2: Record<string, string>,
+  ) {
+    let relativeMin = Infinity;
+    let relativeMax = -Infinity;
+    let absoluteMin = Infinity;
+    let absoluteMax = -Infinity;
+
+    for (const vNode of vNodes) {
+      const attributes = vNode.node.attributes;
+
+      // get the specific set of attributes for this node
+      const attrs = attributes?.attAll?.[param2.attrAllKey];
+      if (!attrs) continue;
+
+      // set absolute min & max
+      Utilities.traverse(attrs, (e: any) => {
+        if (e.key == param2.variableKey) {
+          absoluteMin = Math.min(absoluteMin, Number(e.value));
+          absoluteMax = Math.max(absoluteMax, Number(e.value));
+        }
+      });
+
+      // set relative min max
+      for (const attr of Object.values(attrs)) {
+        let relativeValue: number = Infinity;
+
+        // the attr could be an array, object or a single value
+        if (Array.isArray(attr)) {
+          for (const entry of attr) {
+            if (entry) continue;
+
+            if (entry[param2.filteringKey] === param2.filteringValue) {
+              relativeValue = entry[param2.variableKey];
+
+              // These are the total relativeMax relativeMin values after reading all the attributes in the dataset
+              if (relativeValue !== undefined && relativeValue !== -1) {
+                relativeMin = Math.min(relativeMin, Number(relativeValue));
+                relativeMax = Math.max(relativeMax, Number(relativeValue));
+              }
+            }
+          }
+        } else {
+          // If the attr is an object
+          if (typeof attr == "object") {
+            if (attr[param2.filteringKey] === param2.filteringValue) {
+              relativeValue = attr[param2.variableKey];
+            }
+          }
+          // if the attribute is a string or number
+          else if (typeof attr == "string" || typeof attr == "number") {
+            relativeValue = Number(attr);
+          }
+          // These are the total relativeMax relativeMin values after reading all the attributes in the dataset
+          if (!isNaN(relativeValue) && relativeValue !== Infinity) {
+            relativeMin = Math.min(relativeMin, Number(relativeValue));
+            relativeMax = Math.max(relativeMax, Number(relativeValue));
+          }
+        }
+      }
+    }
+
+    return {
+      param: param2,
+      absolute: [absoluteMin, absoluteMax],
+      relative: [relativeMin, relativeMax],
+    };
   }
 }

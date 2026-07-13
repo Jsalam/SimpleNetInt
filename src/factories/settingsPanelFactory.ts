@@ -1,11 +1,11 @@
 /**
- * The idea here is to create a factory that generates and stores settings for each 
+ * The idea here is to create a factory that generates and stores settings for each
  * cluster in the application. These settings can include visual parameters, layout
  * options, and other configurations that define how each cluster and its nodes behave
  * and appear.
  * The settings are usually assembled into a user menu or panel, allowing users to
  * customize the appearance and behavior of clusters interactively.
- * 
+ *
  * This factory is closely tied to the ClusterSettings class.
  */
 
@@ -13,122 +13,144 @@ import { createElement } from "../GUI/ContextualGUIs/DOMUtils";
 import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
 import { VCluster } from "../visualElements/vCluster";
 
-
 export class SettingsPanelFactory {
+  private static _cSettingsMap = new Map<HTMLElement, ClusterSettings[]>();
 
-    private static _cSettingsMap = new Map<HTMLElement, ClusterSettings[]>();
+  public static setSettings(el: HTMLElement, settings: ClusterSettings[]) {
+    this._cSettingsMap.set(el, settings);
+  }
 
-    public static setSettings(el: HTMLElement, settings: ClusterSettings[]) {
-        this._cSettingsMap.set(el, settings);
+  public static pushSettings(el: HTMLElement, settings: ClusterSettings) {
+    const existingSettings: ClusterSettings[] | undefined =
+      this._cSettingsMap.get(el);
+    existingSettings!.push(settings);
+  }
+
+  public static cSettingsHasElement(el: HTMLElement) {
+    return this._cSettingsMap.has(el);
+  }
+
+  public static getSettings(el: HTMLElement) {
+    return this._cSettingsMap.get(el);
+  }
+
+  public static getSettingsByIndex(i: number) {
+    const [uniqueMapEntry] = this._cSettingsMap.entries();
+    const indexOfCSettingsInMap = 1;
+    return uniqueMapEntry[indexOfCSettingsInMap][i];
+  }
+
+  public static getSettingsByVCluster(vCluster: VCluster) {
+    const cluster = vCluster.cluster;
+    const cSettings = Array.from(this._cSettingsMap.entries())[0];
+    if (cSettings) {
+        const cSettings2 = cSettings[1]
+      for (let i = 0; i < cSettings2.length; i++) {
+        let vCTemp = cSettings2[i].getVCluster();
+        if (vCTemp.cluster.id == cluster.id) return cSettings2[i];
+      }
     }
 
-    public static pushSettings(el: HTMLElement, settings: ClusterSettings) {
-        const existingSettings: ClusterSettings[] | undefined = this._cSettingsMap.get(el);
-        existingSettings!.push(settings)
+    return undefined;
+  }
+
+  public static deleteSettings(el: HTMLElement) {
+    this._cSettingsMap.delete(el);
+  }
+
+  //check if any HTMLElement key of the map has a given id
+  public static getKeyById(id: string) {
+    for (let key of this._cSettingsMap.keys()) {
+      if (key.id === id) {
+        return key;
+      }
     }
+    return undefined;
+  }
 
-    public static cSettingsHasElement(el: HTMLElement) {
-        return this._cSettingsMap.has(el);
+  /**
+   * Add a new ClusterSettings widget for the given VCluster. The widget is appended to
+   * the specified container element or to the default container.
+   * @param vCluster the VCluster instance to create settings for
+   * @param updateVCluster true if the instance of ClusterSettings needs to update the vCluster visualization
+   * @param containerElement the container element to append the settings widget to (optional)
+   */
+  public static add(
+    vCluster: VCluster,
+    updateVCluster: boolean,
+    containerElement?: HTMLElement,
+  ) {
+    const settings = new ClusterSettings(vCluster, updateVCluster);
+
+    let containerTmp: HTMLElement;
+
+    if (containerElement) {
+      containerTmp = containerElement;
+      containerTmp.append(settings.root);
+      let oldContainer = this.getKeyById(containerTmp.id);
+      if (oldContainer) {
+        oldContainer.append(settings.root);
+        this.pushSettings(oldContainer, settings);
+      } else {
+        containerTmp.append(settings.root);
+        this.setSettings(containerTmp, [settings]);
+      }
+    } else {
+      let oldContainer = this.getKeyById("cSettingsMain");
+      if (oldContainer) {
+        oldContainer.append(settings.root);
+        this.pushSettings(oldContainer, settings);
+      } else {
+        containerTmp = this.makeHTMLcontainer();
+        containerTmp.append(settings.root);
+        this.setSettings(containerTmp, [settings]);
+      }
     }
+    return settings;
+  }
 
-    public static getSettings(el: HTMLElement) {
-        return this._cSettingsMap.get(el);
-    }
-    public static deleteSettings(el: HTMLElement) {
-        this._cSettingsMap.delete(el);
-    }
+  /*  Public methods  */
+  public static makeHTMLcontainer() {
+    let tmp = createElement("div", {
+      position: "absolute",
+      left: "0",
+      top: "10px",
+      // bottom: "0",
+      width: "250px",
+      overflowY: "scroll",
+      scrollbarWidth: "none",
+      height: "fitContent",
+    });
+    // Add inline styles for WebKit browsers (Chrome, Edge, Safari)
+    tmp.style.cssText += "::-webkit-scrollbar { display: none; }";
 
-    //check if any HTMLElement key of the map has a given id
-    public static getKeyById(id: string) {
-        for (let key of this._cSettingsMap.keys()) {
-            if (key.id === id) {
-                return key;
-            }
-        }
-        return undefined;
-    }
+    tmp.onwheel = (e) => {
+      e.stopPropagation();
+    };
+    tmp.onmousedown = (e) => {
+      e.stopPropagation();
+    };
+    // add an id to this container
+    tmp.id = "cSettingsMain";
 
-    /**
-       * Add a new ClusterSettings widget for the given VCluster. The widget is appended to 
-       * the specified container element or to the default container.
-       * @param vCluster the VCluster instance to create settings for
-       * @param updateVCluster true if the instance of ClusterSettings needs to update the vCluster visualization 
-       * @param containerElement the container element to append the settings widget to (optional)
-       */
-    public static add(vCluster: VCluster, updateVCluster: boolean, containerElement?: HTMLElement,) {
-        const settings = new ClusterSettings(vCluster, updateVCluster);
+    document.querySelector("#model")!.append(tmp);
+    return tmp;
+  }
 
-        let containerTmp: HTMLElement;
+  /**
+   * See implementations in canvas.ts
+   */
+  public static reset() {
+    // Delete children
+    let node = document.getElementById("cSettingsMain");
+    node?.replaceChildren();
 
-        if (containerElement) {
-            containerTmp = containerElement;
-            containerTmp.append(settings.root);
-            let oldContainer = this.getKeyById(containerTmp.id)
-            if (oldContainer) {
-                oldContainer.append(settings.root);
-                this.pushSettings(oldContainer, settings);
-            } else {
-                containerTmp.append(settings.root);
-                this.setSettings(containerTmp, [settings]);
-            }
+    // remove main element
+    node?.remove();
 
-        } else {
-            let oldContainer = this.getKeyById("cSettingsMain");
-            if (oldContainer) {
-                oldContainer.append(settings.root);
-                this.pushSettings(oldContainer, settings);
-            } else {
-                containerTmp = this.makeHTMLcontainer();
-                containerTmp.append(settings.root);
-                this.setSettings(containerTmp, [settings]);
-            }
-        }
-        return settings
-    }
-
-    /*  Public methods  */
-    public static makeHTMLcontainer() {
-
-        let tmp = createElement("div", {
-            position: "absolute",
-            left: "0",
-            top: "10px",
-            // bottom: "0",
-            width: "250px",
-            overflowY: "scroll",
-            scrollbarWidth: "none",
-            height:'fitContent'
-        });
-        // Add inline styles for WebKit browsers (Chrome, Edge, Safari)
-        tmp.style.cssText += "::-webkit-scrollbar { display: none; }";
-
-        tmp.onwheel = (e) => {
-            e.stopPropagation();
-        };
-        tmp.onmousedown = (e) => {
-            e.stopPropagation();
-        };
-        // add an id to this container
-        tmp.id = "cSettingsMain";
-
-        document.querySelector("#model")!.append(tmp);
-        return tmp;
-    }
-
-    /**
-     * See implementations in canvas.ts
-     */
-    public static reset() {
-        // Delete children
-        let node = document.getElementById('cSettingsMain')
-        node?.replaceChildren();
-
-        // remove main element
-        node?.remove();
-
-        // clear map
-        this._cSettingsMap.clear();
-    }
+    // clear map
+    this._cSettingsMap.clear();
+  }
 }
 
 // Attach ClusterFactory to the global window object
