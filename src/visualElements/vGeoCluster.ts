@@ -567,8 +567,8 @@ export class VGeoCluster extends VCluster {
         }
       | undefined;
 
-    // Retrieve the maxMin Values. Using a tru catch here because the settings panel for 
-    // this vCluster might not be created when this function is invoked. 
+    // Retrieve the maxMin Values. Using a tru catch here because the settings panel for
+    // this vCluster might not be created when this function is invoked.
     try {
       const GUIparams: string[][] | undefined =
         SettingsPanelFactory.getSettingsByVCluster(this)?.getDimensionArray();
@@ -576,7 +576,15 @@ export class VGeoCluster extends VCluster {
         SettingsPanelFactory.getSettingsByVCluster(this)?.getYearControl()
           .value;
 
+      //console.log(GUIparams);
+      //console.log(periodParams);
+
       if (!GUIparams || !periodParams) return;
+
+      // params["attrAllKey"] = periodParams;
+      // params["variableKey"] = GUIparams[2][1];
+      // params["filteringKey"] = GUIparams[0][0];
+      // params["filteringValue"] = GUIparams[0][1];
 
       params["attrAllKey"] = periodParams;
       params["variableKey"] = GUIparams[2][1];
@@ -587,6 +595,7 @@ export class VGeoCluster extends VCluster {
     } catch (e) {
       console.error(e);
     }
+    //console.log(minMaxValues);
 
     // Validate minMax values
     if (
@@ -598,7 +607,7 @@ export class VGeoCluster extends VCluster {
       return;
     }
 
-    console.log(minMaxValues);
+    //console.log(minMaxValues);
 
     // Instantiate a color scale with hues defined in the JSON dataset for this VCluster
     const colorScale = chroma

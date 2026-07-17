@@ -262,7 +262,7 @@ export class Utilities {
           for (const entry of attr) {
             if (entry) continue;
 
-            if (entry[param2.filteringKey] === param2.filteringValue) {
+            if (entry != null && entry[param2.filteringKey] === param2.filteringValue) {
               relativeValue = entry[param2.variableKey];
 
               // These are the total relativeMax relativeMin values after reading all the attributes in the dataset
@@ -275,7 +275,7 @@ export class Utilities {
         } else {
           // If the attr is an object
           if (typeof attr == "object") {
-            if (attr[param2.filteringKey] === param2.filteringValue) {
+            if (attr != null && attr[param2.filteringKey] === param2.filteringValue) {
               relativeValue = attr[param2.variableKey];
             }
           }
