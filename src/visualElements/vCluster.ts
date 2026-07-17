@@ -17,7 +17,8 @@ export class VCluster extends Button implements Observer {
   sortingWidget: SortingWidget | null = null;
   vNodes: VNode[];
   cluster: Cluster;
-  palette: string[] | Scale;
+  palette: string[];
+  colorScale: Scale | undefined;
   layout: Layout;
   timestamp: string | undefined;
   dimensions: string[] = [];
@@ -30,7 +31,7 @@ export class VCluster extends Button implements Observer {
     y: number,
     width: number,
     height: number,
-    palette: string[]|Scale,
+    palette: string[],
   ) {
     super(x, y, width, height);
     this.vNodes = [];
@@ -139,6 +140,10 @@ export class VCluster extends Button implements Observer {
         counter++;
       }
     }
+  }
+
+  setColorScale (cScale:Scale){
+    this.colorScale = cScale;
   }
 
   highlight(vNode: VNode) {}

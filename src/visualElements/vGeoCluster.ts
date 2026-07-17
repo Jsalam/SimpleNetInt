@@ -266,7 +266,7 @@ export class VGeoCluster extends VCluster {
                     ((i + 1) >> 0) & 0xff,
                   );
                   this.drawShape(feature.geometry, center, scale);
-                  //this.drawOutline(feature.geometry, center, scale, 0.1);
+                  // this.drawOutline(feature.geometry, center, scale, 0.1);
                 }
               },
             );
@@ -438,7 +438,7 @@ export class VGeoCluster extends VCluster {
     posY: number,
     width: number,
     height: number,
-    palette: string[] | Scale,
+    palette: string[],
     bbox: [number, number, number, number],
     cartography: string,
     secondaryCartography: string,
@@ -491,11 +491,16 @@ export class VGeoCluster extends VCluster {
     );
 
     if (cluster.nodes) {
-      this.mappedCoords = VGeoCluster.computeCoords(
-        cluster.nodes,
-        center,
-        scale,
-      );
+      if (this.vNodePositioning == "coords") {
+       console.info('VNodes positioned by coordinates')
+        this.mappedCoords = VGeoCluster.computeCoords(
+          cluster.nodes,
+          center,
+          scale,
+        );
+      } else {
+        console.info('VNodes positioned by centroids')
+      }
     }
 
     VGeoCluster.loadGeometry(geoJsonUrl, center, scale).then((data) => {
@@ -581,11 +586,6 @@ export class VGeoCluster extends VCluster {
 
       if (!GUIparams || !periodParams) return;
 
-      // params["attrAllKey"] = periodParams;
-      // params["variableKey"] = GUIparams[2][1];
-      // params["filteringKey"] = GUIparams[0][0];
-      // params["filteringValue"] = GUIparams[0][1];
-
       params["attrAllKey"] = periodParams;
       params["variableKey"] = GUIparams[2][1];
       params["filteringKey"] = GUIparams[0][0];
@@ -610,7 +610,7 @@ export class VGeoCluster extends VCluster {
     //console.log(minMaxValues);
 
     // Instantiate a color scale with hues defined in the JSON dataset for this VCluster
-    const colorScale = chroma
+    this.colorScale = chroma
       .scale(this.paletteByDimension[params.variableKey])
       .mode("lab");
 
@@ -673,7 +673,7 @@ export class VGeoCluster extends VCluster {
           this._palette.set(
             featureIndex,
             0,
-            rawValue === -1 ? [0, 0, 0, 0] : [...colorScale(value).rgb(), 255],
+            rawValue === -1 ? [0, 0, 0, 0] : [...this.colorScale(value).rgb(), 255],
           );
         }
       }
@@ -773,7 +773,10 @@ export class VGeoCluster extends VCluster {
       //console.log(vNode.node.attributes!.attGeo!);
 
       const attGeo = vNode.node.attributes!.attGeo!;
-      const hasCoords = Object.prototype.hasOwnProperty.call(attGeo, "coords");
+      const hasCoords = Object.prototype.hasOwnProperty.call(
+        attGeo,
+        this.vNodePositioning,
+      );
       const hasGeocode = Object.prototype.hasOwnProperty.call(
         attGeo,
         "geocode",
@@ -781,7 +784,7 @@ export class VGeoCluster extends VCluster {
 
       const geocode = vNode.node.attributes!.attGeo!.geocode;
 
-      // ***** change the attribute this.vNodePositioning to 'coords' or 'centroids' to define how
+      // ***** change the attribute this.vNodePositioning to 'coords' or 'centroids' to define
       if (hasCoords) {
         if (!this.mappedCoords[geocode]) continue;
         const vInCoords = this.mappedCoords[geocode].copy();

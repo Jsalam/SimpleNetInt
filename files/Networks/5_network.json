@@ -3,7 +3,7 @@
     {
       "clusterID": 1,
       "clusterType": "geo",
-      "clusterLabel": "Elecciones 2026 A",
+      "clusterLabel": "Mapa A",
       "clusterDescription": "Resultados",
       "mapName": "gadm41_COL_2.json",
       "secondaryMapName": "gadm41_COL_1.json",
@@ -192500,7 +192500,7 @@
     {
       "clusterID": 2,
       "clusterType": "geo",
-      "clusterLabel": "Elecciones 2026 B",
+      "clusterLabel": "Mapa B",
       "clusterDescription": "Resultados",
       "mapName": "gadm41_COL_2.json",
       "secondaryMapName": "gadm41_COL_1.json",
