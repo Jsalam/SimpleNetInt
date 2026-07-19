@@ -12,6 +12,7 @@ import { VCluster } from "../visualElements/vCluster";
 import { VGeoCluster } from "../visualElements/vGeoCluster";
 import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
 import { ClusterFactory } from "../factories/clusterFactory";
+import { LegendFactory } from "../factories/legendFactory";
 
 /**
  * Adaptation of NetInt Canvas class
@@ -303,6 +304,7 @@ export class Canvas {
     this._offset.set(0, 0, 0);
     TransFactory.reset();
     SettingsPanelFactory.reset();
+    LegendFactory.reset();
     const vNodeObservers = Canvas.observers.filter(
       (observer): observer is VNode => observer instanceof VNode,
     );

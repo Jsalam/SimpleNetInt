@@ -1,0 +1,37 @@
+.vScaleLegend {
+    height:5px;
+    width:95%;
+}
+
+.scaleValues{
+    width: 95%;
+    display:flex;
+    justify-content: space-between;
+}
+
+.legendContainer{
+   width:200px;
+   margin-bottom:15px;
+   margin-left:13px;
+}
+
+.legendFlex {
+  display: flex;
+  width: 100%;
+  gap: 2em;
+}
+
+#cLegendsMain {
+  background-color: rgba(50, 50, 50, 0.378);
+  display:block;
+  width: fit-content;
+  gap: 2em;
+
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  height: fit-content;
+  width: fit-content;
+  overflow: scroll;
+  scrollbar-width: none;
+}

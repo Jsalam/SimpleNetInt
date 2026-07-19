@@ -103,7 +103,7 @@ export class ColorFactory {
    * @param n the name of the color palette stored in the palette2 dictionary or any of Brewer names 
    * @returns an array of HEX colors. If the parameter does not match anly palete, it returns the Greys palete.
    */
-  static getCategoricalPalette(n: string): string[] | Scale {
+  static getCategoricalPalette(n: string): string[] {
     if (typeof n === "string") {
       if (this.brewerNames.includes(n)) {
         return chroma.brewer[n as BrewerPaletteName];

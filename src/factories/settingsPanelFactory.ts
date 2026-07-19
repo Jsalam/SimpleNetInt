@@ -9,7 +9,7 @@
  * This factory is closely tied to the ClusterSettings class.
  */
 
-import { createElement } from "../GUI/ContextualGUIs/DOMUtils";
+import { createElement } from "../GUI/DOM/DOMUtils";
 import { ClusterSettings } from "../GUI/widgets/ClusterSettings";
 import { VCluster } from "../visualElements/vCluster";
 

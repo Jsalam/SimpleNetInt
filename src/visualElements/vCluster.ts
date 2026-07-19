@@ -12,6 +12,9 @@ import { Node } from "../graphElements/node";
 import { SortingWidget } from "../GUI/widgets/listWidget/sortingWidget";
 import { Scale } from "chroma-js";
 import { ClusterFactory } from "../factories/clusterFactory";
+import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
+import { LegendFactory } from "../factories/legendFactory";
+import { ClusterLegend } from "../GUI/legends/ClusterLegend";
 
 export class VCluster extends Button implements Observer {
   sortingWidget: SortingWidget | null = null;
@@ -22,6 +25,7 @@ export class VCluster extends Button implements Observer {
   layout: Layout;
   timestamp: string | undefined;
   dimensions: string[] = [];
+  legend:ClusterLegend;
 
   boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
@@ -42,6 +46,9 @@ export class VCluster extends Button implements Observer {
     this.layout = new Layout();
     this.populateVNodes(cluster);
     this.layout.subscribeVNodes(this.vNodes);
+
+    console.log("Instantiating legends vCluster");
+    this.legend = LegendFactory.add(this);
 
     // instantiate a tranformer for this vCluster
     TransFactory.initTransformer(this);
@@ -136,13 +143,13 @@ export class VCluster extends Button implements Observer {
         if (counter >= this.palette.length) {
           counter = 0;
         }
-        this.vNodes[i].setColor(ColorFactory.getColor(this.palette,counter));
+        this.vNodes[i].setColor(ColorFactory.getColor(this.palette, counter));
         counter++;
       }
     }
   }
 
-  setColorScale (cScale:Scale){
+  setColorScale(cScale: Scale) {
     this.colorScale = cScale;
   }
 
@@ -161,7 +168,7 @@ export class VCluster extends Button implements Observer {
 
   updatePalette() {}
 
-  updateDimensions(dimensions:String[]){}
+  updateDimensions(dimensions: String[]) {}
 
   getJSON() {
     let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);

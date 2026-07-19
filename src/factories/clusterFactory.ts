@@ -16,6 +16,7 @@ import { gp5 } from "../main";
 import { SettingsPanelFactory } from "./settingsPanelFactory";
 import { VSelectionCluster } from "../visualElements/vSelectionCluster";
 import { Vector } from "p5";
+import { LegendFactory } from "./legendFactory";
 
 /**
  * @interface DimensionCategory
@@ -90,21 +91,21 @@ export class ClusterFactory {
 
     for (let index = 0; index < Object.keys(data).length; index++) {
       this.instantiateCluster(data[index]);
-      let paletteTmp = data[index].palette
+      let paletteTmp = data[index].palette;
 
       if (paletteTmp) {
         // get the palette keys
         let keys = Object.keys(paletteTmp!);
 
         for (let i = 0; i < keys.length; i++) {
-          const key = keys[i]
-          ColorFactory.addSequentialPalette(key, paletteTmp[key])
+          const key = keys[i];
+          ColorFactory.addSequentialPalette(key, paletteTmp[key]);
         }
       }
     }
 
-    // 
-    //   if (data[index].palette) 
+    //
+    //   if (data[index].palette)
 
     //** Visual cluster section
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
@@ -115,7 +116,7 @@ export class ClusterFactory {
       let posY = 20;
       let width = ClusterFactory.wdth;
       let height = ClusterFactory.hght;
-      let palette = ColorFactory.getCategoricalPalette('palette' + (index + 1));
+      let palette = ColorFactory.getCategoricalPalette("palette" + (index + 1));
 
       // vCluster instantiation
       let tmp: any;
@@ -135,8 +136,8 @@ export class ClusterFactory {
       } else {
         tmp = new VCluster(cluster, posX, posY, width, height, palette);
       }
-      // Builds the cluster settings menu on the left side of the screen
 
+      // Builds the cluster settings menu on the left side of the screen
       SettingsPanelFactory.add(tmp, true);
 
       // set the VCluster transformer from data imported
@@ -161,7 +162,6 @@ export class ClusterFactory {
    * @param {Object} data cluster attributes. Usually entered with a form
    */
   static makeCluster(data: ClusterInit) {
-   
     this.instantiateCluster(data);
     let x = ClusterFactory.wdth + ClusterFactory.gutter;
     let index = ClusterFactory.clusters.length - 1;
@@ -173,7 +173,7 @@ export class ClusterFactory {
         10,
         ClusterFactory.wdth,
         ClusterFactory.hght,
-        ColorFactory.getCategoricalPalette('palette' + (index + 1)),
+        ColorFactory.getCategoricalPalette("palette" + (index + 1)),
       );
     } else {
       tmp = new VCluster(
@@ -182,10 +182,14 @@ export class ClusterFactory {
         10,
         ClusterFactory.wdth,
         ClusterFactory.hght,
-        ColorFactory.getCategoricalPalette('palette' + (index + 1)),
+        ColorFactory.getCategoricalPalette("palette" + (index + 1)),
       );
     }
-    SettingsPanelFactory.add(tmp, true, document.getElementById('cSettingsMain')!);
+    SettingsPanelFactory.add(
+      tmp,
+      true,
+      document.getElementById("cSettingsMain")!,
+    );
     Canvas.subscribe(tmp);
     ClusterFactory.vClusters.push(tmp);
     return tmp;

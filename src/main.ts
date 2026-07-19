@@ -14,6 +14,8 @@ import "./style.css";
 import "./styleSortingList.css";
 // @ts-ignore
 import "./styleClusterSettings.css";
+// @ts-ignore
+import "./styleLegend.css"
 
 export const gp5 = new p5(
   main,

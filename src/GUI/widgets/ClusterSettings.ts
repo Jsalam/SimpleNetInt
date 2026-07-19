@@ -8,7 +8,7 @@ import {
   createInputElement,
   createSelectElement,
   updateSelectOptions,
-} from "../ContextualGUIs/DOMUtils";
+} from "../DOM/DOMUtils";
 
 /**
  * GUI widget for controlling cluster settings such as dimension, time, zoom direction, and color transform.
@@ -115,6 +115,11 @@ export class ClusterSettings {
           "CSControl selectElementFlex",
           this.makeColorTransformControl("CSDropSelect"),
         ),
+        this.makeControl(
+          "Color Domain",
+          "CSControl selectElementFlex",
+          this.makeColorDomainControl("CSDropSelect"),
+        ),
         createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
       );
     } else {
@@ -131,6 +136,11 @@ export class ClusterSettings {
           "Color Transform",
           "CSControl selectElementFlex",
           this.makeColorTransformControl("CSDropSelect"),
+        ),
+        this.makeControl(
+          "Color Domain",
+          "CSControl selectElementFlex",
+          this.makeColorDomainControl("CSDropSelect"),
         ),
         createElement("hr", { border: "1px solid rgba(110, 117, 124)" }),
       );
@@ -207,7 +217,7 @@ export class ClusterSettings {
     return dimensionsMap;
   }
 
-  public getDimensionArray():[string,string][] {
+  public getDimensionArray(): [string, string][] {
     return [...this.getDimensionMap()];
   }
 
@@ -387,6 +397,24 @@ export class ClusterSettings {
     );
   }
 
+    private makeColorDomainControl(className: string) {
+    return createSelectElement(
+      [
+        {
+          name: "aboslute",
+          value: "aboslute",
+        },
+        {
+          name: "relative",
+          value: "relative",
+        }
+      ],
+      null,
+      className,
+      this.colorDomainListener(),
+    );
+  }
+
   private onDimensionSelect(
     index: number,
     updateVCluster: boolean,
@@ -481,6 +509,16 @@ export class ClusterSettings {
               break;
           }
         }
+        this.vCluster.updatePalette();
+        Canvas.update();
+      },
+    };
+  }
+
+   private colorDomainListener(): Partial<HTMLSelectElement> {
+    return {
+      onchange: (e) => {
+        console.log("work on this")
         this.vCluster.updatePalette();
         Canvas.update();
       },

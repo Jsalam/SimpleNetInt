@@ -14,6 +14,7 @@ import { ColorFactory } from "../factories/colorFactory";
 import { Scale } from "chroma-js";
 import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
 import { Utilities } from "../utilities/utilities";
+import { LegendFactory } from "../factories/legendFactory";
 
 const { mat4, vec4, vec3 } = glMatrix;
 
@@ -492,14 +493,14 @@ export class VGeoCluster extends VCluster {
 
     if (cluster.nodes) {
       if (this.vNodePositioning == "coords") {
-       console.info('VNodes positioned by coordinates')
+        console.info("VNodes positioned by coordinates");
         this.mappedCoords = VGeoCluster.computeCoords(
           cluster.nodes,
           center,
           scale,
         );
       } else {
-        console.info('VNodes positioned by centroids')
+        console.info("VNodes positioned by centroids");
       }
     }
 
@@ -624,6 +625,31 @@ export class VGeoCluster extends VCluster {
     }
 
     try {
+      // Unpack the absolute and relative values.
+      const [absoluteMin, absoluteMax] = minMaxValues.absolute;
+
+      // Update legend
+      
+
+      if (this.scalarTransform === ColorFactory.scalarTransforms.log) {
+        const low = this.scalarTransform(absoluteMin + 1);
+        const high = this.scalarTransform(absoluteMax + 1);
+        this.legend.updateScaleColors(
+          this.colorScale(low).hex(),
+          this.colorScale(high).hex(),
+        );
+        this.legend.updateScaleValues(low, high);
+      } else {
+        const low = this.scalarTransform(absoluteMin);
+        const high = this.scalarTransform(absoluteMax);
+        this.legend.updateScaleColors(
+          this.colorScale(low).hex(),
+          this.colorScale(high).hex(),
+        );
+        this.legend.updateScaleValues(low, high);
+      }
+
+      // Assign color to each vNode
       for (const vNode of this.vNodes) {
         const attributes = vNode.node.attributes;
         const geocode = attributes?.attGeo!["geocode"];
@@ -642,9 +668,6 @@ export class VGeoCluster extends VCluster {
         const rawValue = Number(selectedRecord?.[params.variableKey]);
 
         let value;
-
-        // Unpack the absolute and relative values.
-        const [absoluteMin, absoluteMax] = minMaxValues.absolute;
 
         if (this.scalarTransform === ColorFactory.scalarTransforms.log) {
           value = gp5.map(
@@ -673,7 +696,9 @@ export class VGeoCluster extends VCluster {
           this._palette.set(
             featureIndex,
             0,
-            rawValue === -1 ? [0, 0, 0, 0] : [...this.colorScale(value).rgb(), 255],
+            rawValue === null
+              ? [0, 0, 0, 0]
+              : [...this.colorScale(value).rgb(), 255],
           );
         }
       }

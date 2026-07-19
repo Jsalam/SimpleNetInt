@@ -22,6 +22,7 @@ import { SortingWidget } from "../widgets/listWidget/sortingWidget";
 import { VCluster } from "../../visualElements/vCluster";
 import { SortingListFactory } from "../../factories/sortingListFactory";
 import { SettingsPanelFactory } from "../../factories/settingsPanelFactory";
+import { LegendFactory } from "../../factories/legendFactory";
 
 
 interface NetworkData {
@@ -338,6 +339,7 @@ export class DOM {
 
     ClusterFactory.reset();
     SettingsPanelFactory.reset();
+    LegendFactory.reset();
     EdgeFactory.reset();
    // 
     
