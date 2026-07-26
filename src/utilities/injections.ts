@@ -46,11 +46,11 @@ export function formatVNodeDescription(
     } else {
       // If the value is an array or object, filter it by the first entry of the dimension
       // array of the vCluster
-      const settings = SettingsPanelFactory.getSettingsByVCluster(
+      const currentSettings = SettingsPanelFactory.getSettingsByVCluster(
         vCluster!,
-      )?.getDimensionArray();
+      )?.getCurrentDimensionArray();
 
-      const [key, val] = settings![0];
+      const [key, val] = currentSettings![0];
       complementaryTextString += `\n   ${entry.key}\n`;
 
       if (Array.isArray(entry.value)) {

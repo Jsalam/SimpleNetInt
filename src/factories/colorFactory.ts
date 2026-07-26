@@ -6,47 +6,39 @@ import { Canvas } from "../canvas/canvas";
 import BrewerPaletteName = chroma.BrewerPaletteName;
 
 export class ColorFactory {
-  // The dictionaries are used to store objects with key:value pairs under a labeled entry. The values are HEX colors 
+  // The dictionaries are used to store objects with key:value pairs under a labeled entry. The values are HEX colors
   static dictionaries: Record<string, Record<string, any>> = {};
-  static palettes2: Record<string, Record<string, any>> = { 'categorical': {}, 'sequential': {} };
+  static palettes2: Record<string, Record<string, any>> = { categorical: {}, sequential: {} };
   static colorsPath = "./files/colorPalettes/originalPalettes/";
   static palettes: string[][] = [];
   static brewerNames = Object.keys(chroma.brewer);
   static chroma = chroma;
 
-  // These are the tranformations applied to color mapping.
-  static scalarTransforms: Record< "linear" | "log" | "sqrt", (v: number) => number> = {
-      linear: (v) => v,
-      log: Math.log10,
-      sqrt: Math.sqrt,
-    };
-
   static init() {
-
     ColorFactory.addBasicPalette();
 
     ColorFactory.loadPalette(this.colorsPath, "palette1.txt", (data) => {
-      ColorFactory.addCategoricalPalette('palette1', data);
+      ColorFactory.addCategoricalPalette("palette1", data);
     });
     ColorFactory.loadPalette(this.colorsPath, "palette2.txt", (data) => {
-      ColorFactory.addCategoricalPalette('palette2', data);
+      ColorFactory.addCategoricalPalette("palette2", data);
     });
     ColorFactory.loadPalette(this.colorsPath, "palette3.txt", (data) => {
-      ColorFactory.addCategoricalPalette('palette3', data);
+      ColorFactory.addCategoricalPalette("palette3", data);
     });
     ColorFactory.loadPalette(this.colorsPath, "palette4.txt", (data) => {
-      ColorFactory.addCategoricalPalette('palette4', data);
+      ColorFactory.addCategoricalPalette("palette4", data);
     });
   }
 
   /**
-  * Loads a list of HEX colors from a given path. The loaded color lists are stored in the 
-  * ColorFactory.palettes array.
-  * @param path the path to the palette
-  * @param name the palette file name
-  * @param thenFunction 
-  * @returns 
-  */
+   * Loads a list of HEX colors from a given path. The loaded color lists are stored in the
+   * ColorFactory.palettes array.
+   * @param path the path to the palette
+   * @param name the palette file name
+   * @param thenFunction
+   * @returns
+   */
   static loadPalette(path: string, name: string, thenFunction: (data: any) => void) {
     // TODO: Create a promise-returning wrapper function for `loadStrings`
     return new Promise((resolve) => {
@@ -62,45 +54,45 @@ export class ColorFactory {
 
   /**
    * Adds a palette to the dictionary of pallets under 'categorical' or 'sequential' depending of the value data type
-   * @param key 
-   * @param val 
+   * @param key
+   * @param val
    */
   static addCategoricalPalette(key: string, val: []) {
     if (Array.isArray(val)) {
-      ColorFactory.palettes2['categorical'][key] = val;
+      ColorFactory.palettes2["categorical"][key] = val;
     }
   }
 
   /**
- * Adds a palette to the dictionary of pallets under 'categorical' or 'sequential' depending of the value data type
- * @param key 
- * @param val 
- */
+   * Adds a palette to the dictionary of pallets under 'categorical' or 'sequential' depending of the value data type
+   * @param key
+   * @param val
+   */
   static addSequentialPalette(key: string, val: string[] | Scale) {
     if (Array.isArray(val) && val.length >= 2 && val.length <= 3) {
-      ColorFactory.palettes2['sequential'][key] = ColorFactory.chroma.scale(val);
+      ColorFactory.palettes2["sequential"][key] = ColorFactory.chroma.scale(val);
     } else if (val) {
-      ColorFactory.palettes2['sequential'][key] = val;
+      ColorFactory.palettes2["sequential"][key] = val;
     }
   }
 
   static addBasicPalette() {
-    const basic = ["#cc0033", "#00cc99", "#0040ff", "#ffbf00", "#000000"]
-    ColorFactory.palettes2['categorical']['basic'] = basic;
+    const basic = ["#cc0033", "#00cc99", "#0040ff", "#ffbf00", "#000000"];
+    ColorFactory.palettes2["categorical"]["basic"] = basic;
   }
 
   static resetSequentialPalettes() {
-    ColorFactory.palettes2['sequential'] = {};
+    ColorFactory.palettes2["sequential"] = {};
   }
 
   /**
-   *  
+   *
    * Returns a palette of colors in hex format
    * @param {*} n If a number it retrieves the palette from the native list, if a string it retrieves the palette from chroma.brewer.
    * N can take these values: 'OrRd', 'PuBu', 'BuPu', 'Oranges', 'BuGn', 'YlOrBr', 'YlGn', 'Reds', 'RdPu', 'Greens', 'YlGnBu', 'Purples',
    * 'GnBu', 'Greys', 'YlOrRd', 'PuRd', 'Blues', 'PuBuGn', 'Viridis', 'Spectral', 'RdYlGn', 'RdBu', 'PiYG', 'PRGn', 'RdYlBu', 'BrBG',
    * 'RdGy', 'PuOr', 'Set2', 'Accent', 'Set1', 'Set3', 'Dark2', 'Paired', 'Pastel2', 'Pastel1'
-   * @param n the name of the color palette stored in the palette2 dictionary or any of Brewer names 
+   * @param n the name of the color palette stored in the palette2 dictionary or any of Brewer names
    * @returns an array of HEX colors. If the parameter does not match anly palete, it returns the Greys palete.
    */
   static getCategoricalPalette(n: string): string[] {
@@ -108,13 +100,15 @@ export class ColorFactory {
       if (this.brewerNames.includes(n)) {
         return chroma.brewer[n as BrewerPaletteName];
       } else {
-        return ColorFactory.palettes2['categorical'][n];
+        return ColorFactory.palettes2["categorical"][n];
       }
-    } else { return chroma.brewer['Greys' as BrewerPaletteName]; }
+    } else {
+      return chroma.brewer["Greys" as BrewerPaletteName];
+    }
   }
 
   static getSequentialPalette(n: string): Scale {
-    return ColorFactory.palettes2['sequential'][n];
+    return ColorFactory.palettes2["sequential"][n];
   }
 
   static getColor(palette: string[] | Scale, num: number): string {
@@ -127,18 +121,14 @@ export class ColorFactory {
   }
 
   /**
-   * A Dictionary in the ColorFactory class is a lists of attribute:index pairs where attribute is an attribute of a vNode such as 
+   * A Dictionary in the ColorFactory class is a lists of attribute:index pairs where attribute is an attribute of a vNode such as
    * a connector. The index is the index of the color of such attribute in an array of colors.
-   * By default this code uses the color array 'palette2' stored ColorFactory.palettes2. 
-   * @param list 
-   * @param palette 
-   * @param name 
+   * By default this code uses the color array 'palette2' stored ColorFactory.palettes2.
+   * @param list
+   * @param palette
+   * @param name
    */
-  static makeDictionary(
-    list: string | string[],
-    palette: string[] | Scale,
-    name: string,
-  ) {
+  static makeDictionary(list: string | string[], palette: string[] | Scale, name: string) {
     let dic: Record<string, any> = {};
     let arr = [];
     if (list instanceof Array) {
@@ -161,12 +151,7 @@ export class ColorFactory {
     let g = gp5.green(color);
     let b = gp5.blue(color);
     let a = gp5.alpha(color);
-    let hex =
-      "#" +
-      ((1 << 24) + (r << 16) + (g << 8) + b)
-        .toString(16)
-        .slice(1)
-        .toUpperCase();
+    let hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
     if (a < 255) {
       hex += Math.round(a).toString(16).padStart(2, "0").toUpperCase();
     }
@@ -279,12 +264,12 @@ export class ColorFactory {
   // }
 
   // /**
-  //  * Loads a list of HEX colors from a given path. The loaded color lists are stored in the 
+  //  * Loads a list of HEX colors from a given path. The loaded color lists are stored in the
   //  * ColorFactory.palettes array.
   //  * @param path the path to the palette
   //  * @param names an array with the palette file names
-  //  * @param thenFunction 
-  //  * @returns 
+  //  * @param thenFunction
+  //  * @returns
   //  */
   // static loadPalettes(path: string, names: string[], thenFunction: () => void) {
   //   // TODO: Create a promise-returning wrapper function for `loadStrings`

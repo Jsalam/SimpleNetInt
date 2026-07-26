@@ -75,7 +75,7 @@ function main(p5) {
         // pop transformation matrix
         exports.gp5.pop();
         // draw canvas status
-        if (DOMManager_1.DOM.showLegend) {
+        if (DOMManager_1.DOM.showInstructions) {
             canvas_1.Canvas.showLegend(exports.gp5.createVector(window.innerWidth - 50, 20), exports.gp5);
             canvas_1.Canvas.displayValues(exports.gp5.createVector(window.innerWidth - 50, window.innerHeight - 150), exports.gp5);
         }

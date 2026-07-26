@@ -1,4 +1,4 @@
-import { DimensionCategory } from "../factories/clusterFactory";
+import { DimensionCategory } from "../types";
 import { Node } from "./node";
 
 export class Cluster {

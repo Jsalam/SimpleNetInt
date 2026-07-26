@@ -106,8 +106,7 @@
                 "children": [
                   {
                     "name": "deorg",
-                    "key": "deorg",
-                    "comment": "Testing comment"
+                    "key": "deorg"
                   },
                   {
                     "name": "defor",

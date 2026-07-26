@@ -3,10 +3,11 @@ import { createElement } from "../GUI/DOM/DOMUtils";
 import { VCluster } from "../visualElements/vCluster";
 
 export class LegendFactory {
+  // This is the container that stores insatnces of ClusterLegends
   private static _cLegendsMap = new Map<HTMLElement, ClusterLegend[]>();
 
   //check if any HTMLElement key of the map has a given id
-  public static getKeyById(id: string) {
+  public static getContainerById(id: string) {
     for (let key of this._cLegendsMap.keys()) {
       if (key.id === id) {
         return key;
@@ -16,8 +17,7 @@ export class LegendFactory {
   }
 
   public static pushLegend(el: HTMLElement, legend: ClusterLegend) {
-    const existingSettings: ClusterLegend[] | undefined =
-      this._cLegendsMap.get(el);
+    const existingSettings: ClusterLegend[] | undefined = this._cLegendsMap.get(el);
     existingSettings!.push(legend);
   }
 
@@ -30,13 +30,16 @@ export class LegendFactory {
     const legend = new ClusterLegend(vCluster);
     legend.addVScale();
     legend.addScaleValues();
+    
 
+    // containerTmp will reference the DOM element where the legend should be placed.
     let containerTmp: HTMLElement;
 
+    // If a containerElement is provided, use it; otherwise create/find a default container.
     if (containerElement) {
       containerTmp = containerElement;
       containerTmp.append(legend.container);
-      let oldContainer = this.getKeyById(containerTmp.id);
+      let oldContainer = this.getContainerById(containerTmp.id);
       if (oldContainer) {
         oldContainer.append(legend.container);
         this.pushLegend(oldContainer, legend);
@@ -45,7 +48,7 @@ export class LegendFactory {
         this.setLegend(containerTmp, [legend]);
       }
     } else {
-      let oldContainer = this.getKeyById("cLegendsMain");
+      let oldContainer = this.getContainerById("cLegendsMain");
       if (oldContainer) {
         oldContainer.append(legend.container);
         this.pushLegend(oldContainer, legend);
@@ -58,7 +61,7 @@ export class LegendFactory {
     return legend;
   }
 
-  public static makeHTMLcontainer() {
+  private static makeHTMLcontainer() {
     let tmp = createElement("div", null, "cLegendsMain");
     // Add inline styles for WebKit browsers (Chrome, Edge, Safari)
     tmp.style.cssText += "::-webkit-scrollbar { display: none; }";
@@ -73,12 +76,20 @@ export class LegendFactory {
     tmp.id = "cLegendsMain";
 
     // Add a title
-    let title = createElement("div", null, "CSTitle");
+    let title = createElement("div", null, "CSControl");
     title.innerHTML = "Legend";
     tmp.append(title);
 
     document.querySelector("#model")!.append(tmp);
     return tmp;
+  }
+
+  public static getClusterLengendsAsArray(): ClusterLegend[] {
+    const legends: ClusterLegend[] = [];
+    for (const clusterLegends of this._cLegendsMap.values()) {
+      legends.push(...clusterLegends);
+    }
+    return legends;
   }
 
   /**
@@ -97,5 +108,5 @@ export class LegendFactory {
   }
 }
 
-// Attach ClusterFactory to the global window object
+// Attach LegendFactory to the global window object
 (window as any).LegendFactory = LegendFactory;

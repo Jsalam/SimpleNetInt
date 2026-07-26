@@ -1,18 +1,32 @@
 .vScaleLegend {
-    height:5px;
-    width:95%;
+  height: 5px;
+  width: 95%;
 }
 
-.scaleValues{
-    width: 95%;
-    display:flex;
-    justify-content: space-between;
+.textLegend {
+  display: block;
+  width: "100%";
+  background: transparent;
+  color: gray;
+  border: none;
 }
 
-.legendContainer{
-   width:200px;
-   margin-bottom:15px;
-   margin-left:13px;
+.tick {
+    position:absolute;
+  width: 20%;
+  /* outline:0.5px pink solid */
+}
+
+.scaleValues {
+  width: 95%;
+  height:10px;
+  margin-bottom:0.3em;
+}
+
+.legendContainer {
+  width: 200px;
+  margin-bottom: 15px;
+  margin-left: 13px;
 }
 
 .legendFlex {
@@ -23,7 +37,7 @@
 
 #cLegendsMain {
   background-color: rgba(50, 50, 50, 0.378);
-  display:block;
+  display: block;
   width: fit-content;
   gap: 2em;
 
@@ -32,6 +46,6 @@
   top: 10px;
   height: fit-content;
   width: fit-content;
-  overflow: scroll;
+  overflow-y: scroll;
   scrollbar-width: none;
 }

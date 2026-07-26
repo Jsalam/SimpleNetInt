@@ -16,32 +16,7 @@ import { gp5 } from "../main";
 import { SettingsPanelFactory } from "./settingsPanelFactory";
 import { VSelectionCluster } from "../visualElements/vSelectionCluster";
 import { Vector } from "p5";
-import { LegendFactory } from "./legendFactory";
-
-/**
- * @interface DimensionCategory
- * @description This interface represents a category of dimensions, which can contain child dimensions or subcategories.
- * It includes a name for the category and an array of children, which can be either DimensionCategory or DimensionID.
- */
-export interface DimensionCategory {
-  name: string;
-  children: Dimensions[];
-}
-
-/**
- * @interface DimensionID
- * @description This interface represents a specific dimension identified by a name and a key.
- */
-export interface DimensionID {
-  name: string;
-  key: string;
-}
-
-/**
- * @typedef {DimensionCategory | DimensionID} Dimensions
- * @description This type can be either a DimensionCategory or a DimensionID, allowing for a hierarchical structure of dimensions.
- */
-export type Dimensions = DimensionCategory | DimensionID;
+import { DimensionCategory } from "../types";
 
 /**
  * @interface ClusterInit

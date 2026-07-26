@@ -97,8 +97,8 @@ function main(p5: p5) {
     gp5.pop();
 
     // draw canvas status
-    if (DOM.showLegend) {
-      Canvas.showLegend(gp5.createVector(window.innerWidth - 50, 20), gp5);
+    if (DOM.showInstructions) {
+      Canvas.showInstructions(gp5.createVector(window.innerWidth - 50, 20), gp5);
       Canvas.displayValues(
         gp5.createVector(window.innerWidth - 50, window.innerHeight - 150),
         gp5,

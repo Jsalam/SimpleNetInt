@@ -20,7 +20,7 @@ import { Utilities } from "../utilities/utilities";
 import { VCluster } from "./vCluster";
 import { Color } from "chroma-js";
 import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
-import { DataEntry} from "../utilities/injections";
+import { DataEntry } from "../utilities/injections";
 import { formatVNodeDescription } from "../utilities/injections";
 
 export interface VNodeInit {
@@ -89,10 +89,7 @@ export class VNode extends Button {
       if (subscriber instanceof VConnector) {
         if (subscriber.connector.equals(obj.connector)) {
           rtn = false;
-          console.log(
-            "unsubscribed vConnector " +
-              JSON.stringify(subscriber.connector.id),
-          );
+          console.log("unsubscribed vConnector " + JSON.stringify(subscriber.connector.id));
         }
       }
       return rtn;
@@ -167,6 +164,14 @@ export class VNode extends Button {
         }
         if (data.event.key == "d" || data.event.key == "D") {
           this.keyD_Down = true;
+        }
+        if (data.event.key == "=" || data.event.key == "+") {
+          // update mouseOver variable after applying magnifying glass
+          this.mouseOver(data);
+        }
+        if (data.event.key == "-" || data.event.key == "_") {
+          // update mouseOver variable after applying magnifying glass
+          this.mouseOver(data);
         }
       }
       if (data.type == "keyup") {
@@ -262,12 +267,7 @@ export class VNode extends Button {
   }
 
   updateCoords(pos: Vector, sequence: number) {
-    this.setPos(
-      gp5.createVector(
-        pos.x,
-        pos.y + sequence * this.height + sequence * this.paddingTop,
-      ),
-    );
+    this.setPos(gp5.createVector(pos.x, pos.y + sequence * this.height + sequence * this.paddingTop));
     this.updateConnectorsCoords();
   }
 
@@ -288,17 +288,9 @@ export class VNode extends Button {
         // When there two or more connectors
       } else {
         if (newPos) {
-          vConnector.updateCoordsByAngle(
-            newPos,
-            angle * counter,
-            vConnector.width + 1,
-          );
+          vConnector.updateCoordsByAngle(newPos, angle * counter, vConnector.width + 1);
         } else {
-          vConnector.updateCoordsByAngle(
-            this.pos!,
-            angle * counter,
-            vConnector.width + 1,
-          );
+          vConnector.updateCoordsByAngle(this.pos!, angle * counter, vConnector.width + 1);
         }
       }
       counter++;
@@ -316,10 +308,7 @@ export class VNode extends Button {
   /*** SHOW FUNCTIONS */
   show(renderer: p5) {
     // Do not show the nodes with no connectors if the user make that choice in the GUI
-    if (
-      this.vConnectors.length < Number(DOM.sliders.nodeConnectorFilter.value) ||
-      this.node.getDegree() < Number(DOM.sliders.nodeDegreeFilter.value)
-    ) {
+    if (this.vConnectors.length < Number(DOM.sliders.nodeConnectorFilter.value) || this.node.getDegree() < Number(DOM.sliders.nodeDegreeFilter.value)) {
       this.visible = false;
     } else {
       this.visible = true;
@@ -327,9 +316,7 @@ export class VNode extends Button {
 
     if (this.visible && this.parentVCluster?.visible) {
       // *** TRANSFORMATIONS ***
-      this.tr = TransFactory.getTransformerByVClusterID(
-        this.node.idCat.cluster,
-      );
+      this.tr = TransFactory.getTransformerByVClusterID(this.node.idCat.cluster);
 
       // *** FILTER ***
       // Check if any of this Node's connectors matches User GUI Filters
@@ -338,12 +325,8 @@ export class VNode extends Button {
       // get the visual properties
       const pal2 = ColorFactory.getCategoricalPalette("palette2");
 
-      let fillColors = this._getFillColor(
-        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)),
-      );
-      this.strokeColor = this._getStrokeColor(
-        ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)),
-      );
+      let fillColors = this._getFillColor(ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)));
+      this.strokeColor = this._getStrokeColor(ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)));
       let strokeWeight = this._getStrokeWeight();
 
       // assign colors
@@ -369,7 +352,7 @@ export class VNode extends Button {
         renderer.circle(
           newPos.x,
           newPos.y,
-          this.diam ,//+ this.node.connectors.length * 3
+          this.diam, //+ this.node.connectors.length * 3
         );
       }
 
@@ -388,14 +371,7 @@ export class VNode extends Button {
 
         // show node description
         if (this.mouseIsOver) {
-          this._showDescription(
-            newPos,
-            formatVNodeDescription as (
-              vNode: VNode,
-              data: DataEntry[],
-              params?: string[],
-            ) => string, 
-          ); //
+          this._showDescription(newPos, formatVNodeDescription as (vNode: VNode, data: DataEntry[], params?: string[]) => string); //
           // this.notifyObservers({
           //   event: new MouseEvent("mouseover"),
           //   type: "mouseIsOver",
@@ -422,28 +398,18 @@ export class VNode extends Button {
       if (this.vConnectors.length > 0) {
         for (const vCnctr of this.vConnectors) {
           // let strokeCnctrColor = ColorFactory.getColorFor(vCnctr.connector.kind);
-          let strokeCnctrColor: string | string[] | p5.Color =
-            ColorFactory.getColor(
-              ColorFactory.getCategoricalPalette("palette2"),
-              ColorFactory.dictionaries.connectors[vCnctr.connector.kind],
-            );
+          let strokeCnctrColor: string | string[] | p5.Color = ColorFactory.getColor(ColorFactory.getCategoricalPalette("palette2"), ColorFactory.dictionaries.connectors[vCnctr.connector.kind]);
 
           if (!strokeCnctrColor) strokeCnctrColor = this.color!;
 
           if (typeof strokeCnctrColor == "string") {
             strokeCnctrColor = gp5.color(strokeCnctrColor);
           } else if (Array.isArray(strokeCnctrColor)) {
-            strokeCnctrColor = gp5.color(
-              Number(strokeCnctrColor[0]),
-              Number(strokeCnctrColor[1]),
-              Number(strokeCnctrColor[2]),
-            );
+            strokeCnctrColor = gp5.color(Number(strokeCnctrColor[0]), Number(strokeCnctrColor[1]), Number(strokeCnctrColor[2]));
           }
 
           if (this.transformed) {
-            strokeCnctrColor.setAlpha(
-              gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1),
-            );
+            strokeCnctrColor.setAlpha(gp5.map(this.tr.scaleFactor, 0.8, 0.3, 255, 1));
           }
           vCnctr.show(renderer, fillColors.fill, strokeCnctrColor);
         }
@@ -533,12 +499,7 @@ export class VNode extends Button {
 
     // *** EMPHASIZE COLOR ***
     // *** Propagation
-    if (
-      this.node.inFwdPropagation &&
-      DOM.boxChecked("forward") &&
-      this.node.inBkwPropagation &&
-      DOM.boxChecked("backward")
-    ) {
+    if (this.node.inFwdPropagation && DOM.boxChecked("forward") && this.node.inBkwPropagation && DOM.boxChecked("backward")) {
       // console.log("here 1 " + this.node.label);
       fillColor = baseColor.concat(accent);
     } else if (this.node.inFwdPropagation && DOM.boxChecked("forward")) {
@@ -629,14 +590,7 @@ export class VNode extends Button {
     }
   }
 
-  _showDescription(
-    newPos: p5.Vector,
-    formatter?: (
-      vNode: VNode,
-      data: DataEntry[],
-      params?: string[],
-    ) => string,
-  ) {
+  _showDescription(newPos: p5.Vector, formatter?: (vNode: VNode, data: DataEntry[], params?: string[]) => string) {
     // Get coordinates
     let x = this.pos!.x - 150;
     let y = this.pos!.y;
@@ -683,9 +637,7 @@ export class VNode extends Button {
       connectorsDescription += "   - " + cnctr.kind + ":\n";
 
       if (cnctr.edgeObservers.length > 0) {
-        let edgeObserverOfTheKind = cnctr.edgeObservers.filter(
-          (tempEdge) => tempEdge.kind == cnctr.kind,
-        );
+        let edgeObserverOfTheKind = cnctr.edgeObservers.filter((tempEdge) => tempEdge.kind == cnctr.kind);
 
         let textRow = "";
 
@@ -697,37 +649,19 @@ export class VNode extends Button {
           // Do not do these operations if the edge is open
           if (!edgeTmp.open) {
             if (this.node.idCat.cluster != edgeTmp.id!.source.cluster) {
-              otherCluster.source =
-                "Cluster: " +
-                ClusterFactory.getCluster(edgeTmp.id!.source.cluster).label;
+              otherCluster.source = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id!.source.cluster).label;
             }
 
             if (this.node.idCat.cluster != edgeTmp.id!.target.cluster) {
-              otherCluster.target =
-                "Cluster: " +
-                ClusterFactory.getCluster(edgeTmp.id!.target.cluster).label;
+              otherCluster.target = "Cluster: " + ClusterFactory.getCluster(edgeTmp.id!.target.cluster).label;
             }
 
             // out
             if (edgeTmp.source.idCat.pajekIndex == this.node.idCat.pajekIndex) {
-              textRow +=
-                "Out w " +
-                edgeTmp.weight +
-                " - TO " +
-                trimText(edgeTmp.target!.label, 25) +
-                ". " +
-                otherCluster.target +
-                "\n";
+              textRow += "Out w " + edgeTmp.weight + " - TO " + trimText(edgeTmp.target!.label, 25) + ". " + otherCluster.target + "\n";
             } else {
               // in
-              textRow +=
-                "In w " +
-                edgeTmp.weight +
-                " - FROM " +
-                trimText(edgeTmp.source.label, 25) +
-                ". " +
-                otherCluster.source +
-                "\n";
+              textRow += "In w " + edgeTmp.weight + " - FROM " + trimText(edgeTmp.source.label, 25) + ". " + otherCluster.source + "\n";
             }
           }
         }
@@ -737,17 +671,7 @@ export class VNode extends Button {
     }
 
     // Default text string to show in the description box
-    let textString =
-      this.node.label +
-      "\n" +
-      "Description: " +
-      this.node.description +
-      "\nCluster: " +
-      clusterName +
-      "\n" +
-      connectorsDescription +
-      "\n" +
-      complementaryTextString;
+    let textString = this.node.label + "\n" + "Description: " + this.node.description + "\nCluster: " + clusterName + "\n" + connectorsDescription + "\n" + complementaryTextString;
 
     VirtualElementPool.show(this, "node-description", textString, {
       display: "block",

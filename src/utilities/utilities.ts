@@ -229,10 +229,7 @@ export class Utilities {
    * @param param2.filteringValue The required value of filteringKey for relative range comparisons.
    * @returns Object with param, absolute, and relative value ranges.
    */
-  static getMinMax(
-    vNodes: VNode[],
-    param2: Record<string, string>,
-  ) {
+  static getMinMax(vNodes: VNode[], param2: Record<string, string>) {
     let relativeMin = Infinity;
     let relativeMax = -Infinity;
     let absoluteMin = Infinity;
@@ -262,7 +259,10 @@ export class Utilities {
           for (const entry of attr) {
             if (entry) continue;
 
-            if (entry != null && entry[param2.filteringKey] === param2.filteringValue) {
+            if (
+              entry != null &&
+              entry[param2.filteringKey] === param2.filteringValue
+            ) {
               relativeValue = entry[param2.variableKey];
 
               // These are the total relativeMax relativeMin values after reading all the attributes in the dataset
@@ -275,7 +275,10 @@ export class Utilities {
         } else {
           // If the attr is an object
           if (typeof attr == "object") {
-            if (attr != null && attr[param2.filteringKey] === param2.filteringValue) {
+            if (
+              attr != null &&
+              attr[param2.filteringKey] === param2.filteringValue
+            ) {
               relativeValue = attr[param2.variableKey];
             }
           }
@@ -298,4 +301,9 @@ export class Utilities {
       relative: [relativeMin, relativeMax],
     };
   }
+
+  static formatter = new Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1, // Controls decimal points (e.g., 2.5M)
+  });
 }

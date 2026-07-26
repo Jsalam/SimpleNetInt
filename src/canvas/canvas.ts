@@ -421,7 +421,7 @@ export class Canvas {
    * Show GUI instructions on screen
    * @param {Vector} pos
    */
-  static showLegend(pos: Vector, __UNUSED_ARG__: unknown) {
+  static showInstructions(pos: Vector, __UNUSED_ARG__: unknown) {
     if (!this.legendEl) {
       this.legendEl = document.createElement("div");
       const containerEl = document.querySelector("#model");
@@ -432,7 +432,7 @@ export class Canvas {
       this.legendEl.style.whiteSpace = "pre-line";
       this.legendEl.style.position = "absolute";
       this.legendEl.style.left = "0px";
-      this.legendEl.style.top = "0px";
+      this.legendEl.style.bottom = "190px";
       this.legendEl.style.fontFamily = "Roboto";
       this.legendEl.style.pointerEvents = "none";
       if (containerEl) {

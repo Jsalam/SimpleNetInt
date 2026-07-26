@@ -1,49 +1,55 @@
 .CSContainer {
-    padding-left: "10px";
-    font-family: "roboto-light", sans-serif;
- /*   background-color: rgba(0, 0, 0, 0.165);*/
+  padding-left: "10px";
+  font-family: "roboto-light", sans-serif;
+  width: 100%;
+  /*   background-color: rgba(0, 0, 0, 0.165);*/
 }
 
 .CSSelect {
-    display: block;
-    width: "100%";
-    background: transparent;
-    color: gray;
-    border: none;
+  display: block;
+  width: "100%";
+  background: transparent;
+  color: gray;
+  border: none;
 }
 
 .CSControl {
-    margin-left: 1em;
-    margin-bottom: 0.5em;
-    font-size: 0.8em;
-    color: rgb(178, 192, 203);
+  margin-left: 1em;
+  margin-bottom: 0.5em;
+  font-size: 0.8em;
+  color: rgb(178, 192, 203);
+}
+
+select {
+  width: 100%;
+  max-width: 250px;
 }
 
 .CSTitle {
-    margin-left: 10px;
-    font-size: 0.9em;
-    color: rgb(178, 192, 203);
+  margin-left: 10px;
+  font-size: 0.9em;
+  color: rgb(178, 192, 203);
 }
 
 .selectElementFlex {
-    display: flex;
-    width: 100%;
-    gap: 2em;
+  display: flex;
+  width: 100%;
+  gap: 2em;
 }
 
-.selectElementFlex>* {
-    flex: 1;
-    max-width: fit-content;
-    box-sizing: border-box;
+.selectElementFlex > * {
+  flex: 1;
+  max-width: fit-content;
+  box-sizing: border-box;
 }
 
-.CSDropSelect{
-    display: block;
-    background-color: transparent;
-    color: gray;
-    border: none;
+.CSDropSelect {
+  display: block;
+  background-color: transparent;
+  color: gray;
+  border: none;
 }
 
-#cSettingsMain{
-    background-color: rgba(50, 50, 50, 0.378);
+#cSettingsMain {
+  background-color: rgba(50, 50, 50, 0.378);
 }

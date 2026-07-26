@@ -12,7 +12,6 @@ import { Node } from "../graphElements/node";
 import { SortingWidget } from "../GUI/widgets/listWidget/sortingWidget";
 import { Scale } from "chroma-js";
 import { ClusterFactory } from "../factories/clusterFactory";
-import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
 import { LegendFactory } from "../factories/legendFactory";
 import { ClusterLegend } from "../GUI/legends/ClusterLegend";
 
@@ -25,18 +24,13 @@ export class VCluster extends Button implements Observer {
   layout: Layout;
   timestamp: string | undefined;
   dimensions: string[] = [];
-  legend:ClusterLegend;
+  legend: ClusterLegend;
+  scalarTransform: "linear" | "log" | "sqrt" = "linear";
+  mappingDomain: "absolute" | "relative" = "absolute";
 
   boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
-  constructor(
-    cluster: Cluster,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    palette: string[],
-  ) {
+  constructor(cluster: Cluster, x: number, y: number, width: number, height: number, palette: string[]) {
     super(x, y, width, height);
     this.vNodes = [];
     this.cluster = cluster;
@@ -47,7 +41,7 @@ export class VCluster extends Button implements Observer {
     this.populateVNodes(cluster);
     this.layout.subscribeVNodes(this.vNodes);
 
-    console.log("Instantiating legends vCluster");
+    console.log("Instantiating legends vCluster: " + this.cluster.label);
     this.legend = LegendFactory.add(this);
 
     // instantiate a tranformer for this vCluster
@@ -115,9 +109,7 @@ export class VCluster extends Button implements Observer {
       vNode.setColor(data.color);
     } else {
       vNode.updateCoords(this.pos!, this.vNodes.length + 1);
-      vNode.setColor(
-        ColorFactory.getColor(this.palette, this.cluster.nodes.length),
-      );
+      vNode.setColor(ColorFactory.getColor(this.palette, this.cluster.nodes.length));
     }
     // subscribe to canvas
     Canvas.subscribe(vNode);
@@ -166,10 +158,43 @@ export class VCluster extends Button implements Observer {
     }
   }
 
-  updatePalette() {}
+  unpackEvent(e: Event) {
+    const rslt = {
+      parentName: ((e.target as HTMLInputElement).parentElement?.firstChild as HTMLElement)?.innerText,
+      value: (e.target as HTMLInputElement).value,
+      target: e.target as HTMLInputElement,
+      name: (e.target as HTMLInputElement).name,
+      id: (e.target as HTMLInputElement).value,
+    };
+
+    // update transformation function
+    if (rslt.name == "colorTransform") {
+      if (rslt.value === "linear" || rslt.value === "log" || rslt.value === "sqrt") {
+        this.scalarTransform = rslt.value;
+      }
+    } else if (rslt.name == "colorDomain") {
+      // update mappingDomain
+      if (rslt.value === "relative" || rslt.value === "absolute") {
+        this.mappingDomain = rslt.value;
+      }
+    }
+    return rslt;
+  }
+
+  updateLegendAndPalette(e?:Event){
+
+  }
+
+  updateLegend(minMax:any) {}
+
+  updatePalette( params:any, minMax: any, e?: Event) {
+    if (e) this.unpackEvent(e);
+  }
 
   updateDimensions(dimensions: String[]) {}
+  
 
+  
   getJSON() {
     let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);
     let rtn = {

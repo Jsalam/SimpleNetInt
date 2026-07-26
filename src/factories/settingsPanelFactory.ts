@@ -21,8 +21,7 @@ export class SettingsPanelFactory {
   }
 
   public static pushSettings(el: HTMLElement, settings: ClusterSettings) {
-    const existingSettings: ClusterSettings[] | undefined =
-      this._cSettingsMap.get(el);
+    const existingSettings: ClusterSettings[] | undefined = this._cSettingsMap.get(el);
     existingSettings!.push(settings);
   }
 
@@ -44,10 +43,12 @@ export class SettingsPanelFactory {
     const cluster = vCluster.cluster;
     const cSettings = Array.from(this._cSettingsMap.entries())[0];
     if (cSettings) {
-        const cSettings2 = cSettings[1]
+      const cSettings2 = cSettings[1];
       for (let i = 0; i < cSettings2.length; i++) {
         let vCTemp = cSettings2[i].getVCluster();
-        if (vCTemp.cluster.id == cluster.id) return cSettings2[i];
+        if (vCTemp.cluster.id == cluster.id) {
+          return cSettings2[i];
+        }
       }
     }
 
@@ -75,11 +76,7 @@ export class SettingsPanelFactory {
    * @param updateVCluster true if the instance of ClusterSettings needs to update the vCluster visualization
    * @param containerElement the container element to append the settings widget to (optional)
    */
-  public static add(
-    vCluster: VCluster,
-    updateVCluster: boolean,
-    containerElement?: HTMLElement,
-  ) {
+  public static add(vCluster: VCluster, updateVCluster: boolean, containerElement?: HTMLElement) {
     const settings = new ClusterSettings(vCluster, updateVCluster);
 
     let containerTmp: HTMLElement;
@@ -118,9 +115,11 @@ export class SettingsPanelFactory {
       // bottom: "0",
       width: "250px",
       overflowY: "scroll",
+      overflowX:'hidden',
       scrollbarWidth: "none",
-      height: "fitContent",
+      height: "80%",
     });
+
     // Add inline styles for WebKit browsers (Chrome, Edge, Safari)
     tmp.style.cssText += "::-webkit-scrollbar { display: none; }";
 
