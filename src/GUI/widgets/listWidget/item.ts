@@ -4,7 +4,8 @@ import { CustomEvent } from "../../../types";
 import { Scale } from "chroma-js";
 
 /**
- * The item is a simplier representation of a vNode that does not have connectors and cannot be linked to other vNodes or items
+ * The item is a simplier representation of a vNode that does not have connectors and cannot be linked to other vNodes or items.
+ * It was created to represent nodes in sorting lists.
  */
 
 export class Item {

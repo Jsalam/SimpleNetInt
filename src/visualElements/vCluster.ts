@@ -27,6 +27,8 @@ export class VCluster extends Button implements Observer {
   legend: ClusterLegend;
   scalarTransform: "linear" | "log" | "sqrt" = "linear";
   mappingDomain: "absolute" | "relative" = "absolute";
+  scale: 1 | -1 = 1;
+  zoomDirection = 1;
 
   boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
@@ -43,6 +45,9 @@ export class VCluster extends Button implements Observer {
 
     console.log("Instantiating legends vCluster: " + this.cluster.label);
     this.legend = LegendFactory.add(this);
+
+    this.scale = 1;
+    this.zoomDirection = 1;
 
     // instantiate a tranformer for this vCluster
     TransFactory.initTransformer(this);
@@ -147,6 +152,10 @@ export class VCluster extends Button implements Observer {
 
   highlight(vNode: VNode) {}
 
+  applyZoom(direction: 1 | -1) {
+    if (this.zoomDirection != 0) this.scale *= this.zoomDirection == direction ? 1.02 : 0.98;
+  }
+
   show(renderer: p5) {
     renderer.textAlign(gp5.LEFT, gp5.TOP);
     if (this.cluster.label) {
@@ -180,21 +189,15 @@ export class VCluster extends Button implements Observer {
     }
     return rslt;
   }
+  updateLegendAndPalette(e?: Event) {}
 
-  updateLegendAndPalette(e?:Event){
+  updateLegend(minMax: any) {}
 
-  }
-
-  updateLegend(minMax:any) {}
-
-  updatePalette( params:any, minMax: any, e?: Event) {
+  updatePalette(params: any, minMax: any, e?: Event) {
     if (e) this.unpackEvent(e);
   }
-
   updateDimensions(dimensions: String[]) {}
-  
 
-  
   getJSON() {
     let trans = TransFactory.getTransformerByVClusterID(this.cluster.id);
     let rtn = {

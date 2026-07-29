@@ -336,11 +336,11 @@ export class VGeoCluster extends VCluster {
     checkSyncStatus();
   }
 
-  static applyZoom(direction: 1 | -1) {
-    for (const vCluster of this.all) {
-      if (vCluster.zoomDirection != 0) vCluster.scale *= vCluster.zoomDirection == direction ? 1.02 : 0.98;
-    }
-  }
+  // static applyZoom(direction: 1 | -1) {
+  //   for (const vCluster of this.all) {
+  //     if (vCluster.zoomDirection != 0) vCluster.scale *= vCluster.zoomDirection == direction ? 1.02 : 0.98;
+  //   }
+  // }
 
   numFeatures = 1;
   featureIndexByGeocode: Record<string, number> = {};
@@ -632,6 +632,15 @@ export class VGeoCluster extends VCluster {
     this._palette.updatePixels();
   }
 
+  /**
+   * Applies a piecewise warping function to scale a radius value.
+   * 
+   * This function uses three linear segments defined by control points (r1, r2)
+   * and slopes (s1, s2) to create a non-linear transformation of the input radius.
+   * 
+   * @param r - The input radius value to be warped
+   * @returns The warped radius value according to the piecewise function
+   */
   warp(r: number) {
     if (r < this.r1) return this.s1 * r;
     if (r < this.r2) {
@@ -640,25 +649,70 @@ export class VGeoCluster extends VCluster {
     return this.s1 * this.r2 + ((this.s2 - this.s1) * (this.r2 - this.r1)) / 2.0 + this.s2 * (r - this.r2);
   }
 
+  
+/**
+   * Update the local transformation matrices used for rendering this cluster.
+   *
+   * Data processing steps:
+   * - Build a scaled model matrix that flips the Y axis to convert from screen coordinates to WebGL coordinates.
+   * - Determine this cluster's visible order index and compute a layer offset along Z and X so stacked maps are shifted relative to each other.
+   * - Apply X/Y rotations to the cluster.
+   * - Create a view matrix from the camera position looking at the origin.
+   * - Multiply the view and model matrices to produce the final modelViewMatrix.
+   * - Construct a perspective projection matrix from the field of view,
+   *   viewport aspect ratio, and near/far clipping planes.
+   */
   updateMatrices() {
+
+    // Construct a model matrix that flips the Y axis while applying uniform scaling.
+    // This is necessary because screen coordinates and WebGL coordinates use opposite Y directions.
     const flipY = mat4.fromValues(this.scale, 0, 0, 0, 0, -this.scale, 0, 0, 0, 0, this.scale, 0, 0, 0, 0, 1);
 
+    // Find this cluster's position in the list of currently visible clusters,
+    // used to compute its layer offset when rendering stacked maps.
     const visibleIndex = VGeoCluster.visible.indexOf(this);
 
-    const zOffset = this.layerGap * ((VGeoCluster.all.length - 1) / 2 - visibleIndex - this.layerIndexInFocus);
-
     // PARAMETERS TO SHIFT THE MAPS WHEN LOADED.
+    const zOffset = this.layerGap * ((VGeoCluster.all.length - 1) / 2 - visibleIndex - this.layerIndexInFocus);
     const xOffset = -300 * zOffset;
     const yOffset = 0;
 
+    // Build the translation vector used to offset each cluster in the stacked map layout.
+    // xOffset shifts the cluster horizontally, yOffset is currently unused,
+    // and zOffset moves the cluster along the depth axis to separate overlapping layers.
     const offset = vec3.fromValues(xOffset, yOffset, zOffset);
     const translate = mat4.fromTranslation(mat4.create(), offset);
+
+    // Rotation matrices for the current cluster orientation.
+    // rotateX applies pitch, rotateY applies yaw.
     const rotateX = mat4.fromXRotation(mat4.create(), this.rotationX);
     const rotateY = mat4.fromYRotation(mat4.create(), this.rotationY);
+
+    // Compose the model matrix from the flipY transform, translation, and rotations.
+    // Order matters: start with the flipped/scaled coordinate system, then translate,
+    // then apply X and Y rotations in sequence.
     const modelMatrix = mat4.create();
     mat4.mul(modelMatrix, translate, flipY);
     mat4.mul(modelMatrix, rotateX, modelMatrix);
     mat4.mul(modelMatrix, rotateY, modelMatrix);
+
+    /**
+     * Construct the view and projection matrices for this cluster.
+     *
+     * viewMatrix: a camera transform placing the camera on the +Z axis at
+     * [0, 0, cameraDistance], looking at the origin with +Y as up. This
+     * effectively positions the viewer in front of the stacked map layout.
+     *
+     * modelViewMatrix: the concatenation of the viewMatrix with the
+     * cluster's modelMatrix (which includes flips, translations and rotations).
+     * This combined matrix transforms object-space coordinates into view
+     * (camera) space and is used for subsequent projection and picking.
+     *
+     * projectionMatrix: a perspective projection built from the cluster's
+     * vertical field-of-view parameter (expressed via tanHalfFovY), the
+     * viewport aspect ratio and near/far plane distances. Near and far are
+     * scaled by 800 to match the scene units used elsewhere in the renderer.
+     */
     const viewMatrix = mat4.lookAt(mat4.create(), [0, 0, this.cameraDistance], [0, 0, 0], [0, 1, 0]);
     this.modelViewMatrix = mat4.mul(mat4.create(), viewMatrix, modelMatrix);
     this.projectionMatrix = mat4.perspective(
@@ -675,52 +729,97 @@ export class VGeoCluster extends VCluster {
   }
 
   /**
-   * Update the position of the VNodes and each of its vConnectors based on the current rotation and zoom level
-   * *************** TODO This method should be modified and use the TransFactory class.***************
+   * Update the position of each VNode and its attached vConnectors using the current
+   * projection and model-view transform, the selected vNode positioning mode, and the
+   * current mouse position projected into object space.
+   *
+   * This method constructs a single Model-View-Projection matrix and iterates through
+   * the cluster's vNodes. For each node, it chooses either explicit coordinates from
+   * attGeo.coords or a centroid from attGeo.geocode. The node position is warped by the
+   * current focus radius function, projected into normalized device coordinates (NDC),
+   * then converted to screen space and stored in vNode.pos.
+   *
+   * Visibility flags for text and buttons are also updated based on the current focus
+   * radius and whether this layer is the selected layer.
+   *
+   * TODO: refactor this logic to use the shared TransFactory CLass.
    */
   updateVNodePositions() {
-    //This matrix should be stored in the TransFactory class
+    // This matrix should be stored in the TransFactory class
     const MVP = mat4.create();
     mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
     for (let vNode of this.vNodes) {
-      //console.log(vNode.node.attributes!.attGeo!);
 
       const attGeo = vNode.node.attributes!.attGeo!;
       const hasCoords = Object.prototype.hasOwnProperty.call(attGeo, this.vNodePositioning);
       const hasGeocode = Object.prototype.hasOwnProperty.call(attGeo, "geocode");
-
-      const geocode = vNode.node.attributes!.attGeo!.geocode;
+      const geocode = attGeo.geocode;
 
       // ***** change the attribute this.vNodePositioning to 'coords' or 'centroids' to define
       if (hasCoords) {
         if (!this.mappedCoords[geocode]) continue;
+
+        // Copy the mapped coordinates for the geocode to avoid mutating the original
         const vInCoords = this.mappedCoords[geocode].copy();
+        
+        // Translate coordinates relative to the mouse position (center at focus point)
         vInCoords.sub(this.mouseX_object!, this.mouseY_object);
+        
+        // Apply the warp function to the distance from the focus point
         const rCoords = this.warp(vInCoords.mag());
+        
+        // Set the new magnitude based on the warped distance
         vInCoords.setMag(rCoords);
+        
+        // Translate back to world space by adding the mouse position
         vInCoords.add(this.mouseX_object!, this.mouseY_object);
+        
+        // Convert to a 4D homogeneous coordinate (z=0, w=1 for perspective division)
         const position_objectCoords = vec4.fromValues(vInCoords.x, vInCoords.y, 0, 1);
+        
+        // Apply the MVP matrix to transform to normalized device coordinates (NDC)
         const position_NDCCoords = vec4.transformMat4(vec4.create(), position_objectCoords, MVP);
 
         vNode.shouldShowText = rCoords < this.focusRadius && rCoords < this.focusRadius;
-        vNode.shouldShowButton = rCoords < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+        vNode.shouldShowButton = true;//rCoords < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
 
         vNode.pos = gp5
           .createVector(position_NDCCoords[0] / position_NDCCoords[3], position_NDCCoords[1] / position_NDCCoords[3], position_NDCCoords[3])
           .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
           .add(VGeoCluster.width / 2, VGeoCluster.height / 2);
       } else if (hasGeocode) {
+        // If this geocode has no centroid, skip this node entirely.
         if (!this.centroidByGeocode[geocode]) continue;
+        
+        // Copy the stored centroid position for this geocode so we can transform it.
         const vIn = this.centroidByGeocode[geocode].copy();
+        
+        // Translate the centroid into mouse-relative object space.
         vIn.sub(this.mouseX_object!, this.mouseY_object);
+       
+        // Warp the distance from the mouse focus point to create the focus effect.
         const r = this.warp(vIn.mag());
+       
+        // Set the vector magnitude to the warped radius while preserving direction.
         vIn.setMag(r);
+        
+        // Translate back into world/object coordinates from the mouse-relative position.
         vIn.add(this.mouseX_object!, this.mouseY_object);
+        
+        // Build a 4D homogeneous coordinate for the transformed object position.
         const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
+       
+        // Transform the object-space position through the MVP matrix into NDC space.
         const position_NDC = vec4.transformMat4(vec4.create(), position_object, MVP);
+       
+        // Show text only if this node is within the focus radius.
         vNode.shouldShowText = r < this.focusRadius && r < this.focusRadius;
-        vNode.shouldShowButton = r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+        
+        // Show button only if the node is within focus and this layer is selected.
+        vNode.shouldShowButton = true;//r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+        
+        // Convert NDC coordinates to screen pixel coordinates and store them.
         vNode.pos = gp5
           .createVector(position_NDC[0] / position_NDC[3], position_NDC[1] / position_NDC[3], position_NDC[3])
           .mult(VGeoCluster.width / 2, -VGeoCluster.height / 2)
@@ -733,7 +832,11 @@ export class VGeoCluster extends VCluster {
 
   /**
    * Determine mouse coordinates in the map plane (object space) using ray casting.
-   * The result is stored in internal properties this.mouseX_object and this.mouseY_object
+   * The result is stored in internal properties this.mouseX_object and this.mouseY_object.
+   *
+   * The process converts the current canvas mouse position into a camera-space ray,
+   * computes the ray-plane intersection with the z=0 object plane, and then transforms
+   * that intersection point back into object space using the inverse model-view matrix.
    */
   unprojectMousePosition() {
     const normal = vec4.fromValues(0, 0, 1, 0); // direction (w=0)
@@ -847,7 +950,7 @@ export class VGeoCluster extends VCluster {
       if (this.outlineShader) {
         // TODO: comments
         VGeoCluster.pixelTarget.fill(0);
-        this.renderToBuffer(VGeoCluster.pixelTarget, this.secondaryClusterGeometry, this.outlineShader);
+         this.renderToBuffer(VGeoCluster.pixelTarget, this.secondaryClusterGeometry, this.outlineShader);
       }
       if (this.idShader) {
         this.renderToBuffer(VGeoCluster.idTarget, this.clusterGeometry, this.idShader);

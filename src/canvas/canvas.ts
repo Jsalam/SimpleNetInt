@@ -202,7 +202,7 @@ export class Canvas {
     }
 
     // push transformations
-    TransFactory.pushVClusters();
+   // TransFactory.pushVClusters();
 
     VGeoCluster.pixelTarget.background(0, 0, 0, 0);
     VGeoCluster.idTarget.background(0, 0, 0, 0);
@@ -238,7 +238,7 @@ export class Canvas {
     });
 
     // pop transformations
-    // TransFactory.popVClusters();
+   //  TransFactory.popVClusters();
 
     // show EdgeFactory Buffer
     if (EdgeFactory._vEdgeBuffer) EdgeFactory._vEdgeBuffer.show(gp5);
@@ -596,7 +596,9 @@ export class Canvas {
     //  TransFactory.zoom(amnt);
     TransFactory.crissCross(amnt);
     // TODO: consolidate the logic here
-    VGeoCluster.applyZoom(evt.deltaY < 0 ? 1 : -1);
+    for (const cluster of ClusterFactory.vClusters) {
+      cluster.applyZoom(evt.deltaY < 0 ? 1 : -1);
+    }
 
     this.renderGate = true;
   }
