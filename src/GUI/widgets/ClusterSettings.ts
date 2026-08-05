@@ -32,7 +32,7 @@ export class ClusterSettings {
   ) {
     this.levels = this.getDepth(vCluster.cluster.dimensions);
 
-    if (vCluster.cluster.type == "geo") this.levels -= 1;
+    if (vCluster.cluster.type == "geo" || vCluster.cluster.type == 'carto') this.levels -= 1;
 
     this.dimensionViewModels = this.makeDimensionControlViewModels();
     this.dimensionControls = this.makeDimensionControls("CSSelect", updateVCluster);

@@ -19,7 +19,7 @@ export class VCluster extends Button implements Observer {
   sortingWidget: SortingWidget | null = null;
   vNodes: VNode[];
   cluster: Cluster;
-  palette: string[];
+  palette: string[] | Scale;
   colorScale: Scale | undefined;
   layout: Layout;
   timestamp: string | undefined;
@@ -32,7 +32,7 @@ export class VCluster extends Button implements Observer {
 
   boundingBox: [number, number, number, number] = [0, 0, 0, 0];
 
-  constructor(cluster: Cluster, x: number, y: number, width: number, height: number, palette: string[]) {
+  constructor(cluster: Cluster, x: number, y: number, width: number, height: number, palette: string[] | Scale) {
     super(x, y, width, height);
     this.vNodes = [];
     this.cluster = cluster;

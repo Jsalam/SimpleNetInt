@@ -192406,9 +192406,9 @@
         }
       ]
     },
-      {
+    {
       "clusterID": 2,
-      "clusterType": "geo",
+      "clusterType": "carto",
       "clusterLabel": "Mapa B",
       "clusterDescription": "Resultados",
       "mapName": "gadm41_COL_2.json",
@@ -384811,7 +384811,6 @@
         }
       ]
     }
-    
   ],
   "edges": []
 }

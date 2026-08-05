@@ -16,9 +16,7 @@ import { EdgeFactory } from "../factories/edgeFactory";
 import { VEdge } from "./vEdge";
 import { VirtualElementPool } from "./VirtualElementPool";
 import { Item } from "../GUI/widgets/listWidget/item";
-import { Utilities } from "../utilities/utilities";
 import { VCluster } from "./vCluster";
-import { Color } from "chroma-js";
 import { SettingsPanelFactory } from "../factories/settingsPanelFactory";
 import { DataEntry } from "../utilities/injections";
 import { formatVNodeDescription } from "../utilities/injections";
@@ -58,7 +56,6 @@ export class VNode extends Button {
     super(0, 0, width, height);
     this.node = node;
     this.color;
-    this.strokeColor;
     this.paddingTop = 3;
     // for magnifying glass2
     this.diam = width;
@@ -74,6 +71,8 @@ export class VNode extends Button {
     this.tr;
     // *** SORTING LIST ***
     this.observerListItems = [];
+    const pal2 = ColorFactory.getCategoricalPalette("palette2");
+    this.strokeColor = this._getStrokeColor(ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)));
   }
 
   subscribe(obj: any) {
@@ -168,10 +167,12 @@ export class VNode extends Button {
         if (data.event.key == "=" || data.event.key == "+") {
           // update mouseOver variable after applying magnifying glass
           this.mouseOver(data);
+          this.computeMagnifyingEffect();
         }
         if (data.event.key == "-" || data.event.key == "_") {
           // update mouseOver variable after applying magnifying glass
           this.mouseOver(data);
+          this.computeMagnifyingEffect();
         }
       }
       if (data.type == "keyup") {
@@ -324,14 +325,17 @@ export class VNode extends Button {
 
       // get the visual properties
       const pal2 = ColorFactory.getCategoricalPalette("palette2");
-
-      let fillColors = this._getFillColor(ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)));
-      this.strokeColor = this._getStrokeColor(ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)));
+      let fillColors = this._getFillColor(this.color!);//this._getFillColor(ColorFactory.getColor(pal2, Number(this.node.idCat.cluster)));
+      this.strokeColor = this._getStrokeColor(this.color!);
       let strokeWeight = this._getStrokeWeight();
 
       // assign colors
       renderer.fill(fillColors.fill);
-      renderer.stroke(this.strokeColor!);
+      if (typeof this.strokeColor === "string") {
+        renderer.stroke(gp5.color(this.strokeColor));
+      } else if (this.strokeColor) {
+        renderer.stroke(this.strokeColor);
+      }
       renderer.strokeWeight(strokeWeight);
 
       // draw shape
@@ -479,8 +483,8 @@ export class VNode extends Button {
     }
 
     // default color
-    let fillColor: string | p5.Color = baseColor;
-    let labelColor: string | p5.Color = "#111111";
+    let fillColor: string = baseColor;
+    let labelColor: string = "#111111";
     if (Canvas.currentBackground < 150) {
       labelColor = "#838282ff";
     }
@@ -524,17 +528,17 @@ export class VNode extends Button {
     //if (filteredConnectors.length > 0) fillColor = filtered;
     if (this.selected) fillColor = filtered;
 
-    fillColor = gp5.color(fillColor);
-    labelColor = gp5.color(labelColor);
+    let p5FillColor: p5.Color = gp5.color(fillColor);
+    let p5LabelColor: p5.Color = gp5.color(labelColor);
 
-    labelColor.setAlpha(gp5.map(this.localScale!, 2, 1, 255, 150));
+    p5LabelColor.setAlpha(gp5.map(this.localScale!, 2, 1, 255, 150));
 
     if (this.transformed) {
-      fillColor.setAlpha(gp5.map(this.tr!.scaleFactor, 3, 0.3, 255, 1));
-      labelColor.setAlpha(gp5.map(this.tr!.scaleFactor, 1, 0.5, 255, 1));
+      p5FillColor.setAlpha(gp5.map(this.tr!.scaleFactor, 3, 0.3, 255, 1));
+      p5LabelColor.setAlpha(gp5.map(this.tr!.scaleFactor, 1, 0.5, 255, 1));
     }
 
-    return { fill: fillColor, label: labelColor };
+    return { fill: p5FillColor, label: p5LabelColor };
   }
 
   _getStrokeColor(_baseColor: string) {

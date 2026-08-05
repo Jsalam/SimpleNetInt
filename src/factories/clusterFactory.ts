@@ -95,7 +95,7 @@ export class ClusterFactory {
 
       // vCluster instantiation
       let tmp: any;
-      if (cluster.type === "geo") {
+      if (cluster.type === "geo" || cluster.type ==="carto") {
         tmp = new VGeoCluster(
           cluster,
           posX,

@@ -1,7 +1,7 @@
 import * as glMatrix from "gl-matrix";
 import { gp5 } from "../main";
 import p5, { Vector } from "p5";
-import chroma from "chroma-js";
+import chroma, { Scale } from "chroma-js";
 import { DOM } from "../GUI/DOM/DOMManager";
 import { Canvas } from "../canvas/canvas";
 import { Cluster } from "../graphElements/cluster";
@@ -396,7 +396,7 @@ export class VGeoCluster extends VCluster {
     posY: number,
     width: number,
     height: number,
-    palette: string[],
+    palette: string[] | Scale,
     bbox: [number, number, number, number],
     cartography: string,
     secondaryCartography: string,
@@ -490,6 +490,12 @@ export class VGeoCluster extends VCluster {
 
       // update the canvas with the new drawings
       Canvas.update();
+    });
+
+    // Set vNode colors
+    this.vNodes.forEach((vN) => {
+      // @ts-ignore
+      vN.setColor(this.palette[3]);
     });
   }
 
@@ -602,7 +608,7 @@ export class VGeoCluster extends VCluster {
       // Unpack the absolute and relative values.
       const [rangeMin, rangeMax] = minMaxValues[this.mappingDomain];
 
-      // Assign color to each vNode
+      // Assign color to the silhouette associated to each vNode
       for (const vNode of this.vNodes) {
         const attributes = vNode.node.attributes;
         const geocode = attributes?.attGeo!["geocode"];
@@ -621,8 +627,10 @@ export class VGeoCluster extends VCluster {
           this._palette.set(featureIndex, 0, [275, 75, 75, 255]); // red
         } else if (value == 0) {
           this._palette.set(featureIndex, 0, [75, 75, 75, 255]); // grey
-        } else {
+        } else if (this.cluster.type == "geo") {
           this._palette.set(featureIndex, 0, rawValue === null ? [0, 0, 0, 0] : [...this.colorScale(value).rgb(), 255]);
+        } else if (this.cluster.type == "carto") {
+          this._palette.set(featureIndex, 0, [85, 85, 85, 255]); // grey
         }
       }
     } catch (e) {
@@ -634,10 +642,10 @@ export class VGeoCluster extends VCluster {
 
   /**
    * Applies a piecewise warping function to scale a radius value.
-   * 
+   *
    * This function uses three linear segments defined by control points (r1, r2)
    * and slopes (s1, s2) to create a non-linear transformation of the input radius.
-   * 
+   *
    * @param r - The input radius value to be warped
    * @returns The warped radius value according to the piecewise function
    */
@@ -649,8 +657,7 @@ export class VGeoCluster extends VCluster {
     return this.s1 * this.r2 + ((this.s2 - this.s1) * (this.r2 - this.r1)) / 2.0 + this.s2 * (r - this.r2);
   }
 
-  
-/**
+  /**
    * Update the local transformation matrices used for rendering this cluster.
    *
    * Data processing steps:
@@ -663,7 +670,6 @@ export class VGeoCluster extends VCluster {
    *   viewport aspect ratio, and near/far clipping planes.
    */
   updateMatrices() {
-
     // Construct a model matrix that flips the Y axis while applying uniform scaling.
     // This is necessary because screen coordinates and WebGL coordinates use opposite Y directions.
     const flipY = mat4.fromValues(this.scale, 0, 0, 0, 0, -this.scale, 0, 0, 0, 0, this.scale, 0, 0, 0, 0, 1);
@@ -750,7 +756,6 @@ export class VGeoCluster extends VCluster {
     mat4.mul(MVP, this.projectionMatrix, this.modelViewMatrix);
 
     for (let vNode of this.vNodes) {
-
       const attGeo = vNode.node.attributes!.attGeo!;
       const hasCoords = Object.prototype.hasOwnProperty.call(attGeo, this.vNodePositioning);
       const hasGeocode = Object.prototype.hasOwnProperty.call(attGeo, "geocode");
@@ -762,27 +767,32 @@ export class VGeoCluster extends VCluster {
 
         // Copy the mapped coordinates for the geocode to avoid mutating the original
         const vInCoords = this.mappedCoords[geocode].copy();
-        
+
         // Translate coordinates relative to the mouse position (center at focus point)
         vInCoords.sub(this.mouseX_object!, this.mouseY_object);
-        
+
         // Apply the warp function to the distance from the focus point
         const rCoords = this.warp(vInCoords.mag());
-        
+
         // Set the new magnitude based on the warped distance
         vInCoords.setMag(rCoords);
-        
+
         // Translate back to world space by adding the mouse position
         vInCoords.add(this.mouseX_object!, this.mouseY_object);
-        
+
         // Convert to a 4D homogeneous coordinate (z=0, w=1 for perspective division)
         const position_objectCoords = vec4.fromValues(vInCoords.x, vInCoords.y, 0, 1);
-        
+
         // Apply the MVP matrix to transform to normalized device coordinates (NDC)
         const position_NDCCoords = vec4.transformMat4(vec4.create(), position_objectCoords, MVP);
 
-        vNode.shouldShowText = rCoords < this.focusRadius && rCoords < this.focusRadius;
-        vNode.shouldShowButton = true;//rCoords < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+        vNode.shouldShowText = rCoords < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+
+        if (this.cluster.type == "carto") {
+          vNode.shouldShowButton = true;
+        } else {
+          vNode.shouldShowButton = rCoords < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+        }
 
         vNode.pos = gp5
           .createVector(position_NDCCoords[0] / position_NDCCoords[3], position_NDCCoords[1] / position_NDCCoords[3], position_NDCCoords[3])
@@ -791,34 +801,38 @@ export class VGeoCluster extends VCluster {
       } else if (hasGeocode) {
         // If this geocode has no centroid, skip this node entirely.
         if (!this.centroidByGeocode[geocode]) continue;
-        
+
         // Copy the stored centroid position for this geocode so we can transform it.
         const vIn = this.centroidByGeocode[geocode].copy();
-        
+
         // Translate the centroid into mouse-relative object space.
         vIn.sub(this.mouseX_object!, this.mouseY_object);
-       
+
         // Warp the distance from the mouse focus point to create the focus effect.
         const r = this.warp(vIn.mag());
-       
+
         // Set the vector magnitude to the warped radius while preserving direction.
         vIn.setMag(r);
-        
+
         // Translate back into world/object coordinates from the mouse-relative position.
         vIn.add(this.mouseX_object!, this.mouseY_object);
-        
+
         // Build a 4D homogeneous coordinate for the transformed object position.
         const position_object = vec4.fromValues(vIn.x, vIn.y, 0, 1);
-       
+
         // Transform the object-space position through the MVP matrix into NDC space.
         const position_NDC = vec4.transformMat4(vec4.create(), position_object, MVP);
-       
+
         // Show text only if this node is within the focus radius.
-        vNode.shouldShowText = r < this.focusRadius && r < this.focusRadius;
-        
+        vNode.shouldShowText = r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+
         // Show button only if the node is within focus and this layer is selected.
-        vNode.shouldShowButton = true;//r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
-        
+        if (this.cluster.type == "carto") {
+          vNode.shouldShowButton = true;
+        } else {
+          vNode.shouldShowButton = r < this.focusRadius && this.index === VGeoCluster.selectedLayerId;
+        }
+
         // Convert NDC coordinates to screen pixel coordinates and store them.
         vNode.pos = gp5
           .createVector(position_NDC[0] / position_NDC[3], position_NDC[1] / position_NDC[3], position_NDC[3])
@@ -950,7 +964,7 @@ export class VGeoCluster extends VCluster {
       if (this.outlineShader) {
         // TODO: comments
         VGeoCluster.pixelTarget.fill(0);
-         this.renderToBuffer(VGeoCluster.pixelTarget, this.secondaryClusterGeometry, this.outlineShader);
+        this.renderToBuffer(VGeoCluster.pixelTarget, this.secondaryClusterGeometry, this.outlineShader);
       }
       if (this.idShader) {
         this.renderToBuffer(VGeoCluster.idTarget, this.clusterGeometry, this.idShader);
